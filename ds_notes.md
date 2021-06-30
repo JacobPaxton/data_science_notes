@@ -18,3 +18,8 @@ select column_name from table_name;
 — you can also filter to an entry using WHERE, select * from table_name where entry ><= value;
 — you can also select column_name, column_name from table_name;
 — you can also create aliases for columns, select column_name AS Column from table_name;
+
+SQL quick review pre-subquery lesson
+Join - INNER uses AND logic, LEFT / RIGHT use OR logic and prepend/append
+ON vs USING() - ON preserves the linked key while USING() merges the linked keys into one column
+-- use the USING() function to merge multiple same-name columns, but this may mess up your query
