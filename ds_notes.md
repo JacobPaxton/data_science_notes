@@ -23,3 +23,6 @@
 # Join - INNER uses AND logic, LEFT / RIGHT use OR logic and prepend/append
 # ON vs USING() - ON preserves the linked key while USING() merges the linked keys into one column
 # -- use the USING() function to merge multiple same-name columns, but this may mess up your query
+# CASE - uses WHEN condition THEN append new info ELSE append new info END AS new column name
+# -- use CASE in SELECT statement
+# -- use HAVING to filter results to a specific THEN. example: HAVING item_type = 'Specialty Item'
