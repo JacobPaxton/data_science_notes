@@ -100,6 +100,8 @@
 - Often returned from functions
 - - return sum(numbers), avg ----- returns tuple (sum, avg)
 - tuple[0] returns first item in tuple like normal
+- enumerate() works with tuples
+- - for x in enumerate(four_values): print(x) ---- (0, value1) (1, value2) (2, value3) (3, value4)
 
 ## JupyterNB
 ### Basic usage
