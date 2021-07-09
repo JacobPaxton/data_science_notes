@@ -95,6 +95,11 @@
 - JupyterNB: can use TAB to check available methods, dictionary. + TAB
 - dict.keys() returns keys, dict.values() returns values
 - dict[0] returns first entry in the dictionary, dict[0][key] returns the value for the key in the first entry
+### Tuples
+- A list that can't change (a constant variable for a grouping), uses () instead of []
+- Often returned from functions
+- - return sum(numbers), avg ----- returns tuple (sum, avg)
+- tuple[0] returns first item in tuple like normal
 
 ## JupyterNB
 ### Basic usage
