@@ -102,6 +102,14 @@
 - tuple[0] returns first item in tuple like normal
 - enumerate() works with tuples
 - - for x in enumerate(four_values): print(x) ---- (0, value1) (1, value2) (2, value3) (3, value4)
+### Output formatting
+- Use .format() to make a table like in the following example
+- - print(" stuff | stuff | stuff ")
+- - print("-------|-------|-------")
+- - print(f"|{:<8}|{:<8}|{:<8}|".format(stuff, stuff, stuff)
+- lambda: list.sort(key=lambda x: len(item)) ----- sorts based on length of each item
+### Functions
+- Parameters and Arguments: Parameter is the shell, Argument is the value put in the shell.
 
 ## JupyterNB
 ### Basic usage
