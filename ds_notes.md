@@ -110,6 +110,22 @@
 - lambda: list.sort(key=lambda x: len(item)) ----- sorts based on length of each item
 ### Functions
 - Parameters and Arguments: Parameter is the shell, Argument is the value put in the shell.
+### Importing
+#### Basic info
+- Import from Python Standard Library, packages/libraries installed from pip/conda, or our own .py files
+- docs.python.org/3/library
+#### Import syntax
+- import math ----- imports the Python Standard Library math library, use math. + TAB to see list of functions
+- - import math as m ----- alias math as m
+- - math.function(argument, argument)
+- from math import function, function, function ----- imports specific functions from math
+- - from math import tan
+- - tan(argument, argument)
+- from math import tan as alias ----- alias the function
+#### Importing self-created files
+- create file util.py, then in new .py, import util
+- - from util import function, function, function
+- - function(argument, argument)
 
 ## JupyterNB
 ### Basic usage
