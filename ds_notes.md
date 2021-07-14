@@ -126,6 +126,11 @@
 - create file util.py, then in new .py, import util
 - - from util import function, function, function
 - - function(argument, argument)
+#### Sorting through a .json (a list of dictionaries)
+- Can easily find highest or lowest value of a key in a list of dicts
+- - max_dict = max(list_of_dicts, key=lambda x:dict["key"]) ----- stores as max_dict the dict in the list with the highest dict["key"]
+- - print(max_dict["key"]) ----- quick solution to printing the max_value of a key shared across a list of dicts
+- - understanding the key= in max() can yield very quick and clean results
 
 ## JupyterNB
 ### Basic usage
