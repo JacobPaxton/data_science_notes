@@ -126,11 +126,48 @@
 - create file util.py, then in new .py, import util
 - - from util import function, function, function
 - - function(argument, argument)
-#### Sorting through a .json (a list of dictionaries)
+### key= usage
+- key= is used to change the default output
+- - max(list, key=list.method) ----- chooses highest based on the method (doesn't need parentheses)
+- - list.sort(key=lambda x:function) ----- sorts using x (an anonymous function declaration)
+### lambda
+- lambda is on-the-fly creation of a return
+- Used to avoid creating a function for one or two uses
+- - fun_name = lambda a, b: a + b ----- creates function that pulls in a and b, returns a + b
+- - fun_name(1, 3) ----- returns 4
+- - lambda x: try_me ----- calls the try_me function with x argument and returns try_me output
+- - key=lambda x: try_me ----- uses the return of the try_me function (called with x argument) for the key
+- - max(list, key=lambda x: try_me) ----- returns the biggest item of the list determined by the try_me function
+### Sorting through a .json (a list of dictionaries)
 - Can easily find highest or lowest value of a key in a list of dicts
 - - max_dict = max(list_of_dicts, key=lambda x:dict["key"]) ----- stores as max_dict the dict in the list with the highest dict["key"]
 - - print(max_dict["key"]) ----- quick solution to printing the max_value of a key shared across a list of dicts
 - - understanding the key= in max() can yield very quick and clean results
+
+## NumPy
+- A staple library of the scientific community and the foothold of Python in science
+- NumPy arrays (and the array functions) are excellent
+- - Boolean masks used to filter arrays; mask = array conditions, a[mask]
+### NumPy tools
+- array.size ----- returns number of values in array
+- (a > 1).sum() ----- returns sum of values in a that are greater than 1
+- array_test = numpy.array(list) ----- set array_test to numpy array of the list
+- array_test = numpy.random.randn(5) ----- set array_test to numpy array of 5 random numbers
+- - numpy.random.randn(2, 2) ----- creates 2x2 array of random numbers
+- numpy.arange(start, stop, step) ----- creates one-row array of range start,stop with step gaps
+- numpy.linspace(start, stop, num) ----- creates one-row array of range start,stop with num columns
+- sum, min, max, std, mean, product, and more for basic math on arrays
+- - sum(array, axis=1) ----- sum each row's contents, do not sum the rows together
+#### NumPy Array Examples
+- do element-wise arithmetic and comparison, such as array_test + 1, array_test == list, array_test * array_test_2, etc
+- - a = numpy.array([0,1,2,3,4,5])
+- - a == 2 returns array of bool results
+- - a[a == 2] returns the indexed elements of a with True values (masks)
+- use [row, column] indexing
+- - m[0,2] of 3x3 array ----- [row_index, column_index]
+- - m[0:1, 0:1] of 3x3 array ----- returns columns 0 and 1 from row 0 and 1, preserves formatting
+- - m[:,1] of 3x3 array ----- returns column 1 from all rows
+
 
 ## JupyterNB
 ### Basic usage
@@ -143,5 +180,9 @@
 
 
 ## Statistics Notes
-- zscore = ( x - population_mean ) / standard_deviation
-- zscore = ( x - avg(x) ) / std(x)
+- Centering is important to take a pile of data purely as its distance away from the mean in positive/negative direction
+- - Centering is also known as de-meaning a vector
+- Z-Score is like centering but it's the distance from the mean in terms of standard deviation
+- - zscore = (value - population_mean) / standard_deviation
+- - zscore = (value - avg(value_list)) / std(value_list)
+- - from scipy import stats, stats.zscore(value_list) ----- returns Z-Score of value_list
