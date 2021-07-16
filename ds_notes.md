@@ -168,6 +168,37 @@
 - - m[0:1, 0:1] of 3x3 array ----- returns columns 0 and 1 from row 0 and 1, preserves formatting
 - - m[:,1] of 3x3 array ----- returns column 1 from all rows
 
+## Pandas
+- Another excellent staple of the Python science community
+- Built on Numpy and Matplotlib
+- Dataframes (df) are extremely powerful data representation tools
+- - df.attribute is easily modified
+- - 2D array with labeled axes (labeled rows, labeled columns), array is a NumPy array
+- Series Methods v Series Attributes: Series Attributes return valuable information about the Series object (series.dtype, series.size, series.shape), they do not perform calculations or require parentheses. Series Methods perform calculations or operations on a copy of a series and return the copy (series.head(n=5), series.tail(n=5), series.value_counts())
+- - dtype: Python type str is Pandas dtype object (object = str or mixed, int64 is int, float64 is float, bool is bool, datetime64 is datetime...)
+- Vectorized Operations: Call default Python methods on Pandas Series, for example: series_name.str.capitalize() will capitalize all values in the series.
+- Method Chaining: using multiple methods at once - ex: series_name[str.method()].str.method()
+### Pandas tools
+- df['column_name'].head(10) ----- returns rows 0 to 9 of the column (this avoids issues with spaces in column names or reserved words as column names)
+- df.first_name.head(10) ----- also returns rows 0 to 9 of the column (may have issues with column names, be careful!)
+- pd.Series(list_name) ----- creates a column (first index 0) of row-separated values from list_name
+- pd.Series(dict_name) ----- creates label column and value column for dict_name keys and values, respectfully
+- series.size ----- returns length of series
+- df.index returns list of indices for dataframe, df.values returns list of values
+- df.sample(num) ----- returns a random sample of num amount of values
+- series.astype(object) ----- returns a copy of a series with its dtype changed to object
+- series.value_counts(normalize=False, sort=True, ascending=False, bins=None, dropna=True)
+- series_or_df.describe() ----- summary statistics of a series or dataframe 
+- - for series type object: row count, unique values, most frequent value, how many times most frequent value occurs
+- - for series type int64: count_uniques, mean, std, min, 25%, 50%, 75%, max
+- (bool_mask).any() ----- returns True if any bool_mask value is True
+- (bool_mask).all() ----- returns True if all bool_mask values are True, otherwise return False
+- series_name[boolean_mask] ----- returns values of series_name that return True in boolean mask
+- series.apply(function) ----- applies function to each element in the series, function can be user-defined, built-in, lambda, etc
+- series_name.isin(series_name_2) ----- returns array of bool values where series_name is in series_name_2
+- - series_name[series_name.isin(series_name)] ----- uses bool array as boolean mask
+- dict_series["key1":"key2"] ----- returns rows between and including "key1" and "key2"
+- dict_series[["key1", "key5", "key9"]] ----- return rows with index "key1", "key5", "key9"
 
 ## JupyterNB
 ### Basic usage
@@ -177,7 +208,7 @@
 - ESC from Edit mode into Command mode; RETURN from Command mode into Edit mode
 - Shift+RETURN to run a cell
 - Other Command mode shortcuts: dd to delete cell; y to change cell to Code; m to change cell to Markdown
-
+- Shift+TAB to check information at cursor location (like the default parameters of a method), very powerful tool
 
 ## Statistics Notes
 - Centering is important to take a pile of data purely as its distance away from the mean in positive/negative direction
@@ -186,3 +217,12 @@
 - - zscore = (value - population_mean) / standard_deviation
 - - zscore = (value - avg(value_list)) / std(value_list)
 - - from scipy import stats, stats.zscore(value_list) ----- returns Z-Score of value_list
+
+## Bringing it all together
+- from env import user, password, host
+- def get_connection(db, user=user, host=host, password=password):
+    (link magic to pull from MySQL database)
+- set df to file pulled from the MySQL database
+- df.head() and df.tail() to return the data first 5 rows and last 5 rows
+- - series attributes to check for more information
+- series methods to perform necessary calculations
