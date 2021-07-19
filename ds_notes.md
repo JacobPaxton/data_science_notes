@@ -180,7 +180,8 @@
 - Method Chaining: using multiple methods at once - ex: series_name[str.method()].str.method()
 ### Pandas tools
 - df['column_name'].head(10) ----- returns rows 0 to 9 of the column (this avoids issues with spaces in column names or reserved words as column names)
-- df.first_name.head(10) ----- also returns rows 0 to 9 of the column (may have issues with column names, be careful!)
+- df.first_name.head(10) ----- also returns rows 0 to 9 of the column
+- - first_name is NOT a variable, it is a named column that exists in df. 
 - pd.Series(list_name) ----- creates a column (first index 0) of row-separated values from list_name
 - pd.Series(dict_name) ----- creates label column and value column for dict_name keys and values, respectfully
 - series.size ----- returns length of series
@@ -199,6 +200,40 @@
 - - series_name[series_name.isin(series_name)] ----- uses bool array as boolean mask
 - dict_series["key1":"key2"] ----- returns rows between and including "key1" and "key2"
 - dict_series[["key1", "key5", "key9"]] ----- return rows with index "key1", "key5", "key9"
+- bin_assignment_array = pd.cut(series, [start, cut, cut, cut, stop]) ----- bin values from series into 4 different bins, stored as (start, cut], (cut, cut], (cut, cut], (cut, stop]
+- - pd.cut(df, bin=bin_edges , labels=[bin_label, bin_label, bin_label]).value_counts().sort_index() ----- displays count of each bin, ordered by index (not highest count to lowest count)
+### DataFrames
+- 2-Dimensional data with a lot of functionality
+- Made from pandas Series
+- pd.DataFrame(list_of_dicts) ----- Make a dataframe from a list of dictionaries
+- - Dictionary keys should be the same between all dictionaries in the list
+#### DataFrame Syntax
+- list_of_dicts_dataframe.key.sum() ----- sum all values of key in list_of_dicts_dataframe
+- - .max(), .mean(), etc all work
+- df[value].argmax() ----- gives index of df where max value exists
+- df[df.index == 0] ----- give the entire row of first index of df
+- df[df.key == value] ----- return entire row where key is set to value
+- df.key.idxmax() ----- return index for the key's highest value in df
+- - df[df.index == df.key.idxmax()] ----- return entire row of index with max value of key
+- df[[key1, key2]] ----- returns dataframe with column key1 and key2
+- - keys = [key1, key2]
+- - df[keys]
+- df.colname > 100 ----- returns bool mask
+- - df[(df.colname > 100) & ((df.colname < 400) | (df.colname == 500))] ----- use & and | operators for AND and OR, needs parentheses because bool array is created in parentheses *then* bool arrays are compared
+- df[condition1 & condition2] ----- no need for parentheses
+- df_copy = df.copy() ----- makes a copy, can't assign df_copy to df or else they'll point to same dataframe
+- df_copy.drop(columns=[colname], inplace=True) ----- permanently alters df_copy, drops colname
+- df_copy.rename(columns={colname1: colname2, colname5: colname6}) ----- permanently alters df_copy, changes colname1 to colname2, changes colname5 to colname6
+- df_copy[new_column] = df_copy.colname > 100 ----- returns bool array in new_column for each row that is > 100 in colname
+- - can use the new column as a bool mask!!
+- df_copy.assign(new_colname=df.colname > 100) ----- same as previous
+- df.sort_values(by=col_name, ascending=False) ----- sort df by col_name in descending order
+
+## Matplotlib
+- Visualizations for dataframes
+### Matplotlib Syntax
+- df.plot() ----- put dataframe to a plot
+- df.plot.barh() ----- put dataframe to a bar plot
 
 ## JupyterNB
 ### Basic usage
