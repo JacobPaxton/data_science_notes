@@ -228,6 +228,10 @@
 - - can use the new column as a bool mask!!
 - df_copy.assign(new_colname=df.colname > 100) ----- same as previous
 - df.sort_values(by=col_name, ascending=False) ----- sort df by col_name in descending order
+### "Advanced" Dataframes
+- Produce dataframe from dictionary: pd.Dataframe({'A': [1,2,3], 'B': [0,1,2])
+- Produce dataframe from list: pd.Dataframe([[1,2,3], [4,5,6]])
+- Labeled dataframe from list: pd.Dataframe(numpy_array, columns=['a', 'b', 'c'])
 
 ## Matplotlib
 - Visualizations for dataframes
@@ -255,8 +259,18 @@
 
 ## Bringing it all together
 - from env import user, password, host
-- def get_connection(db, user=user, host=host, password=password):
-    (link magic to pull from MySQL database)
+- def get_connection(db, user=user, host=host, password=password): url = f'protocol://[user[:password]@]hostname/database_name'
+- - url = mysql+pymysql://codeup:p@assw0rd@123.123.123.123/some_db ----- Notice some_db? Same as USE DATABASE;
+- - pd.read_sql('SELECT * FROM employees LIMIT 10', url)
+- - query = '''
+- - SELECT
+- -     emp_no,
+- -     to_date
+- - FROM employees
+- - WHERE to_date > curdate()
+- - LIMIT 100
+- - '''
+- - cur_emps = pd.read_sql(query, url)
 - set df to file pulled from the MySQL database
 - df.head() and df.tail() to return the data first 5 rows and last 5 rows
 - - series attributes to check for more information
