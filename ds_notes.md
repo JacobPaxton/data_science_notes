@@ -232,6 +232,21 @@
 - Produce dataframe from dictionary: pd.Dataframe({'A': [1,2,3], 'B': [0,1,2])
 - Produce dataframe from list: pd.Dataframe([[1,2,3], [4,5,6]])
 - Labeled dataframe from list: pd.Dataframe(numpy_array, columns=['a', 'b', 'c'])
+- Use specific columns from dataframe: df[['col1', 'col2, 'col5']]
+- Slice row and column at once using names/bools: df.loc[row_indexer, col3:col4] ----- returns rows of row_indexer (can be bool mask!) and one column within the bounds (INCLUSIVE)
+- Slice row and column at once using index: df.iloc[1:3, :]
+- Run multiple aggregate functions on a dataframe: df[['col1', 'col2', 'col5']].agg(['mean', 'min']) ----- returns new dataframe with agg functions ran on all columns specified in df
+- Group By in pandas: df.groupby('col_want_to_group_by').col_want_to_do_func_on.mean()
+- - df.groupby('col_want_to_group_by').col_want_to_do_func_on.agg(['mean', 'median', 'count'])
+- - can do multiple columns in groupby
+- - can rename aggregate function columns: df.columns = ['name1', 'name2']
+- Programatically insert values in new column: df['new_col'] = np.where(df.col > 100, 'me_true', 'me_false')
+- Create new column on dataframe using agg functions: df.assign(new_col=df.groupby('show_me_col').calc_me_col.transform('mean')) ----- transform keeps index intact
+- Join dataframes together: pd.concat([df1, df2], axis=0, ignore_index=True)
+- - .concat here is very raw, may create nulls and not line up exactly
+- SQL join in python: df1.merge(df2, left_on='df1_col', right_on='df2_col', how='outer', indicator=True) 
+- - _x, _y, _merge in colnames help out, so does .drop and .rename
+- - use .merge when columns in common between two dataframes, helps keeps things together
 
 ## Matplotlib
 - Visualizations for dataframes
