@@ -75,6 +75,7 @@
 - Slice: [0:3], [2:], [:-1] (works with str and list)
 - list[0][0] returns first char of first string in list
 - string[0] returns first char of string
+- the char _ is a trash variable, [num for _ in range(1, 5)]
 ### String methods
 - JupyterNB: can use TAB to check available methods
 - - Example: string.lower() can be found with string. + TAB
@@ -247,12 +248,54 @@
 - SQL join in python: df1.merge(df2, left_on='df1_col', right_on='df2_col', how='outer', indicator=True) 
 - - _x, _y, _merge in colnames help out, so does .drop and .rename
 - - use .merge when columns in common between two dataframes, helps keeps things together
+- Crosstabulation (count occurences of one column per another): pd.crosstab(df.col1, df.col2, margins=True, normalize=True) ----- margins show total of each column or each row, normalize shows percentage of value compared to entire table
+- Create pivot table: df.pivot_table(index='col1', columns='col2', values='col3') ----- each row that matches x1, y1 gets col3's values put together and default agg function mean... then x2, y1... then x1, y2... then x2, y2... and so on for all unique combos of col1 and col2
+- Init a map and use map to fill a column based on another column: create dict with input: output, then df['new_column'] = df.col1.map(dict_map) ----- the .map function returns the value, so you can perform regular arithmetic and other stuff on it like normal
+- Rotate a table (transpose): df.T
 
 ## Matplotlib
 - Visualizations for dataframes
+- import matplotlib.pyplot as plt
+- Once .plot() is run, can do plt.method_here
+- can run multiple .plot() in a single visual before plt.show()
+- can use tuple as first argument in ex: hist() to do side-by-side
+- - plt.hist((series1, series2), ...)
 ### Matplotlib Syntax
 - df.plot() ----- put dataframe to a plot
 - df.plot.barh() ----- put dataframe to a bar plot
+- x = list(range(150)) -- plt.plot(x) -- plt.show()
+- - JupyterNB will automatically show a plot without plt.show(), but .py scripts ran from Terminal require plt.show()
+### Matplotlib Methods
+- plot
+- - defaults to line plot. plt.plot(x, y, c='color')
+- - scatter(), bar(), barh(), hist(), and more
+- - c= ----- color, can use alpha= to do transparency (0.0 - 1.0)
+- - s= ----- size of dots on scatterplot
+- - ls= ----- line type for line chart, ':' is dotted, '--' is dashed, etc
+- - bins=[list_of_cuts]
+- - align='left' ----- aligns to left
+- - edgecolor= ----- sets edge for the data (ex: border on bars in chart)
+- show()
+- title('title'), xlabel('clabel'), ylabel('ylabel')
+- xlim(bounds), ylim(bounds)
+- xticks(list_of_int_ticks, list_of_str_tick_names), yticks(list, list)
+- - rotation=num ----- rotate each tick num degrees
+- text(left_boundary_coords_for_txt, txt_to_place, fontsize=num, color='color')
+- annotate('text', xy=(coords_for_tip), xytext=(coords_for_left_bound), arrowprops={'key':'value'})
+- figure(figsize=(num_width, num_height))
+- legend(loc='upper right') ----- puts legend in upper right
+- savefig('name_of_my_new_figure') ----- generates .png of your figure
+- subplot
+- - subplot(num_of_rows, num_of_cols, index_start_at_1)
+- - plt.plot(list, list)
+- - plt.title('title1')
+- - subplot(num_of_rows, num_of_cols, index_start_at_1)
+- - plt.plot(list, list)
+- - plt.title('title2')
+- - plt.tightlayout() ----- fixes spacing
+- - plt.suptitle('title') ----- super (wrapper) title for subplots
+- - plt.show() ----- gens 2 subplots, then plt.show() puts them next to each other
+
 
 ## JupyterNB
 ### Basic usage
