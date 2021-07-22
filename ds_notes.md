@@ -285,14 +285,14 @@
 - figure(figsize=(num_width, num_height))
 - legend(loc='upper right') ----- puts legend in upper right
 - savefig('name_of_my_new_figure') ----- generates .png of your figure
-- subplot
+- plt.subplot
 - - subplot(num_of_rows, num_of_cols, index_start_at_1)
 - - plt.plot(list, list)
 - - plt.title('title1')
 - - subplot(num_of_rows, num_of_cols, index_start_at_1)
 - - plt.plot(list, list)
 - - plt.title('title2')
-- - plt.tightlayout() ----- fixes spacing
+- - plt.tight_layout() ----- fixes spacing
 - - plt.suptitle('title') ----- super (wrapper) title for subplots
 - - plt.show() ----- gens 2 subplots, then plt.show() puts them next to each other
 
