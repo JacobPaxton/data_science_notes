@@ -296,6 +296,27 @@
 - - plt.suptitle('title') ----- super (wrapper) title for subplots
 - - plt.show() ----- gens 2 subplots, then plt.show() puts them next to each other
 
+## Seaborn
+- Library that builds on matplotlib and integrates well with pandas
+- Powerful in its defaults!
+### Seaborn Syntax, Methods
+- import seaborn as sns
+- df = sns.load_dataset('dataset') ----- does same as pydataset
+- sns.relplot(x='col1', y='col2', data=df) ----- returns scatterplot for df using col1 for x axis and col2 for y axis
+- - once plotted, can use plt.title, plt.xlabel, etc as normal
+- sns.histplot(df.col_name, kde=True) ----- histogram (bar chart of frequency count) of col_name, with kernel density estimator
+- sns.boxplot(data=df) ----- box and whisker plot (inter-quartile range, quartiles, median, and outliers all on a plot)
+- sns.catplot(x=, y=, col=, col_wrap=, hue=, data=, kind=) ----- categorical plot (default is silo'd dot plot, can kind='count')
+- sns.heatmap(data, annot=True, cmap=plt.cm.Greens) ----- heatmap with annotations using the Greens color palette
+- - https://seaborn.pydata.org/tutorial/color_palettes.html
+- sns.set_palette("colorblind") ----- makes your stuff colorblind-friendly
+- sns.pairplot(df) ----- quickie for combinations of data in df
+- sns.jointplot(data=df, x=, y=) ----- attaches a histogram per axis for a scatterplot
+### Seaborn Arguments
+- col='col1' ----- chart for each unique value in col1
+- hue='col1' ----- separate color for each unique value in col1
+- style='col1' ----- changes style of plot point for each unique value in col1
+- kind='line' ----- draws a line to each plot point
 
 ## JupyterNB
 ### Basic usage
