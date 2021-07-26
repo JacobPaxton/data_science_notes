@@ -360,6 +360,15 @@
 - IFERROR(try, except)
 - =SPARKLINE(range, {'charttype','bar';'color','red';'max',max(range); etc}) ----- creates a red in-cell bar chart of data from range with maxed bar when reaching max value of range
 
+## Storytelling
+- Data requires velocity to be useful
+### Visualization Considerations
+- Serve the "why" first, then follow with the specifics
+- - Leading with specifics will lose your audience
+- Give the "why" some amplifying, relative information to help seat your audience
+- - Avoid cluttering the "why" with too much amplification
+- Design the velocity with your audience in mind
+
 ## Statistics Notes
 - Centering is important to take a pile of data purely as its distance away from the mean in positive/negative direction
 - - Centering is also known as de-meaning a vector
