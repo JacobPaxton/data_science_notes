@@ -360,14 +360,27 @@
 - IFERROR(try, except)
 - =SPARKLINE(range, {'charttype','bar';'color','red';'max',max(range); etc}) ----- creates a red in-cell bar chart of data from range with maxed bar when reaching max value of range
 
+## Tableau
+- Visualization tool, can be used for presentations
+
 ## Storytelling
 - Data requires velocity to be useful
 ### Visualization Considerations
+- Expert-level visualizations != presentation-level visualization
 - Serve the "why" first, then follow with the specifics
 - - Leading with specifics will lose your audience
 - Give the "why" some amplifying, relative information to help seat your audience
 - - Avoid cluttering the "why" with too much amplification
 - Design the velocity with your audience in mind
+- Prepare to Create; Talk and Listen; Sketch; Prototype
+- - Clear physical and mental room; Know your data; Understand your audience and Big Idea
+- - Determine which framework to use (persuasive, man-in-hole, story), determine context, challenge, and solution
+- - Understand your audience and use an appropriate approach
+- - A topic isn't a big idea... use your chances to express the big idea
+- - Explain out loud what your project is, take notes of feedback, make corrections [I'm working on... I'm trying to show... Why...]
+- - Use everything so far to sketch out your ideas (brainstorm)
+- - Refine the sketches into presentation material
+- A non-correlation can be more important than a correlation
 
 ## Statistics Notes
 - Centering is important to take a pile of data purely as its distance away from the mean in positive/negative direction
