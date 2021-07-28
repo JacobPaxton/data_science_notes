@@ -362,11 +362,52 @@
 
 ## Tableau
 - Visualization tool, can be used for presentations
+- Public is free but cannot privately save your work (publishes everything)
+- - Save with each new sheet as a standard... Nothing is autosaved so if it crashes you're donezo
+- Faith's Tableau Public: https://public.tableau.com/app/profile/faith.kane
+- Sean Oslin's Tableau Public: https://public.tableau.com/app/profile/sean.oslin
+- A lot of people use the superstore CSV to learn and demo Tableau, you should consider using it to learn Tableau too
+### Tableau Usage
+- Consider exploring your data in Google Sheets first
+- - Tableau is a bit slow for *exploration* compared to pivot tables in Google Sheets
+- - Once you've discovered what you want, switch to Tableau for presentation and visualization creation
+- CSV files are Text Files when ingesting data into Tableau
+- Hide unnecessary columns using drop-downs in each column
+- - Can unhide columns
+- Filter results at top-right (intuitive)
+- Put results to charts via button in bottom-left "Sheet 1"
+- - Can rename tabs (will rename table [results])
+- - Can add extra to name in the table and leave tab simplified
+- Leftmost options (columns) - can adjust if needed
+- - Can switch between Data tab and Analytics tab
+- - Drag options up into Rows or Columns to add to table
+- - Drag options into Marks, onto Label or Color to append certain data to table, right-click on existing Label/Color things and make changes to the appended data (very cool!) - move Legend to under Marks as a preference
+- - Change number to currency - right click option, default properties, number format...
+- Can click on leftmost options to display them
+- - Rightmost tables are choices for displaying your data
+- Semi-leftmost options (Measure Values) - change aggregations for any measure values
+- Table - Right click on table things, change alias or other things about it
+- - Change view width/height in dropdown at top of window (apparently Entire View is good for displaying later on)
+- Transpose: Drag rows into column field, columns into row field (really simple)
+- Change table format: select entire window, use MacOS File/Data/Etc bar (context menu), Format, Lines (change lines on table)
+### Dashboard
+- View multiple sheets in one dashboard
+- - Drag sheets into playspace
+- - "Entire View" option for sheets fills the box in the playspace
+- Edit/hide titles, add "supertitle", etc in here
+- Great for interactive deliverable for stakeholders that want to play with filters
+### Story
+- Essentially a slide deck/presentation for sheets/dashboards
+- - Slides for one table in a slide... dashboard for multiple tables in a slide
+- Captions are basically named slides
+- Can drag text window from bottom left into slide and right click-edit it
 
 ## Storytelling
 - Data requires velocity to be useful
 ### Visualization Considerations
 - Expert-level visualizations != presentation-level visualization
+- - The pivot tables are more appropriate for Appendix
+- - If the audience has to read it, don't include it
 - Serve the "why" first, then follow with the specifics
 - - Leading with specifics will lose your audience
 - Give the "why" some amplifying, relative information to help seat your audience
@@ -381,6 +422,7 @@
 - - Use everything so far to sketch out your ideas (brainstorm)
 - - Refine the sketches into presentation material
 - A non-correlation can be more important than a correlation
+- Start with overview in presentation, dissect the focus later (start with churn v not churned, then dive into churn data)
 
 ## Statistics Notes
 - Centering is important to take a pile of data purely as its distance away from the mean in positive/negative direction
