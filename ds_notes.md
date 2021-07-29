@@ -381,7 +381,7 @@
 - Leftmost options (columns) - can adjust if needed
 - - Can switch between Data tab and Analytics tab
 - - Drag options up into Rows or Columns to add to table
-- - Drag options into Marks, onto Label or Color to append certain data to table, right-click on existing Label/Color things and make changes to the appended data (very cool!) - move Legend to under Marks as a preference
+- - Drag options into Marks, onto Label or Color to append certain data to table, right-click on existing Label/Color things and make changes to the appended data (very cool!), each drag is an added feature - move Legend to under Marks as a preference
 - - Change number to currency - right click option, default properties, number format...
 - Can click on leftmost options to display them
 - - Rightmost tables are choices for displaying your data
