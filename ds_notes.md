@@ -423,6 +423,7 @@
 - - Refine the sketches into presentation material
 - A non-correlation can be more important than a correlation
 - Start with overview in presentation, dissect the focus later (start with churn v not churned, then dive into churn data)
+- Relate the problem to the audience's interests and focus for maximum effect
 
 ## Statistics Notes
 - Centering is important to take a pile of data purely as its distance away from the mean in positive/negative direction
