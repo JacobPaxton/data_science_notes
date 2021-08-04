@@ -327,6 +327,7 @@
 - Shift+RETURN to run a cell
 - Other Command mode shortcuts: dd to delete cell; y to change cell to Code; m to change cell to Markdown
 - Shift+TAB to check information at cursor location (like the default parameters of a method), very powerful tool
+- Split cell at cursor: Control + Shift + -
 
 ## Spreadsheets / Excel
 - Two-dimensional data
@@ -432,6 +433,22 @@
 - - zscore = (value - population_mean) / standard_deviation
 - - zscore = (value - avg(value_list)) / std(value_list)
 - - from scipy import stats, stats.zscore(value_list) ----- returns Z-Score of value_list
+### Python/NumPy/Pandas
+- Figure out a way to represent our data (ex: dice_outcomes = [1,2,3,4,5,6])
+- Create a matrix of random data, rows = simulations, columns = trial
+- - For example, rolling 2 dice 10,000 times means rows=10,000 and columns = 2 because we roll 2 dice each time
+- Apply an aggregate function, row-wise to get the results of the simulation
+- Apply a final aggregate to get our probability
+#### Deeper on Python/np/pd
+- .mean() against a boolean list will give count_of_trues / length_of_list
+- Rolling two dice at once: to sum an iteration of rolling two die, use axis=1 as the argument for .sum()
+- np.random.choice(outcomes, size=(simulations, trials))
+- - rolls = np.random.choice([1,2,3,4,5,6], 1_000_000)
+- - rolls[0:10] ----- shows first 10 rolls
+- - (rolls == 5).mean() ----- times_rolled_5 / total_rolls, or the calculated probability (not theoretical)
+- - ((rolls == 5) & (rolls == 6)).mean()
+- - size=(experiments, number_of_dice per experiment)
+- weigh outcomes: np.random.choice(outcomes, size=, p=[0.55, 0.45])
 
 ## Bringing it all together
 - from env import user, password, host
