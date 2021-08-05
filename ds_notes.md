@@ -229,6 +229,7 @@
 - - can use the new column as a bool mask!!
 - df_copy.assign(new_colname=df.colname > 100) ----- same as previous
 - df.sort_values(by=col_name, ascending=False) ----- sort df by col_name in descending order
+- df.nunique(axis=1) < ncols ----- setting ncols at start, then see if there are duplicates in a row. By setting this result to a new column, you can run this check for all rows in a dataframe and store the result in the column.
 ### "Advanced" Dataframes
 - Produce dataframe from dictionary: pd.Dataframe({'A': [1,2,3], 'B': [0,1,2])
 - Produce dataframe from list: pd.Dataframe([[1,2,3], [4,5,6]])
@@ -427,6 +428,40 @@
 - Relate the problem to the audience's interests and focus for maximum effect
 
 ## Statistics Notes
+### Distributions
+- Uniform - equal likelihood of all outcomes (coin)
+- - stats.randint(low, high_not_including)
+- Binomial - two outcomes (success/failure)
+- - stats.binom(rolls, probability_of_one_outcome)
+- Normal - continuous random variable (bell curve)
+- - stats.norm(mean, standard_deviation)
+- Poisson - events per time interval
+- - stats.poisson(number)
+- Lots more distributions... check scipy documentation for stats module
+### Order of ops for scipy.stats distribution objects
+- Consider which distribution to use
+- Create the distribution using scipy.stats
+- "What info do I have, what info do I need"
+- Call the appropriate distribution (there's a nice diagram that helps you use the right call)
+- Use rvs method to use dummy data instead of default
+#### Diagram
+- rvs --- pmf / pdf --- cdf / ppf --- sf / isf
+- probability of specific (or list of) outcomes: pmf(outcome) or pdf(outcome) (continuous or discrete, respectively)
+- probability of threshold and below: cdf(threshold)
+- values at specified probability or below: ppf(probability)
+- probability of all above threshold: sf(threshold)
+- values of above probability: isf(probability)
+#### Examples
+- die_distribution = stats.randint(1,7) ----- set die_distribution to a recipe for random numbers between 1 and 7 (not including 7)
+- die_distribution.rvs() ----- give me one random number from die_distribution
+- die_distribution(5) ----- give me five random numbers from die_distribution
+- die_distribution((3,5)) ----- give me a 3 x 5 numpy array of random numbers from die_distribution
+- x = die_distribution.rvs(10_000) ----- roll die_distribution 10,000 times and store results to x
+- plt.hist(x, bins=, align=, width=, edgecolor=) ----- plot results
+- plt.title(f'Outcome of {n:,} Dice Rolls;') ----- add title
+###
+- Working inside a dataframe is standard for the industry
+- - Can take shortcuts, it's not standard practice but you can do this and explain what's going on
 - Centering is important to take a pile of data purely as its distance away from the mean in positive/negative direction
 - - Centering is also known as de-meaning a vector
 - Z-Score is like centering but it's the distance from the mean in terms of standard deviation
@@ -440,6 +475,8 @@
 - Apply an aggregate function, row-wise to get the results of the simulation
 - Apply a final aggregate to get our probability
 #### Deeper on Python/np/pd
+- setting rows as variable and columns as variable helps with dataframe formatting
+- - nrows, ncols... df.reshape(nrows, ncols)
 - .mean() against a boolean list will give count_of_trues / length_of_list
 - Rolling two dice at once: to sum an iteration of rolling two die, use axis=1 as the argument for .sum()
 - np.random.choice(outcomes, size=(simulations, trials))
