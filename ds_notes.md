@@ -209,6 +209,9 @@
 - pd.DataFrame(list_of_dicts) ----- Make a dataframe from a list of dictionaries
 - - Dictionary keys should be the same between all dictionaries in the list
 #### DataFrame Syntax
+- df.columns = ['col1', 'col2', 'col3'] ----- rename 0, 1, 2 columns to 'col1' 'col2' 'col3'
+- np.repeat(df.col1.iloc[0], df.col2.iloc[0]) ----- create 1-D array of rows where # is df.col2.iloc[0] and value is df.col1.iloc[0]
+- df.loc[df.index.repeat(df.col_with_aggregated_count)].reset_index(drop=True) ----- repeat in-order each index the number of times specified by df.col_with_aggregated_count, keeping the dataframe, reassigning the index to the new rows
 - list_of_dicts_dataframe.key.sum() ----- sum all values of key in list_of_dicts_dataframe
 - - .max(), .mean(), etc all work
 - df[value].argmax() ----- gives index of df where max value exists
@@ -486,6 +489,32 @@
 - - ((rolls == 5) & (rolls == 6)).mean()
 - - size=(experiments, number_of_dice per experiment)
 - weigh outcomes: np.random.choice(outcomes, size=, p=[0.55, 0.45])
+### Hypothesis Testing
+- Taking sample data and generalizing for a larger population... Comparing, testing, predicting future outcomes... Final result is probability scores
+- Often takes the form of distributions
+- Null hypothesis: all cases that are NOT the alternative hypothesis, as $H_{0}$ -- H with subscript 0
+- - Do those who churn spend more per month than those who don't? Null hypothesis: No, they spend less or equal to
+- Alternative hypothesis: The hypothesis you decide, as $H_{a}$ -- H subscript a
+- - Do those who churn spend more per month than those who don't? Alternative hypothesis: Yes, they spend more
+#### Steps
+1. ID the question
+2. state the hypotheses
+3. validate the assumptions
+4. run our test, set our significance level (alpha)
+- - industry standards are 5% or 1%, but other values are fine
+5. get results: test statistic and p-value
+- - p-value: probability that we observed this result due to chance... if it's less than our alpha, we reject the null hypothesis... there IS a difference, or a relationship.
+6. evaluate results and draw conclusions
+- - "We reject the alternative hypothesis" or "We reject the null hypothesis" is formalspeak
+- - False Negative Rate: Probability of a false negative, or the probability of a type 2 error... P(FN) = P(Type II Error)... failure to reject the null hypothesis... exceeding alpha
+- - False Positive Rate: Probability of a false positive, or the probability of a type 1 error... P(FP) = P(Type I Error)... said there was a difference or relationship, when there wasn't one... within alpha
+#### Test Types
+- Comparison of Means (t-test) ----- bool v continuous/numeric, the mean is calculated from the cont/num variable
+- Comparison of Proportions/Relationships (chi-square) ----- bool v bool or bool v categorical
+- Linear correlation (does one cont value affect another cont value) ----- numeric v numeric, continuous v continuous
+
+#### Syntax and Usage
+
 
 ## Bringing it all together
 - from env import user, password, host
