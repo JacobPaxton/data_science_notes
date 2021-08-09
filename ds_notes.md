@@ -512,8 +512,20 @@
 - Comparison of Means (t-test) ----- bool v continuous/numeric, the mean is calculated from the cont/num variable
 - Comparison of Proportions/Relationships (chi-square) ----- bool v bool or bool v categorical
 - Linear correlation (does one cont value affect another cont value) ----- numeric v numeric, continuous v continuous
-
-#### Syntax and Usage
+### Comparing Means
+- "(x)-tail, (x)-sample t-test"
+- mu is population mean, subscript is the population
+- if t-statistic is proper and p-value is significant (less than 0.05), then we reject the null hypothesis
+- - Null: sample <= theoretical, then if t-statistic > 0 and p-value < 0.05, we reject the null hypothesis. If not, we can't reject it.
+- - Null: sample == theoretical, then we only care about p-value being 0.05 / 2
+- Steps: Plot distributions (ex: histogram); Establish hypothesis; Set significance level alpha to .05; Verify assumptions (normal distribution, or at least 30 observations with normal-looking distribution [more observations = less needed to look like normal distribution]); Compute test statistic and probability using scipy.stats.ttest_1samp(); Decide. 
+- .sf() * 2 is your friend... be careful though!
+- Compare an observed mu to the theoretical mu (sample vs whole): One sample t-test, normally distributed
+- - t, p = scipy.stats.ttest_1samp(array_of_sample, array_of_overall)
+- Compare two observed mu (sample against sample): Independent t-test, normally distributed, equal variances
+- - t,p = scipy.stats.ttest_ind(sample1, sample2, equal_var=False)
+- Compare multiple observed mu: ANOVA, normally distributed, independent variables, equal variances
+- - scipy.stats.f_oneway(sample1, sample2, sample3, ....,equal_var=False)
 
 
 ## Bringing it all together
