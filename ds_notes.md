@@ -512,6 +512,11 @@
 - Comparison of Means (t-test) ----- bool v continuous/numeric, the mean is calculated from the cont/num variable
 - Comparison of Proportions/Relationships (chi-square) ----- bool v bool or bool v categorical
 - Linear correlation (does one cont value affect another cont value) ----- numeric v numeric, continuous v continuous
+- Check variances for equality: stats.levene(sample1, sample2)
+- - the threshold for significant inequality is pvalue < .05 or .01
+- Finding *linear* corr: corr, p = stats.pearsonr(x, y) ----- Pearson correlation coefficient calculation
+- - Finding r using dataframe: df.corr() --- df[['col1', 'col2']].corr() ----- find r for col1 and col2
+- Finding *non-linear* corr: stats.spearmanr()
 ### Comparing Means
 - "(x)-tail, (x)-sample t-test"
 - mu is population mean, subscript is the population
