@@ -23,6 +23,7 @@
 ### Functions
 - SUBSTR(string, index, step_number)
 - - index starts before the position is read (first character is at index 1), step_number = 1 reads one character from index
+- select datediff(curdate(), colname) as alias ----- return column with days between curdate() and colname (great for renure calculation)
 ### WHERE
 - Used to filter the database with conditional statements before the data is pulled down
 - Great for simple conditionals and also allows subqueries
@@ -517,6 +518,10 @@
 - Finding *linear* corr: corr, p = stats.pearsonr(x, y) ----- Pearson correlation coefficient calculation
 - - Finding r using dataframe: df.corr() --- df[['col1', 'col2']].corr() ----- find r for col1 and col2
 - Finding *non-linear* corr: stats.spearmanr()
+- Chi2 Test (for Independence) ----- Compare two categorical variables, ex: gender v phone_manufacturer_choice, to see if they are independent of one another or not
+- - pd.crosstab against two *categorical* columns, then stats.chi2_contingency of that dataframe (returns chi2, pvalue, degf, expected_values_array)
+- - Degree of Freedom: (num_cols - 1) * (num_rows - 1)
+- - Check df for potential categorical columns: df.nunique() ----- returns count of unique values for each column, if column has low count then good chance it's categorical
 ### Comparing Means
 - "(x)-tail, (x)-sample t-test"
 - mu is population mean, subscript is the population
