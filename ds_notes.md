@@ -556,3 +556,57 @@
 - df.head() and df.tail() to return the data first 5 rows and last 5 rows
 - - series attributes to check for more information
 - series methods to perform necessary calculations
+
+
+## Methodologies
+- Classification: Is this new observation A or B (or C, D....)
+- Regression: How many of something
+- Clustering: What groupings already exist in the data?
+- Time Series Analysis: What happens next????
+- Anomaly Detection: Is this weird??
+
+## Classification
+- Assigning observations to existing classifications
+- Supervised learning... training on data with answers/labels
+- Produces: Rules
+- - Data + Answers, with ML, creates rules
+- - Traditional programming doesn't seek to create rules, it creates answers
+### Vocab
+- Classifier: Algorithm that maps input data to specific category
+- Classification Model: A series of steps that takes the patterns of input variables, generalizes, then applies generalizations to new data
+- Feature: An input/independent variable
+- Binary Classification: Two possible outcomes
+- Multiclass Classification: More than two, where samples are assigned to exactly one target label (ex: students in grades 1-12)
+### Algorithms
+- Data Science is heavily based on decision trees
+- These are designed to create rules from data/labels:
+- **Logistic Regression** - Predict binary outcomes for inputs
+- - Interpretable, Flexible, Easily-Implemented, Efficient
+- - Need to remove unrelated attributes, not a top-performing algorithm
+- **Decision Tree** - Sequence of rules to classify two or more classes via one-input-binary-output nodes
+- - Simple to Understand/Visualize/Explain, Low-Prep, Handle numerical and categorical data, performs well
+- - Overfitting risk, unstable
+- Naive Bayes - contingent probabilities - low # of observations (in the hundreds)
+- **K-Nearest Neighbors (KNN)** - Predictions based on how close new data is to known data (top-5 closest known datapoints are 'votes')
+- - Simple, Robust to noise, just-in-time calculation, can be updated over time
+- - Need to determine K, high computational cost, curse of dimensionality (distances can break down in high-dimensional space)
+- **Random Forest** - Lots of decision trees
+- - Less risk of overfitting than one decision tree, more accurate than decision tree (due to moar trees)
+- - High computational demand, difficult to implement, hard to explain (black-box factor)
+- Many more
+### Data Acquisition
+- pd.read_clipboard ----- VERY COOL store data from your clipboard
+- pd.read_excel, pd.read_csv, pd.read_sql
+- can pull from Google Sheets from within Python using following sample code:
+- - sheet_url = 'https://docs.google.com/spreadsheets/d/1Uhtml8KY19LILuZsrDtlsHHDC9wuDGUSe8LTEwvdI5g/edit#gid=341089357'    
+- - csv_export_url = sheet_url.replace('/edit#gid=', '/export?format=csv&gid=')
+- can pull from ANY online document using following sample code (only public-facing documents work):
+- - df_s3 = pd.read_csv('https://s3.amazonaws.com/irs-form-990/index_2011.csv')
+### Data Caching
+- Can save money and time (doesn't use Cloud services)
+- df.to_csv("file.csv") ----- writes dataframe to a cached file.csv (not saved to disk)
+- df.to_file(filename) ----- writes dataframe to disk
+### Data Preparation
+- Categorical/Discrete features need to become numbers
+- If algorithm relies on *distance*, Continuous features may need to be scaled
+- - Just look it up if you don't remember
