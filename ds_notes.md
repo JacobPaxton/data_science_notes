@@ -594,7 +594,8 @@
 - - Less risk of overfitting than one decision tree, more accurate than decision tree (due to moar trees)
 - - High computational demand, difficult to implement, hard to explain (black-box factor)
 - Many more
-### Data Acquisition
+
+## Data Acquisition
 - pd.read_clipboard ----- VERY COOL store data from your clipboard
 - pd.read_excel, pd.read_csv, pd.read_sql
 - can pull from Google Sheets from within Python using following sample code:
@@ -606,7 +607,70 @@
 - Can save money and time (doesn't use Cloud services)
 - df.to_csv("file.csv") ----- writes dataframe to a cached file.csv (not saved to disk)
 - df.to_file(filename) ----- writes dataframe to disk
-### Data Preparation
+
+## Data Preparation
+- **DOCUMENT YOUR DATA PREP**
 - Categorical/Discrete features need to become numbers
+- - Pclass 1,2,3 are ordinal/discrete, but can be treated as categorical if converted
+- - Pname is categorical even though each value is unique
 - If algorithm relies on *distance*, Continuous features may need to be scaled
 - - Just look it up if you don't remember
+- df.colname.map(dict_with_map_logic) ----- replace colname values identified in dict_with_map_logic keys with the associated value of the key:value pair
+- pointers v assignments... careful when assigning dataframes to dataframes!!!!!
+- - df2 = df1.copy() ----- disconnects df1 from df2, where without .copy(), changes in df2 would reflect in df2
+- df = df.drop_duplicates() ----- drop duplicate rows in df
+- df = df.drop(columns=['colname', 'colname2', ...]) ----- drop columns
+- df = df.colname.fillna(value='value_want_to_fill_nulls_with') ----- fill nulls
+### Encoding
+- Associate each unique value with a number (label encoding)
+- - Use label encoding when categories have an inherit order
+- One-hot encoding: 1 or 0 in new column if row is or isn't that value
+- - Use one-hot when there's no order
+- pd.get_dummies(df['col1', 'col2'], drop_first=[True, True]) ----- automagically does one-hot encoding for unique values in col1 and col2
+- - creates a new column for each unique value in col1 and col2 with 0 or 1 representing False and True respectively, drops first new column for col1 and col2 (less dimensionality)
+### Train-Test Split
+- Randomize entire dataset *before* splitting to remove potential bias (dataset potentially sorted)
+- Make sure all splits include all options (stratify target)
+- sklearn does randomization/stratification for you!
+### Data Prep Tips
+- Use for loop to iterate through columns in dataframe and nest plt methods to push out different graphs for each column
+- - numeric: 
+- - object columns: df['colname'].value_counts(), df['colname'].value_counts(normalize=True, dropna=False)
+- - df.isnull().sum() ----- prints all columns of df with number of null values in each column
+- Curse of dimensionality: try to limit columns
+- - df_dummy ----- new dimension-limited dataframe of "dummy data" from full dataframe
+#### Example takeaways for titanic data (classification exercises)
+- embarked == embark_town, so remove embarked & keep embark_town
+- class == pclass, so remove class & keep pclass (already numeric)
+- drop deck...way too many missing values
+- fill embark_town with most common value ('Southampton')
+- drop age column
+- encode or create dummy vars for sex & embark_town.
+
+## sklearn
+- Python library for machine learning applications
+- sklearn objects share methods like fit_transform and transform, can be called against variables like imputer (which stores SimpleImputer(strategy='most_frequent'))
+### Modules
+- from sklearn.model_selection import train_test_split ----- splits data in two sets
+- - train, test = train_test_split(df, test_size=0.2, random_state=123, stratify=df.colname) ----- create train and test dataframes, test dataframe is 20% of rows, randomization seed is 123, stratifies df.colname
+- - train, validate = train_test_split(train, test_size=.25, random_state=123, stratify=train.survived) ----- modifies train, sets validate dataframe using new parameters
+- from sklearn.impute import SimpleImputer ----- fills values by inference
+- - fill with: 0, average, median, subgroup mean, most frequent value, build model to predict missing values, etc
+- - strategy='average' ----- fills with average
+- - will need to modify dataframes with impute results
+### Syntax
+- imputer = SimpleImputer(strategy='most_frequent')
+- imputer = imputer.fit(train[['embark_town']])
+- train[['embark_town']] = imputer.transform(train[['embark_town']])
+- do same for validate and test datasets
+- - imputer = SimpleImputer(strategy='most_frequent')
+- - train[['embark_town']] = imputer.fit_transform(train[['embark_town']])
+- - validate[['embark_town']] = imputer.transform(validate[['embark_town']])
+- - test[['embark_town']] = imputer.transform(test[['embark_town']])
+- - return train, validate, test
+
+## Stakeholders
+- Move functions and analysis to separate .ipynb as required for stakeholders
+- - Stakeholders want just the end product: give them it
+- - Stakeholders want the models and end product: give them it
+- - Stakeholders want everything: give them everything
