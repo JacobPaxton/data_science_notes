@@ -248,7 +248,7 @@
 - - can rename aggregate function columns: df.columns = ['name1', 'name2']
 - Programatically insert values in new column: df['new_col'] = np.where(df.col > 100, 'me_true', 'me_false')
 - Create new column on dataframe using agg functions: df.assign(new_col=df.groupby('show_me_col').calc_me_col.transform('mean')) ----- transform keeps index intact
-- Join dataframes together: pd.concat([df1, df2], axis=0, ignore_index=True)
+- Join dataframes together: pd.concat([df1, df2], axis=0, ignore_index=True) ----- adds rows, use axis=1 to add columns
 - - .concat here is very raw, may create nulls and not line up exactly
 - SQL join in python: df1.merge(df2, left_on='df1_col', right_on='df2_col', how='outer', indicator=True) 
 - - _x, _y, _merge in colnames help out, so does .drop and .rename
@@ -602,7 +602,7 @@
 - - sheet_url = 'https://docs.google.com/spreadsheets/d/1Uhtml8KY19LILuZsrDtlsHHDC9wuDGUSe8LTEwvdI5g/edit#gid=341089357'    
 - - csv_export_url = sheet_url.replace('/edit#gid=', '/export?format=csv&gid=')
 - can pull from ANY online document using following sample code (only public-facing documents work):
-- - df_s3 = pd.read_csv('https://s3.amazonaws.com/irs-form-990/index_2011.csv')
+- - df_s3 = pd.read_csv('https://s3.amazonaws.com/irs-form-990/index_2011.csv', encoding='unicode_escape')
 ### Data Caching
 - Can save money and time (doesn't use Cloud services)
 - df.to_csv("file.csv") ----- writes dataframe to a cached file.csv (not saved to disk)
@@ -628,11 +628,18 @@
 - - Use one-hot when there's no order
 - pd.get_dummies(df['col1', 'col2'], drop_first=[True, True]) ----- automagically does one-hot encoding for unique values in col1 and col2
 - - creates a new column for each unique value in col1 and col2 with 0 or 1 representing False and True respectively, drops first new column for col1 and col2 (less dimensionality)
+### Tidying Data
+- Great link: https://vita.had.co.nz/papers/tidy-data.pdf
+- One cell for one value, no repeat cells or multi-value cells
+- df[['newcol1', 'newcol2']] = df.col.str.split(':', expand = True) ----- creates new dataframe with columns for the split items, columns are newcol1 and newcol2
+- df.pivot_table(index = ['col1', 'col2', ...], columns = 'colx', values = 'coly', aggfunc='mean').reset_index() ----- creates pivot table, aggregates duplicate rows, resets it from sub-dataframe format
 ### Train-Test Split
 - Randomize entire dataset *before* splitting to remove potential bias (dataset potentially sorted)
 - Make sure all splits include all options (stratify target)
 - sklearn does randomization/stratification for you!
 ### Data Prep Tips
+- pd.melt(df, id_vars='colname') ----- creates 'variable' and 'value' columns from columns not specified and their values
+- - melt has multiple useful arguments to help make this better
 - Use for loop to iterate through columns in dataframe and nest plt methods to push out different graphs for each column
 - - numeric: 
 - - object columns: df['colname'].value_counts(), df['colname'].value_counts(normalize=True, dropna=False)
