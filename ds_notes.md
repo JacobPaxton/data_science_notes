@@ -654,6 +654,32 @@
 - drop age column
 - encode or create dummy vars for sex & embark_town.
 
+## Data Exploration
+- Finding relationships and stories in data, documenting is and isn'ts
+- Goal is to remove redundant/unimportant variables for the story
+- Hypothesize and visualize loop, and if that isn't enough, run statistical tests
+- "What data sources do we have, what are customers doing, how are we reaching people..."
+- "What is our observation???"
+- - titanic_db observations are... people on the titanic.
+- Univariate stats (target), Bivariate stats (target and variable), multivariate stats (subgroups compare to each other)
+- - **explore.py** - contains prebuilt functions for uni/bi/multivariate stats
+- - pandas profiler does similar things to the explore.py but not as great
+- Adding features... train['newcol'] = pd.cut(train.colname, bins=[0,15,100], right=False, labels=[0,1])
+- - will need to amend train/validate/test datasets with 'newcol' and also cat_vars or quant_vars
+### Documenting...
+- Document the questions, the takeaways from visualization, the answer to questions, the null/alt hypotheses, etc
+### Univariate Stats
+- Split data into categorical vars and quantitative vars
+- - cat_vars = ['var1', 'var2', 'var3', ...]
+- - quant_vars = ['var42', 'var67', ...]
+- - explore.explore_univariate(train_df, cat_vars, quant_vars) ----- builds visualization and statistics with columns var1, var2, var3, var42, var67, etc
+### Bivariate Stats
+- Same setup as univariate but with target variable (column) specified
+- - explore.explore_bivariate(train, target, cat_vars, quant_vars)
+### Multivariate Stats
+- Adding the target as color in Seaborn
+- - explore.explore_multivariate(train, target, cat_vars, quant_vars)
+
 ## sklearn
 - Python library for machine learning applications
 - sklearn objects share methods like fit_transform and transform, can be called against variables like imputer (which stores SimpleImputer(strategy='most_frequent'))
