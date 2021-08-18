@@ -654,6 +654,29 @@
 - drop age column
 - encode or create dummy vars for sex & embark_town.
 
+## sklearn
+- Python library for machine learning applications
+- sklearn objects share methods like fit_transform and transform, can be called against variables like imputer (which stores SimpleImputer(strategy='most_frequent'))
+### Modules
+- from sklearn.model_selection import train_test_split ----- splits data in two sets
+- - train, test = train_test_split(df, test_size=0.2, random_state=123, stratify=df.colname) ----- create train and test dataframes, test dataframe is 20% of rows, randomization seed is 123, stratifies df.colname
+- - train, validate = train_test_split(train, test_size=.25, random_state=123, stratify=train.survived) ----- modifies train, sets validate dataframe using new parameters
+- from sklearn.impute import SimpleImputer ----- fills values by inference
+- - fill with: 0, average, median, subgroup mean, most frequent value, build model to predict missing values, etc
+- - strategy='average' ----- fills with average
+- - will need to modify dataframes with impute results
+- from sklearn.metrics import precision_score, accuracy_score, recall_score, classification_report ----- confusion matrix calc functions
+### Syntax
+- imputer = SimpleImputer(strategy='most_frequent')
+- imputer = imputer.fit(train[['embark_town']])
+- train[['embark_town']] = imputer.transform(train[['embark_town']])
+- do same for validate and test datasets
+- - imputer = SimpleImputer(strategy='most_frequent')
+- - train[['embark_town']] = imputer.fit_transform(train[['embark_town']])
+- - validate[['embark_town']] = imputer.transform(validate[['embark_town']])
+- - test[['embark_town']] = imputer.transform(test[['embark_town']])
+- - return train, validate, test
+
 ## Data Exploration
 - Finding relationships and stories in data, documenting is and isn'ts
 - Goal is to remove redundant/unimportant variables for the story
@@ -680,27 +703,42 @@
 - Adding the target as color in Seaborn
 - - explore.explore_multivariate(train, target, cat_vars, quant_vars)
 
-## sklearn
-- Python library for machine learning applications
-- sklearn objects share methods like fit_transform and transform, can be called against variables like imputer (which stores SimpleImputer(strategy='most_frequent'))
-### Modules
-- from sklearn.model_selection import train_test_split ----- splits data in two sets
-- - train, test = train_test_split(df, test_size=0.2, random_state=123, stratify=df.colname) ----- create train and test dataframes, test dataframe is 20% of rows, randomization seed is 123, stratifies df.colname
-- - train, validate = train_test_split(train, test_size=.25, random_state=123, stratify=train.survived) ----- modifies train, sets validate dataframe using new parameters
-- from sklearn.impute import SimpleImputer ----- fills values by inference
-- - fill with: 0, average, median, subgroup mean, most frequent value, build model to predict missing values, etc
-- - strategy='average' ----- fills with average
-- - will need to modify dataframes with impute results
-### Syntax
-- imputer = SimpleImputer(strategy='most_frequent')
-- imputer = imputer.fit(train[['embark_town']])
-- train[['embark_town']] = imputer.transform(train[['embark_town']])
-- do same for validate and test datasets
-- - imputer = SimpleImputer(strategy='most_frequent')
-- - train[['embark_town']] = imputer.fit_transform(train[['embark_town']])
-- - validate[['embark_town']] = imputer.transform(validate[['embark_town']])
-- - test[['embark_town']] = imputer.transform(test[['embark_town']])
-- - return train, validate, test
+## Evaluation
+- Reviewing our model to see if our predictions matched actuals for a given number of observations
+- - True Positive, FP, TN, FN
+- - Baseline Prediction is predicting all outcomes as True
+- Focus on cost: Accuracy, Recall, Precision, Specificity, F1 Score, ROC/AUC
+- Confusion Matrix --- focus on Recall and Precision
+- - df = pd.DataFrame({'prediction':[], 'actual':[]})
+- - pd.crosstab(df.prediction, df.actual)
+### Accuracy 
+- Overall performance of model
+- Easy to understand and doesn't matter what the 'positive' is
+- Might be misleading when working with imbalanced class problems
+- (TP + TN) / (TP + TN + FP + FN)
+### Recall
+- Positive actual against our predictions 
+- Minimizing false negatives
+- Use when FN is more costly than FP [credit card fraud detection]
+- TP / (TP + FN)
+### Precision 
+- Our prediction against all possible actuals 
+- Minimizing false positives
+- Use when FP is more costly than FN [spam filter])
+- TP / (TP + FP)
+### More terms
+- Sensitivity (Recall)
+- Specificity (Recall for negative) 
+- F1 Score (harmonic mean of Precision and Recall)
+- ROC/AUC (how well your model discriminates between positive and negative)
+### Usage
+- Model Accuracy: (df.actual == df.prediction).mean()
+- Baseline Accuracy: (df.actual == df.baseline_prediction).mean()
+- Recall: subset = df[df.actual == 'coffee'] ----- look at actual Yes observations
+- - use Model and Baseline Accuracy against this subset
+- Precision: subset = [df.prediction == 'coffee'] ----- look at predicted Yes rows
+- - use Model and Baseline Accuracy against this subset
+
 
 ## Stakeholders
 - Move functions and analysis to separate .ipynb as required for stakeholders
