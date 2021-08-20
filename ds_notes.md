@@ -666,6 +666,7 @@
 - - strategy='average' ----- fills with average
 - - will need to modify dataframes with impute results
 - from sklearn.metrics import precision_score, accuracy_score, recall_score, classification_report ----- confusion matrix calc functions
+- - df_report = pd.DataFrame(classification_report(df.actual_observed, df.model_guesses, labels=['colname', 'colname'], output_dict=True)).T ----- outputs nice df of metrics
 ### Syntax
 - imputer = SimpleImputer(strategy='most_frequent')
 - imputer = imputer.fit(train[['embark_town']])
@@ -738,6 +739,47 @@
 - - use Model and Baseline Accuracy against this subset
 - Precision: subset = [df.prediction == 'coffee'] ----- look at predicted Yes rows
 - - use Model and Baseline Accuracy against this subset
+
+## Modeling
+- Create model using algorithm+hyperparameters and training data
+- Evaluate the model
+- Repeat
+- After time/repetitions, compare models
+- After comparing models, use best against test split
+### Dummy Steps
+- from sklearn.dummy import DummyClassifier
+- from sklearn.metrics import classification_report
+- X_train, y_train = train.drop(columns='target_col'), train.target_col
+- - do same for validate and test subsets
+- model = DummyClassifier(strategy='constant', constant=1) ----- we predict the target to be always 1 (not a great model, of course), these are hyperparameters
+- - strategy='uniform' or 'most_frequent' or...
+- model.fit(X_train, y_train)
+- accuracy = model.score(X_train, y_train)
+- - sklearn objects can use .score() .predict() .predict_proba() and more
+- - .score is accuracy
+- - .predict generates array of predictions
+- - .predict_proba generates array or arrays for % sure-ness of guesses
+### Decision Tree example
+- from sklearn.tree import DecisionTreeClassifier
+- from sklearn.tree import export_graphviz
+- from sklearn.metrics import classification_report
+- from sklearn.model_selection import train_test_split
+- train, validate, test split
+- Prepare data
+- Explore data
+- clf = DecisionTreeClassifier(max_depth=3, random_state=123) ----- clf is classifier, decision tree is limited to depth of 3 (more hyperparameters available)
+- - Set depth to the number of features (Ryan does this, so...)
+- clf = clf.fit(X_train, y_train)
+- y_pred = clf.predict(X_train) ----- generate model prediction array against train dataset
+- import graphviz
+- from graphviz import Graph
+- dot_data = export_graphviz(clf, feature_names= X_train.columns, class_names=clf.classes_, rounded=True, filled=True, out_file=None)
+- graph = graphviz.Source(dot_data) 
+- graph.render('iris_decision_tree', view=True) ----- display decision tree in PDF format (a picture)
+- classification_report(y_train, y_pred) ----- get metrics of train dataset
+- clf.score(X_validate, y_validate) ----- accuracy of model against validate dataset
+- y_pred = clf.predict(X_validate) ----- prediction array of model for validate dataset
+- classification_report(y_validate, y_pred) ----- metrics of model against validate
 
 
 ## Stakeholders
