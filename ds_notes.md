@@ -748,13 +748,20 @@
 - After time/repetitions, compare models
 - After comparing models, use best against test split
 - Decision Tree: DecisionTreeClassifier (covered extensively below), clf
-- Random Forest: RandomForestClassifier
+- Random Forest: RandomForestClassifier, rf
     * rf, Lots of decision trees, averaging them all (coming to a consensus)
     * An "Ensemble ML algorithm" called Bootstrap Aggregation or bagging
     * Bootstrapping: take lots of samples, average each sample alone, then average all averages
     * Random Forest does bootstrapping for lots of decision tree predictions
     * After fitting, print(rf.feature_importances_) to see how important each feature is to predicting the classification (array of percentages)
         * The _ character at end indicates it's a parameter of a trained model
+- K-Nearest Neighbors, KNeighborsClassifier, knn
+        * n_neighbors=, weights='uniform' or weights='distance'
+    * Supervised, makes predictions based on how close a new data point is to known data points (effective when there's more known data)
+    * Just-in-time algorithm (makes prediction when receive data)
+    * "Lazy" because it doesn't make an internal model, just stores data and uses stats to make predictions
+    * K-value serves as "votes", top-(K-value)-closest known datapoints to new datapoint for KNN calculation
+        * Most common is to try different K-values, some industries have a standard
 ### Dummy Steps
 - from sklearn.dummy import DummyClassifier
 - from sklearn.metrics import classification_report
