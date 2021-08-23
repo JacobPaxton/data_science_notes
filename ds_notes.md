@@ -800,6 +800,9 @@
     * Check col1's null values against col2: df[df.col1.isna()].col2.value_counts()
         * Gives count of each unique value in col for rows
 - Make some decisions on what to do for model (thoughtful)
+    * Run bivariate analysis
+    * Check for feature overlap on target value (redundant population slows the model down)
+    * Determine which features to keep
 - Build appropriate clean-up code in a prepare.py file (complicated)
     * Reduce noise (set id col to index or drop it, drop duplicates)
     * Handle nulls
