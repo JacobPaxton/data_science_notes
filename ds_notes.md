@@ -755,13 +755,16 @@
     * Random Forest does bootstrapping for lots of decision tree predictions
     * After fitting, print(rf.feature_importances_) to see how important each feature is to predicting the classification (array of percentages)
         * The _ character at end indicates it's a parameter of a trained model
-- K-Nearest Neighbors, KNeighborsClassifier, knn
+- K-Nearest Neighbors: KNeighborsClassifier, knn
         * n_neighbors=, weights='uniform' or weights='distance'
     * Supervised, makes predictions based on how close a new data point is to known data points (effective when there's more known data)
     * Just-in-time algorithm (makes prediction when receive data)
     * "Lazy" because it doesn't make an internal model, just stores data and uses stats to make predictions
     * K-value serves as "votes", top-(K-value)-closest known datapoints to new datapoint for KNN calculation
         * Most common is to try different K-values, some industries have a standard
+- Logistic Regression: LogisticRegression, logit
+    * Instead of fitting a linear regression, you fit a curved regression
+    * Used for binomial/multinomial regression (one plot axis is not continuous/discrete values)
 ### Dummy Steps
 - from sklearn.dummy import DummyClassifier
 - from sklearn.metrics import classification_report
@@ -800,6 +803,7 @@
 - y_pred = clf.predict(X_validate) ----- prediction array of model for validate dataset
 - classification_report(y_validate, y_pred) ----- metrics of model against validate
 
+
 ## Combining Everything We've Learned
 - Pull in data (easy)
 - Assess what you've got (easy)
@@ -807,9 +811,15 @@
     * Check col1's null values against col2: df[df.col1.isna()].col2.value_counts()
         * Gives count of each unique value in col for rows
 - Make some decisions on what to do for model (thoughtful)
+    * Determine which features to keep
+        * Drop features based on domain knowledge
+        * Drop features that raise ethical issues
+        * Drop features that are too 'loud'
+        * Clean up remaining features
+        * Do analysis on features
+    * Create features!!
     * Run bivariate analysis
     * Check for feature overlap on target value (redundant population slows the model down)
-    * Determine which features to keep
 - Build appropriate clean-up code in a prepare.py file (complicated)
     * Reduce noise (set id col to index or drop it, drop duplicates)
     * Handle nulls
