@@ -807,6 +807,7 @@
 ## Combining Everything We've Learned
 - Pull in data (easy)
 - Assess what you've got (easy)
+    * Baseline (most frequent value in target)
     * Figure out cols with nulls: df.isna().sum()
     * Check col1's null values against col2: df[df.col1.isna()].col2.value_counts()
         * Gives count of each unique value in col for rows
@@ -845,7 +846,7 @@
     * Re-run model with different hyperparameters to optimize it (tree max_depth)
         * Consider running a loop for hyperparameters and output to nice table
         * With loop can save each model to list for later access: models_list[-1]
-
+        * y_pred_proba > threshold ----- telling model to adjust its threshold for predictions, for example threshold=0.3 would mean True predictions with > 30% certainty would ultimately be called True instead of False (default is 50% split)
 
 
 
