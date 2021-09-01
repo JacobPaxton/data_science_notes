@@ -848,7 +848,9 @@
         * With loop can save each model to list for later access: models_list[-1]
         * y_pred_proba > threshold ----- telling model to adjust its threshold for predictions, for example threshold=0.3 would mean True predictions with > 30% certainty would ultimately be called True instead of False (default is 50% split)
 
-
+## Hot notes with Sam
+- pd.read_csv(filename, index_col=0) ----- fixed Unnamed: 0
+- Separate functions out in scripts and refer functions to functions (easier to understand)
 
 ## Stakeholders
 - Move functions and analysis to separate .ipynb as required for stakeholders
