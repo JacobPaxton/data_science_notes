@@ -78,6 +78,7 @@
 - list[0][0] returns first char of first string in list
 - string[0] returns first char of string
 - the char _ is a trash variable, [num for _ in range(1, 5)]
+- for col in enumerate(cols): ----- i, col gen'd for you, no need to initialize i before the loop (cleaner code)
 ### String methods
 - JupyterNB: can use TAB to check available methods
     * Example: string.lower() can be found with string. + TAB
@@ -602,6 +603,8 @@
 - Instead of binary/multi target, **it's a continuous target**
 - Involves scaling as part of preparation
     * A number like cost ($100k - $1,000k) compared to square footage (700-2500) would need to be scaled for the model (even rates of change)
+    * Outliers affect regression greatly, discover and eliminate them
+        * sns.boxplot(data=df) ----- box/whisker marks outliers
 - Regression baseline generally involves mean or median (not mode)
     * Mode of continuous values doens't make sense... may only have one or two in common for thousands of observations
     * Plotted baseline is a horizontal line at the median/mean
@@ -610,6 +613,7 @@
     * Looking at vertical distance of data and prediction from the trend line
         * Trying to minimize the **difference** in distance
     * May need polynomial trend line rather than linear... exploration decides it
+- Regression tends to work better on normal distributions
 
 ## Data Acquisition
 - pd.read_clipboard ----- VERY COOL store data from your clipboard
@@ -636,7 +640,13 @@
     * df2 = df1.copy() ----- disconnects df1 from df2, where without .copy(), changes in df2 would reflect in df2
 - df = df.drop_duplicates() ----- drop duplicate rows in df
 - df = df.drop(columns=['colname', 'colname2', ...]) ----- drop columns
+### Nulls
+- df.isna().sum() ----- give count of each feature's nulls
+    * Same as df.isnull().sum()
+    * Similar thing is df.isna().any()
 - df = df.colname.fillna(value='value_want_to_fill_nulls_with') ----- fill nulls
+- df = df.dropna() ----- drop all observations having a null value in any column
+- df = df.astype('int') ----- convert all columns to int --- some issues from having null value in int column from SQL query converts the column to float, this is a way to undo it
 ### Encoding
 - Associate each unique value with a number (label encoding)
     * Use label encoding when categories have an inherit order
@@ -649,6 +659,8 @@
 - One cell for one value, no repeat cells or multi-value cells
 - df[['newcol1', 'newcol2']] = df.col.str.split(':', expand = True) ----- creates new dataframe with columns for the split items, columns are newcol1 and newcol2
 - df.pivot_table(index = ['col1', 'col2', ...], columns = 'colx', values = 'coly', aggfunc='mean').reset_index() ----- creates pivot table, aggregates duplicate rows, resets it from sub-dataframe format
+### Univariate Exploration (distribution visualizations)
+- sns.displot(x='colname', data=df) ----- quick distribution plot
 ### Train-Test Split
 - Randomize entire dataset *before* splitting to remove potential bias (dataset potentially sorted)
 - Make sure all splits include all options (stratify target)
