@@ -596,6 +596,21 @@
     * High computational demand, difficult to implement, hard to explain (black-box factor)
 - Many more
 
+## Regression
+- Resources: "String and straw" animation, https://setosa.io/ev/ordinary-least-squares-regression/
+- Supervised algorithm prosecuting a labeled target
+- Instead of binary/multi target, **it's a continuous target**
+- Involves scaling as part of preparation
+    * A number like cost ($100k - $1,000k) compared to square footage (700-2500) would need to be scaled for the model (even rates of change)
+- Regression baseline generally involves mean or median (not mode)
+    * Mode of continuous values doens't make sense... may only have one or two in common for thousands of observations
+    * Plotted baseline is a horizontal line at the median/mean
+- Evaluation is different
+    * No true/false positives because no binary check
+    * Looking at vertical distance of data and prediction from the trend line
+        * Trying to minimize the **difference** in distance
+    * May need polynomial trend line rather than linear... exploration decides it
+
 ## Data Acquisition
 - pd.read_clipboard ----- VERY COOL store data from your clipboard
 - pd.read_excel, pd.read_csv, pd.read_sql
