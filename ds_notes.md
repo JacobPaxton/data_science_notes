@@ -268,6 +268,7 @@
 - can use tuple as first argument in ex: hist() to do side-by-side
     * plt.hist((series1, series2), ...)
 ### Matplotlib Syntax
+- Array x and array y passed as arguments for x columns (plt.bar(x,y))
 - df.plot() ----- put dataframe to a plot
 - df.plot.barh() ----- put dataframe to a bar plot
 - x = list(range(150)) -- plt.plot(x) -- plt.show()
@@ -614,6 +615,37 @@
         * Trying to minimize the **difference** in distance
     * May need polynomial trend line rather than linear... exploration decides it
 - Regression tends to work better on normal distributions
+### Scaling
+- Used to fix distance-based calculations (DO IT EVERY TIME)
+    * Definitely use on KNN, K-Means, etc
+    * Might be required on linear/logistic regression
+    * No need for decision tree and random forest
+- Split data before scaling, and only scale on train
+- Scale often... and when you scale, scale *everything* going into the model.
+- **Scaling fixes the weight of one feature compared to another**
+    * Prevents one feature from being drowned by another
+        * Mathematically, you're equalizing density of features
+    * Specifically fixes the euclidian distance calculation
+        * d = sqrt((x1 - x2)^2 + (y1 - y2)^2)
+    * In layman's terms, raw comparison of a number between 1-10 and a number between 1-1000 will give obvious preference to the 1-1000 number (the 1-1000 number moves more greatly than the 1-10 number), so scaling is needed
+- Scaling is easily done using sklearn.preprocessing functions
+#### Scaling Methods
+- "Normalization" (MinMaxScaler) is scaling into range 0 to 1
+- StandardScaler centers the distribution's density on 0 and limits range
+    * Use this guy for normal-ish distributions!
+- RobustScaler also centers the distribution's density on 0 and limits range, but it de-weighs outliers as well
+- QuantileTransformer attempts to normalize a distribution and center it on 0... be careful, make sure to check the visualization
+    * If you really want your data to be normal then use this... it's fairly complex
+#### Scaling Syntax
+- **MinMaxScaler**, **StandardScaler**, **RobustScaler**
+    * scaler = sklearn.preprocessing.MinMaxScaler() --- or the other two
+    * scaler.fit(train[['col1','col2','col3']])
+        * Make sure to pass with [['colname']], it keeps the dataframe format (where ['colname'] passes a series)
+    * scaled = scaler.transform(train[['col1','col2','col3']]) ----- creates 3-column NumPy array
+    * train[['newcol1','newcol2','newcol3']] = scaled ----- assigns array to new columns in dataframe (preserves original columns)
+- **QuantileTransformer**
+    * scaler = QuantileTransformer(output_distribution='normal')
+    * Follow above steps for rest
 
 ## Data Acquisition
 - pd.read_clipboard ----- VERY COOL store data from your clipboard
@@ -878,6 +910,9 @@
 ## Hot notes with Sam
 - pd.read_csv(filename, index_col=0) ----- fixed Unnamed: 0
 - Separate functions out in scripts and refer functions to functions (easier to understand)
+
+## Other hot notes
+- Plot distribution for data wrangling to check for outliers (histogram, box-whisker), then remove outliers if necessary, then plot new distributions
 
 ## Stakeholders
 - Move functions and analysis to separate .ipynb as required for stakeholders
