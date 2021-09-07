@@ -637,6 +637,7 @@
 - QuantileTransformer attempts to normalize a distribution and center it on 0... be careful, make sure to check the visualization
     * If you really want your data to be normal then use this... it's fairly complex
 #### Scaling Syntax
+- Note: Generally you want to return the scaler in addition to the scaled data from helper functions
 - **MinMaxScaler**, **StandardScaler**, **RobustScaler**
     * scaler = sklearn.preprocessing.MinMaxScaler() --- or the other two
     * scaler.fit(train[['col1','col2','col3']])
@@ -693,6 +694,9 @@
 - df.pivot_table(index = ['col1', 'col2', ...], columns = 'colx', values = 'coly', aggfunc='mean').reset_index() ----- creates pivot table, aggregates duplicate rows, resets it from sub-dataframe format
 ### Univariate Exploration (distribution visualizations)
 - sns.displot(x='colname', data=df) ----- quick distribution plot
+### Bivariate Exploration
+- sns.heatmap(df.corr(), cmap='Greens', annot=True, vmin=0, vmax=1) ----- quick correlation chart
+    * If everything correlates mostly, then it's called "Multicolinearity"
 ### Train-Test Split
 - Randomize entire dataset *before* splitting to remove potential bias (dataset potentially sorted)
 - Make sure all splits include all options (stratify target)
