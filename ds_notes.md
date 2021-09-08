@@ -307,6 +307,8 @@
 ## Seaborn
 - Library that builds on matplotlib and integrates well with pandas
 - Powerful in its defaults!
+- relplot, displot, catplot return figure-level objects using kind= , but of course you can declare the specific plot itself and return an axes-level object instead
+    * No advantage either way, just uses different syntax
 ### Seaborn Syntax, Methods
 - import seaborn as sns
 - df = sns.load_dataset('dataset') ----- does same as pydataset
@@ -325,6 +327,12 @@
 - hue='col1' ----- separate color for each unique value in col1
 - style='col1' ----- changes style of plot point for each unique value in col1
 - kind='line' ----- draws a line to each plot point
+### Seaborn Accessors
+- You can use .axes or .fig to access, for example, sns.pairplot()
+    - sns.pairplot(arguments).axes ----- each graph in figure
+    - sns.pairplot(arguments).fig ----- figure as a whole (include all graphs)
+    - sns.pairplot(arguments).axes.flat ----- list of pointers for each graph
+    - for i in pairplot.axes.flat ----- access each pointer
 
 ## JupyterNB
 ### Basic usage
@@ -615,7 +623,9 @@
         * Trying to minimize the **difference** in distance
     * May need polynomial trend line rather than linear... exploration decides it
 - Regression tends to work better on normal distributions
-### Scaling
+- Relationships between variables being >80%, you can safely drop a variable
+
+## Scaling
 - Used to fix distance-based calculations (DO IT EVERY TIME)
     * Definitely use on KNN, K-Means, etc
     * Might be required on linear/logistic regression
@@ -629,14 +639,14 @@
         * d = sqrt((x1 - x2)^2 + (y1 - y2)^2)
     * In layman's terms, raw comparison of a number between 1-10 and a number between 1-1000 will give obvious preference to the 1-1000 number (the 1-1000 number moves more greatly than the 1-10 number), so scaling is needed
 - Scaling is easily done using sklearn.preprocessing functions
-#### Scaling Methods
+### Scaling Methods
 - "Normalization" (MinMaxScaler) is scaling into range 0 to 1
 - StandardScaler centers the distribution's density on 0 and limits range
     * Use this guy for normal-ish distributions!
 - RobustScaler also centers the distribution's density on 0 and limits range, but it de-weighs outliers as well
 - QuantileTransformer attempts to normalize a distribution and center it on 0... be careful, make sure to check the visualization
     * If you really want your data to be normal then use this... it's fairly complex
-#### Scaling Syntax
+### Scaling Syntax
 - Note: Generally you want to return the scaler in addition to the scaled data from helper functions
 - **MinMaxScaler**, **StandardScaler**, **RobustScaler**
     * scaler = sklearn.preprocessing.MinMaxScaler() --- or the other two
@@ -768,7 +778,7 @@
 - Adding the target as color in Seaborn
     * explore.explore_multivariate(train, target, cat_vars, quant_vars)
 
-## Evaluation
+## Evaluation (Classification notes)
 - Reviewing our model to see if our predictions matched actuals for a given number of observations
     * True Positive, FP, TN, FN
     * Baseline Prediction is predicting all outcomes as True
@@ -803,6 +813,46 @@
     * use Model and Baseline Accuracy against this subset
 - Precision: subset = [df.prediction == 'coffee'] ----- look at predicted Yes rows
     * use Model and Baseline Accuracy against this subset
+
+## Evaluation (Regression notes)
+- Does model add any value? Which model is better? How confident am I in the model's predictions?
+- Root-Means Square (RMSE): How much error the typical prediction has, cast in same units as target; smaller is better
+- R-Squared (R2): Variance in y (target) explained by x (predictor); closer to 1 is better
+- Remember: **units are preserved**, predicting a dollar amount means unit is dollars
+### Theoretical
+- y_i = beta_0 + (beta_1 * x_i) + e_i
+    * target = intercept + linear_addition_of_ind_vars + unexplained_error
+    * unexplained_errors are independent, same variance, normally distributed
+    * "Relationship is linear and additive"
+- estimate_y_i = beta_0 + beta_1 * x_i
+    * estimated_target = estimated_intercept + estimated_value_of_coefficients
+    * residual: e = y_i - estimate_y_i
+### Baseline
+- Regression baseline is the mean of all datapoints (horizontal line)
+    * x-axis (independent variable) not affected by horizontal line
+### Errors
+- Residual: error (actual minus predicted) --- above line is positive, below line is negative
+- SSE: sum of squared error --- square all error distances, then add up
+    * If you especially care about outliers, this will weigh outliers higher
+- MSE: mean of squared error --- square all error distances, then average
+- **RMSE**: root mean squared error --- square all error distances, then average, then take the square root of the result
+    * Most common one
+- TSS (total error): distance from actual to baseline
+- ESS (explained error): distance from prediction line to baseline
+- SSE (unexplained error): distance from prediction line to actual
+### R^2 - Explained Variance
+- R^2 = ESS / TSS
+- R^2 == 1.0 --- all data points fall perfectly on regression line
+- R^2 == 0.0 --- all data points above and below the regression line have the same distance (mean baseline)
+### sklearn syntax
+- from sklearn.metrics import mean_squared_error
+    * MSE2 = mean_squared_error(df.y, df.yhat)
+    * MSE2_baseline = mean_squared_error(df.y, df.baseline)
+    * SSE2 = MSE2 * len(df)
+    * RMSE2 = mean_squared_error(df.y, df.yhat, squared=False)
+    * RMSE2_baseline = mean_squared_error(df.y, df.baseline, squared=False)
+- from sklearn.metrics import r2_score
+    * r2_score(df.y, df.yhat) --- score of explained variance
 
 ## Modeling
 - Create model using algorithm+hyperparameters and training data
