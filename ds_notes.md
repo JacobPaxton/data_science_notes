@@ -964,6 +964,13 @@
 ## Hot notes with Sam
 - pd.read_csv(filename, index_col=0) ----- fixed Unnamed: 0
 - Separate functions out in scripts and refer functions to functions (easier to understand)
+- sns.set_style('darkgrid')
+- sns.countplot() ----- categorical bins
+    * histogram is numerical bins, should only really be used on continuous data
+- https://seaborn.pydata.org/generated/seaborn.set_style.html
+- https://matplotlib.org/stable/tutorials/introductory/customizing.html
+- plt.grid(True, axis='both') ----- background grid
+
 
 ## Other hot notes
 - Plot distribution for data wrangling to check for outliers (histogram, box-whisker), then remove outliers if necessary, then plot new distributions
