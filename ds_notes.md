@@ -828,6 +828,9 @@
     * estimated_target = estimated_intercept + estimated_value_of_coefficients
     * residual: e = y_i - estimate_y_i
 ### Baseline
+- sns.lineplot(x='x', y='baseline', data=df) ----- plots line for baseline
+    - switch 'baseline' with 'predictions' for the regression line
+    - plt.axhline(0, ls=':') ----- plots dotted line at y=0 for visual aid
 - Regression baseline is the mean of all datapoints (horizontal line)
     * x-axis (independent variable) not affected by horizontal line
 ### Errors
@@ -853,6 +856,27 @@
     * RMSE2_baseline = mean_squared_error(df.y, df.baseline, squared=False)
 - from sklearn.metrics import r2_score
     * r2_score(df.y, df.yhat) --- score of explained variance
+
+## Feature Engineering (Regression notes)
+- *Making* useful features for columns based on existing data
+- Select K Best (SelectKBest, kbest) 
+    * f regression test, checks each feature in isolation, checks whether model performs better than baseline
+    * kbest = SelectKBest(f_regression, k=3) ----- returns top 3 'best' features using f regression
+    * kbest.fit(X_train_scaled, y_train)
+    * kbest.pvalues_
+    * kbest.get_support() ----- array showing which columns were chosen (True, False, True...)
+    * X_train.columns[kbest.get_support()] ----- shows column names
+    * X_kbest = kbest.transform(X_train_scaled) ----- if k=3, return top-3 columns
+- Recursive Feature Elimination (RFE, rfe) 
+    * fits model, eliminates worst performing features (more computationally expensive)
+        * Computational expense is largely driven by choice of estimator, simple estimator is recommended to quickly ascertain which features to use
+    * rfe = RFE(estimator=LinearRegression(), n_features_to_select=3) ----- top-3
+    * rfe.fit(X_train_scaled, y_train)
+    * rfe.get_support()
+    * X_train.columns[rfe.get_support()]
+    * pd.Series(rfe.ranking_, index=X_train.columns)
+    * **Great for determining features to further-investigate**
+
 
 ## Modeling
 - Create model using algorithm+hyperparameters and training data
@@ -974,6 +998,7 @@
 
 ## Other hot notes
 - Plot distribution for data wrangling to check for outliers (histogram, box-whisker), then remove outliers if necessary, then plot new distributions
+- a shotgun pattern in homoscedasticity check (pattern shows heteroscedasticity) isn't great, consider removing outliers or transforming... can take log of entire column (storing values in new column) then run log column through the model and visualization
 
 ## Stakeholders
 - Move functions and analysis to separate .ipynb as required for stakeholders
