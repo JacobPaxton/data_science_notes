@@ -624,6 +624,19 @@
     * May need polynomial trend line rather than linear... exploration decides it
 - Regression tends to work better on normal distributions
 - Relationships between variables being >80%, you can safely drop a variable
+### Strategy 
+- Model complexity choice: Reduction of error, variance, and bias^2 is the goal
+### Regression Algorithms
+- Linear Regression
+- Ordinary Least Squares (OLS)
+    * minimizes sum of squared differences in the linear model compared to the actual data points
+- LASSO+LARS - LassoLars
+    * uses regularization penalty for independent variables to minimize certain features (a form of automatic feature selection)
+    * Can change slope of the regression line to reduce variance and increase bias
+- Polynomial Regression
+    * curved lines (be wary of overfitting with 'too curvy' regression line)
+- Generalized Linear Model - TweedieRegressor
+    * reduces multiple distribution options
 
 ## Scaling
 - Used to fix distance-based calculations (DO IT EVERY TIME)
@@ -859,6 +872,7 @@
 
 ## Feature Engineering (Regression notes)
 - *Making* useful features for columns based on existing data
+    * k-best and rfe do not need to take in scaled data, just encoded data
 - Select K Best (SelectKBest, kbest) 
     * f regression test, checks each feature in isolation, checks whether model performs better than baseline
     * kbest = SelectKBest(f_regression, k=3) ----- returns top 3 'best' features using f regression
@@ -943,13 +957,26 @@
 
 ## Combining Everything We've Learned
 - Pull in data (easy)
+    * pd.read_sql(query, url), pd.read_csv('filename.csv'), etc
 - Assess what you've got (easy)
-    * Baseline (most frequent value in target)
-    * Figure out cols with nulls: df.isna().sum()
-    * Check col1's null values against col2: df[df.col1.isna()].col2.value_counts()
-        * Gives count of each unique value in col for rows
+    * Figure out cols with nulls
+        * df.isna().sum()
+        * df[df.col1.isna()].col2.value_counts()
+- Build appropriate clean-up code in a prepare.py file (complicated)
+    * Reduce noise (set id col to index or drop it, drop duplicates)
+    * Handle nulls
+        * Drop columns with lots of nulls: df.drop(columns='col')
+        * Fill null values in a kept column: df.col.fillna(value=df.col.median())
+    * Consider dropping outliers (may use Inter-Quartile Rule)
+- Encode appropriate data (easy)
+    * One-hot encode columns quickly: pd.get_dummies(df[['col1', 'col2', ...]], dummy_na=False, drop_first=[True, True]
+    * Drop original columns: df.drop
+    * Stitch dataframes back together: df = pd.concat([df, dummy_df], axis=1)
+- Split data (easy)
+    * train_test_split, train validate test, separate X and y (matrix and target)
 - Make some decisions on what to do for model (thoughtful)
     * Determine which features to keep
+        * K Best and RFE
         * Drop features based on domain knowledge
         * Drop features that raise ethical issues
         * Drop features that are too 'loud'
@@ -958,29 +985,29 @@
     * Create features!!
     * Run bivariate analysis
     * Check for feature overlap on target value (redundant population slows the model down)
-- Build appropriate clean-up code in a prepare.py file (complicated)
-    * Reduce noise (set id col to index or drop it, drop duplicates)
-    * Handle nulls
-        * Drop columns with lots of nulls: df.drop(columns='col')
-        * Fill null values in a kept column: df.col.fillna(value=df.col.median())
-- Encode appropriate data (easy)
-    * One-hot encode columns quickly: pd.get_dummies(df[['col1', 'col2', ...]], dummy_na=False, drop_first=[True, True]
-    * Drop original columns: df.drop
-    * Stitch dataframes back together: df = pd.concat([df, dummy_df], axis=1)
-- Split data (easy)
-    * Train_Validate_Test, X and y (matrix and target)
+- Scale data
+    * Regression: Make sure data is one-hot encoded before doing this
+    * Use sklearn.preprocessing MinMaxScaler, StandardScaler, RobustScaler
 - Modeling (intermediate)
+    * Create baseline
+        * Classification: most frequent value in target
+        * Regression: mean of target
     * Check baseline accuracy
-    * Build model (DecisionTreeClassifier as example)
+        * Classification: Use recall, precision, or other metric as necessary
+        * Regression: Calculate RMSE and R^2 values
+    * Build model (sklearn modules)
     * Fit model: model.fit(X_train, y_train)
     * Use model against train: y_pred = model.predict(X_train)
-    * Produce classification report for train dataset predictions: 
-        * report = classification_report(y_train, y_predictions, output_dict=True)
-        * pd.DataFrame(report)
+    * Check model accuracy
+        * Classification: Classification Report, Confusion Matrix
+            * report = pd.DataFrame(classification_report(y_train, y_predictions, output_dict=True))
+        * Regression: RMSE and R^2
     * Check model against validate dataset: model.predict(X_validate)
-    * Produce classification report for validate dataset predictions
-    * Compare accuracy of model for train and validate datasets (train > validate means model is overfit)
-    * Re-run model with different hyperparameters to optimize it (tree max_depth)
+        * Classification: Classification Report, Confusion Matrix
+        * Regression: RMSE, R^2
+    * Compare accuracy of model for train and validate datasets 
+        * Classification train_accuracy > validate_accuracy means model is overfit
+    * Re-run model with different hyperparameters to optimize it
         * Consider running a loop for hyperparameters and output to nice table
         * With loop can save each model to list for later access: models_list[-1]
         * y_pred_proba > threshold ----- telling model to adjust its threshold for predictions, for example threshold=0.3 would mean True predictions with > 30% certainty would ultimately be called True instead of False (default is 50% split)
