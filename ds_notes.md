@@ -844,7 +844,8 @@
 - sns.lineplot(x='x', y='baseline', data=df) ----- plots line for baseline
     - switch 'baseline' with 'predictions' for the regression line
     - plt.axhline(0, ls=':') ----- plots dotted line at y=0 for visual aid
-- Regression baseline is the mean of all datapoints (horizontal line)
+- Regression baseline is the mean or median of all datapoints (horizontal line)
+    * Check mean and median for better performance, select best performing
     * x-axis (independent variable) not affected by horizontal line
 ### Errors
 - Residual: error (actual minus predicted) --- above line is positive, below line is negative
