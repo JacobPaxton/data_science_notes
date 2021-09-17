@@ -638,6 +638,30 @@
 - Generalized Linear Model - TweedieRegressor
     * reduces multiple distribution options
 
+## Clustering
+- Using metric groupings to make predictions
+- Great for anomaly detection (doesn't fit in normal cluster)
+- Very important to scale data before clustering
+### Techniques
+- Heirarchical - Upwards or downwards
+- **K-Means** - 'centroids', or mean-distance of a certain cluster... choosing number of clusters as hyperparameter (most popular)
+- DBSCAN Video - density-based (different from centroids), good at finding weird shapes in data, but computationally expensive
+    * Draws a perimeter around each datapoint, chains overlapping perimeters, datapoints without overlap are considered outliers
+    * Hyperparameter is the radius size for the perimeter
+### Use Cases
+- Exploration
+    * Give names to groups/labels
+    * Spread data into subgroups
+    * Analyze relationship to target (think: Simpson's Paradox)
+- Machine Learning
+    * Use clusters as target
+    * Use clusters as features
+    * Model clusters separately (split data and run different algorithm)
+### Outliers
+- Drop based on domain knowledge (an adult can't weight 19 pounds)
+- If outlier doesn't change results, then feel free to drop
+- If outlier affects *both* results and assumptions... compare including- and excluding-outlier results
+
 ## Scaling
 - Used to fix distance-based calculations (DO IT EVERY TIME)
     * Definitely use on KNN, K-Means, etc
