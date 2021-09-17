@@ -1027,6 +1027,16 @@
 ## Other hot notes
 - Plot distribution for data wrangling to check for outliers (histogram, box-whisker), then remove outliers if necessary, then plot new distributions
 - a shotgun pattern in homoscedasticity check (pattern shows heteroscedasticity) isn't great, consider removing outliers or transforming... can take log of entire column (storing values in new column) then run log column through the model and visualization
+- SQL databases are usually hosted on beefy systems, so doing processing in SQL can be a lot faster than doing it on a local machine using Python
+- Data prep parameters are calculated from *train*, this excludes unseen data, so don't calculate on whole dataset
+- sklearn pileine function exists to do cool stuff
+- df.pipe allows you to throw a dataframe into a function and pass arguments to that function... pretty cool stuff
+- sns.heatmap(df.corr(), cmap='coolwarm_r', vmin=-1, vmax=1, annot=True) ----- draw correlation heatmap with red negs blue pos
+- ax.xaxis.set_major_formatter(lambda x, pos: '{:.1f} m'.format(x / 1_000_000)) ... ax.set(xlabel='x2 (millions)') ----- change sci notation to millions... kinda cool
+- ax.xaxis.set_major_formatter('{:,.0f}'.format) ----- make x axis 100,000 ticks
+- ax.yaxis.set_major_formatter('{:.0%}'.format) ----- make y axis percentage
+- df.corr().style.background_gradient(vmin=-1, vmax=1, cmap='coolwarm_r').format('{:.3f}'.format) ----- more cool formatting for heatmap
+- df.sample(5, random_state=123).style.highlight_max(axis=0) ----- highlight max values per column
 
 ## Stakeholders
 - Move functions and analysis to separate .ipynb as required for stakeholders
