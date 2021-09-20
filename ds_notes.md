@@ -1061,6 +1061,9 @@
 - ax.yaxis.set_major_formatter('{:.0%}'.format) ----- make y axis percentage
 - df.corr().style.background_gradient(vmin=-1, vmax=1, cmap='coolwarm_r').format('{:.3f}'.format) ----- more cool formatting for heatmap
 - df.sample(5, random_state=123).style.highlight_max(axis=0) ----- highlight max values per column
+- df.column.value_counts().plot.barh() ----- create bar plot of y labels and x values
+- Don't forget pd.cut(series_name, bins=[0,5,100,100000])
+    * Common to bin continuous values into ordinal/categorical to run boxplots per bin against another continuous value
 
 ## Stakeholders
 - Move functions and analysis to separate .ipynb as required for stakeholders
