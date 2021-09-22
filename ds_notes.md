@@ -644,10 +644,19 @@
 - Very important to scale data before clustering
 ### Techniques
 - Heirarchical - Upwards or downwards
-- **K-Means** - 'centroids', or mean-distance of a certain cluster... choosing number of clusters as hyperparameter (most popular)
+- **K-Means** - 'centroids', or mean-distance of a certain cluster (most popular) 
+    * Randomly plots the chosen number of centroids, then moves the centroids to reduce the mean distance of datapoints to the centroids
+    * Hyperparameter is the number of centroids
+        * Choose this number based on: domain knowledge (iris: 3 species, 3 clusters)
+        * Choose this number based on: alt knowledge (grouping by location)
+        * Choose this number based on: exploration (viausalization has 3 clusters)
+        * Choose this number based on: computing inertia (retroactively changing # clusters to find the 'elbow'- first few clusters drop inertia significantly, there will be a point where it drops 'less significantly' for the rest of values, choose that change)
+    * May be able to choose the centroid locations for lat/long clustering (choosing city centers)
+        * Actually, I think you'd put lat/longs to categories (within x distance of [city]), which isn't the purpose of *algorithmic* clustering
 - DBSCAN Video - density-based (different from centroids), good at finding weird shapes in data, but computationally expensive
     * Draws a perimeter around each datapoint, chains overlapping perimeters, datapoints without overlap are considered outliers
     * Hyperparameter is the radius size for the perimeter
+    * C-based (that's what the DB references)
 ### Use Cases
 - Exploration
     * Give names to groups/labels
@@ -661,6 +670,16 @@
 - Drop based on domain knowledge (an adult can't weight 19 pounds)
 - If outlier doesn't change results, then feel free to drop
 - If outlier affects *both* results and assumptions... compare including- and excluding-outlier results
+### Syntax
+- from sklearn.cluster import kmeans
+- kmeans = KMeans(n_clusters=3, random_state=123)
+- kmeans.fit(X_train_scaled) ----- notice there's no y_train, because there is no labeled target to serve as the answer for the prediction
+- df['cluster'] = kmeans.predict(X_train_scaled) ----- no y_train
+- train['cluster'] = kmeans.predict(X_train_scaled)
+- kmeans.cluster_centers_ ----- location of each centerpoint
+- kmeans.labels_ ----- labels of each observation
+- kmeans.inertia_ ----- sum of (squared) distances between samples and their closest cluster centerpoint
+- centroids = df.groupby('cluster')['col1','col2','col3',...].mean() ----- mean distance to centerpoint for each specified column of data against each cluster
 
 ## Scaling
 - Used to fix distance-based calculations (DO IT EVERY TIME)
@@ -1064,6 +1083,9 @@
 - df.column.value_counts().plot.barh() ----- create bar plot of y labels and x values
 - Don't forget pd.cut(series_name, bins=[0,5,100,100000])
     * Common to bin continuous values into ordinal/categorical to run boxplots per bin against another continuous value
+- np.set_printoptions(suppress=True) ----- suppress scientific notation
+- pd.DataFrame(np_array, columns=df.columns) ----- nice way to push array to labeled dataframe
+- centroids.plot.scatter(y='petal_length', x='sepal_length', c='black', marker='x', s=1000, ax=plt.gca(), label='centroid') ----- plot syntax for... stuff
 
 ## Stakeholders
 - Move functions and analysis to separate .ipynb as required for stakeholders
