@@ -664,8 +664,12 @@
     * Analyze relationship to target (think: Simpson's Paradox)
 - Machine Learning
     * Use clusters as target
+        * Setting y_train to train['cluster']
     * Use clusters as features
+        * Done if one cluster is a good driver of the target
+        * One-hot encode a column for that cluster, use in X_train
     * Model clusters separately (split data and run different algorithm)
+        * model.fit(train[train.cluster == 0][['col1','col2']], y_train)
 ### Outliers
 - Drop based on domain knowledge (an adult can't weight 19 pounds)
 - If outlier doesn't change results, then feel free to drop
