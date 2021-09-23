@@ -650,7 +650,7 @@
         * Choose this number based on: domain knowledge (iris: 3 species, 3 clusters)
         * Choose this number based on: alt knowledge (grouping by location)
         * Choose this number based on: exploration (viausalization has 3 clusters)
-        * Choose this number based on: computing inertia (retroactively changing # clusters to find the 'elbow'- first few clusters drop inertia significantly, there will be a point where it drops 'less significantly' for the rest of values, choose that change)
+        * Choose this number based on: computing inertia (retroactively changing # clusters to find the 'elbow'- first few clusters drop inertia significantly, where the line goes more-horizontal from more vertical, choose that k value)
     * May be able to choose the centroid locations for lat/long clustering (choosing city centers)
         * Actually, I think you'd put lat/longs to categories (within x distance of [city]), which isn't the purpose of *algorithmic* clustering
 - DBSCAN Video - density-based (different from centroids), good at finding weird shapes in data, but computationally expensive
