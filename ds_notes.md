@@ -1096,3 +1096,8 @@
     * Stakeholders want just the end product: give them it
     * Stakeholders want the models and end product: give them it
     * Stakeholders want everything: give them everything
+### Trello
+- Requirements Stage: Talk with stakeholders about their requirements and a timeline
+- Decision Stage: Decide which requirements you will be able to complete
+    * Goal is to complete *all* user requirements for this "sprint" (the timeline)
+    * You choose how in-depth to go for each requirement
