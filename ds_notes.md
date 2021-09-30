@@ -685,6 +685,28 @@
 - kmeans.inertia_ ----- sum of (squared) distances between samples and their closest cluster centerpoint
 - centroids = df.groupby('cluster')['col1','col2','col3',...].mean() ----- mean distance to centerpoint for each specified column of data against each cluster
 
+# Time-Series
+- Sub-methodology of supervised machine learning involving temporal data
+- Focus is on time-wise trends, making time-based predictions on how data *will* be
+- Time is linear... so time-series features involved are always linearly-correlated with each other (one goes up, another goes down... because it's on the linear timeline)
+    * This means it has to be treated differently from linear regression
+- Uses previous outcomes as features to predict future outcomes
+    * EX: Customer growth in January (a target of regression) is one observation, multiple months' observed growth together are the feature
+    * This differs from regression, which focuses on the attributes driving an outcome and has no time component
+- Some examples include:
+    - repeating upward/downward trends (seasonality)
+    - fluctuation cycles (seasonality at >2 year increments), 
+    - autocorrelation (regression of outcomes, "regression of self")
+## Forecasting
+- Last Observed Value (as prediction)
+- Simple Average (average of all observations as prediction)
+- Moving/Rolling Average (last portion of observed for this as prediction)
+    * Usually last 7 days, the average of that, as the prediction
+- Previous Cycle (exactly the last cycle as a whole [sliced] as prediction)
+- Holt's Linear Trend (a regression of previous cycles applied at end of observations)
+- Facebook Prophet's Model (next expected cycle based on previous cycles)
+    * "Pretty good, but hard to install and get working"
+
 ## Scaling
 - Used to fix distance-based calculations (DO IT EVERY TIME)
     * Definitely use on KNN, K-Means, etc
@@ -1101,3 +1123,16 @@
 - Decision Stage: Decide which requirements you will be able to complete
     * Goal is to complete *all* user requirements for this "sprint" (the timeline)
     * You choose how in-depth to go for each requirement
+### APIs
+- Application Programming Interface: a way to interact with 'owned' data, has rules and ways to interact, you can scrape from the user level but often better to interact with APIs
+- REST, RESTful: a standardized structure for URLs
+- (RESTful) JSON API: an API where the URLs follow REST and the communication with the server is in JSON format
+### RESTful JSON APIs
+- Interfacing is done through HTTP requests (python library called 'requests')
+- import requests --- response = requests.get('http_link') ----- returns object for server response like 404 and 500
+    * response.ok, response.status_code, response.text ... all valuable
+- response.text on requests.get('https://swapi.dev/api/people/5') will give data on Leia from Star Wars in the form of JSON dict (name, height, mass, hair/skin/eye color, etc)
+- requests.get(http_url + '/documentation').json()['payload'] for http_url='https://python.zgulde.net' will give 'endpoints', other APIs give different stuff on a different link (maybe) using a different JSON container
+    * '/api/v1/items/1' ----- Endpoints are prefixed with /api/{version} where version is "v1", then endpoints (essentially directories or folders) and page navigation
+    * Can iterate through each page in a loop and pull all information with ['next_page'] and ['max_page'] until next_page hits 'None'
+
