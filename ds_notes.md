@@ -182,6 +182,47 @@
     * dtype: Python type str is Pandas dtype object (object = str or mixed, int64 is int, float64 is float, bool is bool, datetime64 is datetime...)
 - Vectorized Operations: Call default Python methods on Pandas Series, for example: series_name.str.capitalize() will capitalize all values in the series.
 - Method Chaining: using multiple methods at once - ex: series_name[str.method()].str.method()
+### Working with Dates in Pandas
+- pd.to_datetime(date_value, format='%b:%d:%Y') ----- highly-flexible date reader, throw something in get a better format back, in this case you specify format of a date_value having colon separation so that to_datetime can convert it
+- pd.to_datetime(df.date) ----- element-wise converts date column's values, casts column as datetime64 dtype
+    * with datetime64 column, can use df.date.dt.day to element-wise change date to day
+    * .month, .year, .quarter, .day_name() etc all available in place of day
+- number of observations per month: df.date.dt.month.value_counts().sort_index()
+    *value_counts() orders on count, not month, so use sort_index()
+- df['month'].value_counts() after casting df.date.dt.month to df['month']
+- df.loc[date_start:date_end] ----- inclusive slicing of dataframe
+- df['rolling_weekly_average'] = df.colname.rolling(7).mean() - first 6 values will be null, 7th will show first calculation
+    * can also use .asfreq('W').transform('mean')
+    * can also do rolling sums (.sum()) and change the roll iteration (.rolling(30))
+- df['weekday'] = df.col_cast_as_datetime64.day_name() ----- create new column with name of day using another date column
+- Create a data range from scratch: pd.date_range('starting_date', freq='D', periods=num_days_starting_with_starting_date)
+- Create data from scratch: np.random.rand(8) ----- array of 8 random values between 0 and 1
+- df.index.strftime('%b %D, %Y) ----- abbreviated_month day, year from a datetime64 column
+    * Look up the formats for more options
+- can subtract two datetime64 values to get a time value, can divide that value by pd.Timedelta('1d') to get specifically the number of days (destroys the Timedelta object)
+    - df.colname.max() - df.colname ----- find amount of time difference from value to max
+    - same case with pd.Timedelta('1d')
+#### Up/Down Sampling
+- If your data is hourly, convert not-exactly-hourly times to hourly (upsample) and fill nulls, or aggregate (downsample) to daily/weekly/monthly/etc
+- Upsampling: by_day = df.asfreq('D') ----- take df with datetime64 column(s), convert column(s) to days
+- Upsampling has nulls: by_day.assign(ffill=lambda df: df.coffee_consumption.ffill(), bfill=lambda df: df.coffee_consumption.bfill()) ----- need to do this forward-fill and back-fill when upsampling creates null values, simply pushes previous value forward into null or pushes next value backwards into null
+    * This is often used for date-based values where it makes sense to re-use previous or upcoming data in knowledge gaps
+    * may also df.fillna(value) to fill these gaps with constants, average, etc
+- Downsampling: df.resample('W').sum() ----- sum all days' values in a week, groupby week
+    * '3W' - every three weeks, 'M', 'Y', 'H', ...
+#### Lagging and Leading
+- Great with pd.concat to add columns with calculations/reflections based on previous/upcoming values
+- df.colname.diff() ----- difference between current element and previous one
+    * can enter a number, .diff(3), to look at 3 elements ago
+    * also enter negative values (-1) to look ahead
+- df.colname.shift() ----- an array of colname but each value is shifted one index deeper
+#### Timezones
+- df.index.tz ----- shows timezone if available, probably not there
+- df.tz_localize('America/Chicago') ----- sets timezone of all datetime64 columns
+    * df.tz_localize(None) ----- removes timezone information
+#### Plotting
+- df.resample('W').sum().colname.plot() ----- line plot by week for a column
+- df[[colname]].plot() ----- line plot a column
 ### Pandas tools
 - df['column_name'].head(10) ----- returns rows 0 to 9 of the column (this avoids issues with spaces in column names or reserved words as column names)
 - df.first_name.head(10) ----- also returns rows 0 to 9 of the column
@@ -236,6 +277,9 @@
 - df_copy.assign(new_colname=df.colname > 100) ----- same as previous
 - df.sort_values(by=col_name, ascending=False) ----- sort df by col_name in descending order
 - df.nunique(axis=1) < ncols ----- setting ncols at start, then see if there are duplicates in a row. By setting this result to a new column, you can run this check for all rows in a dataframe and store the result in the column.
+- Change individual numbers throughout df based on bool mask:
+    * num = df._get_numeric_data()
+    * num[num < 0] = 0 ----- all values less-than zero individually set to zero
 ### "Advanced" Dataframes
 - Produce dataframe from dictionary: pd.Dataframe({'A': [1,2,3], 'B': [0,1,2])
 - Produce dataframe from list: pd.Dataframe([[1,2,3], [4,5,6]])
@@ -685,7 +729,7 @@
 - kmeans.inertia_ ----- sum of (squared) distances between samples and their closest cluster centerpoint
 - centroids = df.groupby('cluster')['col1','col2','col3',...].mean() ----- mean distance to centerpoint for each specified column of data against each cluster
 
-# Time-Series
+## Time-Series
 - Sub-methodology of supervised machine learning involving temporal data
 - Focus is on time-wise trends, making time-based predictions on how data *will* be
 - Time is linear... so time-series features involved are always linearly-correlated with each other (one goes up, another goes down... because it's on the linear timeline)
@@ -697,7 +741,7 @@
     - repeating upward/downward trends (seasonality)
     - fluctuation cycles (seasonality at >2 year increments), 
     - autocorrelation (regression of outcomes, "regression of self")
-## Forecasting
+### Forecasting
 - Last Observed Value (as prediction)
 - Simple Average (average of all observations as prediction)
 - Moving/Rolling Average (last portion of observed for this as prediction)
