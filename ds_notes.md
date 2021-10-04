@@ -750,6 +750,8 @@
 - Holt's Linear Trend (a regression of previous cycles applied at end of observations)
 - Facebook Prophet's Model (next expected cycle based on previous cycles)
     * "Pretty good, but hard to install and get working"
+### Considerations
+- In-Sample and Out-of-Sample splits are split on seasons, not randomly-selected observations
 
 ## Scaling
 - Used to fix distance-based calculations (DO IT EVERY TIME)
