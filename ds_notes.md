@@ -317,6 +317,9 @@
 - df.plot.barh() ----- put dataframe to a bar plot
 - x = list(range(150)) -- plt.plot(x) -- plt.show()
     * JupyterNB will automatically show a plot without plt.show(), but .py scripts ran from Terminal require plt.show()
+- plt.rc('figure', figsize=(13.6)) ----- set overall
+- plt.rc('axes.spines', top=False, right=False) ----- set overall
+- plt.rc('font', size=13) ----- set overall
 ### Matplotlib Methods
 - plot
     * defaults to line plot. plt.plot(x, y, c='color')
@@ -752,6 +755,19 @@
     * "Pretty good, but hard to install and get working"
 ### Considerations
 - In-Sample and Out-of-Sample splits are split on seasons, not randomly-selected observations
+    * Human-based split if pattern, percentage-based split if no pattern
+        * df.plot() for date index and outcome value
+        * df.resample('D').mean().plot(ax=ax, alpha=.5, label='Daily) ----- plot the data resampled to daily, can do for weekly/monthly/yearly/etc
+    * To determine seasonal splits, you'll have to look at data before you split
+    * To determine percentage splits, set train size and test size, then look at the rowcount and split the first 80% from the last 20%
+        * train_end_index = round(df.shape[0] * train_size)
+        * train = df.iloc[:train_end_index]
+        * test = df.iloc[train_end_index:]
+- Rolling averages on 3-, 7-, and 30-day windows
+    * Must apply aggregation to rolling, so: df.resample('D').mean().rolling(30).mean().plot()
+- ax = df.resample('M').mean().diff().plot() ----- plot change over time, in practice plot difference between a month and the month prior, do this lineplot for all months
+    * df.resample('M').mean().plot(ax=ax, label='Monthly Average) ----- plots using same ax as previously-defined graph
+    * df.resample('M').shift(12).plot(ax=ax, label='Last Year') ----- plots 12 months prior in place, so you can compare last year to this year
 
 ## Scaling
 - Used to fix distance-based calculations (DO IT EVERY TIME)
@@ -1140,6 +1156,7 @@
 
 
 ## Other hot notes
+- Make script plotting all sorts of stuff, never think about again
 - Plot distribution for data wrangling to check for outliers (histogram, box-whisker), then remove outliers if necessary, then plot new distributions
 - a shotgun pattern in homoscedasticity check (pattern shows heteroscedasticity) isn't great, consider removing outliers or transforming... can take log of entire column (storing values in new column) then run log column through the model and visualization
 - SQL databases are usually hosted on beefy systems, so doing processing in SQL can be a lot faster than doing it on a local machine using Python
