@@ -490,6 +490,18 @@
 - Relate the problem to the audience's interests and focus for maximum effect
 
 ## Statistics Notes
+### Hot notes
+- 1-Sample t-test (ttest-1samp) is done in non-optimal conditions, when categorical/discrete data isn't necessarily defined very well
+    - assumes equal variance, normal distribution, and independence
+- 2-Sample t-test (ttest-ind, mannwhitneyu) is done in most cases, when categories are fairly well-defined
+    - parametric: same assumptions as ttest-1samp, non-parametric: assumes independence
+- ANOVA (f-oneway, kruskal) is done more as discovery to check if categories/discretes have difference
+    - same assumptions as parametric and non-parametric 2-sample t-tests
+- Paired t-test (ttest_rel, wilcoxon) is done when one sample transforms in some way and you're checking if they're different before and after the transformation
+- Linear correlation test (pearsonr, spearmanr) looks at the influence of change in one continuous variable against another continuous variable
+    - parametric: assumes normal distribution, non-parametric: does not assume normality
+- Categorical correlation test (chi2_contingency) looks at categorical variables against continuous variables rather than two continuous variables
+    - same assumptionas as parametric and non-parametric for linear correlation
 ### Distributions
 - Uniform - equal likelihood of all outcomes (coin)
     * stats.randint(low, high_not_including)
