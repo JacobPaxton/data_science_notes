@@ -750,7 +750,12 @@
 - Moving/Rolling Average (last portion of observed for this as prediction)
     * Usually last 7 days, the average of that, as the prediction
 - Previous Cycle (exactly the last cycle as a whole [sliced] as prediction)
+    * Year-Over-Year Difference is a form of this, and a good starting place when you haven't performed any time-series analysis yet. The reason is that each year has an even length, has its own seasons and trends that regularly occur in society, and is commonly referenced in most industries to check performance of production and sales. It's fairly easy to calculate, you do a .diff(365) on day-resampled data then take the mean of all values, showing the overall difference. Then you predict using the final observed year's values, adding the overall difference to each value. Then calculate RMSE as normal.
 - Holt's Linear Trend (a regression of previous cycles applied at end of observations)
+    * import statsmodels.tsa.api.Holt
+    * model = Holt(train[col], exponential=)
+    * model.fit(smoothing_level = .1, smoothing_slope=.1, optimized=False)
+    * model.predict(start=validate.index[0], end=validate.index[-1])
 - Facebook Prophet's Model (next expected cycle based on previous cycles)
     * "Pretty good, but hard to install and get working"
 ### Considerations
