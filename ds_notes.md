@@ -317,7 +317,7 @@
 - df.plot.barh() ----- put dataframe to a bar plot
 - x = list(range(150)) -- plt.plot(x) -- plt.show()
     * JupyterNB will automatically show a plot without plt.show(), but .py scripts ran from Terminal require plt.show()
-- plt.rc('figure', figsize=(13.6)) ----- set overall
+- plt.rc('figure', figsize=(13,6)) ----- set overall
 - plt.rc('axes.spines', top=False, right=False) ----- set overall
 - plt.rc('font', size=13) ----- set overall
 ### Matplotlib Methods
