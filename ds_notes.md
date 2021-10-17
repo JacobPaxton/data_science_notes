@@ -786,6 +786,21 @@
     * df.resample('M').mean().plot(ax=ax, label='Monthly Average) ----- plots using same ax as previously-defined graph
     * df.resample('M').shift(12).plot(ax=ax, label='Last Year') ----- plots 12 months prior in place, so you can compare last year to this year
 
+## Anomaly Detection
+- Finding outliers (numerical distance) and anomalies (general difference) for the purpose of further investigation
+    * Can come from novel patterns or from outlier datapoints
+### Cases
+- Contextual: "This action is okay here, but not okay here"
+- Noise: "This action is more clean than normal"
+- Point Anomaly: "This action is too far from the norm"
+- Collective: "This action had an unusual combination"
+- Novelty: "This pattern is unseen"
+### Techniques
+- Stats: Standard metrics like average and standard deviation, also moving averages
+- Classification: Support Vector Machine (a regression of classification), Random Forest, Isolation Forest (calculates number of splits needed to isolate a specified point)
+- Clustering: KMeans and DBSCAN
+- Density: KNN Local Outlier Factor
+
 ## Scaling
 - Used to fix distance-based calculations (DO IT EVERY TIME)
     * Definitely use on KNN, K-Means, etc
@@ -1215,4 +1230,43 @@
 - requests.get(http_url + '/documentation').json()['payload'] for http_url='https://python.zgulde.net' will give 'endpoints', other APIs give different stuff on a different link (maybe) using a different JSON container
     * '/api/v1/items/1' ----- Endpoints are prefixed with /api/{version} where version is "v1", then endpoints (essentially directories or folders) and page navigation
     * Can iterate through each page in a loop and pull all information with ['next_page'] and ['max_page'] until next_page hits 'None'
+
+# Notes, Revision 2
+## Environment
+### CLI
+### Jupyter Notebook
+### .py Scripts
+### Excel/Spreadsheets
+
+## Acquisition
+### SQL
+### Other
+
+## Preparation
+### Python
+### NumPy
+### Pandas
+### Scaling
+
+## Feature Engineering
+
+## Exploration
+
+## Visualization
+### Matplotlib
+### Seaborn
+### Tableau
+### Other
+
+## Statistical Tests
+
+## Modeling
+### Classification
+- Deciding whether data is one thing or another
+- Can optimize to reduce false positives (recall) or false negatives (precision)
+### Regression
+### Time-Series
+### Clustering
+### Anomaly Detection
+- Detecting outliers and correctly classifying as anomalous
 
