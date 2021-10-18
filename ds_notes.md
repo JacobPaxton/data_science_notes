@@ -606,6 +606,12 @@
     * t,p = scipy.stats.ttest_ind(sample1, sample2, equal_var=False)
 - Compare multiple observed mu: ANOVA, normally distributed, independent variables, equal variances
     * scipy.stats.f_oneway(sample1, sample2, sample3, ....,equal_var=False)
+### Probabilities
+- P(A), P(A|B), Bayes Theorem (P(A|B) = P(B|A)P(A)/P(B)) ----- probability of A, probability of A given B (when B happens, chance of A), Bayes Theorem (to calculate A or B using algebra)
+- Quick probability of a given value among values: df.col.value_counts(normalize=True)
+    * Can pass two or more columns too, df[['col1','col2']].value_counts(normalize=True), shows probability (occurence rate) of each combination
+    * Can also do groupby with value_counts for two or more columns
+- Low probability combination of observed values is an anomaly!
 
 
 ## Bringing it all together
@@ -800,6 +806,13 @@
 - Classification: Support Vector Machine (a regression of classification), Random Forest, Isolation Forest (calculates number of splits needed to isolate a specified point)
 - Clustering: KMeans and DBSCAN
 - Density: KNN Local Outlier Factor
+### Anomalies - Continuous Values
+- Use IQR to detect outliers
+- Use Z-score to detect outliers
+- Be careful of 'dogmatic' approaches to this (EX: always using >2 STD [2 sigma] to detect outliers)
+### Anomalies - Discrete Values
+- Use probabilities to detect low-occurence combinations! value_counts(normalize=True)
+- Given time-series data, group on minute, hour, day, etc then value_counts(normalize=True)
 
 ## Scaling
 - Used to fix distance-based calculations (DO IT EVERY TIME)
