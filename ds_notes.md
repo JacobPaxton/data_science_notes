@@ -795,6 +795,7 @@
 ## Anomaly Detection
 - Finding outliers (numerical distance) and anomalies (general difference) for the purpose of further investigation
     * Can come from novel patterns or from outlier datapoints
+- Domain knowledge is almost always preferable to raw detection techniques
 ### Cases
 - Contextual: "This action is okay here, but not okay here"
 - Noise: "This action is more clean than normal"
@@ -813,6 +814,32 @@
 ### Anomalies - Discrete Values
 - Use probabilities to detect low-occurence combinations! value_counts(normalize=True)
 - Given time-series data, group on minute, hour, day, etc then value_counts(normalize=True)
+### Anomalies - Time-Series Values
+- Exponentially-weighted moving averages
+    * Hyperparameter alpha set to 0 is traditional average (average all values in series
+    * alpha set to 1 is most recent value (each moving average is most recent value)
+    * alpha set to anything between 0 and 1 gives weight to past values and determines how quickly things fall off in terms of weight (weigh recent values more than older values, average the weighted values)
+    * The value you set alpha to is dependent on how many anomalous values you want
+- Bollinger bands - anomalies outside the bands
+    * Used a lot in finance and stock market analysis
+    * Calculate each band in dataframe... there might be a library out there to help
+    * Midband is moving average (you set this, can also be exponentially-weighted moving average)
+    * Upperband = Midband + (K * moving standard deviation), where K is hyperparameter
+        * Standard values for K are 2 and 20
+        * The value you set K to is dependent on how many anomalous values you want
+    * Lowerband = Midband - (K * moving standard deviation)
+    * %b is a calculation of volatility, anything above 1 or below 0 is outside the bands
+### Anomalies - Clustering
+- DBSCAN - anomalies by cluster
+    * Distance-based (requires scaling) cluster creation algorithm
+    * Often done against count and nunique agg funcs for discrete vars
+    * dbsc = DBSCAN(eps=.1, min_samples=20).fit(scaled_df)
+        * eps is radius, min_samples is minimum amount of datapoints within the radius to be determined non-outlier data - so here, require 20 values in radius .1, anything not included is considered an outlier
+    * clustered_df = dbsc.transform(scaled_df)
+    * clustered_df.labels ----- show cluster numbers
+    * clustered_df[clustered_df.labels == cluster_num] ----- show values in a specific cluster
+        * outlier cluster is always clustered_df.labels == -1
+
 
 ## Scaling
 - Used to fix distance-based calculations (DO IT EVERY TIME)
