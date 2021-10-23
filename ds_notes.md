@@ -840,6 +840,44 @@
     * clustered_df[clustered_df.labels == cluster_num] ----- show values in a specific cluster
         * outlier cluster is always clustered_df.labels == -1
 
+## Natural Language Processing
+- Codeup's focus is on text classification, but there's a lot more ways to process natural language
+- Same pipeline as other methodologies, but here, we're building the corpus (dataset) that we will analyze
+### Vocab
+- Corpus: entire dataset
+- Document: one observation
+- Tokenization: breaking up into tokens
+- Stemming and Lematizing: transforming words into their roots
+- Stopwords: common words that usually don't add value
+- ngrams: combination of n words
+- POS: part of speech
+- Bag of Words: columns for specific words, rows for observation, values for either the wordcount, true/false existence, or overall proportion
+### REGEX
+#### REGEX metacharacters
+- Capitalized forms of the following are opposite; so \W is any *not* alphanumeric
+- Greedy means try to capture as much as possible
+    * r'.+\d' for 'abc 123' gives entire string back (greedy)
+    * r'.+?\d' for 'abc 123' gives ['abc 1','23'] back (not greedy)
+- . = anything (greedy); \w = any alphanumeric char; \s = any whitespace char; \d = any digit;
+- {5} = repeat 5 times; {3,6} = repeat min 3, max 6 times; {3,} = repeat 3 or more times; * = zero or more; + = one or more; ? = optional; [] = anything inside the brackets' [^] = anything not inside the brackets
+- ^ = start of line; $ = end of line; \b = word boundary
+    * these are important when you need to specify the start or end character
+#### REGEX query syntax
+- re.search(regexp, subject) ----- randomly search subject until find regexp match, then report span (start/stop index) and matched string literal, then quit (find first match only)
+- re.match(regexp, subject) ----- same as search, but start from the beginning
+- re.findall(regexp, subject) ----- report all matches in subject for regexp
+#### REGEX examples
+- r'a' ----- r marks string as a raw string, all characters taken as-is
+- r'\w\w' ----- find two in-sequence alphanumeric chars
+    * 'abc 123' becomes ['ab','12'] because it consumes 'ab' and '12', so no 'bc' or '23'
+- r'\w+' ----- find an alphanumeric char, save everything past it that is also alphanumeric until non-alphanumeric, store that as match --- findall repeats this for any lengths that match the first alphanumeric
+- r'\w*' ----- an alphanumeric character is optional, where + indicates it's mandatory
+- r'\w{3,6}' ----- store minimum 3, maximum 6 repetitions of alphanumeric
+- r't?' ----- optional match for 't'
+- r'[a1][b2][c3]' ----- search for 3 char sequence, return match if 3-char sequence has char in each bracket, 'abc 123' returns ['abc','123'], 'a2c 1b3' returns ['a2c', '1b3']
+- r'\b.*?\b' ----- for 'abc 123', return ['abc',' ','123']
+
+### Web Scraping
 
 ## Scaling
 - Used to fix distance-based calculations (DO IT EVERY TIME)
