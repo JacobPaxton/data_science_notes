@@ -862,10 +862,18 @@
 - {5} = repeat 5 times; {3,6} = repeat min 3, max 6 times; {3,} = repeat 3 or more times; * = zero or more; + = one or more; ? = optional; [] = anything inside the brackets' [^] = anything not inside the brackets
 - ^ = start of line; $ = end of line; \b = word boundary
     * these are important when you need to specify the start or end character
+- () = capture group
+    * when used, anything not in capture groups is ignored
+    * GREAT for making pieces of regex optional, ex: values of series, all values have one word except a value having two words, make the second word optional using (\s.+\W$)?
+    * (?P<colname>string) can be used to name the column for the capture group!!
 #### REGEX query syntax
 - re.search(regexp, subject) ----- randomly search subject until find regexp match, then report span (start/stop index) and matched string literal, then quit (find first match only)
+    * re.search(regexp, text, re.VERBOSE) ----- VERBOSE used to ignore whitespace in regexp
+    * re.search(regexp, text, re.IGNORECASE | re.VERBOSE) ----- IGNORECASE will include uppercase/lowercase when the regexp specifies one or the other, | allows multiple flags
 - re.match(regexp, subject) ----- same as search, but start from the beginning
 - re.findall(regexp, subject) ----- report all matches in subject for regexp
+    * re.findall(regexp, text, re.MULTILINE) ----- MULTILINE treats each line as a new query start/stop
+- re.sub(regexp, thing_to_sub_in, subject)
 #### REGEX examples
 - r'a' ----- r marks string as a raw string, all characters taken as-is
 - r'\w\w' ----- find two in-sequence alphanumeric chars
