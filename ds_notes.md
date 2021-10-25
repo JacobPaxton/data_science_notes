@@ -852,8 +852,9 @@
 - ngrams: combination of n words
 - POS: part of speech
 - Bag of Words: columns for specific words, rows for observation, values for either the wordcount, true/false existence, or overall proportion
-### REGEX
-#### REGEX metacharacters
+
+## REGEX
+### REGEX metacharacters
 - Capitalized forms of the following are opposite; so \W is any *not* alphanumeric
 - Greedy means try to capture as much as possible
     * r'.+\d' for 'abc 123' gives entire string back (greedy)
@@ -866,7 +867,7 @@
     * when used, anything not in capture groups is ignored
     * GREAT for making pieces of regex optional, ex: values of series, all values have one word except a value having two words, make the second word optional using (\s.+\W$)?
     * (?P<colname>string) can be used to name the column for the capture group!!
-#### REGEX query syntax
+### REGEX query syntax
 - re.search(regexp, subject) ----- randomly search subject until find regexp match, then report span (start/stop index) and matched string literal, then quit (find first match only)
     * re.search(regexp, text, re.VERBOSE) ----- VERBOSE used to ignore whitespace in regexp
     * re.search(regexp, text, re.IGNORECASE | re.VERBOSE) ----- IGNORECASE will include uppercase/lowercase when the regexp specifies one or the other, | allows multiple flags
@@ -874,7 +875,8 @@
 - re.findall(regexp, subject) ----- report all matches in subject for regexp
     * re.findall(regexp, text, re.MULTILINE) ----- MULTILINE treats each line as a new query start/stop
 - re.sub(regexp, thing_to_sub_in, subject)
-#### REGEX examples
+- df.colname.str.extract(regexp) ----- push capture groups of regexp to new dataframe columns
+### REGEX examples
 - r'a' ----- r marks string as a raw string, all characters taken as-is
 - r'\w\w' ----- find two in-sequence alphanumeric chars
     * 'abc 123' becomes ['ab','12'] because it consumes 'ab' and '12', so no 'bc' or '23'
@@ -885,7 +887,37 @@
 - r'[a1][b2][c3]' ----- search for 3 char sequence, return match if 3-char sequence has char in each bracket, 'abc 123' returns ['abc','123'], 'a2c 1b3' returns ['a2c', '1b3']
 - r'\b.*?\b' ----- for 'abc 123', return ['abc',' ','123']
 
-### Web Scraping
+## Web Scraping
+- [url].com/robots.txt ----- see if a site is OK with scraping or not
+- requests library
+- BeautifulSoup library
+### HTML
+- <head> shows meta-information, like <title> (browser tab info)
+- <body> is the contents of the page (what the client displays)
+- <h1 class=></h1> is an element, class is attribute (defines what kind of element it is)
+    * We often identify where to scrape by looking at this class section
+- <div> is another element with sub-slements <p> and <a> and others
+### Parsing HTML with Beautiful Soup
+- from bs4 import BeautifulSoup
+- soup = BeautifulSoup(html_string)
+- soup.tag (soup.h1) --- find the first element based on tag; soup.find (soup.find('h1')) --- find the first element based on tag or otherwise; soup.findall (soup.findall('p')) --- find all elements based on tag or otherwise; soup.selector --- find all elements based on a CSS selector
+- Option: Use identical class names to iterate and store from HTML
+    * store-look-store-look approach to HTML to narrow-in on element wanted
+    * Copy Selector Path (Safari), Copy Selector (Chrome)
+    * articles = soup.select('body > div.grid.gap-y-12 > div:nth-child(1)') ----- web-scraping-demo.zgulde.net
+    * date, author = article.select('.italic')[0].find_all('p')
+    * date.text, author.text
+### Example
+- import requests
+- from bs4 import BeautifulSoup
+- def parse_news_article(article):
+    * title = article.h2.text
+    * date, author = article.select('.italic')[0].find_all('p')
+    * return {'title':title, 'date':date.text, 'author':author.text}
+- response = requests.get('https://web-scraping-demo.zgulde.net/news')
+- soup = BeautifulSoup(response.text)
+- articles = soup.select('.grid.gap-y-12 > div')
+- pd.DataFrame([parse_news_article(article) for article in articles])
 
 ## Scaling
 - Used to fix distance-based calculations (DO IT EVERY TIME)
