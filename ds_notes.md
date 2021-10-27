@@ -846,12 +846,32 @@
 ### Vocab
 - Corpus: entire dataset
 - Document: one observation
-- Tokenization: breaking up into tokens
+- Tokenization: breaking up into tokens (pieces)
 - Stemming and Lematizing: transforming words into their roots
+    * stem slices words to base word, lem converts words to base word
 - Stopwords: common words that usually don't add value
 - ngrams: combination of n words
 - POS: part of speech
+    * Part-Of-Speech Tagging: what part of speech a word is (noun, verb, adjective, etc)
+    * in nltk library, there are ways to do POS tagging!
 - Bag of Words: columns for specific words, rows for observation, values for either the wordcount, true/false existence, or overall proportion
+### Strategies
+- Reduce word variability. EX: 'math' vs 'Math', make into one word. "Beijing" vs "Peking" (romanized foreign names), make into one word.
+### Tactics
+- Order of reduction: original -> lowercase -> remove accents/non-ascii -> remove special characters -> tokenize (break down) -> stem/lemmatize words (calls, calling, called to call) -> remove stopwords (the) -> store transformed text for exploration
+### Specific Libraries
+- import nltk
+- from nltk.tokenize.toktok import ToktokTokenizer
+- from nltk.corpus import stopwords
+### Implementation
+- lowercase: article.lower() 
+- normalize: unicodedata.normalize('NFKD', article).encode('ascii', 'ignore').decode('utf-8')
+- remove special: re.sub(r"[^a-z0-9'\s]", "") 
+- tokenize: tokenizer = nltk.tokenize.ToktokTokenizer(); article = tokenizer.tokenize(article, return_str = True) (by sentence: nltk sent_tokenize)
+- stemming/lemmatization: 
+    * stemming: ps = nltk.porter.PorterStemmer(); stems = ps.stem('calling') (go word by word like list comprehension); article_stemmed = ' '.join(stems)
+    * lemma: nltk.download('wordnet'); wnl = nltk.stem.WordNetLemmatizer(); lemmas = [wnl.lemmatize(word) for word in article.split()]; article_lemmatized = ' '.join(lemmas)
+- remove stopwords: stopword_list = stopwords.words('english') (can add to list as necessary with .append('word') or remove from list using .remove('word'), or add/remove punctuation, etc); words = article_lemmatized.split(); filtered_words = [word for word in words if word not in stopword_list]; article_without_stopwords = ' '.join(filtered_words)
 
 ## REGEX
 ### REGEX metacharacters
