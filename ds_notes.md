@@ -891,12 +891,18 @@
 - [url].com/robots.txt ----- see if a site is OK with scraping or not
 - requests library
 - BeautifulSoup library
+- Keep timestamps on your work, websites change!!
+- Next step in this is browser automation (Selenium)
+    * Selenium uses Python/BeautifulSoup
 ### HTML
 - <head> shows meta-information, like <title> (browser tab info)
 - <body> is the contents of the page (what the client displays)
 - <h1 class=></h1> is an element, class is attribute (defines what kind of element it is)
     * We often identify where to scrape by looking at this class section
 - <div> is another element with sub-slements <p> and <a> and others
+- select('#selector') ----- read an id's contents
+- [el.attrs['od'] for el in soup.select('*') if 'id' in el.attrs] ----- scrape ids
+    * .select_one('.element').attrs['tag'] ----- return content of tag!
 ### Parsing HTML with Beautiful Soup
 - from bs4 import BeautifulSoup
 - soup = BeautifulSoup(html_string)
