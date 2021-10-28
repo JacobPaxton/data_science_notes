@@ -864,14 +864,36 @@
 - from nltk.tokenize.toktok import ToktokTokenizer
 - from nltk.corpus import stopwords
 ### Implementation
+- **update stopwords:** python -c "import nltk; nltk.download('stopwords')"
 - lowercase: article.lower() 
 - normalize: unicodedata.normalize('NFKD', article).encode('ascii', 'ignore').decode('utf-8')
 - remove special: re.sub(r"[^a-z0-9'\s]", "") 
 - tokenize: tokenizer = nltk.tokenize.ToktokTokenizer(); article = tokenizer.tokenize(article, return_str = True) (by sentence: nltk sent_tokenize)
 - stemming/lemmatization: 
-    * stemming: ps = nltk.porter.PorterStemmer(); stems = ps.stem('calling') (go word by word like list comprehension); article_stemmed = ' '.join(stems)
+    * stemming: ps = nltk.porter.PorterStemmer(); stems = [ps.stem(word) for word in article.split()]; article_stemmed = ' '.join(stems)
     * lemma: nltk.download('wordnet'); wnl = nltk.stem.WordNetLemmatizer(); lemmas = [wnl.lemmatize(word) for word in article.split()]; article_lemmatized = ' '.join(lemmas)
 - remove stopwords: stopword_list = stopwords.words('english') (can add to list as necessary with .append('word') or remove from list using .remove('word'), or add/remove punctuation, etc); words = article_lemmatized.split(); filtered_words = [word for word in words if word not in stopword_list]; article_without_stopwords = ' '.join(filtered_words)
+### Exploration
+- from wordcloud import WordCloud
+    * img = WordCloud(kwargs).generate(word_list)
+    * http://amueller.github.io/word_cloud/
+- Prepare by cleaning, normalizing, tokenizing, lemmatizing/stemming the content
+    * can use df['content_length'] = df.text.apply(len)
+    * can do df['word_count'] = df.text.split().apply(len)
+    * use relplot on message length and word count with hue of target labels
+- Now might be a good time to identify classification classes; ex: email spam, is_spam or not_spam
+- Read value counts of each word, ideally by target label
+    * for spam problem, focus on differentials, so high-good low-spam words, high-spam low-good words
+    * for spam problem, use stacked=True plt.barh charts to see words high/low spam
+- list(nltk.bigrams(sentence.split())) ----- create two-word combinations
+    * create a series from this list, then plot value counts!
+### Evaluation
+- Sentiment analysis is hand-jammed. Afinn and Vader are sentiment analysis tools based on social media. It might be best to look at whitepapers to select the best-available tool for the job, or, hand-jam.
+- nltk.sentiment; sia = nltk.sentiment.SentimentIntensityAnalyzer(); sia.polarity_scores(string) --- neg, neu, pos, compound scores returned for string
+    * nearly matches human ability to identify sentiment (0.8 vs 0.88)
+    * used primarily on short phrases (think sentences)
+    * punctuations!!, CAPITALIZATION can increase intensity
+    * df['sentiment'] = df.text.apply(lambda doc: sia.polarity_scores(doc)['compound'])
 
 ## REGEX
 ### REGEX metacharacters
