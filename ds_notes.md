@@ -1284,6 +1284,39 @@
 - y_pred = clf.predict(X_validate) ----- prediction array of model for validate dataset
 - classification_report(y_validate, y_pred) ----- metrics of model against validate
 
+## Modeling (NLP)
+- TF-IDF: term frequency * inverse document frequency
+    * helps identify how important a word is in a document
+    * tf is how often a word shows, idf is how unique the word is in all documents
+    * used by search engines
+    * helps filter out stopwords
+    * tf for single document, idf for corpus
+- Try out bag of ngrams, try out stem v lemmatize, etc for different model approaches
+### NLP Modeling Syntax
+- from sklearn.feature_extraction.text import CountVectorizer
+    * show value counts per document of each unique word (not very useful)
+    * cv = CountVectorizer()
+        * can set ngram_range, ex: CountVectorizer(ngram_range=(2,2)) shows bigrams
+        * expects a string of documents or a 1-dimensional pandas series
+        * pre-processing strp to transform data, turns list of strings into a matrix
+        * different from tokenization because tokenization focuses on selection, countvector focuses on turning entire string into a vector
+    * bag_of_words = cv.fit_transform(data)
+        * 'sparse matrix' is a matrix with more zeroes than anything else
+    * pd.DataFrame(bag_of_words.todense(), columns=cv.get_feature_names()) ----- push word matrix with column names to dataframe
+    * cv.vocabulary_ ----- returns word counts
+- from sklearn.feature_extraction.text import TfidfVectorizer
+    * important for identifying stopwords (very useful)
+    * tfidf = TfidfVectorizer()
+    * bag_of_words = tfidf.fit_transform(data)
+    * pd.DataFrame(bag_of_words.todense(), columns=cv.get_feature_names())
+    * pd.Series(dict(zip(tfidf.get_feature_names(), tfidf.idf_))).sort_values() ----- show each word and their score
+- SelectKBest or RFE to determine which words to use!
+    * pd.Series(dict(zip(dv.get_feature_names(), tree.feature_importances_))).sort_values().tail(5) ----- see top-5 features (feature_importances_ is a built-in for DecisionTreeClassifier)
+- DecisionTreeClassifier fit on train and predict train as usual, requires target as usual
+    * cv = CountVectorizer() --- X_bow = cv.fit_transform(X_train) --- tree = DecisionTreeClassifier(max_depth=5) --- tree.fit(X_bow, y_train) --- tree.score(X_bow, y_train)
+        * make sure to also transform out-of-sample split!
+    * tfidf = TfidfVectorizer() --- X_tfidf = tfidf.fit_transform(X_train) --- tree.fit(X_tfidf, y_train) --- tree.score(X_tfidf, y_train)
+        * make sure to also transform out-of-sample split!
 
 ## Combining Everything We've Learned
 - Pull in data (easy)
