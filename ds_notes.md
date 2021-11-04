@@ -11,6 +11,61 @@
 - JupyterNB issues... You can use Command + T to open tabs in Terminal so you don't have to stop JupyterNB processes
 - Multi-line cursor: Hold command, clickdrag
 
+## Spark
+- Platform for handling big data
+    * Velocity (fast gathering, lots of data, streaming)
+    * Volume (large data, bigger than memory or bigger than storage)
+    * Veracity (reliability of data, esp. missing data)
+    * Variety (different sources, unstructured data, data isn't uniform)
+- Uses Scala onn a Java Virtual Machine (JVM)
+- Alternatives: Hadoop, Dask
+- Often uses personal computers against cloud environment
+    * We can use pyspark client library to 'speak spark', aka talk to Scala in a JVM, to do the work we need done
+    * Scala in JVM coordinates work for 'executors' (it's a cluster manager)
+    * Executors perform the word
+- Needs to be already set up before using
+- Can be run in local mode (all in one computer), same code as if you ran against non-local clusters
+- Overkill and can slow down smaller operations
+### Spark Dataframes
+- Abstracts cluster teamwork, lazy (work isn't done until it has to be), uses SQL
+    * lazy: transformations are lazy, actions realize data
+### Implementation
+- df = spark.createDataFrame(pandas_df); df = spark.read.csv('filepath'); ----- create spark dataframes
+- df.show(), df.head() work as expected
+    * .show() is a print operation (returns None), .head() returns Spark row objects in a list
+    * any column/row operations doesn't happen to original data with .show()
+        * need to reassign to new df then use .show()
+    * can use df[0], returns the row object; can do df[0].x to return value of row/column
+- df.count(), len(df.columns) ----- length, width of dataframe
+- df.select('x', 'y'), df.select('*') ----- SQL-ish column selection
+- col = (df.x + df.y).alias('z') ----- column creation as normal
+    * action doesn't occur yet here, occurs with .show() or .head()
+    * sumvals = df.x + df.y ----- returns an instruction, can be called in .select()
+        * df.select('*', sumvals.alias('sum_x_y')).show() ----- normal
+    * use .alias to rename columns whenever
+- df.select('*', col) ----- output columns (col defined in line above)
+- df.selectExpr('*', 'x + y as z') ----- same operation as line above
+- from pyspark.sql.functions import mean, sum, ...
+    * df.select(sum(df.x)), df.select(mean(df.x)) ----- sum, mean all values in column
+- from pyspark.sql.functions import concat, lit (lit means literal string)
+    * df.select(concat(lit('x:', df.x))) ----- column values of 'x: value' for values in df.x
+- df.x.cast('int') or cast('string') ----- change column type
+- from pyspark.sql.functions import regexp_extract
+    * regexp_extract('col', re, g) ----- extract capture group g from re using col
+    * regexp_replace(col, re, repl) ----- replace occurences of re with repl using col
+- from pyspark.sql.functions import when
+    * df.select(when(df.x > 10, 'gt 10').otherwise('not gt 10')) ----- if true then set value to first, if false then set value to second for df.x (use an alias)
+- df.orderBy(df.x), df.sort(df.x.asc()), df.sort(col('x').desc(), desc(df.y)) ---- normal
+- df.where(df.x < 10), df.filter(df.x < 10) ----- only return True rows, same thing
+- df.where(df.x > 10).where(df.y > 10), df.where((df.x > 10) | (df.y > 10))
+- df.groupBy('g').agg(mean(df.x), min(df.y), ...) ----- normal
+- df.crosstab('g1', 'g2') ----- normal
+- df.groupBy('g1').pivot('g2').agg(mean('x')) ----- normal
+- df.createOrReplaceTempView('df') --- spark.sql(''' SELECT * FROM df ''') ----- SQL
+- df.explain() ----- check Spark's intentions with current setup (not yet actioned)
+- df.na.drop(), df.na.drop(subset=['x', 'y']) ----- drop nulls
+- df.na.fill(0), df.na.fill(0, subset=['x', 'y']) ----- fill nulls
+
 ## SQL
 ### Basic Syntax
 - show databases;
