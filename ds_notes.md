@@ -30,14 +30,18 @@
 - Abstracts cluster teamwork, lazy (work isn't done until it has to be), uses SQL
     * lazy: transformations are lazy, actions realize data
 ### Implementation
+- import pyspark
+- spark = pyspark.sql.SparkSession.builder.getOrCreate()
 - df = spark.createDataFrame(pandas_df); df = spark.read.csv('filepath'); ----- create spark dataframes
-- df.show(), df.head() work as expected
+- df.show(), df.head(), .toPandas() work as expected... just be careful with toPandas()!!
     * .show() is a print operation (returns None), .head() returns Spark row objects in a list
     * any column/row operations doesn't happen to original data with .show()
         * need to reassign to new df then use .show()
     * can use df[0], returns the row object; can do df[0].x to return value of row/column
 - df.count(), len(df.columns) ----- length, width of dataframe
 - df.select('x', 'y'), df.select('*') ----- SQL-ish column selection
+- df.withColumn('year', year(df.date)).show() ----- return dataframe with 'year' column
+    * use col('year') for any additional manip/agg, df.year doesn't exist until .show() (in other words, doesn't work)
 - col = (df.x + df.y).alias('z') ----- column creation as normal
     * action doesn't occur yet here, occurs with .show() or .head()
     * sumvals = df.x + df.y ----- returns an instruction, can be called in .select()
@@ -59,12 +63,18 @@
 - df.where(df.x < 10), df.filter(df.x < 10) ----- only return True rows, same thing
 - df.where(df.x > 10).where(df.y > 10), df.where((df.x > 10) | (df.y > 10))
 - df.groupBy('g').agg(mean(df.x), min(df.y), ...) ----- normal
-- df.crosstab('g1', 'g2') ----- normal
+- df.crosstab('g1', 'g2') ----- count aggregation of observations using g1 and g2 as rows, columns
 - df.groupBy('g1').pivot('g2').agg(mean('x')) ----- normal
 - df.createOrReplaceTempView('df') --- spark.sql(''' SELECT * FROM df ''') ----- SQL
 - df.explain() ----- check Spark's intentions with current setup (not yet actioned)
+    * Used mainly to diagnose performance issues
+    * Orders operations from bottom-upward
 - df.na.drop(), df.na.drop(subset=['x', 'y']) ----- drop nulls
 - df.na.fill(0), df.na.fill(0, subset=['x', 'y']) ----- fill nulls
+- from pyspark.sql.functions import expr
+    * tips.select('*', expr('total_bill / size AS price_per_person')).show()
+- from pyspark.sql.functions import month, year, quarter
+    * month('date_colname') will do what you expect for all dates in column
 
 ## SQL
 ### Basic Syntax
