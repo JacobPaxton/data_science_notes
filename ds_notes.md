@@ -37,6 +37,8 @@
     * .show() is a print operation (returns None), .head() returns Spark row objects in a list
     * any column/row operations doesn't happen to original data with .show()
         * need to reassign to new df then use .show()
+    * can use vertical=True to move columns to rows for better readibility
+    * can use truncate=False to show each observation as a separate section
     * can use df[0], returns the row object; can do df[0].x to return value of row/column
 - df.count(), len(df.columns) ----- length, width of dataframe
 - df.select('x', 'y'), df.select('*') ----- SQL-ish column selection
@@ -75,6 +77,38 @@
     * tips.select('*', expr('total_bill / size AS price_per_person')).show()
 - from pyspark.sql.functions import month, year, quarter
     * month('date_colname') will do what you expect for all dates in column
+### Wrangling
+- from pyspark.sql.functions import *
+- spark.read.csv('file.csv', sep=',', header=True, inferSchema=True)
+    * inferSchema just reads the file as-is and guesses schema
+    * header is default False for spark
+- spark.read.csv("source.csv", header=True, schema=schema)
+    * sets schema from a variable
+    * schema = StructType([
+        * StructField("col", StringType()), 
+        * StructField("col", StringType()),])
+- df.write.json("df_json", mode="overwrite")
+    * write df to a Spark-distributed JSON file, one way to do it
+- df.write.format("csv").mode("overwrite").option("header", "true").save("df_csv")
+    * write df to a Spark-distributed CSV file, another way to do it
+- df.printSchema() ----- check column dtypes
+- df = df.withColumnRenamed("colname_before", "colname_after") ----- rename column
+- df.groupBy("col1", "col2").count().show() ----- basic groupby
+- df = df.withColumn("col1", expr('col1 == condition')).withColumn("col2", expr('col2 == condition')) ------ set columns to bool values on the conditions
+- df = df.withColumn("col1", col("col1").cast("string")) ----- overwrite col1 as string
+- fmt = "M/d/yy H:mm"; df = df.withColumn("col1", to_timestamp("col1", fmt))
+    * change column to a datetype format using the format fmt
+- df = df.withColumn("col1", trim(lower(df.col1))) ----- normalize col1
+- df = df.withColumn("col1", format_string("%03d", col("col1").cast("int")),)
+    * require 3 digits in values, if shorter, put 0 in front as needed to get to 3
+- df = df.withColumn("date_calc_col", datediff(current_timestamp(), "datecol")) ----- time difference from datecol value to now
+    * can switch 'current_timestamp()' for other date col of course
+- df1.join(df2, "joiner_col", "left").drop(col2.joiner_col).drop(col1.joiner_col)
+    * join two Spark dataframes, drop joiner columns, can drop other columns this way or not drop at all of course
+- train, test = df.randomSplit([0.8, 0.2], seed=123) ----- split data
+    * print('train', train.count(), 'colname', len(train.columns)) ----- print shape
+    * train, validate, test = df.randomSplit([0.6, 0.2, 0.2], seed=123) ----- another
+
 
 ## SQL
 ### Basic Syntax
