@@ -108,6 +108,11 @@
 - train, test = df.randomSplit([0.8, 0.2], seed=123) ----- split data
     * print('train', train.count(), 'colname', len(train.columns)) ----- print shape
     * train, validate, test = df.randomSplit([0.6, 0.2, 0.2], seed=123) ----- another
+### Exploring
+- Using Spark to do the heavy lifting then using Pandas dataframes for visualization/otherwise!!!
+    * pandas_df = df.groupBy("colname").count().toPandas() then matplotlib
+    * can also: .... .toPandas().sort_values(). ...
+- df.sample(fraction=0.01, seed=).toPandas()
 
 
 ## SQL
@@ -1486,6 +1491,8 @@
 
 
 ## Other hot notes
+- pd.qcut() ----- bins equal amounts of data
+    * different from pd.cut(), which makes equal-width bins
 - Make script plotting all sorts of stuff, never think about again
 - Plot distribution for data wrangling to check for outliers (histogram, box-whisker), then remove outliers if necessary, then plot new distributions
 - a shotgun pattern in homoscedasticity check (pattern shows heteroscedasticity) isn't great, consider removing outliers or transforming... can take log of entire column (storing values in new column) then run log column through the model and visualization
@@ -1505,6 +1512,15 @@
 - np.set_printoptions(suppress=True) ----- suppress scientific notation
 - pd.DataFrame(np_array, columns=df.columns) ----- nice way to push array to labeled dataframe
 - centroids.plot.scatter(y='petal_length', x='sepal_length', c='black', marker='x', s=1000, ax=plt.gca(), label='centroid') ----- plot syntax for... stuff
+### Capstone Proposals
+- Send an email to datascience@codeup.com with top three choices of the following projects
+- Josh Chavez - League of Legends machine learning
+- Brandon Sharpe - Apple store app analysis
+- Ian Johnson - Medical/healthcare drug analysis
+- Carolyn Davis - Sentiment analysis on airlines
+- Brooke Holyoak - Optimism/Pessimism from a 2018 Pew study
+- Veronica Reyes - Future of the job market post-Covid
+- Sarah Woods - Stroke (medical) data
 
 ## Stakeholders
 - Move functions and analysis to separate .ipynb as required for stakeholders
