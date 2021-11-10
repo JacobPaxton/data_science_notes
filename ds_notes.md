@@ -1423,6 +1423,42 @@
         * make sure to also transform out-of-sample split!
 
 ## Deep Learning
+- Obscured machine learning
+- We'll use Tensor Flow, the Keras front end
+    * PyTorch is a competitor to Tensor Flow
+- Deep Learning takes a long time to perform, and obscures the answers in a way. Have to be careful about when to use it, but it may solve a problemset that an analyst can't
+- Good at: Images/Video, Sound, NLP, Reinforcement Learning (nontabular, large)
+- Artificial Neural Networks are good at recognizing/replicating patterns leading to an optimized outcome (self-driving cars as an example)
+- Bad at: tabular, small data
+### Design
+- Uses neural nodes for weighing patterns
+- Neural nodes combine into a perceptron
+    * Input is however many features you're feeding in (A0, A1, A2)
+    * Output is the number of classification outcomes
+    * One layer of perception is an in-parallel layer
+        * Input weights
+    * Single-layer perceptron: one step of perception between input and output
+    * Multi-layer perceptron: multiple steps of perception between input and output (series of perception)
+- A tensor is higher-dimensionality data than a scalar (1D), vector (2D), or matrix (3D)
+- Gradient Descent: seeking the minimum loss
+    * Distance-based, optimizing connections to reach an answer
+    * Backpropogation against feedforward
+### Implementation
+- from tensorflow import keras; from keras import models, layers
+- from keras.datasets import mnist ----- very popular image classification dataset
+- (train_images, train_labels), (test_images, test_labels) = mnist.load_data()
+- train_images = train_images.reshape((60000, 28 * 28)); train_images = train_images.astype('float32') / 255 ----- reshape data for model
+- test_images = test_images.reshape((10000, 28 * 28)); test_images = test_images.astype('float32') / 255
+- network = models.Sequential() ----- create the model
+- network.add(layers.Dense(512, activation='relu', input_shape(28*28,))) ----- add a layer
+- network.add(layers.Dense(10, activation='softmax')) ----- add output layer
+- network.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+    * compile the model
+- train_labels = keras.utils.to_categorical(train_labels)
+- test_labels = keras.utils.to_categorical(test_labels)
+- network.fit(train_images, train_labels, epochs=20, batch_size=128)
+- test_loss, test_acc = network.evaluate(test_images, test_labels)
+- print(f'accuracy of network on test set: {test_acc}')
 
 ## Combining Everything We've Learned
 - Pull in data (easy)
