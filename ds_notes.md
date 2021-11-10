@@ -1422,6 +1422,8 @@
     * tfidf = TfidfVectorizer() --- X_tfidf = tfidf.fit_transform(X_train) --- tree.fit(X_tfidf, y_train) --- tree.score(X_tfidf, y_train)
         * make sure to also transform out-of-sample split!
 
+## Deep Learning
+
 ## Combining Everything We've Learned
 - Pull in data (easy)
     * pd.read_sql(query, url), pd.read_csv('filename.csv'), etc
@@ -1489,6 +1491,30 @@
 - https://matplotlib.org/stable/tutorials/introductory/customizing.html
 - plt.grid(True, axis='both') ----- background grid
 
+## Hot notes with Stephen Salas
+- Send to stephen@codeup.com: LinkedIn Profile - (name)
+- Headshot for: Gmail, Github, LinkedIn, Zoom, 
+- 95% of recruiters/hiring managers use LinkedIn to source candidates
+- 7-10 seconds to capture attention of recruiter
+    * Technical Hiring Managers, Recruiters/HR/Talent Acq, Codeup Alums, Future coworkers
+- Keywords are extremely important!!!
+    * Add 'Data Storytelling', 'Anaconda', to your skillset
+- Create your LinkedIn for your NEXT job, not your previous
+- Think of a quote, try for a thought leader (stay away from fiction)
+- Add every project you've done to LinkedIn
+    * Add Section - Projects
+- Add icons to experience, also company name, duration, and key KPIs
+    * Same for education
+- Add volunteering/Orgs to LinkedIn as well
+- Minimum 100 connections to show up in recruiting returns!!!
+- Need a background picture
+- Add contact info
+    * Keep birthday/
+- Type (Other): Add Github link
+- Codeup Education: Certificate of Completion - Data Science
+- Job Titles: Data Scientist, Data Engineer, Data Analyst, Business Intelligence Analyst, Business Analyst, Visualization Engineer, Machine Learning Engineer
+- Can get certs from LinkedIn Learning using vet status
+    * https://socialimpact.linkedin.com/programs/veterans/premiumform
 
 ## Other hot notes
 - pd.qcut() ----- bins equal amounts of data
