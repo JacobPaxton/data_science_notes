@@ -1460,6 +1460,25 @@
 - test_loss, test_acc = network.evaluate(test_images, test_labels)
 - print(f'accuracy of network on test set: {test_acc}')
 
+## Cross-Validation
+- K-fold cross validation: split *train* into more train-test splits, average prediction score across fold combinations
+    * from sklearn.model_selection import cross_val_score
+    * cross_val_score(clf, X_train, y_train, cv=5).mean() ----- eval clf model w 5 folds
+        * init empty 'scores' dictionary, loop through max_depths, eval score using this func, use scores[depth] = score
+    * from sklearn.metrics import precision_score, make_scorer
+    * cross_val_score(clf, X_train, y_train, cv=5, scorer=make_scorer(precision_score, pos_label='prediction')) ----- use a different scorer than default, pos_label converts non-binary values to binary by choosing what is 1, making everything else 0
+    * One of those folds is a test split, the rest of the folds are train splits
+    * Each fold rotates in as the test split
+    * Common fold counts: 3, 4, 5, 10 (5 most common)
+- Grid Search: use K-fold cross validation to determine best max_depth train split
+    * Basically does validate for us- choose best model here and run against test
+    * from sklearn.model_selection import GridSearchCV
+    * Defaults to .score and r2
+    * Only optimizes hyperparameters
+### Examples
+- grid = GridSearchCV(clf, {'n_neighbors': range(1, 21)}, cv=5)
+    * Notice how you pass hyperparameter options to GridSearchCV
+
 ## Combining Everything We've Learned
 - Pull in data (easy)
     * pd.read_sql(query, url), pd.read_csv('filename.csv'), etc
@@ -1551,8 +1570,11 @@
 - Job Titles: Data Scientist, Data Engineer, Data Analyst, Business Intelligence Analyst, Business Analyst, Visualization Engineer, Machine Learning Engineer
 - Can get certs from LinkedIn Learning using vet status
     * https://socialimpact.linkedin.com/programs/veterans/premiumform
+- "Fully-immersive, project-based 22-week career accelerator that provides students with 670+ hours of expert instruction in applied data science. Students develop expertise across the full data science pipeline (planning, acquisition, preparation, exploration, modeling, delivery), and become comfortable working with data to deliver actionable insights to diverse stakeholders. Applied Statistics - SQL - Python - Pandas - Matplotlib - Seaborn - Plotly - Machine Learning - Natural Language Processing - Apache Spark - Data Storytelling - Git - Jupyter Notebooks - Anaconda - Tableau Codeup's programs are approved and audited by the Texas Workforce Commission as well as the US Department of Veterans Affairs."
+- "Thank you for your request to connect. Prior to accepting, I always like to secure a little context and/or clarity before connecting with someone on LinkedIn. Are you able to share with me how you came across my profile?"
 
 ## Other hot notes
+- **Dictionary comprehension:** pd.Series({key:function(value) for value in value_list})
 - pd.qcut() ----- bins equal amounts of data
     * different from pd.cut(), which makes equal-width bins
 - Make script plotting all sorts of stuff, never think about again
