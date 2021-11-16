@@ -1173,6 +1173,9 @@
 - fill embark_town with most common value ('Southampton')
 - drop age column
 - encode or create dummy vars for sex & embark_town.
+### SMOTE
+- Needed when classes are imbalanced for classification modeling
+- Used specifically for train to help models fit, improves performance on predicting unseen data
 
 ## sklearn
 - Python library for machine learning applications
@@ -1572,6 +1575,14 @@
     * https://socialimpact.linkedin.com/programs/veterans/premiumform
 - "Fully-immersive, project-based 22-week career accelerator that provides students with 670+ hours of expert instruction in applied data science. Students develop expertise across the full data science pipeline (planning, acquisition, preparation, exploration, modeling, delivery), and become comfortable working with data to deliver actionable insights to diverse stakeholders. Applied Statistics - SQL - Python - Pandas - Matplotlib - Seaborn - Plotly - Machine Learning - Natural Language Processing - Apache Spark - Data Storytelling - Git - Jupyter Notebooks - Anaconda - Tableau Codeup's programs are approved and audited by the Texas Workforce Commission as well as the US Department of Veterans Affairs."
 - "Thank you for your request to connect. Prior to accepting, I always like to secure a little context and/or clarity before connecting with someone on LinkedIn. Are you able to share with me how you came across my profile?"
+
+## Notes with Candra Sweat (alumni portal)
+- http://alumni.codeup.com/login
+- website is finicky... save inputs elsewhere then add later
+- Upload resume, add capstone/tagline
+    * tagline is 100 chars, a quote, include the name
+- For capstone blurb, use present tense, set completion date to December 2021
+- Don't upload a photo
 
 ## Other hot notes
 - **Dictionary comprehension:** pd.Series({key:function(value) for value in value_list})
