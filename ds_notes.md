@@ -692,7 +692,8 @@
 - Finding *linear* corr: corr, p = stats.pearsonr(x, y) ----- Pearson correlation coefficient calculation
     * Finding r using dataframe: df.corr() --- df[['col1', 'col2']].corr() ----- find r for col1 and col2
 - Finding *non-linear* corr: stats.spearmanr()
-- Chi2 Test (for Independence) ----- Compare two categorical variables, ex: gender v phone_manufacturer_choice, to see if they are independent of one another or not
+- Chi2 Test (for Independence) ----- Compare two categorical variables, ex: gender v phone_manufacturer_choice, to see if they are dependent of one another or not
+    * **p-value lower than alpha means the variables are dependent**
     * pd.crosstab against two *categorical* columns, then stats.chi2_contingency of that dataframe (returns chi2, pvalue, degf, expected_values_array)
     * Degree of Freedom: (num_cols - 1) * (num_rows - 1)
     * Check df for potential categorical columns: df.nunique() ----- returns count of unique values for each column, if column has low count then good chance it's categorical
@@ -1585,6 +1586,10 @@
 - Don't upload a photo
 
 ## Other hot notes
+- For cool model look at XG Boost
+- For advanced web scraping look into Selenium
+- Zach: Consistency > Intensity, Motivation is important, Doing data science > learning about data science, Publish!, If it's worth doing, it's worth getting started
+- Zach: ask in interview "what does professional development look like for your employees?"
 - **Dictionary comprehension:** pd.Series({key:function(value) for value in value_list})
 - pd.qcut() ----- bins equal amounts of data
     * different from pd.cut(), which makes equal-width bins
