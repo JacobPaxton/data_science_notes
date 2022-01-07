@@ -190,8 +190,65 @@ This iteration of my notes is for long-term reference. I will keep my original n
 - join departments using(dept_no);
 
 ## APIs
+- Application Programming Interface: a way to interact with 'owned' data
+    * has rules and ways to interact
+    * you can scrape from the user level, but it's often better to interact with APIs
+- REST, RESTful: a standardized structure for URLs
+- (RESTful) JSON API: an API where the URLs follow REST and the communication with the server is in JSON format
+### RESTful JSON APIs
+- Interfacing is done through HTTP requests
+- import requests
+- response = requests.get('http_link') ----- returns object for server response like 404 and 500
+    * response.ok, response.status_code, response.text
+- response.text on requests.get('https://swapi.dev/api/people/5') will give data on Leia from Star Wars in the form of JSON dict (name, height, mass, hair/skin/eye color, etc)
+- requests.get(http_url + '/documentation').json()['payload'] for http_url='https://python.zgulde.net' will give 'endpoints', other APIs give different stuff on a different link (maybe) using a different JSON container
+    * '/api/v1/items/1' ----- Endpoints are prefixed with /api/{version} where version is "v1", then endpoints (essentially directories or folders) and page navigation
+    * Can iterate through each page in a loop and pull all information with ['next_page'] and ['max_page'] until next_page hits 'None'
 
 ## Scraping
+- [url].com/robots.txt ----- see if a site is OK with scraping or not
+- Keep timestamps on your work, websites change!!
+- requests ----- HTTP requests
+- bs4 ----- BeautifulSoup for HTML parsing 
+    - Excellent BeautifulSoup deep-dive: https://www.crummy.com/software/BeautifulSoup/bs4/doc/
+- selenium ----- Automated browser work using Selenium WebDriver
+### Basic HTML
+- <head></head> shows meta-information, like <title></title> (browser tab info)
+- <body></body> is the contents of the page (what the client displays)
+- <h1 class='class_name'></h1> is an element, class is attribute (defines what kind of element it is)
+    * We often identify where to scrape by looking at this class section
+- <div> is another element with tags <p></p> and <a></a> and others
+### Parsing HTML with Beautiful Soup
+- soup.prettify() ----- try to print the HTML in a neat format for initial understanding
+- soup.select("body a") ----- look for <a></a> tags somewhere inside 'body'
+- soup.select("p > a") ----- look for 'a' element *directly* below 'p' element
+- soup.select("p #link1") ----- look for any element with attribute value "link1" below 'p' element
+- soup.find_all("b") ----- return list of <b></b> tags
+    - soup.find_all(["a","b"]) ----- return list of any <a></a> and <b></b> tags
+- soup.find_all(has_class_but_no_id) ----- return tags that are returned as True from function
+    * def has_class_but_no_id(tag): return tag.has_attr('class') and not tag.has_attr('id')
+    * soup.find_all(True) ----- return all tags
+- soup.find_all(id='link2') ----- search all tags with id attribute value of 'link2'
+    * soup.find_all(href=re.compile("elsie")) ----- search all tags with href containing 'elsie'
+    * soup.find_all(id=True) ----- return all tags that have the id attribute
+    * soup.find_all(class_=re.compile("itl")) ----- if searching by class, use class_
+- soup.select("p.strikeout.body") ----- search by contents of attrs for 'strikeout' and 'body' words
+- soup.find_all(string=re.compile("Dormouse")) ----- search string (ex: <b>string_here</b>) for existence of 'Dormouse'
+- data_soup.find_all(attrs={"data-foo": "value"}) ----- return tags that match attribute and attr value
+- [el.attrs['od'] for el in soup.select('*') if 'id' in el.attrs] ----- 'od' attr values if tag has 'id' attr
+- soup.select('p').attrs['href'] ----- return content of 'href' attr for 'p' tags
+### Example HTML Scraping with BeautifulSoup
+- import requests
+- from bs4 import BeautifulSoup
+- response = requests.get('https://web-scraping-demo.zgulde.net/news')
+- soup = BeautifulSoup(response.text)
+- articles = soup.select('.grid.gap-y-12 > div')
+- df = pd.DataFrame({'title':[], 'date':[], 'author':[]})
+- for index, article in enumerate(articles):
+    * title = article.h2.text
+    * date, author = article.select('.italic')[0].find_all('p')
+    * df.loc[index] = [title, date.text, author.text]
+### Controlling Chrome using Selenium
 
 ## Kaggle
 
