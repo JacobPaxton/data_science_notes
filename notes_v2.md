@@ -3,67 +3,33 @@ My original ds_notes.md was intended to quickly capture curriculum into a digest
 
 This iteration of my notes is for long-term reference. I will keep my original notes, and I have access to the curriculum itself, so this version will have a different format. Instead of packing information on tools, this notes format will pack information on the workflow elements.
 
-## Overall Organization - Brainstorming
-- Environment
-    * Jupyter Notebook
-    * Terminal
-    * Google Sheets
-    * Power BI
-    * Excel
-    * Sequel ACE
-    * VS Code
-    * Tableau
-- Acquisition & Preparation
-    * Tidying Data
-        * https://vita.had.co.nz/papers/tidy-data.pdf
-        * One value per cell: split out combined data, handle nulls
-    * Spark
-    * SQL
-    * APIs
-    * Scraping
-    * Kaggle
-    * Python
-    * NumPy
-    * Pandas
-    * REGEX
-- Exploration & Delivery
-    * Splitting Data
-    * Uni-, Bi-, Multi-variate Exploration
-    * Feature Engineering
-    * Seaborn & Matplotlib
-    * SciPy
-- Prediction
-    * Feature Preparation
-        * Encoding
-        * Scaling
-    * Classification
-        * SMOTE
-    * Regression
-    * Time-Series
-    * Algorithmic Clustering
-    * Natural Language Processing (NLP)
-    * Anomaly Detection
-    * Deep Learning
-    * Computer Vision
-    * Cross-Validation
-
 # Notes
 
-## Environment
-### Git
-- git clone github_repo_ssh_link
-- git pull, git status, git add, git commit -m 'message', git push
-- Use .gitignore
-- git merge issue: pull repo down to new folder, copy changed files manually to new folder, push from new folder, delete old folder using rm -rf folder_name
-### Jupyter Notebook
-- Excellent interface for iPython with easy-to-use UI
-### Terminal
+<!-- -------------------------------- Environment ---------------------------------- -->
+
+# Environment
+
+## Terminal
 - mkdir, rmdir, rm, cp, mv, cd, ls, pwd, cwd
 - curl -O url_address ----- copy down a file from a URL (often used for raw Github files)
 - Log in to a SQL server: -u username -p -h ip_address ----- -p prompts for a password
 - Create a new file using VS Code: code filename.filetype
 - Launch Jupyter Notebook server: jupyter notebook
-### Excel & Google Sheets
+
+## Git
+- git clone github_repo_ssh_link
+- git pull, git status, git add, git commit -m 'message', git push
+- Use .gitignore
+- git merge issue: 
+    1. pull repo down to new folder
+    2. copy changed files manually to new folder
+    3. push from new folder
+    4. delete old folder using rm -rf folder_name
+
+## Jupyter Notebook
+- Excellent interface for iPython with easy-to-use UI
+
+## Excel & Google Sheets
 - Call a function in a cell: =function_name_all_caps()
     * Point function cell at other cells, return output at function cell; if other cells change, output changes
         * fn + f4 is the absolute reference to a cell or cell range
@@ -74,7 +40,7 @@ This iteration of my notes is for long-term reference. I will keep my original n
     * Insert, Chart... ----- Produces chart, can customize
 - Splitting text: Select data, Data, Split Data *OR* =SPLIT(cell, delimiter)
 - =CONCATENATE(cell, delimiter_if_desire, cell, cell, delimiter, cell...)
-#### Excel & Google Sheets Functions
+### Excel & Google Sheets Functions
 - =YEAR(B2), =MONTH(B2)... ----- use existing functions against cell B2
 - =B2-B3 ----- subtract B3 from B2 in cell
 - Filtering ----- Select all, Data, Create Filter, hover over column you want to filter, apply a filter to it
@@ -89,47 +55,191 @@ This iteration of my notes is for long-term reference. I will keep my original n
 - =LEFT(cell, char_count), =MID(cell, start_position, steps)
 - IFERROR(try, except)
 - =SPARKLINE(range, {'charttype','bar';'color','red';'max',max(range); etc}) ----- creates a red in-cell bar chart of data from range with maxed bar when reaching max value of range
-### Power BI
+
+## Power BI
 - From a cursory look, a mix of Excel and some table join functionality. Popular software.
-### Sequel ACE
+
+## Sequel ACE
 - Excellent interface for SQL database reads and querying
-### VS Code
+
+## VS Code
 - One-stop interface for file editing and viewing
-### Tableau Public
+
+## Tableau Public
 - Excellent software for interactive visualizations and dashboards
 
-## Acquisition & Preparation
-### Tidying Data
-- https://vita.had.co.nz/papers/tidy-data.pdf
-- One value per cell: split out combined data, handle nulls
-### Spark
-### SQL
-### APIs
-### Scraping
-### Kaggle
-### Python
-### NumPy
-### Pandas
-### REGEX
+<!-- -------------------------------- Acquisition & Preparation ---------------------------------- -->
 
-## Exploration & Delivery
-### Splitting Data
-### Uni-, Bi-, Multi-variate Exploration
-### Feature Engineering
-### Seaborn & Matplotlib
-### SciPy
+# Acquisition & Preparation
+- Tidying Data: https://vita.had.co.nz/papers/tidy-data.pdf
+    * One value per cell: split out multi-value cells, 'melt' one-hot columns into single column, handle nulls
 
-## Prediction
-### Feature Preparation
-#### Encoding
-#### Scaling
-### Classification
-#### SMOTE
-### Regression
-### Time-Series
-### Algorithmic Clustering
-### Natural Language Processing (NLP)
-### Anomaly Detection
-### Deep Learning
-### Computer Vision
-### Cross-Validation
+## Apache Spark
+- Computational cluster manager designed to handle data that lone computers have trouble with
+    * Velocity (fast gathering, lots of data, streaming)
+    * Volume (large data, bigger than memory or bigger than storage)
+    * Veracity (reliability of data, esp. missing data)
+    * Variety (different sources, unstructured data, data isn't uniform)
+- Coordinates work for clusters via Java Virtual Machine (JVM) using the Scala programming language
+- The 'pyspark' library translates Python to Scala, runs JVM, and performs JVM requests all in one library
+- Can run 100% locally (coordinates computer cores) but is often overkill for one-computer tasks
+- Is 'lazy'- adds to, optimizes queries until the execution order is given
+- Alternatives: Hadoop, Dask
+### PySpark Basics
+- import pyspark; spark = pyspark.sql.SparkSession.builder.getOrCreate(); ----- import, set up JVM
+- from pyspark.sql.functions import * ----- import all functions, overwrite some regular python ones
+- df = spark.createDataFrame(pandas_df); df = spark.read.csv('filepath'); ----- create spark dataframes
+- df.show() ----- print operation (returns None), original data doesn't change unless: df = df2; df2.show()
+    * vertical=True to do same as pandas df.T
+    * combine vertical=True with truncate=False to see each row's values in a separate section
+- df.head() ----- returns Spark row objects in a list
+    * df[0] ----- return first row object
+    * df[0].col4 ----- return value at first row, col4
+- df.toPandas() ----- exactly what you think it is, be careful!
+- df.count(), len(df.columns) ----- length, width of dataframe
+- df.explain() ----- check Spark's intentions with current setup (not yet actioned)
+    * Used mainly to diagnose performance issues; orders operations from bottom-upward
+### PySpark Column Manipulation
+- df.select('x', 'y'), df.select('*') ----- SQL-ish column selection
+- df.x.cast('string') ----- cast column as string
+- df.withColumn('year', year(df.date)).sort(col("year").asc()).show() ----- return dataframe with 'year' column sorted in ascending order
+- df = df.withColumnRenamed("colname_before", "colname_after") ----- rename column
+- df.orderBy(df.x) --- df.sort(df.x.asc()) --- df.sort(col('x').desc(), desc(df.y)) ---- sorting
+- col = (df.x + df.y).alias('z'); df.select(*, col).show() ----- return df with new 'z' column for x + y
+- df.selectExpr('*', 'x + y as z').show() ----- same operation as line above
+- tips.select('*', expr('total_bill / size AS price_per_person')).show()
+- df = df.withColumn("col1", expr('col1 == condition')).withColumn("col2", expr('col2 == condition')) ------ set columns to bool values on the conditions
+- df.select(when(df.x > 10, 'gt 10').otherwise('not gt 10')) ----- if true then set value to first, if false then set value to second for df.x (use an alias)
+- df.na.drop() --- df.na.drop(subset=['x', 'y']) ----- drop nulls
+- df.na.fill(0) --- df.na.fill(0, subset=['x', 'y']) ----- fill nulls
+- df1.join(df2, "joiner_col", "left").drop(col2.joiner_col).drop(col1.joiner_col) ----- join, drop joiner cols
+### PySpark Filtering
+- df.where(df.x < 10) --- df.filter(df.x < 10) ----- only return True rows, same thing
+    * df.where(df.x > 10).where(df.y > 10) ----- AND logic
+    * df.where((df.x > 10) | (df.y > 10)) ----- OR logic
+### PySpark Datetime
+- month('date_colname') ----- will do what you expect for all dates in column
+- df.withColumn("col1", to_timestamp("col1", "M/d/yy H:mm")) ----- cast as datetime using specified date format
+- df = df.withColumn("date_calc_col", datediff(current_timestamp(), "datecol")) ----- time difference from datecol value to now
+### PySpark Functions for String Columns
+- df.select(concat(lit('x:', df.x))) ----- column values of 'x: value' for values in df.x
+- df = df.withColumn("col1", trim(lower(df.col1))) ----- deletes start and finish whitespace
+- regexp_extract('col', re, g) ----- extract capture group g from re using col
+- regexp_replace(col, re, repl) ----- replace occurences of re with repl using col
+- df = df.withColumn("col1", format_string("%03d", col("col1").cast("int")),) ----- formatting
+    * require 3 digits in values, if shorter, put 0 in front as needed to get to 3
+### PySpark Aggregation
+- df.select(sum(df.x)), df.select(mean(df.x)) ----- sum, mean all values in column
+- df.groupBy("col1", "col2").count().show() ----- basic groupby
+- df.groupBy('g').agg(mean(df.x), min(df.y), ...) ----- normal
+- df.crosstab('g1', 'g2') ----- count aggregation of observations using g1 and g2 as rows, columns
+- df.groupBy('g1').pivot('g2').agg(mean('x')) ----- normal
+- df.createOrReplaceTempView('df') --- spark.sql(''' SELECT * FROM df ''') ----- SQL
+### PySpark Data Split
+- train, test = df.randomSplit([0.8, 0.2], seed=123) ----- split data into train and test
+- train, validate, test = df.randomSplit([0.6, 0.2, 0.2], seed=123) ----- split data into train, val, test
+- print('train', train.count(), 'colname', len(train.columns)) ----- print shape of train split
+### PySpark to Exploration
+- Use Spark to do the heavy lifting then use Pandas dataframes for visualization/otherwise
+- pandas_df = train.groupBy("colname").count().toPandas() ----- Spark to do groupby, then pandas for viz
+    * can chain pandas methods after toPandas() like this: spark_df.toPandas().sort_values()
+- df.sample(fraction=0.01, seed=).toPandas() ----- Get data sample for pandas work
+### PySpark Advanced Read Write
+- spark.read.csv('file.csv', sep=',', header=True, inferSchema=True)
+    * inferSchema just reads the file as-is and guesses schema; header is default False for spark
+- spark.read.csv("source.csv", header=True, schema=schema) ----- sets schema from a variable
+    * schema = StructType([StructField("col", StringType()), StructField("col", StringType()),])
+- df.write.json("df_json", mode="overwrite")
+    * write df to a Spark-distributed JSON file, one way to do it
+- df.write.format("csv").mode("overwrite").option("header", "true").save("df_csv")
+    * write df to a Spark-distributed CSV file, another way to do it
+- df.printSchema() ----- check column dtypes
+
+## SQL
+- Structured Query Language used to query databases like MySQL for tabular data
+### Simple Records Query
+- show databases; use database_name; show tables; describe table_name;
+- select date_col, col1 as Col1, col2, col3, 
+- IF(date_col > curdate(), True, False) as "Future"
+- case 
+    * when year(date_col) like '19%%' then '1900s' 
+    * when year(date_col) like '20%' then '2000s' 
+    * else 'bad_input' 
+    * end as Century
+- from table_name 
+- join table_2 using(date_col)
+- where (col2 between 10 and 20) and (col2 not 15) and (col3 in ('irene', 'layla')) and (year(date_col) like '201%')
+- order by col2 asc, Col1 desc
+- limit 100;
+### Aggregation Query
+- select col1, AVG(col2) as average from table group by col1 having average >= 100;
+### Subquery
+- use employees;
+- select concat(first_name, " ", last_name) as Name 
+- from employees 
+- where 
+    * hire_date = (select hire_date from employees where emp_no = 101010) 
+	* and
+	* emp_no in (select emp_no from dept_emp where to_date > curdate());
+### Temp Table Creation
+- use employees;
+- create temporary table germain_1457.employees_with_departments as
+- select first_name, last_name, departments.dept_name
+- from employees
+- join dept_emp using(emp_no)
+- join departments using(dept_no);
+
+## APIs
+
+## Scraping
+
+## Kaggle
+
+## Python
+
+## NumPy
+
+## Pandas
+
+## REGEX
+
+<!-- -------------------------------- Exploration & Delivery ---------------------------------- -->
+
+# Exploration & Delivery
+
+## Splitting Data
+
+## Uni-, Bi-, Multi-variate Exploration
+
+## Feature Engineering
+
+## Seaborn & Matplotlib
+
+## SciPy
+
+<!-- --------------------------------- Prediction --------------------------------- -->
+
+# Prediction
+
+## Feature Preparation
+### Encoding
+### Scaling
+
+## Classification
+### SMOTE
+
+## Regression
+
+## Time-Series
+
+## Algorithmic Clustering
+
+## Natural Language Processing (NLP)
+
+## Anomaly Detection
+
+## Deep Learning
+
+## Computer Vision
+
+## Cross-Validation
