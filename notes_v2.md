@@ -71,6 +71,8 @@ This iteration of my notes is for long-term reference. I will keep my original n
 <!-- -------------------------------- Acquisition & Preparation ---------------------------------- -->
 
 # Acquisition & Preparation
+
+## Tidy Data
 - Tidying Data: https://vita.had.co.nz/papers/tidy-data.pdf
     * One value per cell: split out multi-value cells, 'melt' one-hot columns into single column, handle nulls
 
@@ -205,21 +207,29 @@ This iteration of my notes is for long-term reference. I will keep my original n
     * '/api/v1/items/1' ----- Endpoints are prefixed with /api/{version} where version is "v1", then endpoints (essentially directories or folders) and page navigation
     * Can iterate through each page in a loop and pull all information with ['next_page'] and ['max_page'] until next_page hits 'None'
 
-## Scraping
-- [url].com/robots.txt ----- see if a site is OK with scraping or not
-- Keep timestamps on your work, websites change!!
-- requests ----- HTTP requests
-- bs4 ----- BeautifulSoup for HTML parsing 
-    - Excellent BeautifulSoup deep-dive: https://www.crummy.com/software/BeautifulSoup/bs4/doc/
-- selenium ----- Automated browser work using Selenium WebDriver
+## Web Scraping
+- Overall tips:
+    * [url].com/robots.txt ----- see if a site is OK with scraping or not
+    * Keep timestamps on your work, websites change!!
+- Requests, BeautifulSoup, and Selenium
+    * requests ----- HTTP requests
+    * bs4 ----- BeautifulSoup for HTML parsing, deep dive: https://www.crummy.com/software/BeautifulSoup/bs4/doc/
+    * selenium ----- Automated browser work using Selenium WebDriver
 ### Basic HTML
 - <head></head> shows meta-information, like <title></title> (browser tab info)
 - <body></body> is the contents of the page (what the client displays)
 - <h1 class='class_name'></h1> is an element, class is attribute (defines what kind of element it is)
     * We often identify where to scrape by looking at this class section
 - <div> is another element with tags <p></p> and <a></a> and others
+### HTTP Requests
+- import requests
+- response = requests.get('https://web-scraping-demo.zgulde.net/news')
+    * response.ok, response.status_code ----- check if request worked
+- soup = BeautifulSoup(response.text)
 ### Parsing HTML with Beautiful Soup
+- from bs4 import BeautifulSoup
 - soup.prettify() ----- try to print the HTML in a neat format for initial understanding
+- tag['id'] ----- get value of 'id' attr, use dict indexing on any single tag for maximum effect
 - soup.select("body a") ----- look for <a></a> tags somewhere inside 'body'
 - soup.select("p > a") ----- look for 'a' element *directly* below 'p' element
 - soup.select("p #link1") ----- look for any element with attribute value "link1" below 'p' element
@@ -237,18 +247,27 @@ This iteration of my notes is for long-term reference. I will keep my original n
 - data_soup.find_all(attrs={"data-foo": "value"}) ----- return tags that match attribute and attr value
 - [el.attrs['od'] for el in soup.select('*') if 'id' in el.attrs] ----- 'od' attr values if tag has 'id' attr
 - soup.select('p').attrs['href'] ----- return content of 'href' attr for 'p' tags
-### Example HTML Scraping with BeautifulSoup
-- import requests
-- from bs4 import BeautifulSoup
-- response = requests.get('https://web-scraping-demo.zgulde.net/news')
-- soup = BeautifulSoup(response.text)
-- articles = soup.select('.grid.gap-y-12 > div')
-- df = pd.DataFrame({'title':[], 'date':[], 'author':[]})
-- for index, article in enumerate(articles):
-    * title = article.h2.text
-    * date, author = article.select('.italic')[0].find_all('p')
-    * df.loc[index] = [title, date.text, author.text]
 ### Controlling Chrome using Selenium
+- from selenium import webdriver
+- driver = webdriver.Chrome(PATH) ----- PATH being the location of chromedriver.exe, this launches Chrome
+- driver.get(url) ----- navigate Chrome to url
+- soup = BeautifulSoup(driver.page_source) ----- convert current page to BeautifulSoup document (HTML)
+#### Specific Selenium Work
+- from selenium.webdriver.common.by import By ----- specify tags like By.ID, needed for some webdriver stuff
+- from selenium.webdriver.common.keys import Keys ----- use Keys.TAB and otherwise to send keyboard inputs
+- from selenium.webdriver.support.ui import WebDriverWait  ----- wait until specified element has loaded
+    * from selenium.webdriver.support import expected_conditions as EC
+    * myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.ID, 'IdOfMyElement')))
+- driver.find_elements_by_xpath('//*[@id="q_all"]') ----- return all tags that match the given XPATH
+- from selenium.webdriver.common.action_chains import ActionChains
+    * actions = ActionChains(driver) ----- create new action chain for webdriver called 'actions'
+    * actions.move_to_element(driver.find_element_by_xpath('//*[@id="q_type"]/div[1]')).click().perform() ----- chain actions to move to dropdown box at this XPATH, click box, perform
+    * actions.move_to_element(driver.find_element_by_xpath('//*[@id="q_type"]/div[3]/div[2]')).click().perform() ----- continuing on previous chain, click the designated dropdown item
+### Saving Images to Local Drive
+- import shutil
+- r = requests.get(image_url, stream = True) ----- request the zipped image into cache as 'r' variable
+- r.raw.decode_content = True ----- set the 'decode_content' of file.raw as True to unzip file when storing
+- with open('image.jpeg','wb') as f: shutil.copyfileobj(r.raw, f) ----- save unzipped image data to 'image.jpeg'
 
 ## Kaggle
 
