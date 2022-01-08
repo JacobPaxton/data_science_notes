@@ -15,6 +15,7 @@ This iteration of my notes is for long-term reference. I will keep my original n
 - Log in to a SQL server: -u username -p -h ip_address ----- -p prompts for a password
 - Create a new file using VS Code: code filename.filetype
 - Launch Jupyter Notebook server: jupyter notebook
+- Multi-line cursor: Hold command, clickdrag
 
 ## Git
 - git clone github_repo_ssh_link
@@ -28,6 +29,11 @@ This iteration of my notes is for long-term reference. I will keep my original n
 
 ## Jupyter Notebook
 - Excellent interface for iPython with easy-to-use UI
+- Command mode for cell operations, edit mode for editing lines
+- Command mode: dd for cell deletion, y for code cell, m for markdown cell
+- Edit mode: TAB for autocomplete of methods/variables/filenames, Shift TAB for full context at cursor location
+- Edit mode: Split cell into two cells at cursor with option shift -
+- Hold option and left click to drag multi-line cursor
 
 ## Excel & Google Sheets
 - Call a function in a cell: =function_name_all_caps()
@@ -268,8 +274,6 @@ This iteration of my notes is for long-term reference. I will keep my original n
 - r = requests.get(image_url, stream = True) ----- request the zipped image into cache as 'r' variable
 - r.raw.decode_content = True ----- set the 'decode_content' of file.raw as True to unzip file when storing
 - with open('image.jpeg','wb') as f: shutil.copyfileobj(r.raw, f) ----- save unzipped image data to 'image.jpeg'
-
-## Kaggle
 
 ## Python
 
