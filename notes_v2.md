@@ -3,14 +3,47 @@ My original ds_notes.md was intended to quickly capture curriculum into a digest
 
 This iteration of my notes is for long-term reference. I will keep my original notes, and I have access to the curriculum itself, so this version will have a different format. Instead of packing information on tools, this notes format will pack information on the workflow elements.
 
+
+
+
+
+
+<!-- 
+#     #                            
+##    #  ####  ##### ######  ####  
+# #   # #    #   #   #      #      
+#  #  # #    #   #   #####   ####  
+#   # # #    #   #   #           # 
+#    ## #    #   #   #      #    # 
+#     #  ####    #   ######  ####  
+-->
+
 # Notes
 
+<!-- Needs work -->
 ## Advice
 - Zach: Consistency > Intensity, Motivation is important, Doing data science > learning about data science, Publish!, If it's worth doing, it's worth getting started
 - Zach: ask in interview "what does professional development look like for your employees?"
 
+<!-- Needs work -->
 ## Storytelling
 - Data requires velocity to be useful
+- Finding relationships and stories in data, documenting is and isn'ts
+- Goal is to remove redundant/unimportant variables for the story
+- Hypothesize and visualize loop, and if that isn't enough, run statistical tests
+- "What data sources do we have, what are customers doing, how are we reaching people..."
+- "What is our observation???"
+    * titanic_db observations are... people on the titanic.
+### Trello
+- Requirements Stage: Talk with stakeholders about their requirements and a timeline
+- Decision Stage: Decide which requirements you will be able to complete
+    * Goal is to complete *all* user requirements for this "sprint" (the timeline)
+    * You choose how in-depth to go for each requirement
+### Stakeholders
+- Move functions and analysis to separate .ipynb as required for stakeholders
+    * Stakeholders want just the end product: give them it
+    * Stakeholders want the models and end product: give them it
+    * Stakeholders want everything: give them everything
 ### Visualization Considerations
 - Expert-level visualizations != presentation-level visualization
     * The pivot tables are more appropriate for Appendix
@@ -32,29 +65,29 @@ This iteration of my notes is for long-term reference. I will keep my original n
 - Start with overview in presentation, dissect the focus later (start with churn v not churned, then dive into churn data)
 - Relate the problem to the audience's interests and focus for maximum effect
 
-## Stakeholders
-- Move functions and analysis to separate .ipynb as required for stakeholders
-    * Stakeholders want just the end product: give them it
-    * Stakeholders want the models and end product: give them it
-    * Stakeholders want everything: give them everything
-### Trello
-- Requirements Stage: Talk with stakeholders about their requirements and a timeline
-- Decision Stage: Decide which requirements you will be able to complete
-    * Goal is to complete *all* user requirements for this "sprint" (the timeline)
-    * You choose how in-depth to go for each requirement
-
+<!-- Needs work -->
 ## Tidy Data
 - Tidying Data: https://vita.had.co.nz/papers/tidy-data.pdf
 - One value per cell: split out multi-value cells, 'melt' one-hot columns into single column, handle nulls
 
-<!-- ------------------------------------------------------------------------------- -->
-<!-- ------------------------------------------------------------------------------- -->
-<!-- --------------------------------- Software ------------------------------------ -->
-<!-- ------------------------------------------------------------------------------- -->
-<!-- ------------------------------------------------------------------------------- -->
+
+
+
+
+
+<!-- 
+ #####                                                  
+#     #  ####  ###### ##### #    #   ##   #####  ###### 
+#       #    # #        #   #    #  #  #  #    # #      
+ #####  #    # #####    #   #    # #    # #    # #####  
+      # #    # #        #   # ## # ###### #####  #      
+#     # #    # #        #   ##  ## #    # #   #  #      
+ #####   ####  #        #   #    # #    # #    # ###### 
+-->
 
 # Software
 
+<!-- Polished -->
 ## Terminal
 - mkdir, rmdir, rm, cp, mv, cd, ls, pwd, cwd
 - curl -O url_address ----- copy down a file from a URL (often used for raw Github files)
@@ -63,6 +96,7 @@ This iteration of my notes is for long-term reference. I will keep my original n
 - Launch Jupyter Notebook server: jupyter notebook
 - Multi-line cursor: Hold command, clickdrag
 
+<!-- Polished -->
 ## Git
 - git clone github_repo_ssh_link
 - git pull, git status, git add, git commit -m 'message', git push
@@ -73,6 +107,7 @@ This iteration of my notes is for long-term reference. I will keep my original n
     3. push from new folder
     4. delete old folder using rm -rf folder_name
 
+<!-- Polished -->
 ## Jupyter Notebook
 - Excellent interface for iPython with easy-to-use UI
 - Command mode for cell operations, edit mode for editing lines
@@ -81,6 +116,7 @@ This iteration of my notes is for long-term reference. I will keep my original n
 - Edit mode: Split cell into two cells at cursor with option shift -
 - Hold option and left click to drag multi-line cursor
 
+<!-- Polished -->
 ## Excel & Google Sheets
 - Spreadsheets with extra functionality
 - Use Conditional Formatting and Alternating Colors for readability
@@ -116,15 +152,19 @@ This iteration of my notes is for long-term reference. I will keep my original n
 - =INDEX(range, MATCH(string_to_match, range))
 - =SPARKLINE(range, {'charttype','bar';'color','red';'max',max(range); etc}) ----- creates a red in-cell bar chart of data from range with maxed bar when reaching max value of range
 
+<!-- Needs work -->
 ## Power BI
 - From a cursory look, a mix of Excel and some table join functionality. Popular software.
 
+<!-- Needs work -->
 ## Sequel ACE
 - Excellent interface for SQL database reads and querying
 
+<!-- Needs work -->
 ## VS Code
 - One-stop interface for file editing and viewing
 
+<!-- Needs work -->
 ## Tableau Public
 - Excellent software for interactive visualizations and dashboards
 - Public is free but cannot privately save your work (publishes everything)
@@ -167,12 +207,161 @@ This iteration of my notes is for long-term reference. I will keep my original n
 - Captions are basically named slides
 - Can drag text window from bottom left into slide and right click-edit it
 
-<!-- ------------------------------------------------------------------------------- -->
-<!-- ------------------------------------------------------------------------------- -->
-<!-- ---------------------------- SQL and Apache Spark ----------------------------- -->
-<!-- ------------------------------------------------------------------------------- -->
-<!-- ------------------------------------------------------------------------------- -->
 
+
+
+
+<!-- 
+######  #######  #####  ####### #     # 
+#     # #       #     # #        #   #  
+#     # #       #       #         # #   
+######  #####   #  #### #####      #    
+#   #   #       #     # #         # #   
+#    #  #       #     # #        #   #  
+#     # #######  #####  ####### #     # 
+-->
+
+# Regular Expressions (REGEX)
+
+<!-- Polished -->
+## REGEX
+- Language for parsing and slicing strings to capture substrings
+### REGEX Metacharacters
+- | Anything: .                | Alphanumeric: \w \W | Whitespace: \s \S | Digit: \d \D  |
+- | Zero or more (optional): * | One or more: +      | Optional: ?       |
+- | {5} Repeat exactly 5 times | {3,6} Min 3, Max 6  | {3,} At least 3 times             |
+- | Anchor front: ^            | Anchor back: $      | Word boundary: \b |
+- | Capture group: ()  (?P<colname>regex_exp) |
+### REGEX Queries
+- re.search(regexg, subject) ----- random search, report first-found start/stop index and matched string
+- re.match(regexp, subject) ----- re.search but from beginning
+- re.findall(regexp, subject) ----- report all matches using list
+- re.sub(regexp, sub_in, subject) ----- return string with subbed-in substring
+- df.colname.str.extract(regexp) ----- return dataframe where each column is one capture group's results
+#### REGEX Query Options
+- re.IGNORECASE is as expected; re.MULTILINE is new query per line; re.VERBOSE is ignore whitespace
+- use | to add multiple flags, ex: re.findall(regexp, subject, re.IGNORECASE | re.MULTILINE)
+### REGEX examples
+- r'a' ----- r marks string as a raw string, all characters taken as-is
+- r'\w\w' ----- find two in-sequence alphanumeric chars
+    * 'abc 123' becomes ['ab','12'] because it consumes 'ab' and '12', so no 'bc' or '23'
+- r'\w+' ----- capture max combo of each alphanumeric
+- r'.*' ----- everything. only use asterisks with capture groups, and when you don't know if chars will be there
+- r'\w{3,6}' ----- only capture when 3 alphanumerics in sequence and as many as possible up to 6
+- r'(\w)(\w)?' ----- optional capture group
+- r'[a1][b2][c3]' ----- 'abc 123' returns ['abc','123'] and 'a2c 1b3' returns ['a2c', '1b3']
+
+
+
+
+
+<!-- 
+   #    ######  ###             ##        #####                                              
+  # #   #     #  #   ####      #  #      #     #  ####  #####    ##   #####  # #    #  ####  
+ #   #  #     #  #  #           ##       #       #    # #    #  #  #  #    # # ##   # #    # 
+#     # ######   #   ####      ###        #####  #      #    # #    # #    # # # #  # #      
+####### #        #       #    #   # #          # #      #####  ###### #####  # #  # # #  ### 
+#     # #        #  #    #    #    #     #     # #    # #   #  #    # #      # #   ## #    # 
+#     # #       ###  ####      ###  #     #####   ####  #    # #    # #      # #    #  ####  
+ -->
+
+# APIs & Scraping
+
+<!-- Polished -->
+## APIs
+- Application Programming Interface: a way to interact with 'owned' data
+    * has rules and ways to interact
+    * you can scrape from the user level, but it's often better to interact with APIs
+- REST, RESTful: a standardized structure for URLs
+- (RESTful) JSON API: an API where the URLs follow REST and the communication with the server is in JSON format
+### RESTful JSON APIs
+- Interfacing is done through HTTP requests
+- import requests
+- response = requests.get('http_link') ----- returns object for server response like 404 and 500
+    * response.ok, response.status_code, response.text
+- response.text on requests.get('https://swapi.dev/api/people/5') will give data on Leia from Star Wars in the form of JSON dict (name, height, mass, hair/skin/eye color, etc)
+- requests.get(http_url + '/documentation').json()['payload'] for http_url='https://python.zgulde.net' will give 'endpoints', other APIs give different stuff on a different link (maybe) using a different JSON container
+    * '/api/v1/items/1' ----- Endpoints are prefixed with /api/{version} where version is "v1", then endpoints (essentially directories or folders) and page navigation
+    * Can iterate through each page in a loop and pull all information with ['next_page'] and ['max_page'] until next_page hits 'None'
+
+<!-- Polished -->
+## Web Scraping
+- Overall tips:
+    * [url].com/robots.txt ----- see if a site is OK with scraping or not
+    * Keep timestamps on your work, websites change!!
+- Requests, BeautifulSoup, and Selenium
+    * requests ----- HTTP requests
+    * bs4 ----- BeautifulSoup for HTML parsing, deep dive: https://www.crummy.com/software/BeautifulSoup/bs4/doc/
+    * selenium ----- Automated browser work using Selenium WebDriver
+### Basic HTML
+- <head></head> shows meta-information, like <title></title> (browser tab info)
+- <body></body> is the contents of the page (what the client displays)
+- <h1 class='class_name'></h1> is an element, class is attribute (defines what kind of element it is)
+    * We often identify where to scrape by looking at this class section
+- <div> is another element with tags <p></p> and <a></a> and others
+### HTTP Requests
+- import requests
+- response = requests.get('https://web-scraping-demo.zgulde.net/news')
+    * response.ok, response.status_code ----- check if request worked
+- soup = BeautifulSoup(response.text)
+### Parsing HTML with Beautiful Soup
+- from bs4 import BeautifulSoup
+- soup.prettify() ----- try to print the HTML in a neat format for initial understanding
+- tag['id'] ----- get value of 'id' attr, use dict indexing on any single tag for maximum effect
+- soup.select("body a") ----- look for <a></a> tags somewhere inside 'body'
+- soup.select("p > a") ----- look for 'a' element *directly* below 'p' element
+- soup.select("p #link1") ----- look for any element with attribute value "link1" below 'p' element
+- soup.find_all("b") ----- return list of <b></b> tags
+    - soup.find_all(["a","b"]) ----- return list of any <a></a> and <b></b> tags
+- soup.find_all(has_class_but_no_id) ----- return tags that are returned as True from function
+    * def has_class_but_no_id(tag): return tag.has_attr('class') and not tag.has_attr('id')
+    * soup.find_all(True) ----- return all tags
+- soup.find_all(id='link2') ----- search all tags with id attribute value of 'link2'
+    * soup.find_all(href=re.compile("elsie")) ----- search all tags with href containing 'elsie'
+    * soup.find_all(id=True) ----- return all tags that have the id attribute
+    * soup.find_all(class_=re.compile("itl")) ----- if searching by class, use class_
+- soup.select("p.strikeout.body") ----- search by contents of attrs for 'strikeout' and 'body' words
+- soup.find_all(string=re.compile("Dormouse")) ----- search string (ex: <b>string_here</b>) for existence of 'Dormouse'
+- data_soup.find_all(attrs={"data-foo": "value"}) ----- return tags that match attribute and attr value
+- [el.attrs['od'] for el in soup.select('*') if 'id' in el.attrs] ----- 'od' attr values if tag has 'id' attr
+- soup.select('p').attrs['href'] ----- return content of 'href' attr for 'p' tags
+### Controlling Chrome using Selenium
+- from selenium import webdriver
+- driver = webdriver.Chrome(PATH) ----- PATH being the location of chromedriver.exe, this launches Chrome
+- driver.get(url) ----- navigate Chrome to url
+- soup = BeautifulSoup(driver.page_source) ----- convert current page to BeautifulSoup document (HTML)
+#### Specific Selenium Work
+- from selenium.webdriver.common.by import By ----- specify tags like By.ID, needed for some webdriver stuff
+- from selenium.webdriver.common.keys import Keys ----- use Keys.TAB and otherwise to send keyboard inputs
+- from selenium.webdriver.support.ui import WebDriverWait  ----- wait until specified element has loaded
+    * from selenium.webdriver.support import expected_conditions as EC
+    * myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.ID, 'IdOfMyElement')))
+- driver.find_elements_by_xpath('//*[@id="q_all"]') ----- return all tags that match the given XPATH
+- from selenium.webdriver.common.action_chains import ActionChains
+    * actions = ActionChains(driver) ----- create new action chain for webdriver called 'actions'
+    * actions.move_to_element(driver.find_element_by_xpath('//*[@id="q_type"]/div[1]')).click().perform() ----- chain actions to move to dropdown box at this XPATH, click box, perform
+    * actions.move_to_element(driver.find_element_by_xpath('//*[@id="q_type"]/div[3]/div[2]')).click().perform() ----- continuing on previous chain, click the designated dropdown item
+### Saving Images to Local Drive
+- import shutil
+- r = requests.get(image_url, stream = True) ----- request the zipped image into cache as 'r' variable
+- r.raw.decode_content = True ----- set the 'decode_content' of file.raw as True to unzip file when storing
+- with open('image.jpeg','wb') as f: shutil.copyfileobj(r.raw, f) ----- save unzipped image data to 'image.jpeg'
+
+
+
+
+
+<!-- 
+ #####   #####  #            ##        #####                              
+#     # #     # #           #  #      #     # #####    ##   #####  #    # 
+#       #     # #            ##       #       #    #  #  #  #    # #   #  
+ #####  #     # #           ###        #####  #    # #    # #    # ####   
+      # #   # # #          #   # #          # #####  ###### #####  #  #   
+#     # #    #  #          #    #     #     # #      #    # #   #  #   #  
+ #####   #### # #######     ###  #     #####  #      #    # #    # #    # 
+-->
+
+<!-- Polished -->
 ## SQL
 - Structured Query Language used to query databases like MySQL for tabular data
 - SQL databases are usually hosted on beefy systems, so doing processing in SQL can be a lot faster than doing it on a local machine using Python
@@ -208,6 +397,7 @@ This iteration of my notes is for long-term reference. I will keep my original n
 - join dept_emp using(emp_no)
 - join departments using(dept_no);
 
+<!-- Polished -->
 ## Apache Spark
 - Computational cluster manager designed to handle data that lone computers have trouble with
     * Velocity (fast gathering, lots of data, streaming)
@@ -289,14 +479,22 @@ This iteration of my notes is for long-term reference. I will keep my original n
     * write df to a Spark-distributed CSV file, another way to do it
 - df.printSchema() ----- check column dtypes
 
-<!-- ------------------------------------------------------------------------------- -->
-<!-- ------------------------------------------------------------------------------- -->
-<!-- ---------------------------- Python, NumPy, Pandas ---------------------------- -->
-<!-- ------------------------------------------------------------------------------- -->
-<!-- ------------------------------------------------------------------------------- -->
+
+
+
+
+<!-- 
+#####  #   # ##### #    #  ####  #    #             #    # #####              #####  #####  
+#    #  # #    #   #    # #    # ##   #             ##   # #    #             #    # #    # 
+#    #   #     #   ###### #    # # #  #    #####    # #  # #    #    #####    #    # #    # 
+#####    #     #   #    # #    # #  # #             #  # # #####              #####  #    # 
+#        #     #   #    # #    # #   ##             #   ## #                  #      #    # 
+#        #     #   #    #  ####  #    #             #    # #                  #      #####  
+ -->
 
 # Python, NumPy, Pandas
 
+<!-- Polished -->
 ## Python
 - Python Standard Library: https://docs.python.org/3/library/
 ### Native Python
@@ -311,6 +509,7 @@ This iteration of my notes is for long-term reference. I will keep my original n
 - food_list.sort(key=lambda x: len(x) * -1) ----- sort food_list by descending string lengths
     * Use lambda to create one-time functions or short functions
 
+<!-- Polished -->
 ## NumPy
 - Arrays!
 - Excellent library for *numerical* data, especially w/ 3+ dimensions, and generating pseudo numbers for testing
@@ -329,6 +528,7 @@ This iteration of my notes is for long-term reference. I will keep my original n
 - df['over_100'] = np.where(df.col > 100, 'me_true', 'me_false')
 - np.set_printoptions(suppress=True) ----- suppress scientific notation
 
+<!-- Polished -->
 ## Pandas
 - Series and Dataframes!
 - Excellent library for tabular data (2 dimensions), especially non-numerical data with labeled axes
@@ -408,133 +608,273 @@ This iteration of my notes is for long-term reference. I will keep my original n
 - df.index.tz, df.tz_localize('America/Chicago'), df.tz_localize(None) ----- timezones
 - df.resample('W').sum().colname.plot() ----- quick line plot of a column for weekly sum
 
-<!-- ------------------------------------------------------------------------------- -->
-<!-- ------------------------------------------------------------------------------- -->
-<!-- ------------------------- Regular Expressions (REGEX) ------------------------- -->
-<!-- ------------------------------------------------------------------------------- -->
-<!-- ------------------------------------------------------------------------------- -->
 
-# Regular Expressions (REGEX)
 
-## REGEX
-- Language for parsing and slicing strings to capture substrings
-### REGEX Metacharacters
-- | Anything: .                | Alphanumeric: \w \W | Whitespace: \s \S | Digit: \d \D  |
-- | Zero or more (optional): * | One or more: +      | Optional: ?       |
-- | {5} Repeat exactly 5 times | {3,6} Min 3, Max 6  | {3,} At least 3 times             |
-- | Anchor front: ^            | Anchor back: $      | Word boundary: \b |
-- | Capture group: ()  (?P<colname>regex_exp) |
-### REGEX Queries
-- re.search(regexg, subject) ----- random search, report first-found start/stop index and matched string
-- re.match(regexp, subject) ----- re.search but from beginning
-- re.findall(regexp, subject) ----- report all matches using list
-- re.sub(regexp, sub_in, subject) ----- return string with subbed-in substring
-- df.colname.str.extract(regexp) ----- return dataframe where each column is one capture group's results
-#### REGEX Query Options
-- re.IGNORECASE is as expected; re.MULTILINE is new query per line; re.VERBOSE is ignore whitespace
-- use | to add multiple flags, ex: re.findall(regexp, subject, re.IGNORECASE | re.MULTILINE)
-### REGEX examples
-- r'a' ----- r marks string as a raw string, all characters taken as-is
-- r'\w\w' ----- find two in-sequence alphanumeric chars
-    * 'abc 123' becomes ['ab','12'] because it consumes 'ab' and '12', so no 'bc' or '23'
-- r'\w+' ----- capture max combo of each alphanumeric
-- r'.*' ----- everything. only use asterisks with capture groups, and when you don't know if chars will be there
-- r'\w{3,6}' ----- only capture when 3 alphanumerics in sequence and as many as possible up to 6
-- r'(\w)(\w)?' ----- optional capture group
-- r'[a1][b2][c3]' ----- 'abc 123' returns ['abc','123'] and 'a2c 1b3' returns ['a2c', '1b3']
 
-<!-- ------------------------------------------------------------------------------- -->
-<!-- ------------------------------------------------------------------------------- -->
-<!-- ------------------------------- APIs & Scraping ------------------------------- -->
-<!-- ------------------------------------------------------------------------------- -->
-<!-- ------------------------------------------------------------------------------- -->
 
-## APIs
-- Application Programming Interface: a way to interact with 'owned' data
-    * has rules and ways to interact
-    * you can scrape from the user level, but it's often better to interact with APIs
-- REST, RESTful: a standardized structure for URLs
-- (RESTful) JSON API: an API where the URLs follow REST and the communication with the server is in JSON format
-### RESTful JSON APIs
-- Interfacing is done through HTTP requests
-- import requests
-- response = requests.get('http_link') ----- returns object for server response like 404 and 500
-    * response.ok, response.status_code, response.text
-- response.text on requests.get('https://swapi.dev/api/people/5') will give data on Leia from Star Wars in the form of JSON dict (name, height, mass, hair/skin/eye color, etc)
-- requests.get(http_url + '/documentation').json()['payload'] for http_url='https://python.zgulde.net' will give 'endpoints', other APIs give different stuff on a different link (maybe) using a different JSON container
-    * '/api/v1/items/1' ----- Endpoints are prefixed with /api/{version} where version is "v1", then endpoints (essentially directories or folders) and page navigation
-    * Can iterate through each page in a loop and pull all information with ['next_page'] and ['max_page'] until next_page hits 'None'
+<!-- 
+#     #                                                              ##    
+##   ##   ##   ##### #####  #       ####  ##### #      # #####      #  #   
+# # # #  #  #    #   #    # #      #    #   #   #      # #    #      ##    
+#  #  # #    #   #   #    # #      #    #   #   #      # #####      ###    
+#     # ######   #   #####  #      #    #   #   #      # #    #    #   # # 
+#     # #    #   #   #      #      #    #   #   #      # #    #    #    #  
+#     # #    #   #   #      ######  ####    #   ###### # #####      ###  # 
+                                                                           
+ #####                                            
+#     # ######   ##   #####   ####  #####  #    # 
+#       #       #  #  #    # #    # #    # ##   # 
+ #####  #####  #    # #####  #    # #    # # #  # 
+      # #      ###### #    # #    # #####  #  # # 
+#     # #      #    # #    # #    # #   #  #   ## 
+ #####  ###### #    # #####   ####  #    # #    # 
+ -->
 
-## Web Scraping
-- Overall tips:
-    * [url].com/robots.txt ----- see if a site is OK with scraping or not
-    * Keep timestamps on your work, websites change!!
-- Requests, BeautifulSoup, and Selenium
-    * requests ----- HTTP requests
-    * bs4 ----- BeautifulSoup for HTML parsing, deep dive: https://www.crummy.com/software/BeautifulSoup/bs4/doc/
-    * selenium ----- Automated browser work using Selenium WebDriver
-### Basic HTML
-- <head></head> shows meta-information, like <title></title> (browser tab info)
-- <body></body> is the contents of the page (what the client displays)
-- <h1 class='class_name'></h1> is an element, class is attribute (defines what kind of element it is)
-    * We often identify where to scrape by looking at this class section
-- <div> is another element with tags <p></p> and <a></a> and others
-### HTTP Requests
-- import requests
-- response = requests.get('https://web-scraping-demo.zgulde.net/news')
-    * response.ok, response.status_code ----- check if request worked
-- soup = BeautifulSoup(response.text)
-### Parsing HTML with Beautiful Soup
-- from bs4 import BeautifulSoup
-- soup.prettify() ----- try to print the HTML in a neat format for initial understanding
-- tag['id'] ----- get value of 'id' attr, use dict indexing on any single tag for maximum effect
-- soup.select("body a") ----- look for <a></a> tags somewhere inside 'body'
-- soup.select("p > a") ----- look for 'a' element *directly* below 'p' element
-- soup.select("p #link1") ----- look for any element with attribute value "link1" below 'p' element
-- soup.find_all("b") ----- return list of <b></b> tags
-    - soup.find_all(["a","b"]) ----- return list of any <a></a> and <b></b> tags
-- soup.find_all(has_class_but_no_id) ----- return tags that are returned as True from function
-    * def has_class_but_no_id(tag): return tag.has_attr('class') and not tag.has_attr('id')
-    * soup.find_all(True) ----- return all tags
-- soup.find_all(id='link2') ----- search all tags with id attribute value of 'link2'
-    * soup.find_all(href=re.compile("elsie")) ----- search all tags with href containing 'elsie'
-    * soup.find_all(id=True) ----- return all tags that have the id attribute
-    * soup.find_all(class_=re.compile("itl")) ----- if searching by class, use class_
-- soup.select("p.strikeout.body") ----- search by contents of attrs for 'strikeout' and 'body' words
-- soup.find_all(string=re.compile("Dormouse")) ----- search string (ex: <b>string_here</b>) for existence of 'Dormouse'
-- data_soup.find_all(attrs={"data-foo": "value"}) ----- return tags that match attribute and attr value
-- [el.attrs['od'] for el in soup.select('*') if 'id' in el.attrs] ----- 'od' attr values if tag has 'id' attr
-- soup.select('p').attrs['href'] ----- return content of 'href' attr for 'p' tags
-### Controlling Chrome using Selenium
-- from selenium import webdriver
-- driver = webdriver.Chrome(PATH) ----- PATH being the location of chromedriver.exe, this launches Chrome
-- driver.get(url) ----- navigate Chrome to url
-- soup = BeautifulSoup(driver.page_source) ----- convert current page to BeautifulSoup document (HTML)
-#### Specific Selenium Work
-- from selenium.webdriver.common.by import By ----- specify tags like By.ID, needed for some webdriver stuff
-- from selenium.webdriver.common.keys import Keys ----- use Keys.TAB and otherwise to send keyboard inputs
-- from selenium.webdriver.support.ui import WebDriverWait  ----- wait until specified element has loaded
-    * from selenium.webdriver.support import expected_conditions as EC
-    * myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.ID, 'IdOfMyElement')))
-- driver.find_elements_by_xpath('//*[@id="q_all"]') ----- return all tags that match the given XPATH
-- from selenium.webdriver.common.action_chains import ActionChains
-    * actions = ActionChains(driver) ----- create new action chain for webdriver called 'actions'
-    * actions.move_to_element(driver.find_element_by_xpath('//*[@id="q_type"]/div[1]')).click().perform() ----- chain actions to move to dropdown box at this XPATH, click box, perform
-    * actions.move_to_element(driver.find_element_by_xpath('//*[@id="q_type"]/div[3]/div[2]')).click().perform() ----- continuing on previous chain, click the designated dropdown item
-### Saving Images to Local Drive
-- import shutil
-- r = requests.get(image_url, stream = True) ----- request the zipped image into cache as 'r' variable
-- r.raw.decode_content = True ----- set the 'decode_content' of file.raw as True to unzip file when storing
-- with open('image.jpeg','wb') as f: shutil.copyfileobj(r.raw, f) ----- save unzipped image data to 'image.jpeg'
+# Matplotlib & Seaborn
 
-<!-- ------------------------------------------------------------------------------- -->
-<!-- ------------------------------------------------------------------------------- -->
-<!-- --------------------------------- Statistics ---------------------------------- -->
-<!-- ------------------------------------------------------------------------------- -->
-<!-- ------------------------------------------------------------------------------- -->
+## Overall Exploration Visualization Notes
+- Plot distribution for data wrangling to check for outliers (histogram, box-whisker), then remove outliers if necessary, then plot new distributions
+- a shotgun pattern in homoscedasticity check (pattern shows heteroscedasticity) isn't great, consider removing outliers or transforming... can take log of entire column (storing values in new column) then run log column through the model and visualization
+## Matplotlib Pyplot
+- The bread and butter of data visualizations in Python
+- Highly customizable, but needs a lot of work to be presentable
+- Push plots to scripts to make things easily repeatable
+- Visual walkthrough of everything-Pyplot: https://www.python-graph-gallery.com/all-charts/
+- Customization options: https://matplotlib.org/stable/tutorials/introductory/customizing.html
+### Pyplot Basics
+- import matplotlib.pyplot as plt
+- plt.show() ----- print the plot that was created up to that point
+    * JupyterNB doesn't need plt.show() most of the time but .py scripts always need it
+    * Loop chart creation per column by using plt.show() inside the loop
+- plt.hist(x) ----- plot histogram
+    * Create multiple plots before plt.show() to layer charts in one visual
+- df.plot.line() ----- put dataframe to a line plot
+    * Bar plot: df.column.value_counts().plot.barh()
+    * Customize: df.corr().style.background_gradient(vmin=-1, vmax=1, cmap='coolwarm_r').format('{:.3f}'.format)
+- plt.subplot(325) ----- 3 rows, 2 columns (6 charts), place chart in 5th position (bottom left)
+    * Index starts at 1 in top left, increases right, then next row below and rightward until complete
+    * plt.title() titles each individual charts, plt.suptitle() gives a title wrapping all titles
+- plt.rc('figure', figsize=(13,6)) ----- set configuration for figsize
+    * plt.rc('axes.spines', top=False, right=False), plt.rc('font', size=13) ----- set overall
+    * Consider creating a dictionary to save configuration(s)
+### Pyplot Charts
+- Line plot: plt.plot(x)
+- Solid under line: plt.fill_between(x, y)
+- Bar chart: plt.bar(), plt.barh()
+- Scatterplot: plt.scatter()
+#### Chart Parameters
+- Color: c -- Transparency: alpha -- Size: s -- Line type: ls -- Bins: bins
+### Pyplot Customization
+- Title: plt.title('title') ----- https://www.python-graph-gallery.com/190-custom-matplotlib-title
+- Annotate: plt.annotate() ----- https://www.python-graph-gallery.com/193-annotate-matplotlib-chart
+    * text='txt' - xy=(x,y) - xytext=(x,y) - arrowprops=dict(facecolor='black', shrink=0.05)
+- Fonts: https://www.python-graph-gallery.com/custom-fonts-in-matplotlib
+- Grid: plt.grid(True, axis='both') ----- background grid
+- Margins around subplots: plt.subplots_adjust(top=0.3)
+    * left=, bottom=, right=, top=, wspace=, hspace=
+- Styles: plt.style.use('style') ----- check styles with plt.style.available
+- Axis labels: plt.xlabel, ylabel, xticks, yticks, xlim, ylim, tick_params
+    * ax.set_xscale("log") or ax.set_yscale("log") when ax is defined to set axis to log scale
+- Legend: plt.legend() ----- https://www.python-graph-gallery.com/custom-legend-with-matplotlib
+### Pyplot Advanced
+- LateX Notation: Wrap math in dollar signs like $a^2$
+    * Character chart: https://www.caam.rice.edu/~heinken/latex/symbols.pdf
+    * Matplotlib walkthrough: https://matplotlib.org/stable/tutorials/text/mathtext.html
+- Can use tuple as first argument in ex: hist() to do side-by-side
+    * plt.hist((series1, series2), ...)
+- Change sizes of subplots: plt.subplot2grid((rows, cols), (row_index, col_index), rowspan=, colspan=)
+    * ax1 = plt.subplot2grid((2, 4), (0, 0), colspan=4)
+    * ax1.plot('x_values', 'y_values', data=df, marker='o', alpha=0.4)
+    * ax2 = plt.subplot2grid((2, 4), (1, 0), colspan=3)
+    * ax2.plot('x_values','z_values', data=df, marker='o', color="grey", alpha=0.3)
+    * ax3 = plt.subplot2grid((2, 4), (1, 3), colspan=1)
+    * ax3.plot('x_values','z_values', data=df, marker='o', color="orange", alpha=0.3)
+- Remove certain plots from subplots: ax.remove()
+
+<!-- Needs work -->
+## Matplotlib
+
+### Matplotlib Methods
+- plot
+    * defaults to line plot. plt.plot(x, y, c='color')
+    * scatter(), bar(), barh(), hist(), and more
+    * c= ----- color, can use alpha= to do transparency (0.0 - 1.0)
+    * s= ----- size of dots on scatterplot
+    * ls= ----- line type for line chart, ':' is dotted, '--' is dashed, etc
+    * bins=[list_of_cuts]
+    * align='left' ----- aligns to left
+    * edgecolor= ----- sets edge for the data (ex: border on bars in chart)
+- show()
+- title('title'), xlabel('clabel'), ylabel('ylabel')
+- xlim(bounds), ylim(bounds)
+- xticks(list_of_int_ticks, list_of_str_tick_names), yticks(list, list)
+    * rotation=num ----- rotate each tick num degrees
+- text(left_boundary_coords_for_txt, txt_to_place, fontsize=num, color='color')
+- annotate('text', xy=(coords_for_tip), xytext=(coords_for_left_bound), arrowprops={'key':'value'})
+- figure(figsize=(num_width, num_height))
+- legend(loc='upper right') ----- puts legend in upper right
+- savefig('name_of_my_new_figure') ----- generates .png of your figure
+- plt.subplot
+    * subplot(num_of_rows, num_of_cols, index_start_at_1)
+    * plt.plot(list, list)
+    * plt.title('title1')
+    * subplot(num_of_rows, num_of_cols, index_start_at_1)
+    * plt.plot(list, list)
+    * plt.title('title2')
+    * plt.tight_layout() ----- fixes spacing
+    * plt.suptitle('title') ----- super (wrapper) title for subplots
+    * plt.show() ----- gens 2 subplots, then plt.show() puts them next to each other
+
+<!-- Needs work -->
+## Seaborn
+- https://seaborn.pydata.org/generated/seaborn.set_style.html
+- sns.set_style('darkgrid')
+- sns.countplot() ----- categorical bins
+    * histogram is numerical bins, should only really be used on continuous data
+- sns.heatmap(df.corr(), cmap='coolwarm_r', vmin=-1, vmax=1, annot=True) ----- draw correlation heatmap with red negs blue pos
+- ax.xaxis.set_major_formatter(lambda x, pos: '{:.1f} m'.format(x / 1_000_000)) ... ax.set(xlabel='x2 (millions)') ----- change sci notation to millions... kinda cool
+- ax.xaxis.set_major_formatter('{:,.0f}'.format) ----- make x axis 100,000 ticks
+- ax.yaxis.set_major_formatter('{:.0%}'.format) ----- make y axis percentage
+- Library that builds on matplotlib and integrates well with pandas
+- Powerful in its defaults!
+- relplot, displot, catplot return figure-level objects using kind= , but of course you can declare the specific plot itself and return an axes-level object instead
+    * No advantage either way, just uses different syntax
+### Seaborn Syntax, Methods
+- import seaborn as sns
+- df = sns.load_dataset('dataset') ----- does same as pydataset
+- sns.relplot(x='col1', y='col2', data=df) ----- returns scatterplot for df using col1 for x axis and col2 for y axis
+    * once plotted, can use plt.title, plt.xlabel, etc as normal
+- sns.histplot(df.col_name, kde=True) ----- histogram (bar chart of frequency count) of col_name, with kernel density estimator
+- sns.boxplot(data=df) ----- box and whisker plot (inter-quartile range, quartiles, median, and outliers all on a plot)
+- sns.catplot(x=, y=, col=, col_wrap=, hue=, data=, kind=) ----- categorical plot (default is silo'd dot plot, can kind='count')
+- sns.heatmap(data, annot=True, cmap=plt.cm.Greens) ----- heatmap with annotations using the Greens color palette
+    * https://seaborn.pydata.org/tutorial/color_palettes.html
+- sns.set_palette("colorblind") ----- makes your stuff colorblind-friendly
+- sns.pairplot(df) ----- quickie for combinations of data in df
+- sns.jointplot(data=df, x=, y=) ----- attaches a histogram per axis for a scatterplot
+### Seaborn Arguments
+- col='col1' ----- chart for each unique value in col1
+- hue='col1' ----- separate color for each unique value in col1
+- style='col1' ----- changes style of plot point for each unique value in col1
+- kind='line' ----- draws a line to each plot point
+### Seaborn Accessors
+- You can use .axes or .fig to access, for example, sns.pairplot()
+    - sns.pairplot(arguments).axes ----- each graph in figure
+    - sns.pairplot(arguments).fig ----- figure as a whole (include all graphs)
+    - sns.pairplot(arguments).axes.flat ----- list of pointers for each graph
+    - for i in pairplot.axes.flat ----- access each pointer
+
+
+
+
+
+<!-- 
+#######                                                                 
+#       #    # #####  #       ####  #####    ##   ##### #  ####  #    #
+#        #  #  #    # #      #    # #    #  #  #    #   # #    # ##   #
+#####     ##   #    # #      #    # #    # #    #   #   # #    # # #  #
+#         ##   #####  #      #    # #####  ######   #   # #    # #  # #
+#        #  #  #      #      #    # #   #  #    #   #   # #    # #   ##
+####### #    # #      ######  ####  #    # #    #   #   #  ####  #    #
+-->
+
+# Exploration
+
+## Exploration Prep
+### Split Data
+- sklearn does randomization/stratification for you!
+    * Randomize entire dataset *before* splitting to remove potential bias (dataset potentially sorted)
+    * Make sure all splits include all options (stratify target)
+- Data prep parameters are calculated from *train*, this excludes unseen data, so don't calculate on whole dataset
+- from sklearn.model_selection import train_test_split ----- splits data in two sets
+- train_validate, test = train_test_split(df, test_size=0.2, random_state=123, stratify=df.colname)
+- train, validate = train_test_split(train_validate, test_size=.25, random_state=123, stratify=train.survived)
+### Null Imputation
+- from sklearn.impute import SimpleImputer ----- fills values by inference
+- imputer = SimpleImputer(strategy='most_frequent')
+    * fill with: 0, average, median, subgroup mean, most frequent value, build model to predict missing values, etc
+    * strategy='average' ----- fills with average
+    * will need to modify dataframes with impute results
+- train[['embark_town']] = imputer.fit_transform(train[['embark_town']])
+- validate[['embark_town']] = imputer.transform(validate[['embark_town']])
+- test[['embark_town']] = imputer.transform(test[['embark_town']])
+
+## Univariate Visualization
+### Univariate Stats
+- Focus on the target itself
+- sns.displot(x='colname', data=df) ----- quick distribution plot
+
+## Bivariate Exploration
+- Try out Maggie's explore.py or Pandas Profiling if you want a quick solution
+- Split data into categorical vars and quantitative vars
+    * cat_vars = ['var1', 'var2', 'var3', ...]
+    * quant_vars = ['var42', 'var67', ...]
+    * explore.explore_univariate(train_df, cat_vars, quant_vars) ----- builds visualization and statistics with columns var1, var2, var3, var42, var67, etc
+### Bivariate Stats
+- See how each feature relates to target
+- Same setup as univariate but with target variable (column) specified
+    * explore.explore_bivariate(train, target, cat_vars, quant_vars)
+- sns.heatmap(df.corr(), cmap='Greens', annot=True, vmin=0, vmax=1) ----- quick correlation chart
+    * If everything correlates mostly, then it's called "Multicolinearity"
+- df.sample(5, random_state=123).style.highlight_max(axis=0) ----- highlight max values per column
+
+## Multivariate Exploration
+### Multivariate Stats
+- Compare features in terms of target
+- Adding the target as color in Seaborn
+    * explore.explore_multivariate(train, target, cat_vars, quant_vars)
+
+<!-- Needs work -->
+## Feature Engineering
+- Determine which features to keep
+    * K Best and RFE
+    * Drop features based on domain knowledge
+    * Drop features that raise ethical issues
+    * Drop features that are too 'loud'
+    * Clean up remaining features
+    * Do analysis on features
+- Create features!!
+### Examples
+- train['newcol'] = pd.cut(train.colname, bins=[0,15,100], right=False, labels=[0,1])
+    * will need to amend train/validate/test datasets with 'newcol' and also cat_vars or quant_vars
+### Feature Engineering (Regression notes)
+- *Making* useful features for columns based on existing data
+    * k-best and rfe do not need to take in scaled data, just encoded data
+- Select K Best (SelectKBest, kbest) 
+    * f regression test, checks each feature in isolation, checks whether model performs better than baseline
+    * kbest = SelectKBest(f_regression, k=3) ----- returns top 3 'best' features using f regression
+    * kbest.fit(X_train_scaled, y_train)
+    * kbest.pvalues_
+    * kbest.get_support() ----- array showing which columns were chosen (True, False, True...)
+    * X_train.columns[kbest.get_support()] ----- shows column names
+    * X_kbest = kbest.transform(X_train_scaled) ----- if k=3, return top-3 columns
+- Recursive Feature Elimination (RFE, rfe) 
+    * fits model, eliminates worst performing features (more computationally expensive)
+        * Computational expense is largely driven by choice of estimator, simple estimator is recommended to quickly ascertain which features to use
+    * rfe = RFE(estimator=LinearRegression(), n_features_to_select=3) ----- top-3
+    * rfe.fit(X_train_scaled, y_train)
+    * rfe.get_support()
+    * X_train.columns[rfe.get_support()]
+    * pd.Series(rfe.ranking_, index=X_train.columns)
+    * **Great for determining features to further-investigate**
+
+
+
+
+
+<!-- 
+ #####                                                    
+#     # #####   ##   ##### #  ####  ##### #  ####   ####  
+#         #    #  #    #   # #        #   # #    # #      
+ #####    #   #    #   #   #  ####    #   # #       ####  
+      #   #   ######   #   #      #   #   # #           # 
+#     #   #   #    #   #   # #    #   #   # #    # #    # 
+ #####    #   #    #   #   #  ####    #   #  ####   ####  
+  -->
 
 # Statistics
 
+<!-- Polished -->
 ## Metrics
 - Keep your work inside of dataframes. Append calculations as new columns and build metrics dataframes.
 - Centering data ("Demeaning a vector") is important for taking data purely in its distance from the mean
@@ -542,6 +882,7 @@ This iteration of my notes is for long-term reference. I will keep my original n
 - Z-Score: statistical centering, using distance from the mean in standard deviations
     * zscore = (value - pop_mean) / stdev_size --- zscore = stats.zscore(value_list)
 
+<!-- Polished -->
 ## Hypothesis Testing
 - The science of significance
 - Understand the question and the data, create hypotheses, test, evaluate results, report findings
@@ -589,6 +930,7 @@ This iteration of my notes is for long-term reference. I will keep my original n
 - Correlation: corr, p = stats.pearsonr(x, y) or stats.spearmanr
     * Calculate corr itself: df.corr()
 
+<!-- Polished -->
 ## Probability
 - Chances and rates
 - Probability of outcome: P(outcome)
@@ -623,211 +965,29 @@ This iteration of my notes is for long-term reference. I will keep my original n
     * P(A) = recipe.pmf(A) ----- .pmf because of discrete values
 - Lots more distributions... check scipy documentation for stats module
 #### Methods for Theoretical Distributions
-- Chance of specific outcome: .pmf(discrete_value), and .pdf(continuous_value)
-- Proportion higher: .sf(number) = proportion_higher, opposite is .isf(proportion_higher) = number
-- Proportion lower/equal: .cdf(number) = proportion_lowequal, opposite is .ppf(proportion_lowequal) = number
+- Chance of specific outcome: **.pmf**(discrete_value), and **.pdf**(continuous_value)
+- Proportion higher: **.sf**(number) = proportion_higher, opposite is **.isf**(proportion_higher) = number
+- Proportion lower/equal: **.cdf**(number) = proportion_lowequal, opposite is **.ppf**(proportion_lowequal) = number
 
-<!-- ------------------------------------------------------------------------------- -->
-<!-- ------------------------------------------------------------------------------- -->
-<!-- --------------------------- Exploration & Delivery ---------------------------- -->
-<!-- ------------------------------------------------------------------------------- -->
-<!-- ------------------------------------------------------------------------------- -->
 
-# Exploration & Delivery
 
-## Scikit-Learn
-- Randomize entire dataset *before* splitting to remove potential bias (dataset potentially sorted)
-- Make sure all splits include all options (stratify target)
-- sklearn does randomization/stratification for you!
-- Data prep parameters are calculated from *train*, this excludes unseen data, so don't calculate on whole dataset
-- Python library for machine learning applications
-- sklearn objects share methods like fit_transform and transform, can be called against variables like imputer (which stores SimpleImputer(strategy='most_frequent'))
-### Modules
-- from sklearn.model_selection import train_test_split ----- splits data in two sets
-    * train, test = train_test_split(df, test_size=0.2, random_state=123, stratify=df.colname) ----- create train and test dataframes, test dataframe is 20% of rows, randomization seed is 123, stratifies df.colname
-    * train, validate = train_test_split(train, test_size=.25, random_state=123, stratify=train.survived) ----- modifies train, sets validate dataframe using new parameters
-- from sklearn.impute import SimpleImputer ----- fills values by inference
-    * fill with: 0, average, median, subgroup mean, most frequent value, build model to predict missing values, etc
-    * strategy='average' ----- fills with average
-    * will need to modify dataframes with impute results
-- from sklearn.metrics import precision_score, accuracy_score, recall_score, classification_report ----- confusion matrix calc functions
-    * df_report = pd.DataFrame(classification_report(df.actual_observed, df.model_guesses, labels=['colname', 'colname'], output_dict=True)).T ----- outputs nice df of metrics
-### Syntax
-- imputer = SimpleImputer(strategy='most_frequent')
-- imputer = imputer.fit(train[['embark_town']])
-- train[['embark_town']] = imputer.transform(train[['embark_town']])
-- do same for validate and test datasets
-    * imputer = SimpleImputer(strategy='most_frequent')
-    * train[['embark_town']] = imputer.fit_transform(train[['embark_town']])
-    * validate[['embark_town']] = imputer.transform(validate[['embark_town']])
-    * test[['embark_town']] = imputer.transform(test[['embark_town']])
-    * return train, validate, test
 
-## Uni-, Bi-, Multi-variate Exploration
-- Finding relationships and stories in data, documenting is and isn'ts
-- Goal is to remove redundant/unimportant variables for the story
-- Hypothesize and visualize loop, and if that isn't enough, run statistical tests
-- "What data sources do we have, what are customers doing, how are we reaching people..."
-- "What is our observation???"
-    * titanic_db observations are... people on the titanic.
-- Univariate stats (target), Bivariate stats (target and variable), multivariate stats (subgroups compare to each other)
-    * **explore.py** - contains prebuilt functions for uni/bi/multivariate stats
-    * pandas profiler does similar things to the explore.py but not as great
-- Adding features... train['newcol'] = pd.cut(train.colname, bins=[0,15,100], right=False, labels=[0,1])
-    * will need to amend train/validate/test datasets with 'newcol' and also cat_vars or quant_vars
-### Documenting...
-- Document the questions, the takeaways from visualization, the answer to questions, the null/alt hypotheses, etc
-### Univariate Stats
-- Split data into categorical vars and quantitative vars
-    * cat_vars = ['var1', 'var2', 'var3', ...]
-    * quant_vars = ['var42', 'var67', ...]
-    * explore.explore_univariate(train_df, cat_vars, quant_vars) ----- builds visualization and statistics with columns var1, var2, var3, var42, var67, etc
-- sns.displot(x='colname', data=df) ----- quick distribution plot
-### Bivariate Stats
-- Same setup as univariate but with target variable (column) specified
-    * explore.explore_bivariate(train, target, cat_vars, quant_vars)
-- sns.heatmap(df.corr(), cmap='Greens', annot=True, vmin=0, vmax=1) ----- quick correlation chart
-    * If everything correlates mostly, then it's called "Multicolinearity"
-- df.sample(5, random_state=123).style.highlight_max(axis=0) ----- highlight max values per column
-### Multivariate Stats
-- Adding the target as color in Seaborn
-    * explore.explore_multivariate(train, target, cat_vars, quant_vars)
 
-## Feature Engineering
-- Determine which features to keep
-    * K Best and RFE
-    * Drop features based on domain knowledge
-    * Drop features that raise ethical issues
-    * Drop features that are too 'loud'
-    * Clean up remaining features
-    * Do analysis on features
-- Create features!!
-### Feature Engineering (Regression notes)
-- *Making* useful features for columns based on existing data
-    * k-best and rfe do not need to take in scaled data, just encoded data
-- Select K Best (SelectKBest, kbest) 
-    * f regression test, checks each feature in isolation, checks whether model performs better than baseline
-    * kbest = SelectKBest(f_regression, k=3) ----- returns top 3 'best' features using f regression
-    * kbest.fit(X_train_scaled, y_train)
-    * kbest.pvalues_
-    * kbest.get_support() ----- array showing which columns were chosen (True, False, True...)
-    * X_train.columns[kbest.get_support()] ----- shows column names
-    * X_kbest = kbest.transform(X_train_scaled) ----- if k=3, return top-3 columns
-- Recursive Feature Elimination (RFE, rfe) 
-    * fits model, eliminates worst performing features (more computationally expensive)
-        * Computational expense is largely driven by choice of estimator, simple estimator is recommended to quickly ascertain which features to use
-    * rfe = RFE(estimator=LinearRegression(), n_features_to_select=3) ----- top-3
-    * rfe.fit(X_train_scaled, y_train)
-    * rfe.get_support()
-    * X_train.columns[rfe.get_support()]
-    * pd.Series(rfe.ranking_, index=X_train.columns)
-    * **Great for determining features to further-investigate**
 
-## Matplotlib
-- Make script plotting all sorts of stuff, never think about again
-- Plot distribution for data wrangling to check for outliers (histogram, box-whisker), then remove outliers if necessary, then plot new distributions
-- a shotgun pattern in homoscedasticity check (pattern shows heteroscedasticity) isn't great, consider removing outliers or transforming... can take log of entire column (storing values in new column) then run log column through the model and visualization
-- Use for loop to iterate through columns in dataframe and nest plt methods to push out different graphs for each column
-    * numeric: 
-    * object columns: df['colname'].value_counts(), df['colname'].value_counts(normalize=True, dropna=False)
-    * df.isnull().sum() ----- prints all columns of df with number of null values in each column
-- https://matplotlib.org/stable/tutorials/introductory/customizing.html
-- plt.grid(True, axis='both') ----- background grid
-- Visualizations for dataframes
-- import matplotlib.pyplot as plt
-- Once .plot() is run, can do plt.method_here
-- can run multiple .plot() in a single visual before plt.show()
-- can use tuple as first argument in ex: hist() to do side-by-side
-    * plt.hist((series1, series2), ...)
-- df.corr().style.background_gradient(vmin=-1, vmax=1, cmap='coolwarm_r').format('{:.3f}'.format) ----- more cool formatting for heatmap
-- df.column.value_counts().plot.barh() ----- create bar plot of y labels and x values
-### Matplotlib Syntax
-- Array x and array y passed as arguments for x columns (plt.bar(x,y))
-- df.plot() ----- put dataframe to a plot
-- df.plot.barh() ----- put dataframe to a bar plot
-- x = list(range(150)) -- plt.plot(x) -- plt.show()
-    * JupyterNB will automatically show a plot without plt.show(), but .py scripts ran from Terminal require plt.show()
-- plt.rc('figure', figsize=(13,6)) ----- set overall
-- plt.rc('axes.spines', top=False, right=False) ----- set overall
-- plt.rc('font', size=13) ----- set overall
-### Matplotlib Methods
-- plot
-    * defaults to line plot. plt.plot(x, y, c='color')
-    * scatter(), bar(), barh(), hist(), and more
-    * c= ----- color, can use alpha= to do transparency (0.0 - 1.0)
-    * s= ----- size of dots on scatterplot
-    * ls= ----- line type for line chart, ':' is dotted, '--' is dashed, etc
-    * bins=[list_of_cuts]
-    * align='left' ----- aligns to left
-    * edgecolor= ----- sets edge for the data (ex: border on bars in chart)
-- show()
-- title('title'), xlabel('clabel'), ylabel('ylabel')
-- xlim(bounds), ylim(bounds)
-- xticks(list_of_int_ticks, list_of_str_tick_names), yticks(list, list)
-    * rotation=num ----- rotate each tick num degrees
-- text(left_boundary_coords_for_txt, txt_to_place, fontsize=num, color='color')
-- annotate('text', xy=(coords_for_tip), xytext=(coords_for_left_bound), arrowprops={'key':'value'})
-- figure(figsize=(num_width, num_height))
-- legend(loc='upper right') ----- puts legend in upper right
-- savefig('name_of_my_new_figure') ----- generates .png of your figure
-- plt.subplot
-    * subplot(num_of_rows, num_of_cols, index_start_at_1)
-    * plt.plot(list, list)
-    * plt.title('title1')
-    * subplot(num_of_rows, num_of_cols, index_start_at_1)
-    * plt.plot(list, list)
-    * plt.title('title2')
-    * plt.tight_layout() ----- fixes spacing
-    * plt.suptitle('title') ----- super (wrapper) title for subplots
-    * plt.show() ----- gens 2 subplots, then plt.show() puts them next to each other
-
-## Seaborn
-- https://seaborn.pydata.org/generated/seaborn.set_style.html
-- sns.set_style('darkgrid')
-- sns.countplot() ----- categorical bins
-    * histogram is numerical bins, should only really be used on continuous data
-- sns.heatmap(df.corr(), cmap='coolwarm_r', vmin=-1, vmax=1, annot=True) ----- draw correlation heatmap with red negs blue pos
-- ax.xaxis.set_major_formatter(lambda x, pos: '{:.1f} m'.format(x / 1_000_000)) ... ax.set(xlabel='x2 (millions)') ----- change sci notation to millions... kinda cool
-- ax.xaxis.set_major_formatter('{:,.0f}'.format) ----- make x axis 100,000 ticks
-- ax.yaxis.set_major_formatter('{:.0%}'.format) ----- make y axis percentage
-- Library that builds on matplotlib and integrates well with pandas
-- Powerful in its defaults!
-- relplot, displot, catplot return figure-level objects using kind= , but of course you can declare the specific plot itself and return an axes-level object instead
-    * No advantage either way, just uses different syntax
-### Seaborn Syntax, Methods
-- import seaborn as sns
-- df = sns.load_dataset('dataset') ----- does same as pydataset
-- sns.relplot(x='col1', y='col2', data=df) ----- returns scatterplot for df using col1 for x axis and col2 for y axis
-    * once plotted, can use plt.title, plt.xlabel, etc as normal
-- sns.histplot(df.col_name, kde=True) ----- histogram (bar chart of frequency count) of col_name, with kernel density estimator
-- sns.boxplot(data=df) ----- box and whisker plot (inter-quartile range, quartiles, median, and outliers all on a plot)
-- sns.catplot(x=, y=, col=, col_wrap=, hue=, data=, kind=) ----- categorical plot (default is silo'd dot plot, can kind='count')
-- sns.heatmap(data, annot=True, cmap=plt.cm.Greens) ----- heatmap with annotations using the Greens color palette
-    * https://seaborn.pydata.org/tutorial/color_palettes.html
-- sns.set_palette("colorblind") ----- makes your stuff colorblind-friendly
-- sns.pairplot(df) ----- quickie for combinations of data in df
-- sns.jointplot(data=df, x=, y=) ----- attaches a histogram per axis for a scatterplot
-### Seaborn Arguments
-- col='col1' ----- chart for each unique value in col1
-- hue='col1' ----- separate color for each unique value in col1
-- style='col1' ----- changes style of plot point for each unique value in col1
-- kind='line' ----- draws a line to each plot point
-### Seaborn Accessors
-- You can use .axes or .fig to access, for example, sns.pairplot()
-    - sns.pairplot(arguments).axes ----- each graph in figure
-    - sns.pairplot(arguments).fig ----- figure as a whole (include all graphs)
-    - sns.pairplot(arguments).axes.flat ----- list of pointers for each graph
-    - for i in pairplot.axes.flat ----- access each pointer
-
-<!-- ------------------------------------------------------------------------------- -->
-<!-- ------------------------------------------------------------------------------- -->
-<!-- ---------------------------------- Prediction --------------------------------- -->
-<!-- ------------------------------------------------------------------------------- -->
-<!-- ------------------------------------------------------------------------------- -->
+<!-- 
+######                                                      
+#     # #####  ###### #####  #  ####  ##### #  ####  #    # 
+#     # #    # #      #    # # #    #   #   # #    # ##   # 
+######  #    # #####  #    # # #        #   # #    # # #  # 
+#       #####  #      #    # # #        #   # #    # #  # # 
+#       #   #  #      #    # # #    #   #   # #    # #   ## 
+#       #    # ###### #####  #  ####    #   #  ####  #    # 
+-->
 
 # Prediction
 
 ## Feature Preparation
+<!-- Needs work -->
 ### Encoding
 - Associate each unique value with a number (label encoding)
     * Use label encoding when categories have an inherit order
@@ -869,7 +1029,10 @@ This iteration of my notes is for long-term reference. I will keep my original n
     * scaler = QuantileTransformer(output_distribution='normal')
     * Follow above steps for rest
 
+<!-- Needs work -->
 ## Classification
+- from sklearn.metrics import precision_score, accuracy_score, recall_score, classification_report ----- confusion matrix calc functions
+    * df_report = pd.DataFrame(classification_report(df.actual_observed, df.model_guesses, labels=['colname', 'colname'], output_dict=True)).T ----- outputs nice df of metrics
 ### SMOTE
 - Needed when classes are imbalanced for classification modeling
 - Used specifically for train to help models fit, improves performance on predicting unseen data
@@ -878,6 +1041,7 @@ This iteration of my notes is for long-term reference. I will keep my original n
 
 ## Time-Series
 
+<!-- Needs work -->
 ## Algorithmic Clustering
 - centroids.plot.scatter(y='petal_length', x='sepal_length', c='black', marker='x', s=1000, ax=plt.gca(), label='centroid') ----- plot syntax for... stuff
 
@@ -885,6 +1049,7 @@ This iteration of my notes is for long-term reference. I will keep my original n
 
 ## Anomaly Detection
 
+<!-- Needs work -->
 ## Deep Learning
 - Obscured machine learning
 - We'll use Tensor Flow, the Keras front end
@@ -925,6 +1090,7 @@ This iteration of my notes is for long-term reference. I will keep my original n
 
 ## Computer Vision
 
+<!-- Needs work -->
 ## Cross-Validation
 - K-fold cross validation: split *train* into more train-test splits, average prediction score across fold combinations
     * from sklearn.model_selection import cross_val_score
