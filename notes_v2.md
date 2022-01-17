@@ -632,9 +632,12 @@ This iteration of my notes is for long-term reference. I will keep my original n
 
 # Matplotlib & Seaborn
 
+<!-- Needs work -->
 ## Overall Exploration Visualization Notes
 - Plot distribution for data wrangling to check for outliers (histogram, box-whisker), then remove outliers if necessary, then plot new distributions
-- a shotgun pattern in homoscedasticity check (pattern shows heteroscedasticity) isn't great, consider removing outliers or transforming... can take log of entire column (storing values in new column) then run log column through the model and visualization
+- A shotgun pattern in homoscedasticity check (pattern shows heteroscedasticity) isn't great, consider removing outliers or transforming... can take log of entire column (storing values in new column) then run log column through the model and visualization
+
+<!-- Polished -->
 ## Matplotlib Pyplot
 - The bread and butter of data visualizations in Python
 - Highly customizable, but needs a lot of work to be presentable
@@ -649,84 +652,41 @@ This iteration of my notes is for long-term reference. I will keep my original n
 - plt.hist(x) ----- plot histogram
     * Create multiple plots before plt.show() to layer charts in one visual
 - df.plot.line() ----- put dataframe to a line plot
-    * Bar plot: df.column.value_counts().plot.barh()
+    * Quick bar plot: df.column.value_counts().plot.barh()
     * Customize: df.corr().style.background_gradient(vmin=-1, vmax=1, cmap='coolwarm_r').format('{:.3f}'.format)
 - plt.subplot(325) ----- 3 rows, 2 columns (6 charts), place chart in 5th position (bottom left)
     * Index starts at 1 in top left, increases right, then next row below and rightward until complete
     * plt.title() titles each individual charts, plt.suptitle() gives a title wrapping all titles
+    * plt.tight_layout() to make everything look a bit nicer usually
 - plt.rc('figure', figsize=(13,6)) ----- set configuration for figsize
     * plt.rc('axes.spines', top=False, right=False), plt.rc('font', size=13) ----- set overall
     * Consider creating a dictionary to save configuration(s)
+- plt.savefig('chart.png')
 ### Pyplot Charts
+- Common chart parameters: c, ec, alpha, s, ls, bins, align, and more
+- Histogram: plt.hist(x)
 - Line plot: plt.plot(x)
 - Solid under line: plt.fill_between(x, y)
 - Bar chart: plt.bar(), plt.barh()
 - Scatterplot: plt.scatter()
-#### Chart Parameters
-- Color: c -- Transparency: alpha -- Size: s -- Line type: ls -- Bins: bins
 ### Pyplot Customization
-- Title: plt.title('title') ----- https://www.python-graph-gallery.com/190-custom-matplotlib-title
-- Annotate: plt.annotate() ----- https://www.python-graph-gallery.com/193-annotate-matplotlib-chart
-    * text='txt' - xy=(x,y) - xytext=(x,y) - arrowprops=dict(facecolor='black', shrink=0.05)
+- Chart labels: plt.title, legend, xlabel, ylabel, xticks, yticks, xlim, ylim, tick_params
+- Annotations: plt.annotate() or text()
 - Fonts: https://www.python-graph-gallery.com/custom-fonts-in-matplotlib
 - Grid: plt.grid(True, axis='both') ----- background grid
 - Margins around subplots: plt.subplots_adjust(top=0.3)
-    * left=, bottom=, right=, top=, wspace=, hspace=
 - Styles: plt.style.use('style') ----- check styles with plt.style.available
-- Axis labels: plt.xlabel, ylabel, xticks, yticks, xlim, ylim, tick_params
-    * ax.set_xscale("log") or ax.set_yscale("log") when ax is defined to set axis to log scale
-- Legend: plt.legend() ----- https://www.python-graph-gallery.com/custom-legend-with-matplotlib
 ### Pyplot Advanced
 - LateX Notation: Wrap math in dollar signs like $a^2$
     * Character chart: https://www.caam.rice.edu/~heinken/latex/symbols.pdf
     * Matplotlib walkthrough: https://matplotlib.org/stable/tutorials/text/mathtext.html
-- Can use tuple as first argument in ex: hist() to do side-by-side
-    * plt.hist((series1, series2), ...)
-- Change sizes of subplots: plt.subplot2grid((rows, cols), (row_index, col_index), rowspan=, colspan=)
-    * ax1 = plt.subplot2grid((2, 4), (0, 0), colspan=4)
-    * ax1.plot('x_values', 'y_values', data=df, marker='o', alpha=0.4)
-    * ax2 = plt.subplot2grid((2, 4), (1, 0), colspan=3)
-    * ax2.plot('x_values','z_values', data=df, marker='o', color="grey", alpha=0.3)
-    * ax3 = plt.subplot2grid((2, 4), (1, 3), colspan=1)
-    * ax3.plot('x_values','z_values', data=df, marker='o', color="orange", alpha=0.3)
+- Can use tuple as first argument in ex: hist() to do side-by-side, EX: plt.hist((series1, series2), ...)
+- Change sizes of subplots: plt.subplot2grid()
 - Remove certain plots from subplots: ax.remove()
 
 <!-- Needs work -->
-## Matplotlib
-
-### Matplotlib Methods
-- plot
-    * defaults to line plot. plt.plot(x, y, c='color')
-    * scatter(), bar(), barh(), hist(), and more
-    * c= ----- color, can use alpha= to do transparency (0.0 - 1.0)
-    * s= ----- size of dots on scatterplot
-    * ls= ----- line type for line chart, ':' is dotted, '--' is dashed, etc
-    * bins=[list_of_cuts]
-    * align='left' ----- aligns to left
-    * edgecolor= ----- sets edge for the data (ex: border on bars in chart)
-- show()
-- title('title'), xlabel('clabel'), ylabel('ylabel')
-- xlim(bounds), ylim(bounds)
-- xticks(list_of_int_ticks, list_of_str_tick_names), yticks(list, list)
-    * rotation=num ----- rotate each tick num degrees
-- text(left_boundary_coords_for_txt, txt_to_place, fontsize=num, color='color')
-- annotate('text', xy=(coords_for_tip), xytext=(coords_for_left_bound), arrowprops={'key':'value'})
-- figure(figsize=(num_width, num_height))
-- legend(loc='upper right') ----- puts legend in upper right
-- savefig('name_of_my_new_figure') ----- generates .png of your figure
-- plt.subplot
-    * subplot(num_of_rows, num_of_cols, index_start_at_1)
-    * plt.plot(list, list)
-    * plt.title('title1')
-    * subplot(num_of_rows, num_of_cols, index_start_at_1)
-    * plt.plot(list, list)
-    * plt.title('title2')
-    * plt.tight_layout() ----- fixes spacing
-    * plt.suptitle('title') ----- super (wrapper) title for subplots
-    * plt.show() ----- gens 2 subplots, then plt.show() puts them next to each other
-
-<!-- Needs work -->
 ## Seaborn
+- An excellent advancement on the foundation of Matplotlib
 - https://seaborn.pydata.org/generated/seaborn.set_style.html
 - sns.set_style('darkgrid')
 - sns.countplot() ----- categorical bins
