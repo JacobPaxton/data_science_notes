@@ -70,6 +70,25 @@ This iteration of my notes is for long-term reference. I will keep my original n
 - Tidying Data: https://vita.had.co.nz/papers/tidy-data.pdf
 - One value per cell: split out multi-value cells, 'melt' one-hot columns into single column, handle nulls
 
+<!-- Needs work -->
+## Datasets
+### From Python
+- pandas datareader: https://pandas-datareader.readthedocs.io/en/latest/remote_data.html
+- from pydataset import data --- df = data('iris')
+- import seaborn as sns --- df = sns.load_dataset('iris')
+- from vega_datasets import data --- df = data('iris')
+- from sklearn import datasets --- array = datasets.load_iris()['data']
+### Downloads
+- Massive list: https://github.com/awesomedata/awesome-public-datasets
+- Massive list: https://www.data-is-plural.com/archive/
+- Search US Gov data: https://www.data.gov
+- Search EU data: https://data.europa.eu/en
+- Search research paper data: https://paperswithcode.com/datasets
+- Search various: https://huggingface.co/datasets
+- Search various: https://datasetsearch.research.google.com
+- NLP: https://machinelearningmastery.com/datasets-natural-language-processing/
+- Computer vision: https://visualdata.io/discovery
+- Computer vision from satellites: https://github.com/chrieke/awesome-satellite-imagery-datasets
 
 
 
@@ -631,98 +650,86 @@ This iteration of my notes is for long-term reference. I will keep my original n
  -->
 
 # Matplotlib & Seaborn
-
 <!-- Needs work -->
-## Overall Exploration Visualization Notes
-- Plot distribution for data wrangling to check for outliers (histogram, box-whisker), then remove outliers if necessary, then plot new distributions
-- A shotgun pattern in homoscedasticity check (pattern shows heteroscedasticity) isn't great, consider removing outliers or transforming... can take log of entire column (storing values in new column) then run log column through the model and visualization
+## Overall Notes for Visualizations in Python
+- **Amazing charts for inspiration:** https://www.python-graph-gallery.com/all-charts/
+- LaTeX Notation: Wrap math in dollar signs like $a^2$
+    * Character chart: https://www.caam.rice.edu/~heinken/latex/symbols.pdf
+    * Matplotlib LaTeX walkthrough: https://matplotlib.org/stable/tutorials/text/mathtext.html
 
 <!-- Polished -->
-## Matplotlib Pyplot
+## Matplotlib
 - The bread and butter of data visualizations in Python
 - Highly customizable, but needs a lot of work to be presentable
 - Push plots to scripts to make things easily repeatable
-- Visual walkthrough of everything-Pyplot: https://www.python-graph-gallery.com/all-charts/
 - Customization options: https://matplotlib.org/stable/tutorials/introductory/customizing.html
-### Pyplot Basics
-- import matplotlib.pyplot as plt
-- plt.show() ----- print the plot that was created up to that point
-    * JupyterNB doesn't need plt.show() most of the time but .py scripts always need it
-    * Loop chart creation per column by using plt.show() inside the loop
-- plt.hist(x) ----- plot histogram
-    * Create multiple plots before plt.show() to layer charts in one visual
-- df.plot.line() ----- put dataframe to a line plot
-    * Quick bar plot: df.column.value_counts().plot.barh()
-    * Customize: df.corr().style.background_gradient(vmin=-1, vmax=1, cmap='coolwarm_r').format('{:.3f}'.format)
-- plt.subplot(325) ----- 3 rows, 2 columns (6 charts), place chart in 5th position (bottom left)
-    * Index starts at 1 in top left, increases right, then next row below and rightward until complete
-    * plt.title() titles each individual charts, plt.suptitle() gives a title wrapping all titles
-    * plt.tight_layout() to make everything look a bit nicer usually
-- plt.rc('figure', figsize=(13,6)) ----- set configuration for figsize
-    * plt.rc('axes.spines', top=False, right=False), plt.rc('font', size=13) ----- set overall
-    * Consider creating a dictionary to save configuration(s)
+### Basic Matplotlib Example
+- s = pd.Series([-3,-2,-1,0,1,2,3])
+- cats = pd.Series(['1','2','1','1','1','2','1'])
+- df = pd.DataFrame({'category':cats, 'original':s, 'squared':s**2, 'absolute_times_two':s.abs()*2})
+- plt.figure(figsize=(10,5))
+- plt.style.use('bmh')
+- plt.subplot(121)
+- plt.plot(s, s ** 2, c='green')
+- plt.title("Plot of $a^2$")
+- plt.xlabel("x")
+- plt.yticks(s**2)
+- plt.annotate('Apex', xy=(0,.3), xytext=(-1,3), fontsize=15, arrowprops={'width':5, 'color':'green'})
+- plt.ylabel("y", rotation=0)
+- plt.xlim(-3.5, 3.5)
+- plt.subplot(122)
+- plt.grid(False)
+- plt.bar(s, s.abs()*2, color='#FFA500', alpha=.5, ec='black', align='center')
+- plt.title('Plot of $|a| * 2$')
+- plt.suptitle('Math')
+- plt.tight_layout()
+- plt.subplots_adjust(wspace=0.2)
 - plt.savefig('chart.png')
-### Pyplot Charts
-- Common chart parameters: c, ec, alpha, s, ls, bins, align, and more
-- Histogram: plt.hist(x)
-- Line plot: plt.plot(x)
-- Solid under line: plt.fill_between(x, y)
-- Bar chart: plt.bar(), plt.barh()
-- Scatterplot: plt.scatter()
-### Pyplot Customization
-- Chart labels: plt.title, legend, xlabel, ylabel, xticks, yticks, xlim, ylim, tick_params
-- Annotations: plt.annotate() or text()
-- Fonts: https://www.python-graph-gallery.com/custom-fonts-in-matplotlib
-- Grid: plt.grid(True, axis='both') ----- background grid
-- Margins around subplots: plt.subplots_adjust(top=0.3)
-- Styles: plt.style.use('style') ----- check styles with plt.style.available
-### Pyplot Advanced
-- LateX Notation: Wrap math in dollar signs like $a^2$
-    * Character chart: https://www.caam.rice.edu/~heinken/latex/symbols.pdf
-    * Matplotlib walkthrough: https://matplotlib.org/stable/tutorials/text/mathtext.html
-- Can use tuple as first argument in ex: hist() to do side-by-side, EX: plt.hist((series1, series2), ...)
-- Change sizes of subplots: plt.subplot2grid()
-- Remove certain plots from subplots: ax.remove()
+- plt.show()
+### Matplotlib from Dataframes
+- df.groupby('category')[['original','squared','absolute_times_two']].sum()\
+    * .plot.bar(color=['red','green','blue'], alpha=.6)
+- df.corr().style.background_gradient(vmin=-1, vmax=1, cmap='coolwarm_r').format('{:.3f}'.format)
+### Working with Figures and Axes
+- One-Chart Guide: https://matplotlib.org/stable/gallery/lines_bars_and_markers/bar_label_demo.html
+- Multi-Chart Guide: https://matplotlib.org/stable/gallery/lines_bars_and_markers/categorical_variables.html
+- fig, ax = plt.subplots()
+    * fig, axes = plt.subplots(1, 3)
+    * axes[0].plot(), axes[1].bar(), axes[2].scatter()
+- p1, p2 = ax.bar(x1, y1, ...), ax.bar(x2, y2, ...)
+- ax.methods --- similar methods to plt.methods, can reference p1 and p2 as parameters
+    * ax.xaxis.set_major_formatter() or ax.yaxis.set_major_formatter()
+- plt.show()
 
 <!-- Needs work -->
 ## Seaborn
-- An excellent advancement on the foundation of Matplotlib
-- https://seaborn.pydata.org/generated/seaborn.set_style.html
-- sns.set_style('darkgrid')
-- sns.countplot() ----- categorical bins
-    * histogram is numerical bins, should only really be used on continuous data
-- sns.heatmap(df.corr(), cmap='coolwarm_r', vmin=-1, vmax=1, annot=True) ----- draw correlation heatmap with red negs blue pos
-- ax.xaxis.set_major_formatter(lambda x, pos: '{:.1f} m'.format(x / 1_000_000)) ... ax.set(xlabel='x2 (millions)') ----- change sci notation to millions... kinda cool
-- ax.xaxis.set_major_formatter('{:,.0f}'.format) ----- make x axis 100,000 ticks
-- ax.yaxis.set_major_formatter('{:.0%}'.format) ----- make y axis percentage
-- Library that builds on matplotlib and integrates well with pandas
+- First stop for building charts, then customize charts further with Matplotlib methods
 - Powerful in its defaults!
-- relplot, displot, catplot return figure-level objects using kind= , but of course you can declare the specific plot itself and return an axes-level object instead
-    * No advantage either way, just uses different syntax
-### Seaborn Syntax, Methods
+    * Generate charts with Seaborn and use Matplotlib plt.methods for customization
+- Color palettes: https://seaborn.pydata.org/tutorial/color_palettes.html
+    * sns.set_palette("colorblind")
+- Cheat Sheet: https://s3.amazonaws.com/assets.datacamp.com/blog_assets/Python_Seaborn_Cheat_Sheet.pdf
+    * Mirror: https://drive.google.com/file/d/1TkETSAad4zP0zdFT1KC5E573gJdEeK_Z/view
+### Seaborn Basics
 - import seaborn as sns
-- df = sns.load_dataset('dataset') ----- does same as pydataset
-- sns.relplot(x='col1', y='col2', data=df) ----- returns scatterplot for df using col1 for x axis and col2 for y axis
-    * once plotted, can use plt.title, plt.xlabel, etc as normal
-- sns.histplot(df.col_name, kde=True) ----- histogram (bar chart of frequency count) of col_name, with kernel density estimator
-- sns.boxplot(data=df) ----- box and whisker plot (inter-quartile range, quartiles, median, and outliers all on a plot)
-- sns.catplot(x=, y=, col=, col_wrap=, hue=, data=, kind=) ----- categorical plot (default is silo'd dot plot, can kind='count')
-- sns.heatmap(data, annot=True, cmap=plt.cm.Greens) ----- heatmap with annotations using the Greens color palette
-    * https://seaborn.pydata.org/tutorial/color_palettes.html
-- sns.set_palette("colorblind") ----- makes your stuff colorblind-friendly
-- sns.pairplot(df) ----- quickie for combinations of data in df
-- sns.jointplot(data=df, x=, y=) ----- attaches a histogram per axis for a scatterplot
+- Distributions: sns.displot(data=df.col, kind='hist' or 'kde' or 'ecdf')
+- Scatterplot or Lineplot overlaid: sns.relplot(data=df['col1','col2','col3',...], kind='line' or 'scatter')
+- Category-Separated plots: sns.catplot(data=df[['cat','col1','col2','col3',...]], kind='violin')
+    * Options: strip, swarm, box, violin, boxen, point, bar, count
+- Pairplot: sns.pairplot(df)
+- Axis-level Heatmap: sns.heatmap(data=crosstab, annot=True, cmap=plt.cm.Greens)
+- Axis-level Scatter with Regression Line: sns.regplot(x=df.x, y=df.y, line_kws={'color':'red'})
+- Axis-level Scatter with Edge Histograms: sns.jointplot(data=df, x='cont_col1', y='cont_col2', hue='category)
 ### Seaborn Arguments
-- col='col1' ----- chart for each unique value in col1
-- hue='col1' ----- separate color for each unique value in col1
-- style='col1' ----- changes style of plot point for each unique value in col1
-- kind='line' ----- draws a line to each plot point
+- col='category' ----- chart for each unique value in col1
+- hue='category' ----- separate color for each unique value in col1
+- style='category' ----- changes style of plot point for each unique value in col1
 ### Seaborn Accessors
 - You can use .axes or .fig to access, for example, sns.pairplot()
-    - sns.pairplot(arguments).axes ----- each graph in figure
-    - sns.pairplot(arguments).fig ----- figure as a whole (include all graphs)
-    - sns.pairplot(arguments).axes.flat ----- list of pointers for each graph
-    - for i in pairplot.axes.flat ----- access each pointer
+- sns.pairplot(arguments).axes ----- each graph in figure
+- sns.pairplot(arguments).fig ----- figure as a whole (include all graphs)
+- sns.pairplot(arguments).axes.flat ----- list of pointers for each graph
+- for i in pairplot.axes.flat ----- access each pointer
 
 
 
@@ -741,6 +748,7 @@ This iteration of my notes is for long-term reference. I will keep my original n
 # Exploration
 
 ## Exploration Prep
+- Plot distribution for data wrangling to check for outliers (histogram, box-whisker), then remove outliers if necessary, then plot new distributions
 ### Split Data
 - sklearn does randomization/stratification for you!
     * Randomize entire dataset *before* splitting to remove potential bias (dataset potentially sorted)
@@ -998,6 +1006,7 @@ This iteration of my notes is for long-term reference. I will keep my original n
 - Used specifically for train to help models fit, improves performance on predicting unseen data
 
 ## Regression
+- A shotgun pattern in homoscedasticity check (pattern shows heteroscedasticity) isn't great, consider removing outliers or transforming... can take log of entire column (storing values in new column) then run log column through the model and visualization
 
 ## Time-Series
 
