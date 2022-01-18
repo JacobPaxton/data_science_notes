@@ -1,3 +1,98 @@
+# Data Science Notes, v2
+
+<!-- 
+#######                                                  #####                                                 
+   #      ##   #####  #      ######     ####  ######    #     #  ####  #    # ##### ###### #    # #####  ####  
+   #     #  #  #    # #      #         #    # #         #       #    # ##   #   #   #      ##   #   #   #      
+   #    #    # #####  #      #####     #    # #####     #       #    # # #  #   #   #####  # #  #   #    ####  
+   #    ###### #    # #      #         #    # #         #       #    # #  # #   #   #      #  # #   #        # 
+   #    #    # #    # #      #         #    # #         #     # #    # #   ##   #   #      #   ##   #   #    # 
+   #    #    # #####  ###### ######     ####  #          #####   ####  #    #   #   ###### #    #   #    ####  
+-->
+
+# Table of Contents
+
+I.    [General Notes                ](#general-notes)
+1.    [Advice                       ](#advice)
+2.    [Storytelling                 ](#storytelling)
+3.    [Datasets                     ](#datasets)
+
+II.   [Software                     ](#software)
+1.    [Terminal                     ](#terminal)
+2.    [Git                          ](#git)
+3.    [Jupyter Notebook             ](#jupyter-notebook)
+4.    [Excel & Google Sheets        ](#excel-&-google-sheets)
+5.    [Power BI                     ](#power-bi)
+6.    [Sequel Ace                   ](#sequel-ace)
+7.    [Visual Studio Code           ](#vs-code)
+8.    [Tableau Public               ](#tableau-public)
+
+III.  [Regular Expressions (REGEX)  ](#regular-expressions-(regex))
+1.    [REGEX                        ](#regex)
+
+IV.   [APIs & Scraping              ](#apis-&-scraping)
+1.    [APIs                         ](#apis)
+2.    [Web Scraping                 ](#web-scraping)
+
+V.    [SQL & Apache Spark           ](#sql-&-apache-spark)
+1.    [SQL                          ](#sql)
+2.    [Apache Spark                 ](#apache-spark)
+
+VI.   [Python, NumPy, Pandas        ](#python,-numpy,-pandas)
+1.    [Python                       ](#python)
+2.    [NumPy                        ](#numpy)
+3.    [Pandas                       ](#pandas)
+
+VII.  [Matplotlib & Seaborn         ](#matplotlib-&-seaborn)
+1.    [Visualization in Python      ](#overall-notes-for-visualizations-in-python)
+2.    [Matplotlib                   ](#matplotlib)
+3.    [Seaborn                      ](#seaborn)
+
+VIII. [Exploration                  ](#exploration)
+1.    [Exploration Prep             ](#exploration-prep)
+2.    [Exploration Visualization    ](#exploration-visualization)
+3.    [Feature Engineering          ](#feature-engineering)
+4.    [Feature Selection            ](#performance-based-feature-selection)
+
+IX.   [Clustering                   ](#clustering)
+1.    [Algorithmic Clustering       ](#algorithmic-clustering)
+
+X.    [Statistics                   ](#statistics)
+1.    [Metrics                      ](#metrics)
+2.    [Hypothesis Testing           ](#hypothesis-testing)
+3.    [Probability                  ](#probability)
+
+XI.   [Model Preparation            ](#model-preparation)
+1.    [Encoding                     ](#encoding)
+2.    [Scaling                      ](#scaling)
+3.    [Resampling                   ](#resampling)
+
+XII.  [Classification               ](#classification)
+
+XIII. [Regression                   ](#regression)
+
+XIV.  [Time-Series                  ](#time-series)
+
+XV.   [Natural Language Processing  ](#natural-language-processing-(NLP))
+
+XVI.  [Anomaly Detection            ](#anomaly-detection)
+
+XVII. [Deep Learning                ](#deep-learning)
+
+XVIII.[Computer Vision              ](#computer-vision)
+
+IXX.  [Cross-Validation             ](#cross-validation)
+
+<br>
+
+<br>
+
+
+
+
+
+
+
 <!-- 
 #     #                            
 ##    #  ####  ##### ######  ####  
@@ -8,7 +103,7 @@
 #     #  ####    #   ######  ####  
 -->
 
-# Notes
+# General Notes
 
 <!-- Polished -->
 ## Advice
@@ -77,6 +172,8 @@
 - NLP: https://machinelearningmastery.com/datasets-natural-language-processing/
 - Computer vision: https://visualdata.io/discovery
 - Computer vision from satellites: https://github.com/chrieke/awesome-satellite-imagery-datasets
+
+[[Return to Top]](#table-of-contents)
 
 
 
@@ -198,6 +295,8 @@
     * Create multi-sheet filters
 - Story: Used for presentation of sheets and dashboards
 
+[[Return to Top]](#table-of-contents)
+
 
 
 
@@ -242,6 +341,8 @@
 - r'\w{3,6}' ----- only capture when 3 alphanumerics in sequence and as many as possible up to 6
 - r'(\w)(\w)?' ----- optional capture group
 - r'[a1][b2][c3]' ----- 'abc 123' returns ['abc','123'] and 'a2c 1b3' returns ['a2c', '1b3']
+
+[[Return to Top]](#table-of-contents)
 
 
 
@@ -340,6 +441,8 @@
 - r.raw.decode_content = True ----- set the 'decode_content' of file.raw as True to unzip file when storing
 - with open('image.jpeg','wb') as f: shutil.copyfileobj(r.raw, f) ----- save unzipped image data to 'image.jpeg'
 
+[[Return to Top]](#table-of-contents)
+
 
 
 
@@ -354,6 +457,8 @@
 #     # #    #  #          #    #     #     # #      #    # #   #  #   #  
  #####   #### # #######     ###  #     #####  #      #    # #    # #    # 
 -->
+
+# SQL & Apache Spark
 
 <!-- Polished -->
 ## SQL
@@ -472,6 +577,8 @@
 - df.write.format("csv").mode("overwrite").option("header", "true").save("df_csv")
     * write df to a Spark-distributed CSV file, another way to do it
 - df.printSchema() ----- check column dtypes
+
+[[Return to Top]](#table-of-contents)
 
 
 
@@ -603,6 +710,8 @@
 - df.index.tz, df.tz_localize('America/Chicago'), df.tz_localize(None) ----- timezones
 - df.resample('W').sum().colname.plot() ----- quick line plot of a column for weekly sum
 
+[[Return to Top]](#table-of-contents)
+
 
 
 
@@ -707,6 +816,8 @@
 - sns.pairplot(arguments).fig ----- figure as a whole (include all graphs)
 - sns.pairplot(arguments).axes.flat ----- list of pointers for each graph
 - for i in pairplot.axes.flat ----- access each pointer
+
+[[Return to Top]](#table-of-contents)
 
 
 
@@ -820,6 +931,8 @@
 - X_train.columns[rfe.get_support()]
 - pd.Series(rfe.ranking_, index=X_train.columns)
 
+[[Return to Top]](#table-of-contents)
+
 
 
 
@@ -834,6 +947,8 @@
 #     # #      #    # #    #   #   #      #   #  # #   ## #    # 
  #####  ######  ####   ####    #   ###### #    # # #    #  ####  
 -->
+
+# Clustering
 
 <!-- Needs work -->
 ## Algorithmic Clustering
@@ -884,6 +999,8 @@
 - centroids = df.groupby('cluster')['col1','col2','col3',...].mean() ----- mean distance to centerpoint for each specified column of data against each cluster
 #### Visualization
 - centroids.plot.scatter(y='petal_length', x='sepal_length', c='black', marker='x', s=1000, ax=plt.gca(), label='centroid') ----- plot syntax for... stuff
+
+[[Return to Top]](#table-of-contents)
 
 
 
@@ -997,6 +1114,8 @@
 - Proportion higher: **.sf**(number) = proportion_higher, opposite is **.isf**(proportion_higher) = number
 - Proportion lower/equal: **.cdf**(number) = proportion_lowequal, opposite is **.ppf**(proportion_lowequal) = number
 
+[[Return to Top]](#table-of-contents)
+
 
 
 
@@ -1059,9 +1178,15 @@
     * Follow above steps for rest
 
 <!-- Needs work -->
-## SMOTE
+## Resampling
 - Needed when classes are imbalanced for classification modeling
 - Used specifically for train to help models fit, improves performance on predicting unseen data
+### SMOTE
+- Oversampling the minority class
+### Tomek
+- Undersampling the majority class
+
+[[Return to Top]](#table-of-contents)
 
 
 
@@ -1214,6 +1339,8 @@
 - y_pred = clf.predict(X_validate) ----- prediction array of model for validate dataset
 - classification_report(y_validate, y_pred) ----- metrics of model against validate
 
+[[Return to Top]](#table-of-contents)
+
 
 
 
@@ -1311,6 +1438,8 @@
 - from sklearn.metrics import r2_score
     * r2_score(df.y, df.yhat) --- score of explained variance
 
+[[Return to Top]](#table-of-contents)
+
 
 
 
@@ -1370,6 +1499,8 @@
 - ax = df.resample('M').mean().diff().plot() ----- plot change over time, in practice plot difference between a month and the month prior, do this lineplot for all months
     * df.resample('M').mean().plot(ax=ax, label='Monthly Average) ----- plots using same ax as previously-defined graph
     * df.resample('M').shift(12).plot(ax=ax, label='Last Year') ----- plots 12 months prior in place, so you can compare last year to this year
+
+[[Return to Top]](#table-of-contents)
 
 
 
@@ -1487,6 +1618,8 @@
     * tfidf = TfidfVectorizer() --- X_tfidf = tfidf.fit_transform(X_train) --- tree.fit(X_tfidf, y_train) --- tree.score(X_tfidf, y_train)
         * make sure to also transform out-of-sample split!
 
+[[Return to Top]](#table-of-contents)
+
 
 
 
@@ -1554,6 +1687,8 @@
     * clustered_df[clustered_df.labels == cluster_num] ----- show values in a specific cluster
         * outlier cluster is always clustered_df.labels == -1
 
+[[Return to Top]](#table-of-contents)
+
 
 
 
@@ -1610,6 +1745,8 @@
 - test_loss, test_acc = network.evaluate(test_images, test_labels)
 - print(f'accuracy of network on test set: {test_acc}')
 
+[[Return to Top]](#table-of-contents)
+
 
 
 
@@ -1630,6 +1767,8 @@
 <!-- Needs work -->
 ## Computer Vision
 - 
+
+[[Return to Top]](#table-of-contents)
 
 
 
@@ -1667,3 +1806,5 @@
 ### Examples
 - grid = GridSearchCV(clf, {'n_neighbors': range(1, 21)}, cv=5)
     * Notice how you pass hyperparameter options to GridSearchCV
+
+[[Return to Top]](#table-of-contents)
