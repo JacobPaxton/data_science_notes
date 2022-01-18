@@ -1,13 +1,3 @@
-# Notes Planning/Brainstorming
-My original ds_notes.md was intended to quickly capture curriculum into a digestible one-source location while it was being taught. For that purpose, it worked extremely well. It allowed me to focus on what I didn't immediately understand, improving my retention of advanced material, and stored things I might not remember off the top of my head.
-
-This iteration of my notes is for long-term reference. I will keep my original notes, and I have access to the curriculum itself, so this version will have a different format. Instead of packing information on tools, this notes format will pack information on the workflow elements.
-
-
-
-
-
-
 <!-- 
 #     #                            
 ##    #  ####  ##### ######  ####  
@@ -20,12 +10,15 @@ This iteration of my notes is for long-term reference. I will keep my original n
 
 # Notes
 
-<!-- Needs work -->
+<!-- Polished -->
 ## Advice
 - Zach: Consistency > Intensity, Motivation is important, Doing data science > learning about data science, Publish!, If it's worth doing, it's worth getting started
 - Zach: ask in interview "what does professional development look like for your employees?"
+### Tidy Data
+- Tidying Data: https://vita.had.co.nz/papers/tidy-data.pdf
+- One value per cell: split out multi-value cells, 'melt' one-hot columns into single column, handle nulls
 
-<!-- Needs work -->
+<!-- Polished -->
 ## Storytelling
 - Data requires velocity to be useful
 - Finding relationships and stories in data, documenting is and isn'ts
@@ -65,12 +58,7 @@ This iteration of my notes is for long-term reference. I will keep my original n
 - Start with overview in presentation, dissect the focus later (start with churn v not churned, then dive into churn data)
 - Relate the problem to the audience's interests and focus for maximum effect
 
-<!-- Needs work -->
-## Tidy Data
-- Tidying Data: https://vita.had.co.nz/papers/tidy-data.pdf
-- One value per cell: split out multi-value cells, 'melt' one-hot columns into single column, handle nulls
-
-<!-- Needs work -->
+<!-- Polished -->
 ## Datasets
 ### From Python
 - pandas datareader: https://pandas-datareader.readthedocs.io/en/latest/remote_data.html
@@ -89,6 +77,7 @@ This iteration of my notes is for long-term reference. I will keep my original n
 - NLP: https://machinelearningmastery.com/datasets-natural-language-processing/
 - Computer vision: https://visualdata.io/discovery
 - Computer vision from satellites: https://github.com/chrieke/awesome-satellite-imagery-datasets
+
 
 
 
@@ -171,60 +160,44 @@ This iteration of my notes is for long-term reference. I will keep my original n
 - =INDEX(range, MATCH(string_to_match, range))
 - =SPARKLINE(range, {'charttype','bar';'color','red';'max',max(range); etc}) ----- creates a red in-cell bar chart of data from range with maxed bar when reaching max value of range
 
-<!-- Needs work -->
+<!-- Polished -->
 ## Power BI
 - From a cursory look, a mix of Excel and some table join functionality. Popular software.
 
-<!-- Needs work -->
+<!-- Polished -->
 ## Sequel ACE
 - Excellent interface for SQL database reads and querying
 
-<!-- Needs work -->
+<!-- Polished -->
 ## VS Code
 - One-stop interface for file editing and viewing
 
-<!-- Needs work -->
+<!-- Polished -->
 ## Tableau Public
 - Excellent software for interactive visualizations and dashboards
-- Public is free but cannot privately save your work (publishes everything)
-    * Save with each new sheet as a standard... Nothing is autosaved so if it crashes you're donezo
-- Faith's Tableau Public: https://public.tableau.com/app/profile/faith.kane
-- Sean Oslin's Tableau Public: https://public.tableau.com/app/profile/sean.oslin
-- A lot of people use the superstore CSV to learn and demo Tableau, you should consider using it to learn Tableau too
+- No autosaves and sometimes-glitchy upload... save your work often
+### Tableau Resources
+- The Superstore CSV is popular to learn and demo Tableau
+- Faith: https://public.tableau.com/app/profile/faith.kane
+- Sean Oslin: https://public.tableau.com/app/profile/sean.oslin
 ### Tableau Usage
-- Consider exploring your data in Google Sheets first
+- Explore your data in Google Sheets first
     * Tableau is a bit slow for *exploration* compared to pivot tables in Google Sheets
-    * Once you've discovered what you want, switch to Tableau for presentation and visualization creation
-- CSV files are Text Files when ingesting data into Tableau
-- Hide unnecessary columns using drop-downs in each column
-    * Can unhide columns
-- Filter results at top-right (intuitive)
-- Put results to charts via button in bottom-left "Sheet 1"
-    * Can rename tabs (will rename table [results])
-    * Can add extra to name in the table and leave tab simplified
-- Leftmost options (columns) - can adjust if needed
-    * Can switch between Data tab and Analytics tab
-    * Drag options up into Rows or Columns to add to table
-    * Drag options into Marks, onto Label or Color to append certain data to table, right-click on existing Label/Color things and make changes to the appended data (very cool!), each drag is an added feature - move Legend to under Marks as a preference
-    * Change number to currency - right click option, default properties, number format...
-- Can click on leftmost options to display them
-    * Rightmost tables are choices for displaying your data
-- Semi-leftmost options (Measure Values) - change aggregations for any measure values
-- Table - Right click on table things, change alias or other things about it
-    * Change view width/height in dropdown at top of window (apparently Entire View is good for displaying later on)
-- Transpose: Drag rows into column field, columns into row field (really simple)
-- Change table format: select entire window, use MacOS File/Data/Etc bar (context menu), Format, Lines (change lines on table)
-### Dashboard
-- View multiple sheets in one dashboard
-    * Drag sheets into playspace
-    * "Entire View" option for sheets fills the box in the playspace
-- Edit/hide titles, add "supertitle", etc in here
-- Great for interactive deliverable for stakeholders that want to play with filters
-### Story
-- Essentially a slide deck/presentation for sheets/dashboards
-    * Slides for one table in a slide... dashboard for multiple tables in a slide
-- Captions are basically named slides
-- Can drag text window from bottom left into slide and right click-edit it
+- Data Source: Used for changing files across the project
+    * Hide unnecessary columns from project using drop-downs in each column
+    * Filter results at top-right (intuitive)
+- Sheets: Used for building individual charts
+    * Plot by rows and columns, use Marks for conditional formatting and tooltips
+    * Change chart type in top right, change chart dimensions using top-middle dropdown
+    * Adjust display options for numbers, add trend lines, annotations, and more
+        * Everything-formatting: Context Menu > Format
+    * Create calculated fields for aggregation, level of detail (LOD) calculations, and more
+    * If stuck, build new file using Python/Pandas and add the new file to new sheet
+- Dashboard: Show multiple sheets in one place
+    * Add non-sheet elements from bottom left
+    * Create multi-sheet filters
+- Story: Used for presentation of sheets and dashboards
+
 
 
 
@@ -269,6 +242,7 @@ This iteration of my notes is for long-term reference. I will keep my original n
 - r'\w{3,6}' ----- only capture when 3 alphanumerics in sequence and as many as possible up to 6
 - r'(\w)(\w)?' ----- optional capture group
 - r'[a1][b2][c3]' ----- 'abc 123' returns ['abc','123'] and 'a2c 1b3' returns ['a2c', '1b3']
+
 
 
 
@@ -370,6 +344,7 @@ This iteration of my notes is for long-term reference. I will keep my original n
 
 
 
+
 <!-- 
  #####   #####  #            ##        #####                              
 #     # #     # #           #  #      #     # #####    ##   #####  #    # 
@@ -435,7 +410,7 @@ This iteration of my notes is for long-term reference. I will keep my original n
 - df.show() ----- print operation (returns None), original data doesn't change unless: df = df2; df2.show()
     * vertical=True to do same as pandas df.T
     * combine vertical=True with truncate=False to see each row's values in a separate section
-- df.head() ----- returns Spark row objects in a list
+- df.head() ----- returns Spark row *objects* in a list
     * df[0] ----- return first row object
     * df[0].col4 ----- return value at first row, col4
 - df.toPandas() ----- exactly what you think it is, be careful!
@@ -497,6 +472,7 @@ This iteration of my notes is for long-term reference. I will keep my original n
 - df.write.format("csv").mode("overwrite").option("header", "true").save("df_csv")
     * write df to a Spark-distributed CSV file, another way to do it
 - df.printSchema() ----- check column dtypes
+
 
 
 
@@ -650,7 +626,8 @@ This iteration of my notes is for long-term reference. I will keep my original n
  -->
 
 # Matplotlib & Seaborn
-<!-- Needs work -->
+
+<!-- Polished -->
 ## Overall Notes for Visualizations in Python
 - **Amazing charts for inspiration:** https://www.python-graph-gallery.com/all-charts/
 - LaTeX Notation: Wrap math in dollar signs like $a^2$
@@ -701,7 +678,7 @@ This iteration of my notes is for long-term reference. I will keep my original n
     * ax.xaxis.set_major_formatter() or ax.yaxis.set_major_formatter()
 - plt.show()
 
-<!-- Needs work -->
+<!-- Polished -->
 ## Seaborn
 - First stop for building charts, then customize charts further with Matplotlib methods
 - Powerful in its defaults!
@@ -717,7 +694,7 @@ This iteration of my notes is for long-term reference. I will keep my original n
 - Category-Separated plots: sns.catplot(data=df[['cat','col1','col2','col3',...]], kind='violin')
     * Options: strip, swarm, box, violin, boxen, point, bar, count
 - Pairplot: sns.pairplot(df)
-- Axis-level Heatmap: sns.heatmap(data=crosstab, annot=True, cmap=plt.cm.Greens)
+- Axis-level Heatmap: sns.heatmap(crosstab (df.corr()), cmap='Greens', annot=True, vmin=0, vmax=1)
 - Axis-level Scatter with Regression Line: sns.regplot(x=df.x, y=df.y, line_kws={'color':'red'})
 - Axis-level Scatter with Edge Histograms: sns.jointplot(data=df, x='cont_col1', y='cont_col2', hue='category)
 ### Seaborn Arguments
@@ -735,6 +712,7 @@ This iteration of my notes is for long-term reference. I will keep my original n
 
 
 
+
 <!-- 
 #######                                                                 
 #       #    # #####  #       ####  #####    ##   ##### #  ####  #    #
@@ -747,84 +725,166 @@ This iteration of my notes is for long-term reference. I will keep my original n
 
 # Exploration
 
+<!-- Polished -->
 ## Exploration Prep
 - Plot distribution for data wrangling to check for outliers (histogram, box-whisker), then remove outliers if necessary, then plot new distributions
 ### Split Data
-- sklearn does randomization/stratification for you!
+- Scikit-Learn (sklearn) handles randomization, stratification, and data sequestering
     * Randomize entire dataset *before* splitting to remove potential bias (dataset potentially sorted)
     * Make sure all splits include all options (stratify target)
 - Data prep parameters are calculated from *train*, this excludes unseen data, so don't calculate on whole dataset
-- from sklearn.model_selection import train_test_split ----- splits data in two sets
-- train_validate, test = train_test_split(df, test_size=0.2, random_state=123, stratify=df.colname)
-- train, validate = train_test_split(train_validate, test_size=.25, random_state=123, stratify=train.survived)
+#### Syntax for Splitting Data
+- from sklearn.model_selection import train_test_split
+- train_validate, test = train_test_split(df, test_size=0.3, random_state=123, stratify=df.colname)
+- train, validate = train_test_split(train_validate, test_size=.325, random_state=123, stratify=df.colname)
 ### Null Imputation
-- from sklearn.impute import SimpleImputer ----- fills values by inference
+- An imputer is **mainly** used for *algorithmic* null imputation
+- from sklearn.impute import SimpleImputer
 - imputer = SimpleImputer(strategy='most_frequent')
-    * fill with: 0, average, median, subgroup mean, most frequent value, build model to predict missing values, etc
-    * strategy='average' ----- fills with average
-    * will need to modify dataframes with impute results
+    * Use a different strategy as necessary
 - train[['embark_town']] = imputer.fit_transform(train[['embark_town']])
 - validate[['embark_town']] = imputer.transform(validate[['embark_town']])
 - test[['embark_town']] = imputer.transform(test[['embark_town']])
 
-## Univariate Visualization
-### Univariate Stats
-- Focus on the target itself
-- sns.displot(x='colname', data=df) ----- quick distribution plot
+<!-- Polished -->
+## Exploration Visualization
+- Try out Maggie's explore.py or Pandas Profiling if you want a quick Exploration solution
+### Univariate Exploration
+- Use **histograms** or other distributions to visualize each feature and the target separately
+- Use one-way statistical tests here like One-Way ANOVA or Chi Square Goodness of Fit
+- Document features whose categories need to be one-hot encoded
+    * Consider combining categories for stakeholder answers, or dropping categories entirely
+    * Use keywords and one-hot encoding to make string-based columns useful
+- Remove any unnecessary or high-null features as needed
+### Bivariate Exploration
+- Visualize **each feature** against the target
+    * Bivariate viz are "best for the money" from stakeholder perspective, easily understood
+- Use statistical testing to show correlations, relationships, and dependence
+- Eliminate features that do not relate to the target
+### Multivariate Exploration
+- Compare **between features** in terms of target
+    * Use conditional formatting to add a third dimension to a viz
+- **Control for "strong" features** that may drive other features to falsely-relate to target
+#### Multivariate Exploration and Algorithmic Clustering
+- Consider algorithmic clustering techniques for features; **set manual rules for clusters**
+- Apply clustering and visualize results
+- Statistically-test clusters in terms of the target, select indicative clusters
+- Determine min and max values of each feature for a selected cluster
+- Use (less-than & greater-than) logic against each feature for an observation
+- Apply truth value in new column to serve as feature
 
-## Bivariate Exploration
-- Try out Maggie's explore.py or Pandas Profiling if you want a quick solution
-- Split data into categorical vars and quantitative vars
-    * cat_vars = ['var1', 'var2', 'var3', ...]
-    * quant_vars = ['var42', 'var67', ...]
-    * explore.explore_univariate(train_df, cat_vars, quant_vars) ----- builds visualization and statistics with columns var1, var2, var3, var42, var67, etc
-### Bivariate Stats
-- See how each feature relates to target
-- Same setup as univariate but with target variable (column) specified
-    * explore.explore_bivariate(train, target, cat_vars, quant_vars)
-- sns.heatmap(df.corr(), cmap='Greens', annot=True, vmin=0, vmax=1) ----- quick correlation chart
-    * If everything correlates mostly, then it's called "Multicolinearity"
-- df.sample(5, random_state=123).style.highlight_max(axis=0) ----- highlight max values per column
+<!-- Polished -->
+## Feature Engineering
+- The art of data refocusing
+- Use training split to create features assembled from other features, other sources, and more
+- Post-creation evaluation for whether a feature has its intended effect
+- Many of sklearn's models, once fit, generate values for .feature_importances_ that reveal feature usefulness
+### Feature Engineering Techniques
+- Bins as features: train['newcol'] = pd.cut(train.colname, bins=[0,15,100], right=False, labels=['Low','High'])
+#### Keyword Engineering
+- Encoding on the existence of a keyword
+- Basic existence of word: df['has_word'] = df.col.str.contains('word')
+- Basic existence of multiple words: df['has_word'] = df.col.str.contains('word1|word2') or 'word1&word2'
+- **Keyword Categorization**
+0. *NOTE: If column can have two different categories, then it will choose the last in the loop- be careful!*
+    * Consider multiple features if this is the case, or simply one-hot encoding using basic existence of word
+1. Determine which features and categories to create
+    * Thoughtful process, document your brainstorming
+    * EX: 'Peach' and 'Sunset' indicate category 'Orange' for feature 'color'
+2. Create the keyword list for each category
+3. Create a mapping function to read an observation and check for existence of at least one keyword
+    * If a keyword exists, mark the new column with the category
+4. Loop through each category and its keyword list, pass keywords, category, feature, and df to mapper
+5. Handle remaining nulls
 
-## Multivariate Exploration
-### Multivariate Stats
-- Compare features in terms of target
-- Adding the target as color in Seaborn
-    * explore.explore_multivariate(train, target, cat_vars, quant_vars)
+<!-- Polished -->
+## Performance-Based Feature Selection
+- Most common ways are SelectKBest and Recursive Feature Elimination (RFE)
+    * **These are great for determining features to investigate further**
+- K-Best and RFE do not need to take in scaled data, just encoded data
+#### Select K Best
+- Choose model algorithm, evaluate each feature's strength using algorithm, return best 'n' features
+- kbest = SelectKBest(f_regression, k=3) ----- returns top 3 'best' features using f regression
+- kbest.fit(X_train, y_train)
+- kbest.pvalues_
+- kbest.get_support() ----- array showing which columns were chosen (True, False, True...)
+- X_train.columns[kbest.get_support()] ----- shows column names
+- X_kbest = kbest.transform(X_train_scaled) ----- if k=3, return top-3 columns
+#### Recursive Feature Elimination (RFE)
+- Choose model algorithm, evaluate each combination of 'n' features using algorithm, return best combination
+    * More computationally-expensive than SelectKBest, but much better at feature selection
+    * Mitigate computational expense by selecting a high-efficiency algorithm
+- rfe = RFE(estimator=LinearRegression(), n_features_to_select=3)
+- rfe.fit(X_train, y_train)
+- rfe.get_support()
+- X_train.columns[rfe.get_support()]
+- pd.Series(rfe.ranking_, index=X_train.columns)
+
+
+
+
+
+
+<!-- 
+ #####                                                           
+#     # #      #    #  ####  ##### ###### #####  # #    #  ####  
+#       #      #    # #        #   #      #    # # ##   # #    # 
+#       #      #    #  ####    #   #####  #    # # # #  # #      
+#       #      #    #      #   #   #      #####  # #  # # #  ### 
+#     # #      #    # #    #   #   #      #   #  # #   ## #    # 
+ #####  ######  ####   ####    #   ###### #    # # #    #  ####  
+-->
 
 <!-- Needs work -->
-## Feature Engineering
-- Determine which features to keep
-    * K Best and RFE
-    * Drop features based on domain knowledge
-    * Drop features that raise ethical issues
-    * Drop features that are too 'loud'
-    * Clean up remaining features
-    * Do analysis on features
-- Create features!!
-### Examples
-- train['newcol'] = pd.cut(train.colname, bins=[0,15,100], right=False, labels=[0,1])
-    * will need to amend train/validate/test datasets with 'newcol' and also cat_vars or quant_vars
-### Feature Engineering (Regression notes)
-- *Making* useful features for columns based on existing data
-    * k-best and rfe do not need to take in scaled data, just encoded data
-- Select K Best (SelectKBest, kbest) 
-    * f regression test, checks each feature in isolation, checks whether model performs better than baseline
-    * kbest = SelectKBest(f_regression, k=3) ----- returns top 3 'best' features using f regression
-    * kbest.fit(X_train_scaled, y_train)
-    * kbest.pvalues_
-    * kbest.get_support() ----- array showing which columns were chosen (True, False, True...)
-    * X_train.columns[kbest.get_support()] ----- shows column names
-    * X_kbest = kbest.transform(X_train_scaled) ----- if k=3, return top-3 columns
-- Recursive Feature Elimination (RFE, rfe) 
-    * fits model, eliminates worst performing features (more computationally expensive)
-        * Computational expense is largely driven by choice of estimator, simple estimator is recommended to quickly ascertain which features to use
-    * rfe = RFE(estimator=LinearRegression(), n_features_to_select=3) ----- top-3
-    * rfe.fit(X_train_scaled, y_train)
-    * rfe.get_support()
-    * X_train.columns[rfe.get_support()]
-    * pd.Series(rfe.ranking_, index=X_train.columns)
-    * **Great for determining features to further-investigate**
+## Algorithmic Clustering
+- Using metric groupings to make predictions
+- Great for anomaly detection (doesn't fit in normal cluster)
+- Very important to scale data before clustering
+### Techniques
+- Heirarchical - Upwards or downwards
+- **K-Means** - 'centroids', or mean-distance of a certain cluster (most popular) 
+    * Randomly plots the chosen number of centroids, then moves the centroids to reduce the mean distance of datapoints to the centroids
+    * Hyperparameter is the number of centroids
+        * Choose this number based on: domain knowledge (iris: 3 species, 3 clusters)
+        * Choose this number based on: alt knowledge (grouping by location)
+        * Choose this number based on: exploration (viausalization has 3 clusters)
+        * Choose this number based on: computing inertia (retroactively changing # clusters to find the 'elbow'- first few clusters drop inertia significantly, where the line goes more-horizontal from more vertical, choose that k value)
+    * May be able to choose the centroid locations for lat/long clustering (choosing city centers)
+        * Actually, I think you'd put lat/longs to categories (within x distance of [city]), which isn't the purpose of *algorithmic* clustering
+- DBSCAN Video - density-based (different from centroids), good at finding weird shapes in data, but computationally expensive
+    * Draws a perimeter around each datapoint, chains overlapping perimeters, datapoints without overlap are considered outliers
+    * Hyperparameter is the radius size for the perimeter
+    * C-based (that's what the DB references)
+### Use Cases
+- Exploration
+    * Give names to groups/labels
+    * Spread data into subgroups
+    * Analyze relationship to target (think: Simpson's Paradox)
+- Machine Learning
+    * Use clusters as target
+        * Setting y_train to train['cluster']
+    * Use clusters as features
+        * Done if one cluster is a good driver of the target
+        * One-hot encode a column for that cluster, use in X_train
+    * Model clusters separately (split data and run different algorithm)
+        * model.fit(train[train.cluster == 0][['col1','col2']], y_train)
+### Outliers
+- Drop based on domain knowledge (an adult can't weight 19 pounds)
+- If outlier doesn't change results, then feel free to drop
+- If outlier affects *both* results and assumptions... compare including- and excluding-outlier results
+### Syntax
+- from sklearn.cluster import kmeans
+- kmeans = KMeans(n_clusters=3, random_state=123)
+- kmeans.fit(X_train_scaled) ----- notice there's no y_train, because there is no labeled target to serve as the answer for the prediction
+- df['cluster'] = kmeans.predict(X_train_scaled) ----- no y_train
+- train['cluster'] = kmeans.predict(X_train_scaled)
+- kmeans.cluster_centers_ ----- location of each centerpoint
+- kmeans.labels_ ----- labels of each observation
+- kmeans.inertia_ ----- sum of (squared) distances between samples and their closest cluster centerpoint
+- centroids = df.groupby('cluster')['col1','col2','col3',...].mean() ----- mean distance to centerpoint for each specified column of data against each cluster
+#### Visualization
+- centroids.plot.scatter(y='petal_length', x='sepal_length', c='black', marker='x', s=1000, ax=plt.gca(), label='centroid') ----- plot syntax for... stuff
+
 
 
 
@@ -838,7 +898,7 @@ This iteration of my notes is for long-term reference. I will keep my original n
       #   #   ######   #   #      #   #   # #           # 
 #     #   #   #    #   #   # #    #   #   # #    # #    # 
  #####    #   #    #   #   #  ####    #   #  ####   ####  
-  -->
+-->
 
 # Statistics
 
@@ -943,27 +1003,28 @@ This iteration of my notes is for long-term reference. I will keep my original n
 
 
 <!-- 
-######                                                      
-#     # #####  ###### #####  #  ####  ##### #  ####  #    # 
-#     # #    # #      #    # # #    #   #   # #    # ##   # 
-######  #    # #####  #    # # #        #   # #    # # #  # 
-#       #####  #      #    # # #        #   # #    # #  # # 
-#       #   #  #      #    # # #    #   #   # #    # #   ## 
-#       #    # ###### #####  #  ####    #   #  ####  #    # 
+#     #                                ######                                                                  
+##   ##  ####  #####  ###### #         #     # #####  ###### #####    ##   #####    ##   ##### #  ####  #    # 
+# # # # #    # #    # #      #         #     # #    # #      #    #  #  #  #    #  #  #    #   # #    # ##   # 
+#  #  # #    # #    # #####  #         ######  #    # #####  #    # #    # #    # #    #   #   # #    # # #  # 
+#     # #    # #    # #      #         #       #####  #      #####  ###### #####  ######   #   # #    # #  # # 
+#     # #    # #    # #      #         #       #   #  #      #      #    # #   #  #    #   #   # #    # #   ## 
+#     #  ####  #####  ###### ######    #       #    # ###### #      #    # #    # #    #   #   #  ####  #    # 
 -->
 
-# Prediction
+# Model Preparation
 
-## Feature Preparation
 <!-- Needs work -->
-### Encoding
+## Encoding
 - Associate each unique value with a number (label encoding)
     * Use label encoding when categories have an inherit order
 - One-hot encoding: 1 or 0 in new column if row is or isn't that value
     * Use one-hot when there's no order
 - pd.get_dummies(df['col1', 'col2'], drop_first=[True, True]) ----- automagically does one-hot encoding for unique values in col1 and col2
     * creates a new column for each unique value in col1 and col2 with 0 or 1 representing False and True respectively, drops first new column for col1 and col2 (less dimensionality)
-### Scaling
+
+<!-- Needs work -->
+## Scaling
 - Used to fix distance-based calculations (DO IT EVERY TIME)
     * Definitely use on KNN, K-Means, etc
     * Might be required on linear/logistic regression
@@ -977,7 +1038,7 @@ This iteration of my notes is for long-term reference. I will keep my original n
         * d = sqrt((x1 - x2)^2 + (y1 - y2)^2)
     * In layman's terms, raw comparison of a number between 1-10 and a number between 1-1000 will give obvious preference to the 1-1000 number (the 1-1000 number moves more greatly than the 1-10 number), so scaling is needed
 - Scaling is easily done using sklearn.preprocessing functions
-#### Scaling Methods
+### Scaling Methods
 - Use sklearn.preprocessing MinMaxScaler, StandardScaler, RobustScaler
 - "Normalization" (MinMaxScaler) is scaling into range 0 to 1
 - StandardScaler centers the distribution's density on 0 and limits range
@@ -985,7 +1046,7 @@ This iteration of my notes is for long-term reference. I will keep my original n
 - RobustScaler also centers the distribution's density on 0 and limits range, but it de-weighs outliers as well
 - QuantileTransformer attempts to normalize a distribution and center it on 0... be careful, make sure to check the visualization
     * If you really want your data to be normal then use this... it's fairly complex
-#### Scaling Syntax
+### Scaling Syntax
 - Note: Generally you want to return the scaler in addition to the scaled data from helper functions
 - **MinMaxScaler**, **StandardScaler**, **RobustScaler**
     * scaler = sklearn.preprocessing.MinMaxScaler() --- or the other two
@@ -998,25 +1059,517 @@ This iteration of my notes is for long-term reference. I will keep my original n
     * Follow above steps for rest
 
 <!-- Needs work -->
-## Classification
-- from sklearn.metrics import precision_score, accuracy_score, recall_score, classification_report ----- confusion matrix calc functions
-    * df_report = pd.DataFrame(classification_report(df.actual_observed, df.model_guesses, labels=['colname', 'colname'], output_dict=True)).T ----- outputs nice df of metrics
-### SMOTE
+## SMOTE
 - Needed when classes are imbalanced for classification modeling
 - Used specifically for train to help models fit, improves performance on predicting unseen data
 
-## Regression
-- A shotgun pattern in homoscedasticity check (pattern shows heteroscedasticity) isn't great, consider removing outliers or transforming... can take log of entire column (storing values in new column) then run log column through the model and visualization
 
-## Time-Series
+
+
+
+
+<!-- 
+ #####                                                                             
+#     # #        ##    ####   ####  # ###### #  ####    ##   ##### #  ####  #    # 
+#       #       #  #  #      #      # #      # #    #  #  #    #   # #    # ##   # 
+#       #      #    #  ####   ####  # #####  # #      #    #   #   # #    # # #  # 
+#       #      ######      #      # # #      # #      ######   #   # #    # #  # # 
+#     # #      #    # #    # #    # # #      # #    # #    #   #   # #    # #   ## 
+ #####  ###### #    #  ####   ####  # #      #  ####  #    #   #   #  ####  #    # 
+-->
+
+# Classification
 
 <!-- Needs work -->
-## Algorithmic Clustering
-- centroids.plot.scatter(y='petal_length', x='sepal_length', c='black', marker='x', s=1000, ax=plt.gca(), label='centroid') ----- plot syntax for... stuff
+## Classification
+- Assigning observations to existing classifications
+- Supervised learning... training on data with answers/labels
+- Produces: Rules
+    * Data + Answers, with ML, creates rules
+    * Traditional programming doesn't seek to create rules, it creates answers
+### Vocab
+- Classifier: Algorithm that maps input data to specific category
+- Classification Model: A series of steps that takes the patterns of input variables, generalizes, then applies generalizations to new data
+- Feature: An input/independent variable
+- Binary Classification: Two possible outcomes
+- Multiclass Classification: More than two, where samples are assigned to exactly one target label (ex: students in grades 1-12)
+### Algorithms
+- Data Science is heavily based on decision trees
+- These are designed to create rules from data/labels:
+- **Logistic Regression** - Predict binary outcomes for inputs
+    * Interpretable, Flexible, Easily-Implemented, Efficient
+    * Need to remove unrelated attributes, not a top-performing algorithm
+- **Decision Tree** - Sequence of rules to classify two or more classes via one-input-binary-output nodes
+    * Simple to Understand/Visualize/Explain, Low-Prep, Handle numerical and categorical data, performs well
+    * Overfitting risk, unstable
+- Naive Bayes - contingent probabilities - low # of observations (in the hundreds)
+- **K-Nearest Neighbors (KNN)** - Predictions based on how close new data is to known data (top-5 closest known datapoints are 'votes')
+    * Simple, Robust to noise, just-in-time calculation, can be updated over time
+    * Need to determine K, high computational cost, curse of dimensionality (distances can break down in high-dimensional space)
+- **Random Forest** - Lots of decision trees
+    * Less risk of overfitting than one decision tree, more accurate than decision tree (due to moar trees)
+    * High computational demand, difficult to implement, hard to explain (black-box factor)
+- Many more
+### Evaluation
+- from sklearn.metrics import precision_score, accuracy_score, recall_score, classification_report ----- confusion matrix calc functions
+    * df_report = pd.DataFrame(classification_report(df.actual_observed, df.model_guesses, labels=['colname', 'colname'], output_dict=True)).T ----- outputs nice df of metrics
 
+<!-- Needs work -->
+## Evaluation (Classification notes)
+- Reviewing our model to see if our predictions matched actuals for a given number of observations
+    * True Positive, FP, TN, FN
+    * Baseline Prediction is predicting all outcomes as True
+- Focus on cost: Accuracy, Recall, Precision, Specificity, F1 Score, ROC/AUC
+- Confusion Matrix --- focus on Recall and Precision
+    * df = pd.DataFrame({'prediction':[], 'actual':[]})
+    * pd.crosstab(df.prediction, df.actual)
+### Accuracy 
+- Overall performance of model
+- Easy to understand and doesn't matter what the 'positive' is
+- Might be misleading when working with imbalanced class problems
+- (TP + TN) / (TP + TN + FP + FN)
+### Recall
+- Positive actual against our predictions 
+- Minimizing false negatives
+- Use when FN is more costly than FP [credit card fraud detection]
+- TP / (TP + FN)
+### Precision 
+- Our prediction against all possible actuals 
+- Minimizing false positives
+- Use when FP is more costly than FN [spam filter])
+- TP / (TP + FP)
+### More terms
+- Sensitivity (Recall)
+- Specificity (Recall for negative) 
+- F1 Score (harmonic mean of Precision and Recall)
+- ROC/AUC (how well your model discriminates between positive and negative)
+### Usage
+- Model Accuracy: (df.actual == df.prediction).mean()
+- Baseline Accuracy: (df.actual == df.baseline_prediction).mean()
+- Recall: subset = df[df.actual == 'coffee'] ----- look at actual Yes observations
+    * use Model and Baseline Accuracy against this subset
+- Precision: subset = [df.prediction == 'coffee'] ----- look at predicted Yes rows
+    * use Model and Baseline Accuracy against this subset
+
+<!-- Needs work -->
+## Modeling
+- Create model using algorithm+hyperparameters and training data
+- Evaluate the model
+- Repeat
+- After time/repetitions, compare models
+- After comparing models, use best against test split
+- Decision Tree: DecisionTreeClassifier (covered extensively below), clf
+- Random Forest: RandomForestClassifier, rf
+    * rf, Lots of decision trees, averaging them all (coming to a consensus)
+    * An "Ensemble ML algorithm" called Bootstrap Aggregation or bagging
+    * Bootstrapping: take lots of samples, average each sample alone, then average all averages
+    * Random Forest does bootstrapping for lots of decision tree predictions
+    * After fitting, print(rf.feature_importances_) to see how important each feature is to predicting the classification (array of percentages)
+        * The _ character at end indicates it's a parameter of a trained model
+- K-Nearest Neighbors: KNeighborsClassifier, knn
+        * n_neighbors=, weights='uniform' or weights='distance'
+    * Supervised, makes predictions based on how close a new data point is to known data points (effective when there's more known data)
+    * Just-in-time algorithm (makes prediction when receive data)
+    * "Lazy" because it doesn't make an internal model, just stores data and uses stats to make predictions
+    * K-value serves as "votes", top-(K-value)-closest known datapoints to new datapoint for KNN calculation
+        * Most common is to try different K-values, some industries have a standard
+- Logistic Regression: LogisticRegression, logit
+    * Instead of fitting a linear regression, you fit a curved regression
+    * Used for binomial/multinomial regression (one plot axis is not continuous/discrete values)
+### Dummy Steps
+- from sklearn.dummy import DummyClassifier
+- from sklearn.metrics import classification_report
+- X_train, y_train = train.drop(columns='target_col'), train.target_col
+    * do same for validate and test subsets
+- model = DummyClassifier(strategy='constant', constant=1) ----- we predict the target to be always 1 (not a great model, of course), these are hyperparameters
+    * strategy='uniform' or 'most_frequent' or...
+- model.fit(X_train, y_train)
+- accuracy = model.score(X_train, y_train)
+    * sklearn objects can use .score() .predict() .predict_proba() and more
+    * .score is accuracy
+    * .predict generates array of predictions
+    * .predict_proba generates array or arrays for % sure-ness of guesses
+### Decision Tree example
+- from sklearn.tree import DecisionTreeClassifier
+- from sklearn.tree import export_graphviz
+- from sklearn.metrics import classification_report
+- from sklearn.model_selection import train_test_split
+- train, validate, test split
+- Prepare data
+- Explore data
+- clf = DecisionTreeClassifier(max_depth=3, random_state=123) ----- clf is classifier, decision tree is limited to depth of 3 (more hyperparameters available)
+    * Set depth to the number of features (Ryan does this, so...)
+- clf = clf.fit(X_train, y_train)
+- y_pred = clf.predict(X_train) ----- generate model prediction array against train dataset
+- import graphviz
+- from graphviz import Graph
+- dot_data = export_graphviz(clf, feature_names= X_train.columns, class_names=clf.classes_, rounded=True, filled=True, out_file=None)
+- graph = graphviz.Source(dot_data) 
+- graph.render('iris_decision_tree', view=True) ----- display decision tree in PDF format (a picture)
+<code> dot_data = export_graphviz(clf, feature_names= X_train.columns, 
+                           class_names=('Yes', 'No'), rounded=True, 
+                           filled=True, out_file=None)</code>
+- classification_report(y_train, y_pred) ----- get metrics of train dataset
+- clf.score(X_validate, y_validate) ----- accuracy of model against validate dataset
+- y_pred = clf.predict(X_validate) ----- prediction array of model for validate dataset
+- classification_report(y_validate, y_pred) ----- metrics of model against validate
+
+
+
+
+
+
+<!-- 
+######                                                            
+#     # ######  ####  #####  ######  ####   ####  #  ####  #    # 
+#     # #      #    # #    # #      #      #      # #    # ##   # 
+######  #####  #      #    # #####   ####   ####  # #    # # #  # 
+#   #   #      #  ### #####  #           #      # # #    # #  # # 
+#    #  #      #    # #   #  #      #    # #    # # #    # #   ## 
+#     # ######  ####  #    # ######  ####   ####  #  ####  #    # 
+-->
+
+# Regression
+
+<!-- Needs work -->
+## Regression
+- Resources: "String and straw" animation, https://setosa.io/ev/ordinary-least-squares-regression/
+- Supervised algorithm prosecuting a labeled target
+- Instead of binary/multi target, **it's a continuous target**
+- Involves scaling as part of preparation
+    * A number like cost ($100k - $1,000k) compared to square footage (700-2500) would need to be scaled for the model (even rates of change)
+    * Outliers affect regression greatly, discover and eliminate them
+        * sns.boxplot(data=df) ----- box/whisker marks outliers
+- Regression baseline generally involves mean or median (not mode)
+    * Mode of continuous values doens't make sense... may only have one or two in common for thousands of observations
+    * Plotted baseline is a horizontal line at the median/mean
+- Evaluation is different
+    * No true/false positives because no binary check
+    * Looking at vertical distance of data and prediction from the trend line
+        * Trying to minimize the **difference** in distance
+    * May need polynomial trend line rather than linear... exploration decides it
+- Regression tends to work better on normal distributions
+- Relationships between variables being >80%, you can safely drop a variable
+### Strategy 
+- Model complexity choice: Reduction of error, variance, and bias^2 is the goal
+### Regression Algorithms
+- Linear Regression
+- Ordinary Least Squares (OLS)
+    * minimizes sum of squared differences in the linear model compared to the actual data points
+- LASSO+LARS - LassoLars
+    * uses regularization penalty for independent variables to minimize certain features (a form of automatic feature selection)
+    * Can change slope of the regression line to reduce variance and increase bias
+- Polynomial Regression
+    * curved lines (be wary of overfitting with 'too curvy' regression line)
+- Generalized Linear Model - TweedieRegressor
+    * reduces multiple distribution options
+### Evaluation
+- A shotgun pattern in homoscedasticity check (pattern shows heteroscedasticity) isn't great, consider removing outliers or transforming... can take log of entire column (storing values in new column) then run log column through the model and visualization
+
+<!-- Needs work -->
+## Evaluation (Regression notes)
+- Does model add any value? Which model is better? How confident am I in the model's predictions?
+- Root-Means Square (RMSE): How much error the typical prediction has, cast in same units as target; smaller is better
+- R-Squared (R2): Variance in y (target) explained by x (predictor); closer to 1 is better
+- Remember: **units are preserved**, predicting a dollar amount means unit is dollars
+### Theoretical
+- y_i = beta_0 + (beta_1 * x_i) + e_i
+    * target = intercept + linear_addition_of_ind_vars + unexplained_error
+    * unexplained_errors are independent, same variance, normally distributed
+    * "Relationship is linear and additive"
+- estimate_y_i = beta_0 + beta_1 * x_i
+    * estimated_target = estimated_intercept + estimated_value_of_coefficients
+    * residual: e = y_i - estimate_y_i
+### Baseline
+- sns.lineplot(x='x', y='baseline', data=df) ----- plots line for baseline
+    - switch 'baseline' with 'predictions' for the regression line
+    - plt.axhline(0, ls=':') ----- plots dotted line at y=0 for visual aid
+- Regression baseline is the mean or median of all datapoints (horizontal line)
+    * Check mean and median for better performance, select best performing
+    * x-axis (independent variable) not affected by horizontal line
+### Errors
+- Residual: error (actual minus predicted) --- above line is positive, below line is negative
+- SSE: sum of squared error --- square all error distances, then add up
+    * If you especially care about outliers, this will weigh outliers higher
+- MSE: mean of squared error --- square all error distances, then average
+- **RMSE**: root mean squared error --- square all error distances, then average, then take the square root of the result
+    * Most common one
+- TSS (total error): distance from actual to baseline
+- ESS (explained error): distance from prediction line to baseline
+- SSE (unexplained error): distance from prediction line to actual
+### R^2 - Explained Variance
+- R^2 = ESS / TSS
+- R^2 == 1.0 --- all data points fall perfectly on regression line
+- R^2 == 0.0 --- all data points above and below the regression line have the same distance (mean baseline)
+### sklearn syntax
+- from sklearn.metrics import mean_squared_error
+    * MSE2 = mean_squared_error(df.y, df.yhat)
+    * MSE2_baseline = mean_squared_error(df.y, df.baseline)
+    * SSE2 = MSE2 * len(df)
+    * RMSE2 = mean_squared_error(df.y, df.yhat, squared=False)
+    * RMSE2_baseline = mean_squared_error(df.y, df.baseline, squared=False)
+- from sklearn.metrics import r2_score
+    * r2_score(df.y, df.yhat) --- score of explained variance
+
+
+
+
+
+
+<!-- 
+#######                     #####                                
+   #    # #    # ######    #     # ###### #####  # ######  ####  
+   #    # ##  ## #         #       #      #    # # #      #      
+   #    # # ## # #####      #####  #####  #    # # #####   ####  
+   #    # #    # #               # #      #####  # #           # 
+   #    # #    # #         #     # #      #   #  # #      #    # 
+   #    # #    # ######     #####  ###### #    # # ######  ####  
+-->
+
+# Time Series
+
+<!-- Needs work -->
+## Time-Series
+- Sub-methodology of supervised machine learning involving temporal data
+- Focus is on time-wise trends, making time-based predictions on how data *will* be
+- Time is linear... so time-series features involved are always linearly-correlated with each other (one goes up, another goes down... because it's on the linear timeline)
+    * This means it has to be treated differently from linear regression
+- Uses previous outcomes as features to predict future outcomes
+    * EX: Customer growth in January (a target of regression) is one observation, multiple months' observed growth together are the feature
+    * This differs from regression, which focuses on the attributes driving an outcome and has no time component
+- Some examples include:
+    - repeating upward/downward trends (seasonality)
+    - fluctuation cycles (seasonality at >2 year increments), 
+    - autocorrelation (regression of outcomes, "regression of self")
+### Forecasting
+- Last Observed Value (as prediction)
+- Simple Average (average of all observations as prediction)
+- Moving/Rolling Average (last portion of observed for this as prediction)
+    * Usually last 7 days, the average of that, as the prediction
+- Previous Cycle (exactly the last cycle as a whole [sliced] as prediction)
+    * Year-Over-Year Difference is a form of this, and a good starting place when you haven't performed any time-series analysis yet. The reason is that each year has an even length, has its own seasons and trends that regularly occur in society, and is commonly referenced in most industries to check performance of production and sales. It's fairly easy to calculate, you do a .diff(365) on day-resampled data then take the mean of all values, showing the overall difference. Then you predict using the final observed year's values, adding the overall difference to each value. Then calculate RMSE as normal.
+- Holt's Linear Trend (a regression of previous cycles applied at end of observations)
+    * import statsmodels.tsa.api.Holt
+    * model = Holt(train[col], exponential=)
+    * model.fit(smoothing_level = .1, smoothing_slope=.1, optimized=False)
+    * model.predict(start=validate.index[0], end=validate.index[-1])
+- Facebook Prophet's Model (next expected cycle based on previous cycles)
+    * "Pretty good, but hard to install and get working"
+### Considerations
+- In-Sample and Out-of-Sample splits are split on seasons, not randomly-selected observations
+    * Human-based split if pattern, percentage-based split if no pattern
+        * df.plot() for date index and outcome value
+        * df.resample('D').mean().plot(ax=ax, alpha=.5, label='Daily) ----- plot the data resampled to daily, can do for weekly/monthly/yearly/etc
+    * To determine seasonal splits, you'll have to look at data before you split
+    * To determine percentage splits, set train size and test size, then look at the rowcount and split the first 80% from the last 20%
+        * train_end_index = round(df.shape[0] * train_size)
+        * train = df.iloc[:train_end_index]
+        * test = df.iloc[train_end_index:]
+- Rolling averages on 3-, 7-, and 30-day windows
+    * Must apply aggregation to rolling, so: df.resample('D').mean().rolling(30).mean().plot()
+- ax = df.resample('M').mean().diff().plot() ----- plot change over time, in practice plot difference between a month and the month prior, do this lineplot for all months
+    * df.resample('M').mean().plot(ax=ax, label='Monthly Average) ----- plots using same ax as previously-defined graph
+    * df.resample('M').shift(12).plot(ax=ax, label='Last Year') ----- plots 12 months prior in place, so you can compare last year to this year
+
+
+
+
+
+
+<!-- 
+#     #                                             #                                                        
+##    #   ##   ##### #    # #####    ##   #         #         ##   #    #  ####  #    #   ##    ####  ###### 
+# #   #  #  #    #   #    # #    #  #  #  #         #        #  #  ##   # #    # #    #  #  #  #    # #      
+#  #  # #    #   #   #    # #    # #    # #         #       #    # # #  # #      #    # #    # #      #####  
+#   # # ######   #   #    # #####  ###### #         #       ###### #  # # #  ### #    # ###### #  ### #      
+#    ## #    #   #   #    # #   #  #    # #         #       #    # #   ## #    # #    # #    # #    # #      
+#     # #    #   #    ####  #    # #    # ######    ####### #    # #    #  ####   ####  #    #  ####  ###### 
+                                                                                                             
+######                                                            
+#     # #####   ####   ####  ######  ####   ####  # #    #  ####  
+#     # #    # #    # #    # #      #      #      # ##   # #    # 
+######  #    # #    # #      #####   ####   ####  # # #  # #      
+#       #####  #    # #      #           #      # # #  # # #  ### 
+#       #   #  #    # #    # #      #    # #    # # #   ## #    # 
+#       #    #  ####   ####  ######  ####   ####  # #    #  ####  
+-->
+
+# Natural Language Processing (NLP)
+
+<!-- Needs work -->
 ## Natural Language Processing (NLP)
+- Codeup's focus is on text classification, but there's a lot more ways to process natural language
+- Same pipeline as other methodologies, but here, we're building the corpus (dataset) that we will analyze
+### Vocab
+- Corpus: entire dataset
+- Document: one observation
+- Tokenization: breaking up into tokens (pieces)
+- Stemming and Lematizing: transforming words into their roots
+    * stem slices words to base word, lem converts words to base word
+- Stopwords: common words that usually don't add value
+- ngrams: combination of n words
+- POS: part of speech
+    * Part-Of-Speech Tagging: what part of speech a word is (noun, verb, adjective, etc)
+    * in nltk library, there are ways to do POS tagging!
+- Bag of Words: columns for specific words, rows for observation, values for either the wordcount, true/false existence, or overall proportion
+### Strategies
+- Reduce word variability. EX: 'math' vs 'Math', make into one word. "Beijing" vs "Peking" (romanized foreign names), make into one word.
+### Tactics
+- Order of reduction: original -> lowercase -> remove accents/non-ascii -> remove special characters -> tokenize (break down) -> stem/lemmatize words (calls, calling, called to call) -> remove stopwords (the) -> store transformed text for exploration
+### Specific Libraries
+- import nltk
+- from nltk.tokenize.toktok import ToktokTokenizer
+- from nltk.corpus import stopwords
+### Implementation
+- **update stopwords:** python -c "import nltk; nltk.download('stopwords')"
+- lowercase: article.lower() 
+- normalize: unicodedata.normalize('NFKD', article).encode('ascii', 'ignore').decode('utf-8')
+- remove special: re.sub(r"[^a-z0-9'\s]", "") 
+- tokenize: tokenizer = nltk.tokenize.ToktokTokenizer(); article = tokenizer.tokenize(article, return_str = True) (by sentence: nltk sent_tokenize)
+- stemming/lemmatization: 
+    * stemming: ps = nltk.porter.PorterStemmer(); stems = [ps.stem(word) for word in article.split()]; article_stemmed = ' '.join(stems)
+    * lemma: nltk.download('wordnet'); wnl = nltk.stem.WordNetLemmatizer(); lemmas = [wnl.lemmatize(word) for word in article.split()]; article_lemmatized = ' '.join(lemmas)
+- remove stopwords: stopword_list = stopwords.words('english') (can add to list as necessary with .append('word') or remove from list using .remove('word'), or add/remove punctuation, etc); words = article_lemmatized.split(); filtered_words = [word for word in words if word not in stopword_list]; article_without_stopwords = ' '.join(filtered_words)
+### Exploration
+- from wordcloud import WordCloud
+    * img = WordCloud(kwargs).generate(word_list)
+    * http://amueller.github.io/word_cloud/
+- Prepare by cleaning, normalizing, tokenizing, lemmatizing/stemming the content
+    * can use df['content_length'] = df.text.apply(len)
+    * can do df['word_count'] = df.text.split().apply(len)
+    * use relplot on message length and word count with hue of target labels
+- Now might be a good time to identify classification classes; ex: email spam, is_spam or not_spam
+- Read value counts of each word, ideally by target label
+    * for spam problem, focus on differentials, so high-good low-spam words, high-spam low-good words
+    * for spam problem, use stacked=True plt.barh charts to see words high/low spam
+- list(nltk.bigrams(sentence.split())) ----- create two-word combinations
+    * create a series from this list, then plot value counts!
+### Evaluation
+- Sentiment analysis is hand-jammed. Afinn and Vader are sentiment analysis tools based on social media. It might be best to look at whitepapers to select the best-available tool for the job, or, hand-jam.
+- nltk.sentiment; sia = nltk.sentiment.SentimentIntensityAnalyzer(); sia.polarity_scores(string) --- neg, neu, pos, compound scores returned for string
+    * nearly matches human ability to identify sentiment (0.8 vs 0.88)
+    * used primarily on short phrases (think sentences)
+    * punctuations!!, CAPITALIZATION can increase intensity
+    * df['sentiment'] = df.text.apply(lambda doc: sia.polarity_scores(doc)['compound'])
 
+<!-- Needs work -->
+## Modeling (NLP)
+- TF-IDF: term frequency * inverse document frequency
+    * helps identify how important a word is in a document
+    * tf is how often a word shows, idf is how unique the word is in all documents
+    * used by search engines
+    * helps filter out stopwords
+    * tf for single document, idf for corpus
+- Try out bag of ngrams, try out stem v lemmatize, etc for different model approaches
+### NLP Modeling Syntax
+- from sklearn.feature_extraction.text import CountVectorizer
+    * show value counts per document of each unique word (not very useful)
+    * cv = CountVectorizer()
+        * can set ngram_range, ex: CountVectorizer(ngram_range=(2,2)) shows bigrams
+        * expects a string of documents or a 1-dimensional pandas series
+        * pre-processing strp to transform data, turns list of strings into a matrix
+        * different from tokenization because tokenization focuses on selection, countvector focuses on turning entire string into a vector
+    * bag_of_words = cv.fit_transform(data)
+        * 'sparse matrix' is a matrix with more zeroes than anything else
+    * pd.DataFrame(bag_of_words.todense(), columns=cv.get_feature_names()) ----- push word matrix with column names to dataframe
+    * cv.vocabulary_ ----- returns word counts
+- from sklearn.feature_extraction.text import TfidfVectorizer
+    * important for identifying stopwords (very useful)
+    * tfidf = TfidfVectorizer()
+    * bag_of_words = tfidf.fit_transform(data)
+    * pd.DataFrame(bag_of_words.todense(), columns=cv.get_feature_names())
+    * pd.Series(dict(zip(tfidf.get_feature_names(), tfidf.idf_))).sort_values() ----- show each word and their score
+- SelectKBest or RFE to determine which words to use!
+    * pd.Series(dict(zip(dv.get_feature_names(), tree.feature_importances_))).sort_values().tail(5) ----- see top-5 features (feature_importances_ is a built-in for DecisionTreeClassifier)
+- DecisionTreeClassifier fit on train and predict train as usual, requires target as usual
+    * cv = CountVectorizer() --- X_bow = cv.fit_transform(X_train) --- tree = DecisionTreeClassifier(max_depth=5) --- tree.fit(X_bow, y_train) --- tree.score(X_bow, y_train)
+        * make sure to also transform out-of-sample split!
+    * tfidf = TfidfVectorizer() --- X_tfidf = tfidf.fit_transform(X_train) --- tree.fit(X_tfidf, y_train) --- tree.score(X_tfidf, y_train)
+        * make sure to also transform out-of-sample split!
+
+
+
+
+
+
+<!-- 
+#     #                                             #                                                        
+   #                                                ######                                                   
+  # #   #    #  ####  #    #   ##   #      #   #    #     # ###### ##### ######  ####  ##### #  ####  #    # 
+ #   #  ##   # #    # ##  ##  #  #  #       # #     #     # #        #   #      #    #   #   # #    # ##   # 
+#     # # #  # #    # # ## # #    # #        #      #     # #####    #   #####  #        #   # #    # # #  # 
+####### #  # # #    # #    # ###### #        #      #     # #        #   #      #        #   # #    # #  # # 
+#     # #   ## #    # #    # #    # #        #      #     # #        #   #      #    #   #   # #    # #   ## 
+#     # #    #  ####  #    # #    # ######   #      ######  ######   #   ######  ####    #   #  ####  #    # 
+-->
+
+# Anomaly Detection
+
+<!-- Needs work -->
 ## Anomaly Detection
+- Finding outliers (numerical distance) and anomalies (general difference) for the purpose of further investigation
+    * Can come from novel patterns or from outlier datapoints
+- Domain knowledge is almost always preferable to raw detection techniques
+### Cases
+- Contextual: "This action is okay here, but not okay here"
+- Noise: "This action is more clean than normal"
+- Point Anomaly: "This action is too far from the norm"
+- Collective: "This action had an unusual combination"
+- Novelty: "This pattern is unseen"
+### Techniques
+- Stats: Standard metrics like average and standard deviation, also moving averages
+- Classification: Support Vector Machine (a regression of classification), Random Forest, Isolation Forest (calculates number of splits needed to isolate a specified point)
+- Clustering: KMeans and DBSCAN
+- Density: KNN Local Outlier Factor
+### Anomalies - Continuous Values
+- Use IQR to detect outliers
+- Use Z-score to detect outliers
+- Be careful of 'dogmatic' approaches to this (EX: always using >2 STD [2 sigma] to detect outliers)
+### Anomalies - Discrete Values
+- Use probabilities to detect low-occurence combinations! value_counts(normalize=True)
+- Given time-series data, group on minute, hour, day, etc then value_counts(normalize=True)
+### Anomalies - Time-Series Values
+- Exponentially-weighted moving averages
+    * Hyperparameter alpha set to 0 is traditional average (average all values in series
+    * alpha set to 1 is most recent value (each moving average is most recent value)
+    * alpha set to anything between 0 and 1 gives weight to past values and determines how quickly things fall off in terms of weight (weigh recent values more than older values, average the weighted values)
+    * The value you set alpha to is dependent on how many anomalous values you want
+- Bollinger bands - anomalies outside the bands
+    * Used a lot in finance and stock market analysis
+    * Calculate each band in dataframe... there might be a library out there to help
+    * Midband is moving average (you set this, can also be exponentially-weighted moving average)
+    * Upperband = Midband + (K * moving standard deviation), where K is hyperparameter
+        * Standard values for K are 2 and 20
+        * The value you set K to is dependent on how many anomalous values you want
+    * Lowerband = Midband - (K * moving standard deviation)
+    * %b is a calculation of volatility, anything above 1 or below 0 is outside the bands
+### Anomalies - Clustering
+- DBSCAN - anomalies by cluster
+    * Distance-based (requires scaling) cluster creation algorithm
+    * Often done against count and nunique agg funcs for discrete vars
+    * dbsc = DBSCAN(eps=.1, min_samples=20).fit(scaled_df)
+        * eps is radius, min_samples is minimum amount of datapoints within the radius to be determined non-outlier data - so here, require 20 values in radius .1, anything not included is considered an outlier
+    * clustered_df = dbsc.transform(scaled_df)
+    * clustered_df.labels ----- show cluster numbers
+    * clustered_df[clustered_df.labels == cluster_num] ----- show values in a specific cluster
+        * outlier cluster is always clustered_df.labels == -1
+
+
+
+
+
+
+<!-- 
+######                          #                                                   
+#     # ###### ###### #####     #       ######   ##   #####  #    # # #    #  ####  
+#     # #      #      #    #    #       #       #  #  #    # ##   # # ##   # #    # 
+#     # #####  #####  #    #    #       #####  #    # #    # # #  # # # #  # #      
+#     # #      #      #####     #       #      ###### #####  #  # # # #  # # #  ### 
+#     # #      #      #         #       #      #    # #   #  #   ## # #   ## #    # 
+######  ###### ###### #         ####### ###### #    # #    # #    # # #    #  ####  
+-->
+
+# Deep Learning
 
 <!-- Needs work -->
 ## Deep Learning
@@ -1057,7 +1610,43 @@ This iteration of my notes is for long-term reference. I will keep my original n
 - test_loss, test_acc = network.evaluate(test_images, test_labels)
 - print(f'accuracy of network on test set: {test_acc}')
 
+
+
+
+
+
+<!-- 
+ #####                                                     #     #                          
+#     #  ####  #    # #####  #    # ##### ###### #####     #     # #  ####  #  ####  #    # 
+#       #    # ##  ## #    # #    #   #   #      #    #    #     # # #      # #    # ##   # 
+#       #    # # ## # #    # #    #   #   #####  #    #    #     # #  ####  # #    # # #  # 
+#       #    # #    # #####  #    #   #   #      #####      #   #  #      # # #    # #  # # 
+#     # #    # #    # #      #    #   #   #      #   #       # #   # #    # # #    # #   ## 
+ #####   ####  #    # #       ####    #   ###### #    #       #    #  ####  #  ####  #    # 
+-->
+
+# Computer Vision
+
+<!-- Needs work -->
 ## Computer Vision
+- 
+
+
+
+
+
+
+<!-- 
+ #####                                    #     #                                                     
+#     # #####   ####   ####   ####        #     #   ##   #      # #####    ##   ##### #  ####  #    # 
+#       #    # #    # #      #            #     #  #  #  #      # #    #  #  #    #   # #    # ##   # 
+#       #    # #    #  ####   ####  ##### #     # #    # #      # #    # #    #   #   # #    # # #  # 
+#       #####  #    #      #      #        #   #  ###### #      # #    # ######   #   # #    # #  # # 
+#     # #   #  #    # #    # #    #         # #   #    # #      # #    # #    #   #   # #    # #   ## 
+ #####  #    #  ####   ####   ####           #    #    # ###### # #####  #    #   #   #  ####  #    # 
+-->
+
+# Cross Validation
 
 <!-- Needs work -->
 ## Cross-Validation
