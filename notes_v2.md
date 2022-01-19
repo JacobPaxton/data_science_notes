@@ -1,4 +1,4 @@
-# <center>Data Science Notes, v2</center>
+# Data Science Notes, v2
 
 <!-- 
 #######                                                  #####                                                 
@@ -12,76 +12,79 @@
 
 # Table of Contents
 
-I.    [General Notes                ](#general-notes)
-1.    [Advice                       ](#advice)
-2.    [Storytelling                 ](#storytelling)
-3.    [Datasets                     ](#datasets)
+I.    [General Notes                 ](#general-notes)
+1.    [Advice                        ](#advice)
+2.    [Storytelling                  ](#storytelling)
+3.    [Datasets                      ](#datasets)
 
-II.   [Software                     ](#software)
-1.    [Terminal                     ](#terminal)
-2.    [Git                          ](#git)
-3.    [Jupyter Notebook             ](#jupyter-notebook)
-4.    [Excel & Google Sheets        ](#excel-&-google-sheets)
-5.    [Power BI                     ](#power-bi)
-6.    [Sequel Ace                   ](#sequel-ace)
-7.    [Visual Studio Code           ](#vs-code)
-8.    [Tableau Public               ](#tableau-public)
+II.   [Software                      ](#software)
+1.    [Terminal                      ](#terminal)
+2.    [Git                           ](#git)
+3.    [Jupyter Notebook              ](#jupyter-notebook)
+4.    [Excel & Google Sheets         ](#excel-&-google-sheets)
+5.    [Power BI                      ](#power-bi)
+6.    [Sequel Ace                    ](#sequel-ace)
+7.    [Visual Studio Code            ](#vs-code)
+8.    [Tableau Public                ](#tableau-public)
 
-III.  [Regular Expressions (REGEX)  ](#regular-expressions-(regex))
-1.    [REGEX                        ](#regex)
+III.  [Regular Expressions (REGEX)   ](#regular-expressions-(regex))
+1.    [REGEX                         ](#regex)
 
-IV.   [APIs & Scraping              ](#apis-&-scraping)
-1.    [APIs                         ](#apis)
-2.    [Web Scraping                 ](#web-scraping)
+IV.   [APIs & Scraping               ](#apis-&-scraping)
+1.    [APIs                          ](#apis)
+2.    [Web Scraping                  ](#web-scraping)
 
-V.    [SQL & Apache Spark           ](#sql-&-apache-spark)
-1.    [SQL                          ](#sql)
-2.    [Apache Spark                 ](#apache-spark)
+V.    [SQL & Apache Spark            ](#sql-&-apache-spark)
+1.    [SQL                           ](#sql)
+2.    [Apache Spark                  ](#apache-spark)
 
-VI.   [Python, NumPy, Pandas        ](#python,-numpy,-pandas)
-1.    [Python                       ](#python)
-2.    [NumPy                        ](#numpy)
-3.    [Pandas                       ](#pandas)
+VI.   [Python, NumPy, Pandas         ](#python,-numpy,-pandas)
+1.    [Python                        ](#python)
+2.    [NumPy                         ](#numpy)
+3.    [Pandas                        ](#pandas)
 
-VII.  [Matplotlib & Seaborn         ](#matplotlib-&-seaborn)
-1.    [Visualization in Python      ](#overall-notes-for-visualizations-in-python)
-2.    [Matplotlib                   ](#matplotlib)
-3.    [Seaborn                      ](#seaborn)
+VII.  [Matplotlib & Seaborn          ](#matplotlib-&-seaborn)
+1.    [Visualization in Python       ](#overall-notes-for-visualizations-in-python)
+2.    [Matplotlib                    ](#matplotlib)
+3.    [Seaborn                       ](#seaborn)
 
-VIII. [Exploration                  ](#exploration)
-1.    [Exploration Prep             ](#exploration-prep)
-2.    [Exploration Visualization    ](#exploration-visualization)
-3.    [Feature Engineering          ](#feature-engineering)
-4.    [Feature Selection            ](#performance-based-feature-selection)
+VIII. [Exploration                   ](#exploration)
+1.    [Exploration Prep              ](#exploration-prep)
+2.    [Exploration Visualization     ](#exploration-visualization)
+3.    [Feature Engineering           ](#feature-engineering)
+4.    [Feature Selection             ](#performance-based-feature-selection)
 
-IX.   [Clustering                   ](#clustering)
-1.    [Algorithmic Clustering       ](#algorithmic-clustering)
+IX.   [Algorithmic Clustering        ](#algorithmic-clustering)
+1.    [Cluster Assignment            ](#cluster-assignment)
+2.    [K-Means Clustering            ](#k-means-clustering)
+3.    [Hierarchical Clustering       ](#hierarchical-clustering)
+4.    [DBSCAN                        ](#dbscan)
 
-X.    [Statistics                   ](#statistics)
-1.    [Metrics                      ](#metrics)
-2.    [Hypothesis Testing           ](#hypothesis-testing)
-3.    [Probability                  ](#probability)
+X.    [Statistics                    ](#statistics)
+1.    [Metrics                       ](#metrics)
+2.    [Hypothesis Testing            ](#hypothesis-testing)
+3.    [Probability                   ](#probability)
 
-XI.   [Model Preparation            ](#model-preparation)
-1.    [Encoding                     ](#encoding)
-2.    [Scaling                      ](#scaling)
-3.    [Resampling                   ](#resampling)
+XI.   [Model Preparation             ](#model-preparation)
+1.    [Encoding                      ](#encoding)
+2.    [Scaling                       ](#scaling)
+3.    [Resampling                    ](#resampling)
 
-XII.  [Classification               ](#classification)
+XII.  [Classification                ](#classification)
 
-XIII. [Regression                   ](#regression)
+XIII. [Regression                    ](#regression)
 
-XIV.  [Time-Series                  ](#time-series)
+XIV.  [Time-Series                   ](#time-series)
 
-XV.   [Natural Language Processing  ](#natural-language-processing-(NLP))
+XV.   [Natural Language Processing   ](#natural-language-processing-(NLP))
 
-XVI.  [Anomaly Detection            ](#anomaly-detection)
+XVI.  [Anomaly Detection             ](#anomaly-detection)
 
-XVII. [Deep Learning                ](#deep-learning)
+XVII. [Deep Learning                 ](#deep-learning)
 
-XVIII.[Computer Vision              ](#computer-vision)
+XVIII.[Computer Vision               ](#computer-vision)
 
-IXX.  [Cross-Validation             ](#cross-validation)
+IXX.  [Cross-Validation              ](#cross-validation)
 
 <br>
 
@@ -103,7 +106,7 @@ IXX.  [Cross-Validation             ](#cross-validation)
 #     #  ####    #   ######  ####  
 -->
 
-# <center>General Notes</center>
+# General Notes
 
 <!-- Polished -->
 ## Advice
@@ -190,7 +193,7 @@ IXX.  [Cross-Validation             ](#cross-validation)
  #####   ####  #        #   #    # #    # #    # ###### 
 -->
 
-# <center>Software<center>
+# Software
 
 <!-- Polished -->
 ## Terminal
@@ -312,17 +315,19 @@ IXX.  [Cross-Validation             ](#cross-validation)
 #     # #######  #####  ####### #     # 
 -->
 
-# <center>Regular Expressions (REGEX)</center>
+# Regular Expressions (REGEX)
 
 <!-- Polished -->
 ## REGEX
 - Language for parsing and slicing strings to capture substrings
 ### REGEX Metacharacters
-- | Anything: .                | Alphanumeric: \w \W | Whitespace: \s \S | Digit: \d \D  |
-- | Zero or more (optional): * | One or more: +      | Optional: ?       |
-- | {5} Repeat exactly 5 times | {3,6} Min 3, Max 6  | {3,} At least 3 times             |
-- | Anchor front: ^            | Anchor back: $      | Word boundary: \b |
-- | Capture group: ()  (?P<colname>regex_exp) |
+```
+| Anything: .                | Alphanumeric: \w \W | Whitespace: \s \S | Digit: \d \D  |
+| Zero or more (optional): * | One or more: +      | Optional: ?       |
+| {5} Repeat exactly 5 times | {3,6} Min 3, Max 6  | {3,} At least 3 times             |
+| Anchor front: ^            | Anchor back: $      | Word boundary: \b |
+| Capture group: ()  EX: (?P<colname>regex_exp)    |
+```
 ### REGEX Queries
 - `re.search(regexg, subject)` ----- random search, report first-found start/stop index and matched string
 - `re.match(regexp, subject)` ----- re.search but from beginning
@@ -359,7 +364,7 @@ IXX.  [Cross-Validation             ](#cross-validation)
 #     # #       ###  ####      ###  #     #####   ####  #    # #    # #      # #    #  ####  
  -->
 
-# <center>APIs & Scraping</center>
+# APIs & Scraping
 
 <!-- Polished -->
 ## APIs
@@ -370,12 +375,12 @@ IXX.  [Cross-Validation             ](#cross-validation)
 - (RESTful) JSON API: an API where the URLs follow REST and the communication with the server is in JSON format
 ### RESTful JSON APIs
 - Interfacing is done through HTTP requests
-- import requests
+- `import requests`
 - `response = requests.get('http_link')` ----- returns object for server response like 404 and 500
     * `response.ok`, `response.status_code`, `response.text`
 - `response.text` on `requests.get('https://swapi.dev/api/people/5')` will give data on Leia from Star Wars in the form of JSON dict (name, height, mass, hair/skin/eye color, etc)
 - `requests.get(http_url + '/documentation').json()['payload']` for `http_url='https://python.zgulde.net'` will give 'endpoints', other APIs give different stuff on a different link (maybe) using a different JSON container
-    * `'/api/v1/items/1'` ----- Endpoints are prefixed with /api/{version} where version is "v1", then endpoints (essentially directories or folders) and page navigation
+    * `'/api/v1/items/1'` ----- Endpoints are prefixed with `/api/{version}` where version is `"v1"`, then endpoints (essentially directories or folders) and page navigation
     * Can iterate through each page in a loop and pull all information with `['next_page']` and `['max_page']` until next_page hits 'None'
 
 <!-- Polished -->
@@ -464,7 +469,7 @@ with open('image.jpeg','wb') as f:
  #####   #### # #######     ###  #     #####  #      #    # #    # #    # 
 -->
 
-# <center>SQL & Apache Spark</center>
+# SQL & Apache Spark
 
 <!-- Polished -->
 ## SQL
@@ -608,7 +613,7 @@ join departments using(dept_no);
 #        #     #   #    #  ####  #    #             #    # #                  #      #####  
  -->
 
-# <center>Python, NumPy, Pandas</center>
+# Python, NumPy, Pandas
 
 <!-- Polished -->
 ## Python
@@ -617,8 +622,8 @@ join departments using(dept_no);
 - `print('hi', end='\n\n')`
 - `['hi', 'lo'] + ['med']` --- `5 * ['hi', 'lo']`
 - `for i, col in enumerate(cols)` ----- this is the correct order
-- `string.count('a')` ----- count number of 'a' in string
-- `(" ".join(['c','a','r'])).split(" ")` ----- make 'c a r' then split back into `['c','a','r']`
+- `string.count('a')` ----- count number of `'a'` in string
+- `(" ".join(['c','a','r'])).split(" ")` ----- make `'c a r'` then split back into `['c','a','r']`
 - `' 123 '.strip().isnumeric()` ----- deletes left/right whitespace, new lines, and tabs; returns True
 - `[x if x % 2 == 0 else x - 1 for x in [1,2,3,4,5]]` ----- returns `[0,2,2,4,4]`
 - `print(f"|{x:<8}|{y:<8}|{z:<8}|")` ----- formatted output
@@ -757,7 +762,7 @@ join departments using(dept_no);
  #####  ###### #    # #####   ####  #    # #    # 
  -->
 
-# <center>Matplotlib & Seaborn</center>
+# Matplotlib & Seaborn
 
 <!-- Polished -->
 ## Overall Notes for Visualizations in Python
@@ -863,7 +868,7 @@ df.corr().style.background_gradient(vmin=-1, vmax=1, cmap='coolwarm_r').format('
 ####### #    # #      ######  ####  #    # #    #   #   #  ####  #    #
 -->
 
-# <center>Exploration<center>
+# Exploration
 
 <!-- Polished -->
 ## Exploration Prep
@@ -985,10 +990,10 @@ pd.Series(rfe.ranking_, index=X_train.columns)
  #####  ######  ####   ####    #   ###### #    # # #    #  ####  
 -->
 
-# <center>Clustering</center>
+# Algorithmic Clustering
 
-<!-- Needs work -->
-## Algorithmic Cluster Assignment
+<!-- Polished -->
+## Cluster Assignment
 - Designation of combined feature subsets into clusters using algorithms
 - Excellent for 3+ feature grouping and anomaly detection
 - Clusters can be useful features for supervised prediction techniques
@@ -997,26 +1002,81 @@ pd.Series(rfe.ranking_, index=X_train.columns)
 - Hierarchical Clustering (dendrograms)
 - K-Means Clustering (distance to centroid)
 - DBSCAN Video (datapoint perimeter overlap)
+### Cases for Clustering
+- Exploration: Choose features, cluster, ANOVA for cluster differences, understand why differences exist
+- Predicting which cluster: Choose features, cluster, use clusters as target, use multi-class to predict cluster
+- Predict is in a cluster: Choose features, cluster, use clusters as target, use bianry-class to predict cluster
+    * `model.fit(train[train.cluster == 0][['col1','col2']], y_train)`
+- Feature Creation: Cluster, get min/max of features, use `>=` and `<=` logic for cluster determination column
+    * Remember to evaluate your cluster features to see if they are useful for prediction
+### Real World Examples of Clustering
+- Text: Document classification, summarization, topic modeling, recommendations
+    * Hierarchical using Cosine Similarity
+- Geographic: Distance from store, crime zones, housing prices
+- Marketing: Customer segmentation, market research
+- Anomaly Detection: Account takeover, security risk, fraud
+- Image Processing: Radiology, security
+### General Strategy for Implementing Clustering
+- Scale features and remove outliers as necessary
+- Gather background info for initial cluster count choice
+    * Hierarchical: Plot, slice dendogram
+    * K-Means, DBSCAN: Domain knowledge
+- Build, fit, predict using the technique
+- Use scatterplots to visually-check results
+- Use ANOVA to test clusters statistically
+### Handling Cluster Outliers
+- Drop based on domain knowledge (an adult can't weight 19 pounds)
+- If outlier doesn't change results, then feel free to drop
+- If outlier affects *both* results and assumptions... compare including- and excluding-outlier results
 
-<!-- Needs work -->
-## Heirarchical Clustering
-- Guide: https://stackabuse.com/hierarchical-clustering-with-python-and-scikit-learn/
-- **Agglomerative** (Bottom-Up): Each observation is its own cluster, then observations are grouped together
-- Divisive (Top-Down): All observations are clustered together, then the cluster is broken down into smaller and smaller groupings of observations
-### Agglomerative Hierarchical Clustering Process
-- Scale features as necessary
-- Use shc to generate the dendogram
-- Draw horizontal line at the base of the longest vertical line
-- Count the number of vertical lines that the horizontal line overlaps
-- Use that count as your cluster count hyperparameter
-- Build, fit, and predict using the `AgglomerativeClustering` algorithm and cluster count
+<!-- Polished -->
+## K-Means Clustering
+- Distance to centroids (most popular)
+* Random centroid placement at first, check inertia, adjust centroid placement, check inertia, repeat
+* Final result is centroid locations with lowest-found inertias
+### Choosing Number of Clusters
+* Use: **Domain knowledge** --- EX: 'iris' has 3 species, so choose 3 clusters
+* Use: **Exploration** --- EX: Scatterplot looks like 3 clusters
+* Use: **Inertia** --- EX: Use viz of x=n_clusters and y=inertia, pick the n_clusters at the 'elbow'
+### K-Means Clustering Example
+```
+from sklearn.cluster import kmeans
+kmeans = KMeans(n_clusters=3, random_state=123)
+kmeans.fit(X_train_scaled)  # no y_train needed for clustering
+train['cluster'] = kmeans.predict(X_train_scaled)
+# centerpoint locations
+print(kmeans.cluster_centers_)
+# print labels of each centerpoint
+print(kmeans.labels_)
+# print intertia (lower is better)
+print(kmeans.inertia_) # sum of (squared) distances between samples and their closest cluster centerpoint
+# plot centerpoints
+centroids = df.groupby('cluster')['col1','col2','col3',...].mean()
+centroids.plot.scatter(
+    y='petal_length', 
+    x='sepal_length', 
+    c='black', marker='x', 
+    s=1000, 
+    ax=plt.gca(), 
+    label='centroid'
+)
+```
+
+<!-- Polished -->
+## Hierarchical Clustering
+- Slicing dendograms, clustering a 1-D array
+    * Guide: https://stackabuse.com/hierarchical-clustering-with-python-and-scikit-learn/
+- **Agglomerative (Bottom-Up):** Each observation is its own cluster, then observations are grouped together
     * Starts with the two observations that are closest to one another
     * Groups next closest, then next closest, and so on until all observations belong to one cluster
     * Outputs array of cluster determinations
-- Assign cluster determinations to dataframe
-- Plot using scatterplot and hue=clusters
-- Compare average value of each cluster in terms of the target
-### Agglomerative Syntax
+- Divisive (Top-Down): All observations first together in one cluster, then broken down into smaller clusters
+### Choosing Number of Clusters
+1. Create, plot dendogram
+2. Draw horizontal line at the base of the longest vertical line
+3. Count the number of vertical lines that the horizontal line overlaps
+4. Use that count as your cluster count hyperparameter
+### Agglomerative Clustering Example
 ```
 from sklearn.cluster import AgglomerativeClustering
 import scipy.cluster.hierarchy as shc
@@ -1024,66 +1084,21 @@ dend = shc.dendrogram(shc.linkage(data, method='ward')) # Determine cluster coun
 cluster = AgglomerativeClustering(n_clusters=2, affinity='euclidean', linkage='ward')
 cluster.fit_predict(X_train)
 print(cluster.labels_)
-plt.scatter(X[:,0],X[:,1], c=cluster.labels_, cmap='rainbow')
+plt.scatter(X_train[:,0],X_train[:,1], c=cluster.labels_, cmap='rainbow')
 ```
 
-<!-- Needs work -->
-## K-Means Clustering
-
-<!-- Needs work -->
-## DBSCAN Video
-
-## Algorithmic Cluster Evaluation
-
-<!-- Needs work -->
-## Algorithmic Clustering
-- Using metric groupings to make predictions
-- Great for anomaly detection (doesn't fit in normal cluster)
-- Very important to scale data before clustering
-### Techniques
-- Heirarchical - Upwards or downwards
-- **K-Means** - 'centroids', or mean-distance of a certain cluster (most popular) 
-    * Randomly plots the chosen number of centroids, then moves the centroids to reduce the mean distance of datapoints to the centroids
-    * Hyperparameter is the number of centroids
-        * Choose this number based on: domain knowledge (iris: 3 species, 3 clusters)
-        * Choose this number based on: alt knowledge (grouping by location)
-        * Choose this number based on: exploration (viausalization has 3 clusters)
-        * Choose this number based on: computing inertia (retroactively changing # clusters to find the 'elbow'- first few clusters drop inertia significantly, where the line goes more-horizontal from more vertical, choose that k value)
-    * May be able to choose the centroid locations for lat/long clustering (choosing city centers)
-        * Actually, I think you'd put lat/longs to categories (within x distance of [city]), which isn't the purpose of *algorithmic* clustering
-- DBSCAN Video - density-based (different from centroids), good at finding weird shapes in data, but computationally expensive
-    * Draws a perimeter around each datapoint, chains overlapping perimeters, datapoints without overlap are considered outliers
+<!-- Polished -->
+## DBSCAN
+- Datapoint proximity overlap (density)
+- Good at finding weird shapes in data, but computationally expensive
+- Draws a perimeter around each datapoint, chains overlapping perimeters, datapoints without overlap are considered outliers
     * Hyperparameter is the radius size for the perimeter
-    * C-based (that's what the DB references)
-### Use Cases
-- Exploration
-    * Give names to groups/labels
-    * Spread data into subgroups
-    * Analyze relationship to target (think: Simpson's Paradox)
-- Machine Learning
-    * Use clusters as target
-        * Setting y_train to train['cluster']
-    * Use clusters as features
-        * Done if one cluster is a good driver of the target
-        * One-hot encode a column for that cluster, use in X_train
-    * Model clusters separately (split data and run different algorithm)
-        * model.fit(train[train.cluster == 0][['col1','col2']], y_train)
-### Outliers
-- Drop based on domain knowledge (an adult can't weight 19 pounds)
-- If outlier doesn't change results, then feel free to drop
-- If outlier affects *both* results and assumptions... compare including- and excluding-outlier results
-### Syntax
-- from sklearn.cluster import kmeans
-- kmeans = KMeans(n_clusters=3, random_state=123)
-- kmeans.fit(X_train_scaled) ----- notice there's no y_train, because there is no labeled target to serve as the answer for the prediction
-- df['cluster'] = kmeans.predict(X_train_scaled) ----- no y_train
-- train['cluster'] = kmeans.predict(X_train_scaled)
-- kmeans.cluster_centers_ ----- location of each centerpoint
-- kmeans.labels_ ----- labels of each observation
-- kmeans.inertia_ ----- sum of (squared) distances between samples and their closest cluster centerpoint
-- centroids = df.groupby('cluster')['col1','col2','col3',...].mean() ----- mean distance to centerpoint for each specified column of data against each cluster
-#### Visualization
-- centroids.plot.scatter(y='petal_length', x='sepal_length', c='black', marker='x', s=1000, ax=plt.gca(), label='centroid') ----- plot syntax for... stuff
+    * C-based
+### DBSCAN Clustering Example
+```
+from sklearn.cluster import DBSCAN
+db = DBSCAN(eps=0.3, min_samples=10).fit(X_train)
+```
 
 [[Return to Top]](#table-of-contents)
 
@@ -1102,7 +1117,7 @@ plt.scatter(X[:,0],X[:,1], c=cluster.labels_, cmap='rainbow')
  #####    #   #    #   #   #  ####    #   #  ####   ####  
 -->
 
-# <center>Statistics</center>
+# Statistics
 
 <!-- Polished -->
 ## Metrics
@@ -1216,7 +1231,7 @@ plt.scatter(X[:,0],X[:,1], c=cluster.labels_, cmap='rainbow')
 #     #  ####  #####  ###### ######    #       #    # ###### #      #    # #    # #    #   #   #  ####  #    # 
 -->
 
-# <center>Model Preparation</center>
+# Model Preparation
 
 <!-- Needs work -->
 ## Encoding
@@ -1288,7 +1303,7 @@ plt.scatter(X[:,0],X[:,1], c=cluster.labels_, cmap='rainbow')
  #####  ###### #    #  ####   ####  # #      #  ####  #    #   #   #  ####  #    # 
 -->
 
-# <center>Classification</center>
+# Classification
 
 <!-- Needs work -->
 ## Classification
@@ -1441,7 +1456,7 @@ plt.scatter(X[:,0],X[:,1], c=cluster.labels_, cmap='rainbow')
 #     # ######  ####  #    # ######  ####   ####  #  ####  #    # 
 -->
 
-# <center>Regression</center>
+# Regression
 
 <!-- Needs work -->
 ## Regression
@@ -1540,7 +1555,7 @@ plt.scatter(X[:,0],X[:,1], c=cluster.labels_, cmap='rainbow')
    #    # #    # ######     #####  ###### #    # # ######  ####  
 -->
 
-# <center>Time Series</center>
+# Time Series
 
 <!-- Needs work -->
 ## Time-Series
@@ -1610,7 +1625,7 @@ plt.scatter(X[:,0],X[:,1], c=cluster.labels_, cmap='rainbow')
 #       #    #  ####   ####  ######  ####   ####  # #    #  ####  
 -->
 
-# <center>Natural Language Processing (NLP)</center>
+# Natural Language Processing (NLP)
 
 <!-- Needs work -->
 ## Natural Language Processing (NLP)
@@ -1721,7 +1736,7 @@ plt.scatter(X[:,0],X[:,1], c=cluster.labels_, cmap='rainbow')
 #     # #    #  ####  #    # #    # ######   #      ######  ######   #   ######  ####    #   #  ####  #    # 
 -->
 
-# <center>Anomaly Detection</center>
+# Anomaly Detection
 
 <!-- Needs work -->
 ## Anomaly Detection
@@ -1789,7 +1804,7 @@ plt.scatter(X[:,0],X[:,1], c=cluster.labels_, cmap='rainbow')
 ######  ###### ###### #         ####### ###### #    # #    # #    # # #    #  ####  
 -->
 
-# <center>Deep Learning</center>
+# Deep Learning
 
 <!-- Needs work -->
 ## Deep Learning
@@ -1847,7 +1862,7 @@ plt.scatter(X[:,0],X[:,1], c=cluster.labels_, cmap='rainbow')
  #####   ####  #    # #       ####    #   ###### #    #       #    #  ####  #  ####  #    # 
 -->
 
-# <center>Computer Vision</center>
+# Computer Vision
 
 <!-- Needs work -->
 ## Computer Vision
@@ -1870,7 +1885,7 @@ plt.scatter(X[:,0],X[:,1], c=cluster.labels_, cmap='rainbow')
  #####  #    #  ####   ####   ####           #    #    # ###### # #####  #    #   #   #  ####  #    # 
 -->
 
-# <center>Cross Validation</center>
+# Cross Validation
 
 <!-- Needs work -->
 ## Cross-Validation
