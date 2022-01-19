@@ -979,14 +979,15 @@ IXX.  [Cross-Validation             ](#cross-validation)
 - Plot using scatterplot and hue=clusters
 - Compare average value of each cluster in terms of the target
 ### Agglomerative Syntax
-- from sklearn.cluster import AgglomerativeClustering
-- import scipy.cluster.hierarchy as shc
-- dend = shc.dendrogram(shc.linkage(data, method='ward'))
-    * Determine cluster count here
-- cluster = AgglomerativeClustering(n_clusters=2, affinity='euclidean', linkage='ward')
-- cluster.fit_predict(X_train)
-- print(cluster.labels_)
-- plt.scatter(X[:,0],X[:,1], c=cluster.labels_, cmap='rainbow')
+```
+from sklearn.cluster import AgglomerativeClustering
+import scipy.cluster.hierarchy as shc
+dend = shc.dendrogram(shc.linkage(data, method='ward')) # Determine cluster count here
+cluster = AgglomerativeClustering(n_clusters=2, affinity='euclidean', linkage='ward')
+cluster.fit_predict(X_train)
+print(cluster.labels_)
+plt.scatter(X[:,0],X[:,1], c=cluster.labels_, cmap='rainbow')
+```
 
 ## K-Means Clustering
 
