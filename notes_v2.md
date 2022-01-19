@@ -1306,48 +1306,29 @@ db = DBSCAN(eps=0.3, min_samples=10).fit(X_train)
 # Classification
 
 <!-- Needs work -->
-## Classification
-- Assigning observations to existing classifications
-- Supervised learning... training on data with answers/labels
-- Produces: Rules
-    * Data + Answers, with ML, creates rules
-    * Traditional programming doesn't seek to create rules, it creates answers
-### Vocab
-- Classifier: Algorithm that maps input data to specific category
-- Classification Model: A series of steps that takes the patterns of input variables, generalizes, then applies generalizations to new data
-- Feature: An input/independent variable
-- Binary Classification: Two possible outcomes
-- Multiclass Classification: More than two, where samples are assigned to exactly one target label (ex: students in grades 1-12)
-### Algorithms
-- Data Science is heavily based on decision trees
-- These are designed to create rules from data/labels:
-- **Logistic Regression** - Predict binary outcomes for inputs
-    * Interpretable, Flexible, Easily-Implemented, Efficient
-    * Need to remove unrelated attributes, not a top-performing algorithm
-- **Decision Tree** - Sequence of rules to classify two or more classes via one-input-binary-output nodes
-    * Simple to Understand/Visualize/Explain, Low-Prep, Handle numerical and categorical data, performs well
-    * Overfitting risk, unstable
-- Naive Bayes - contingent probabilities - low # of observations (in the hundreds)
-- **K-Nearest Neighbors (KNN)** - Predictions based on how close new data is to known data (top-5 closest known datapoints are 'votes')
-    * Simple, Robust to noise, just-in-time calculation, can be updated over time
-    * Need to determine K, high computational cost, curse of dimensionality (distances can break down in high-dimensional space)
-- **Random Forest** - Lots of decision trees
-    * Less risk of overfitting than one decision tree, more accurate than decision tree (due to moar trees)
-    * High computational demand, difficult to implement, hard to explain (black-box factor)
-- Many more
-### Evaluation
-- from sklearn.metrics import precision_score, accuracy_score, recall_score, classification_report ----- confusion matrix calc functions
-    * df_report = pd.DataFrame(classification_report(df.actual_observed, df.model_guesses, labels=['colname', 'colname'], output_dict=True)).T ----- outputs nice df of metrics
-
-<!-- Needs work -->
-## Evaluation (Classification notes)
+## Classification Overall
+- Predicting a discrete target
+### Classifiers Summary
+- **Decision Tree:** A sequence of rules for one-input-binary-output decisions
+    * Simple to implement and explain, but prone to overfit
+- **Random Forest:** Row-wise voting from many decision trees that were fit on random features and data samples
+    * Difficult to explain and implement, but highly effective
+- **K-Nearest Neighbors:** Use distances of known-class neighbors to predict unknown-class data
+    * Simple and effectively-predictive, but prone to poor performance
+- **Naive Bayes:** Probability of outcome multiplied by probability of option given outcome for each feature
+    * Highly effective at prediction with few major downsides
+- **Logistic Regression:** Regression (calculation of coefficients) but determinations are classes instead
+    * A great baseline predictive model, but usually not the best
+- **XG Boost:** Iteratively use loss function on random forest, eliminate 'weak learner trees' until loss is minimized
+    * World-class performance but near-impossible to explain to stakeholders
+### Evaluation Summary
 - Reviewing our model to see if our predictions matched actuals for a given number of observations
     * True Positive, FP, TN, FN
     * Baseline Prediction is predicting all outcomes as True
 - Focus on cost: Accuracy, Recall, Precision, Specificity, F1 Score, ROC/AUC
 - Confusion Matrix --- focus on Recall and Precision
-    * df = pd.DataFrame({'prediction':[], 'actual':[]})
-    * pd.crosstab(df.prediction, df.actual)
+    * `df = pd.DataFrame({'prediction':[], 'actual':[]})`
+    * `pd.crosstab(df.prediction, df.actual)`
 ### Accuracy 
 - Overall performance of model
 - Easy to understand and doesn't matter what the 'positive' is
@@ -1369,75 +1350,46 @@ db = DBSCAN(eps=0.3, min_samples=10).fit(X_train)
 - F1 Score (harmonic mean of Precision and Recall)
 - ROC/AUC (how well your model discriminates between positive and negative)
 ### Usage
-- Model Accuracy: (df.actual == df.prediction).mean()
-- Baseline Accuracy: (df.actual == df.baseline_prediction).mean()
-- Recall: subset = df[df.actual == 'coffee'] ----- look at actual Yes observations
+- Model Accuracy: `(df.actual == df.prediction).mean()`
+- Baseline Accuracy: `(df.actual == df.baseline_prediction).mean()`
+- Recall: `subset = df[df.actual == 'coffee']` ----- look at actual Yes observations
     * use Model and Baseline Accuracy against this subset
-- Precision: subset = [df.prediction == 'coffee'] ----- look at predicted Yes rows
+- Precision: `subset = [df.prediction == 'coffee']` ----- look at predicted Yes rows
     * use Model and Baseline Accuracy against this subset
 
 <!-- Needs work -->
-## Modeling
-- Create model using algorithm+hyperparameters and training data
-- Evaluate the model
-- Repeat
-- After time/repetitions, compare models
-- After comparing models, use best against test split
-- Decision Tree: DecisionTreeClassifier (covered extensively below), clf
-- Random Forest: RandomForestClassifier, rf
-    * rf, Lots of decision trees, averaging them all (coming to a consensus)
-    * An "Ensemble ML algorithm" called Bootstrap Aggregation or bagging
-    * Bootstrapping: take lots of samples, average each sample alone, then average all averages
-    * Random Forest does bootstrapping for lots of decision tree predictions
-    * After fitting, print(rf.feature_importances_) to see how important each feature is to predicting the classification (array of percentages)
-        * The _ character at end indicates it's a parameter of a trained model
-- K-Nearest Neighbors: KNeighborsClassifier, knn
-        * n_neighbors=, weights='uniform' or weights='distance'
-    * Supervised, makes predictions based on how close a new data point is to known data points (effective when there's more known data)
-    * Just-in-time algorithm (makes prediction when receive data)
-    * "Lazy" because it doesn't make an internal model, just stores data and uses stats to make predictions
-    * K-value serves as "votes", top-(K-value)-closest known datapoints to new datapoint for KNN calculation
-        * Most common is to try different K-values, some industries have a standard
-- Logistic Regression: LogisticRegression, logit
-    * Instead of fitting a linear regression, you fit a curved regression
-    * Used for binomial/multinomial regression (one plot axis is not continuous/discrete values)
-### Dummy Steps
-- from sklearn.dummy import DummyClassifier
-- from sklearn.metrics import classification_report
-- X_train, y_train = train.drop(columns='target_col'), train.target_col
-    * do same for validate and test subsets
-- model = DummyClassifier(strategy='constant', constant=1) ----- we predict the target to be always 1 (not a great model, of course), these are hyperparameters
-    * strategy='uniform' or 'most_frequent' or...
-- model.fit(X_train, y_train)
-- accuracy = model.score(X_train, y_train)
-    * sklearn objects can use .score() .predict() .predict_proba() and more
-    * .score is accuracy
-    * .predict generates array of predictions
-    * .predict_proba generates array or arrays for % sure-ness of guesses
-### Decision Tree example
-- from sklearn.tree import DecisionTreeClassifier
-- from sklearn.tree import export_graphviz
-- from sklearn.metrics import classification_report
-- from sklearn.model_selection import train_test_split
-- train, validate, test split
-- Prepare data
-- Explore data
-- clf = DecisionTreeClassifier(max_depth=3, random_state=123) ----- clf is classifier, decision tree is limited to depth of 3 (more hyperparameters available)
-    * Set depth to the number of features (Ryan does this, so...)
-- clf = clf.fit(X_train, y_train)
-- y_pred = clf.predict(X_train) ----- generate model prediction array against train dataset
-- import graphviz
-- from graphviz import Graph
-- dot_data = export_graphviz(clf, feature_names= X_train.columns, class_names=clf.classes_, rounded=True, filled=True, out_file=None)
-- graph = graphviz.Source(dot_data) 
-- graph.render('iris_decision_tree', view=True) ----- display decision tree in PDF format (a picture)
-<code> dot_data = export_graphviz(clf, feature_names= X_train.columns, 
-                           class_names=('Yes', 'No'), rounded=True, 
-                           filled=True, out_file=None)</code>
-- classification_report(y_train, y_pred) ----- get metrics of train dataset
-- clf.score(X_validate, y_validate) ----- accuracy of model against validate dataset
-- y_pred = clf.predict(X_validate) ----- prediction array of model for validate dataset
-- classification_report(y_validate, y_pred) ----- metrics of model against validate
+## Classification Example
+### Classifier Implementation
+```
+from sklearn.tree import DecisionTreeClassifier
+clf = DecisionTreeClassifier(max_depth=3, random_state=123) 
+clf = clf.fit(X_train, y_train)
+y_train_pred = clf.predict(X_train)
+y_train_pred_proba = clf.predict_proba(X_train)
+```
+```
+from sklearn.tree import export_graphviz
+import graphviz
+from graphviz import Graph
+dot_data = export_graphviz(clf, 
+    feature_names=X_train.columns, 
+    class_names=clf.classes_, 
+    rounded=True, 
+    filled=True, 
+    out_file=None
+)
+graph = graphviz.Source(dot_data) 
+graph.render('iris_decision_tree', view=True)   # display decision tree in PDF format (a picture)
+```
+### Classification Evaluation
+- `from sklearn.metrics import precision_score, accuracy_score, recall_score, classification_report` ----- confusion matrix calc functions
+    * `df_report = pd.DataFrame(classification_report(df.actual_observed, df.model_guesses, labels=['colname', 'colname'], output_dict=True)).T` ----- outputs nice df of metrics
+- `classification_report(y_train, y_pred)` ----- get metrics of train dataset
+- `clf.score(X_validate, y_validate)` ----- accuracy of model against validate dataset
+- `y_pred = clf.predict(X_validate)` ----- prediction array of model for validate dataset
+- `classification_report(y_validate, y_pred)` ----- metrics of model against validate
+- `clf.feature_importances_` ----- return which features mattered most
+    * The `_` character at end indicates it's a parameter of a trained model
 
 [[Return to Top]](#table-of-contents)
 
