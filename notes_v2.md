@@ -1,4 +1,4 @@
-# Data Science Notes, v2
+# <center>Data Science Notes, v2</center>
 
 <!-- 
 #######                                                  #####                                                 
@@ -103,7 +103,7 @@ IXX.  [Cross-Validation             ](#cross-validation)
 #     #  ####    #   ######  ####  
 -->
 
-# General Notes
+# <center>General Notes</center>
 
 <!-- Polished -->
 ## Advice
@@ -190,7 +190,7 @@ IXX.  [Cross-Validation             ](#cross-validation)
  #####   ####  #        #   #    # #    # #    # ###### 
 -->
 
-# Software
+# <center>Software<center>
 
 <!-- Polished -->
 ## Terminal
@@ -312,7 +312,7 @@ IXX.  [Cross-Validation             ](#cross-validation)
 #     # #######  #####  ####### #     # 
 -->
 
-# Regular Expressions (REGEX)
+# <center>Regular Expressions (REGEX)</center>
 
 <!-- Polished -->
 ## REGEX
@@ -359,7 +359,7 @@ IXX.  [Cross-Validation             ](#cross-validation)
 #     # #       ###  ####      ###  #     #####   ####  #    # #    # #      # #    #  ####  
  -->
 
-# APIs & Scraping
+# <center>APIs & Scraping</center>
 
 <!-- Polished -->
 ## APIs
@@ -464,7 +464,7 @@ with open('image.jpeg','wb') as f:
  #####   #### # #######     ###  #     #####  #      #    # #    # #    # 
 -->
 
-# SQL & Apache Spark
+# <center>SQL & Apache Spark</center>
 
 <!-- Polished -->
 ## SQL
@@ -487,7 +487,9 @@ order by col2 asc, Col1 desc
 limit 100;
 ```
 ### SQL Aggregation Query
-`select col1, AVG(col2) as average from table group by col1 having average >= 100;`
+```
+select col1, AVG(col2) as average from table group by col1 having average >= 100;
+```
 ### SQL Subquery
 ```
 use employees;
@@ -562,7 +564,7 @@ join departments using(dept_no);
 - `regexp_extract('col', re, g)` ----- extract capture group g from re using col
 - `regexp_replace(col, re, repl)` ----- replace occurences of re with repl using col
 - `df = df.withColumn("col1", format_string("%03d", col("col1").cast("int")),)` ----- formatting
-    * require 3 digits in values, if shorter, put 0 in front as needed to get to 3
+    * Require 3 digits in values, if shorter, put 0 in front as needed to get to 3
 ### PySpark Aggregation
 - `df.select(sum(df.x)), df.select(mean(df.x))` ----- sum, mean all values in column
 - `df.groupBy("col1", "col2").count().show()` ----- basic groupby
@@ -577,17 +579,17 @@ join departments using(dept_no);
 ### PySpark to Exploration
 - Use Spark to do the heavy lifting then use Pandas dataframes for visualization/otherwise
 - `pandas_df = train.groupBy("colname").count().toPandas()` ----- Spark to do groupby, then pandas for viz
-    * can chain pandas methods after toPandas() like this: `spark_df.toPandas().sort_values()`
+    * Can chain pandas methods after toPandas() like this: `spark_df.toPandas().sort_values()`
 - `df.sample(fraction=0.01, seed=).toPandas()` ----- Get data sample for pandas work
 ### PySpark Advanced Read Write
 - `spark.read.csv('file.csv', sep=',', header=True, inferSchema=True)`
-    * inferSchema just reads the file as-is and guesses schema; header is default False for spark
+    * `inferSchema` just reads the file as-is and guesses schema; header is default False for spark
 - `spark.read.csv("source.csv", header=True, schema=schema)` ----- sets schema from a variable
     * `schema = StructType([StructField("col", StringType()), StructField("col", StringType()),])`
 - `df.write.json("df_json", mode="overwrite")`
-    * write df to a Spark-distributed JSON file, one way to do it
+    * Write df to a Spark-distributed **JSON** file, one way to do it
 - `df.write.format("csv").mode("overwrite").option("header", "true").save("df_csv")`
-    * write df to a Spark-distributed CSV file, another way to do it
+    * Write df to a Spark-distributed **CSV** file, another way to do it
 - `df.printSchema()` ----- check column dtypes
 
 [[Return to Top]](#table-of-contents)
@@ -606,7 +608,7 @@ join departments using(dept_no);
 #        #     #   #    #  ####  #    #             #    # #                  #      #####  
  -->
 
-# Python, NumPy, Pandas
+# <center>Python, NumPy, Pandas</center>
 
 <!-- Polished -->
 ## Python
@@ -660,14 +662,14 @@ join departments using(dept_no);
 - `s[s > 3]`; `s[s.index == 1]` ----- masks
     * `s[s < 0] = 0` ----- replace all negatives with zero
 ### Pandas Dataframes
-- pd.read_excel, pd.read_csv, pd.read_clipboard
+- `pd.read_excel`, `pd.read_csv`, `pd.read_clipboard`
     * `pd.read_csv(filename, index_col=0)` ----- fixes Unnamed: 0
-    * '''
+    * ```
         url = https://docs.google.com/spreadsheets/d/1Uhtml8KY19LILuZsrDtlsHHDC9wuDGUSe8LTEwvdI5g/edit#gid=341089357
         pd.read_csv(url.replace('/edit#gid=', '/export?format=csv&gid='), encoding='unicode_escape')`
-        '''
+        ```
     * `pd.read_csv('https://s3.amazonaws.com/irs-form-990/index_2011.csv', encoding='unicode_escape')`
-- pd.read_sql
+- `pd.read_sql`
     * ```
         def get_connection(db, user=user, host=host, password=password): 
             url = f'protocol://[user[:password]@]hostname/database_name' 
@@ -694,7 +696,7 @@ join departments using(dept_no);
     * different from `pd.cut()`, which makes equal-width bins
 - `df.append({'col1':value, 'col2':value}, ignore_index=True)` ----- add new row
 - `df.applymap(lambda x: x if x < 3 else 5)` ----- element-wise apply, will fail if can't complete on any value
-- `df.apply(lambda x: x + 1, axis=1)` ----- axis-wise apply, few use cases... just use s = s.apply(function)
+- `df.apply(lambda x: x + 1, axis=1)` ----- axis-wise apply, few use cases... just use `s = s.apply(function)`
 - `df.loc[5, 'hi']`, `df.iloc[5]`
     * loc can specify a labeled index and column, or just an index
     * iloc only looks at index and ignores index labels (specify integers)
@@ -712,7 +714,7 @@ join departments using(dept_no);
 - `pd.Timedelta('14d') + pd.to_datetime('2017-11-07')` ----- add 14 days to date as expected
     * `df.date.max() - df.date` ----- find amount of time between most recent date and all dates (time delta)
 - `df.date.dt.day` ----- element-wise conversion of date to day number, can do with more
-    * `.month`, `.year`, `.quarter`, `.day_name()` --- use .value_counts().sort_index()!
+    * `.month`, `.year`, `.quarter`, `.day_name()` --- use `.value_counts().sort_index()`!
 - `df.col.strftime('%b %D, %Y')`
 - `df.resample('W').sum()` ----- "Downsampling", sum all values more precise than a week in esssentially a groupby
     * requires pandas datetime index
@@ -755,7 +757,7 @@ join departments using(dept_no);
  #####  ###### #    # #####   ####  #    # #    # 
  -->
 
-# Matplotlib & Seaborn
+# <center>Matplotlib & Seaborn</center>
 
 <!-- Polished -->
 ## Overall Notes for Visualizations in Python
@@ -797,52 +799,52 @@ plt.show()
 ```
 ### Matplotlib from Dataframes
 ```
-    df.groupby('category')[['original','squared','absolute_times_two']].sum()\
-        .plot.bar(color=['red','green','blue'], alpha=.6)
+df.groupby('category')[['original','squared','absolute_times_two']].sum()\
+    .plot.bar(color=['red','green','blue'], alpha=.6)
 ```
-`df.corr().style.background_gradient(vmin=-1, vmax=1, cmap='coolwarm_r').format('{:.3f}'.format)`
+```
+df.corr().style.background_gradient(vmin=-1, vmax=1, cmap='coolwarm_r').format('{:.3f}'.format)
+```
 ### Working with Figures and Axes
 - One-Chart Guide: https://matplotlib.org/stable/gallery/lines_bars_and_markers/bar_label_demo.html
 - Multi-Chart Guide: https://matplotlib.org/stable/gallery/lines_bars_and_markers/categorical_variables.html
-- fig, ax = plt.subplots()
-    * fig, axes = plt.subplots(1, 3)
-    * axes[0].plot(), axes[1].bar(), axes[2].scatter()
-- p1, p2 = ax.bar(x1, y1, ...), ax.bar(x2, y2, ...)
-- ax.methods --- similar methods to plt.methods, can reference p1 and p2 as parameters
-    * ax.xaxis.set_major_formatter() or ax.yaxis.set_major_formatter()
-- plt.show()
+- `fig, ax = plt.subplots()`
+    * `fig, axes = plt.subplots(1, 3)`
+    * `axes[0].plot()`, `axes[1].bar()`, `axes[2].scatter()`
+- `p1, p2 = ax.bar(x1, y1, ...), ax.bar(x2, y2, ...)`
+- `ax.methods` --- similar methods to `plt.methods`, can reference p1 and p2 as parameters
+    * `ax.xaxis.set_major_formatter()` or `ax.yaxis.set_major_formatter()`
+- `plt.show()`
 
 <!-- Polished -->
 ## Seaborn
 - First stop for building charts, then customize charts further with Matplotlib methods
 - Powerful in its defaults!
-    * Generate charts with Seaborn and use Matplotlib plt.methods for customization
+    * Generate charts with Seaborn and use Matplotlib `plt.methods` for customization
 - Color palettes: https://seaborn.pydata.org/tutorial/color_palettes.html
-    * sns.set_palette("colorblind")
+    * `sns.set_palette("colorblind")`
 - Cheat Sheet: https://s3.amazonaws.com/assets.datacamp.com/blog_assets/Python_Seaborn_Cheat_Sheet.pdf
     * Mirror: https://drive.google.com/file/d/1TkETSAad4zP0zdFT1KC5E573gJdEeK_Z/view
 ### Seaborn Basics
-- import seaborn as sns
+- `import seaborn as sns`
 - Distributions: `sns.displot(data=df.col, kind='hist' or 'kde' or 'ecdf')`
 - Scatterplot or Lineplot overlaid: `sns.relplot(data=df['col1','col2','col3',...], kind='line' or 'scatter')`
 - Category-Separated plots: `sns.catplot(data=df[['cat','col1','col2','col3',...]], kind='violin')`
-    * Options: strip, swarm, box, violin, boxen, point, bar, count
+    * Options: `strip`, `swarm`, `box`, `violin`, `boxen`, `point`, `bar`, `count`
 - Pairplot: `sns.pairplot(df)`
 - Axis-level Heatmap: `sns.heatmap(crosstab (df.corr()), cmap='Greens', annot=True, vmin=0, vmax=1)`
 - Axis-level Scatter with Regression Line: `sns.regplot(x=df.x, y=df.y, line_kws={'color':'red'})`
 - Axis-level Scatter with Edge Histograms: `sns.jointplot(data=df, x='cont_col1', y='cont_col2', hue='category)`
 ### Seaborn Arguments
-- col='category' ----- chart for each unique value in col1
-- hue='category' ----- separate color for each unique value in col1
-- style='category' ----- changes style of plot point for each unique value in col1
+- `col='category'` ----- chart for each unique value in col1
+- `hue='category'` ----- separate color for each unique value in col1
+- `style='category'` ----- changes style of plot point for each unique value in col1
 ### Seaborn Accessors
-- You can use .axes or .fig to access, for example, `sns.pairplot()`
-```
-sns.pairplot(arguments).axes # each graph in figure
-sns.pairplot(arguments).fig # figure as a whole (include all graphs)
-sns.pairplot(arguments).axes.flat # list of pointers for each graph
-for i in pairplot.axes.flat # access each pointer
-```
+- You can use `.axes` or `.fig` to access, for example, `sns.pairplot()`
+`sns.pairplot(arguments).axes` # each graph in figure
+`sns.pairplot(arguments).fig` # figure as a whole (include all graphs)
+`sns.pairplot(arguments).axes.flat` # list of pointers for each graph
+`for i in pairplot.axes.flat` # access each pointer
 
 [[Return to Top]](#table-of-contents)
 
@@ -861,7 +863,7 @@ for i in pairplot.axes.flat # access each pointer
 ####### #    # #      ######  ####  #    # #    #   #   #  ####  #    #
 -->
 
-# Exploration
+# <center>Exploration<center>
 
 <!-- Polished -->
 ## Exploration Prep
@@ -872,13 +874,15 @@ for i in pairplot.axes.flat # access each pointer
     * Make sure all splits include all options (stratify target)
 - Data prep parameters are calculated from *train*, this excludes unseen data, so don't calculate on whole dataset
 #### Syntax for Splitting Data
-- from sklearn.model_selection import train_test_split
-- train_validate, test = train_test_split(df, test_size=0.3, random_state=123, stratify=df.colname)
-- train, validate = train_test_split(train_validate, test_size=.325, random_state=123, stratify=df.colname)
+```
+from sklearn.model_selection import train_test_split
+train_validate, test = train_test_split(df, test_size=0.3, random_state=123, stratify=df.colname)
+train, validate = train_test_split(train_validate, test_size=.325, random_state=123, stratify=df.colname)
+```
 ### Null Imputation
 - An imputer is **mainly** used for *algorithmic* null imputation
 - from sklearn.impute import SimpleImputer
-- imputer = SimpleImputer(strategy='most_frequent')
+- `imputer = SimpleImputer(strategy='most_frequent')`
     * Use a different strategy as necessary
 ```
 train[['embark_town']] = imputer.fit_transform(train[['embark_town']])
@@ -918,13 +922,13 @@ test[['embark_town']] = imputer.transform(test[['embark_town']])
 - The art of data refocusing
 - Use training split to create features assembled from other features, other sources, and more
 - Post-creation evaluation for whether a feature has its intended effect
-- Many of sklearn's models, once fit, generate values for .feature_importances_ that reveal feature usefulness
+- Many of sklearn's models, once fit, generate values for `.feature_importances_` that reveal feature usefulness
 ### Feature Engineering Techniques
-- Bins as features: train['newcol'] = pd.cut(train.colname, bins=[0,15,100], right=False, labels=['Low','High'])
+- Bins as features: `train['newcol'] = pd.cut(train.colname, bins=[0,15,100], right=False, labels=['Low','High'])`
 #### Keyword Engineering
 - Encoding on the existence of a keyword
-- Basic existence of word: df['has_word'] = df.col.str.contains('word')
-- Basic existence of multiple words: df['has_word'] = df.col.str.contains('word1|word2') or 'word1&word2'
+- Basic existence of word: `df['has_word'] = df.col.str.contains('word')`
+- Basic existence of multiple words: `df['has_word'] = df.col.str.contains('word1|word2')` or `'word1&word2'`
 - **Keyword Categorization**
 0. *NOTE: If column can have two different categories, then it will choose the last in the loop- be careful!*
     * Consider multiple features if this is the case, or simply one-hot encoding using basic existence of word
@@ -943,16 +947,18 @@ test[['embark_town']] = imputer.transform(test[['embark_town']])
     * **These are great for determining features to investigate further**
 - K-Best and RFE do not need to take in scaled data, just encoded data
 #### Select K Best
+- `from sklearn.feature_selection import SelectKBest`
 - Choose model algorithm, evaluate each feature's strength using algorithm, return best 'n' features
-- kbest = SelectKBest(f_regression, k=3) ----- returns top 3 'best' features using f regression
-- kbest.fit(X_train, y_train)
-- kbest.pvalues_
-- kbest.get_support() ----- array showing which columns were chosen (True, False, True...)
-- X_train.columns[kbest.get_support()] ----- shows column names
-- X_kbest = kbest.transform(X_train_scaled) ----- if k=3, return top-3 columns
+- `kbest = SelectKBest(f_regression, k=3)` ----- returns top 3 'best' features using f regression
+- `kbest.fit(X_train, y_train)`
+- `kbest.pvalues_`
+- `kbest.get_support()` ----- array showing which columns were chosen (True, False, True...)
+- `X_train.columns[kbest.get_support()]` ----- shows column names
+- `X_kbest = kbest.transform(X_train_scaled)` ----- if k=3, return top-3 columns
 #### Recursive Feature Elimination (RFE)
+- `from sklearn.feature_selection import RFE`
 - Choose model algorithm, evaluate each combination of 'n' features using algorithm, return best combination
-    * More computationally-expensive than SelectKBest, but much better at feature selection
+    * More computationally-expensive than `SelectKBest`, but much better at feature selection
     * Mitigate computational expense by selecting a high-efficiency algorithm
 ```
 rfe = RFE(estimator=LinearRegression(), n_features_to_select=3)
@@ -979,8 +985,9 @@ pd.Series(rfe.ranking_, index=X_train.columns)
  #####  ######  ####   ####    #   ###### #    # # #    #  ####  
 -->
 
-# Clustering
+# <center>Clustering</center>
 
+<!-- Needs work -->
 ## Algorithmic Cluster Assignment
 - Designation of combined feature subsets into clusters using algorithms
 - Excellent for 3+ feature grouping and anomaly detection
@@ -991,6 +998,7 @@ pd.Series(rfe.ranking_, index=X_train.columns)
 - K-Means Clustering (distance to centroid)
 - DBSCAN Video (datapoint perimeter overlap)
 
+<!-- Needs work -->
 ## Heirarchical Clustering
 - Guide: https://stackabuse.com/hierarchical-clustering-with-python-and-scikit-learn/
 - **Agglomerative** (Bottom-Up): Each observation is its own cluster, then observations are grouped together
@@ -1001,10 +1009,10 @@ pd.Series(rfe.ranking_, index=X_train.columns)
 - Draw horizontal line at the base of the longest vertical line
 - Count the number of vertical lines that the horizontal line overlaps
 - Use that count as your cluster count hyperparameter
-- Build, fit, and predict using the AgglomerativeClustering algorithm and cluster count
+- Build, fit, and predict using the `AgglomerativeClustering` algorithm and cluster count
     * Starts with the two observations that are closest to one another
-    - Groups next closest, then next closest, and so on until all observations belong to one cluster
-    - Outputs array of cluster determinations
+    * Groups next closest, then next closest, and so on until all observations belong to one cluster
+    * Outputs array of cluster determinations
 - Assign cluster determinations to dataframe
 - Plot using scatterplot and hue=clusters
 - Compare average value of each cluster in terms of the target
@@ -1019,7 +1027,11 @@ print(cluster.labels_)
 plt.scatter(X[:,0],X[:,1], c=cluster.labels_, cmap='rainbow')
 ```
 
+<!-- Needs work -->
 ## K-Means Clustering
+
+<!-- Needs work -->
+## DBSCAN Video
 
 ## Algorithmic Cluster Evaluation
 
@@ -1090,7 +1102,7 @@ plt.scatter(X[:,0],X[:,1], c=cluster.labels_, cmap='rainbow')
  #####    #   #    #   #   #  ####    #   #  ####   ####  
 -->
 
-# Statistics
+# <center>Statistics</center>
 
 <!-- Polished -->
 ## Metrics
@@ -1098,7 +1110,7 @@ plt.scatter(X[:,0],X[:,1], c=cluster.labels_, cmap='rainbow')
 - Centering data ("Demeaning a vector") is important for taking data purely in its distance from the mean
     * Normal centering isn't all that statistically-valuable
 - Z-Score: statistical centering, using distance from the mean in standard deviations
-    * zscore = (value - pop_mean) / stdev_size --- zscore = stats.zscore(value_list)
+    * `zscore = (value - pop_mean) / stdev_size` --- `zscore = stats.zscore(value_list)`
 
 <!-- Polished -->
 ## Hypothesis Testing
@@ -1110,43 +1122,43 @@ plt.scatter(X[:,0],X[:,1], c=cluster.labels_, cmap='rainbow')
     * False Positive Rate: probability of Type I Error; False Negative Rate: probability of Type II Error
 ### Statistical Test Types
 #### Chi Square: Categorical crosstab and its deviation from expectations
-- When data can't be separated into categories: **Goodness of Fit** (chisquare, anderson_ksamp)
+- When data can't be separated into categories: **Goodness of Fit** (`chisquare`, `anderson_ksamp`)
     * Assumptions of Parametric: identical distribution, no value overlap, all cells have more than 5 values
     * Assumptions of Non-Parametric (K-Sample Anderson Darling): cell independence, all cells more than 5 values
     * *Used when you can't separate data into independent samples*
     * **Need to create both observed and expected crosstabs for test**
-- Testing if categories have divergent outcomes: **Contingency** (chi2_contingency)
+- Testing if categories have divergent outcomes: **Contingency** (`chi2_contingency`)
     * Assumptions: cell independence, all cells have more than 5 values
     * **Only need to create observed crosstab for test**
 #### Comparison of Means: Independent samples' differences in average continuous value
-- Discovery of difference in independent samples: **ANOVA** (f_oneway, kruskal)
+- Discovery of difference in independent samples: **ANOVA** (`f_oneway`, `kruskal`)
     * Assumptions of Parametric (One-Way ANOVA): equal variance, normal distribution, and independence
     * Assumptions of Non-Parametric (Kruskal-Wallis): independence
-- Full comparison of two independent samples: **2-Sample t-test** (ttest-ind, mannwhitneyu)
+- Full comparison of two independent samples: **2-Sample t-test** (`ttest-ind`, `mannwhitneyu`)
     * Assumptions for Parametric (Independent T-Test): equal variance, normal distribution, and independence
     * Assumptions for Non-Parametric (MannWhitneyU): independence
-- Comparison between a sample and the total population: **1-Sample t-test** (ttest-1samp)
+- Comparison between a sample and the total population: **1-Sample t-test** (`ttest-1samp`)
     * Assumptions: equal variance, normal distribution, and independence
     * *Used when you can't separate data into independent samples*
-- Comparison of same data before and after a change: **Paired t-test** (ttest_rel, wilcoxon)
+- Comparison of same data before and after a change: **Paired t-test** (`ttest_rel`, `wilcoxon`)
     * Assumptions for Parametric (Relative T-Test): same observations, normal distribution, independence
     * Assumptions for Non-Parametric (Wilcoxon Signed-Rank): equal variance and independence
 #### Correlation: The movement of continuous values against one another
-- Relationship between two continuous variables: **Linear correlation** (pearsonr, spearmanr)
+- Relationship between two continuous variables: **Linear correlation** (`pearsonr`, `spearmanr`)
     * Assumptions for Parametric (Pearson R): linear (not curved), normal distribution
     * Assumptions for Non-Parametric (Spearman R): monotonic (only increases or only decreases)
     * *pearsonr assesses linear relationship strength, spearmanr assesses monotonic relationship strength*
 ### Statistical Test Implementation
-- Equal Variance assumption test: stats.levene(sample1.y, sample2.y)
-- Chi Square Goodness of Fit: t, crit_vals, significance = stats.anderson_ksamp(array_1d)
-- Chi Square Independence: chi2, p, degf, expected = stats.chi2_contingency(observed_crosstab)
-    * Degree of Freedom (degf): (num_cols - 1) * (num_rows - 1)
-- ANOVA: t, p = stats.f_oneway(samp1.y, samp2.y, samp3.y, samp4.y, ...) or stats.kruskal
-- Two-Sample T-Test: t, p = stats.ttest_ind(samp1.y, samp2.y, alternative=) or stats.mannwhitneyu
-- One-Sample T-Test: t, p = stats.ttest_1samp(samp.y, totalpop.y, alternative=)
-- Paired T-Test: t, p = stats.ttest_rel(before_samp.y, after_samp.y, alternative=) or wilcoxon
-- Correlation: corr, p = stats.pearsonr(x, y) or stats.spearmanr
-    * Calculate corr itself: df.corr()
+- Equal Variance assumption test: `stats.levene(sample1.y, sample2.y)`
+- Chi Square Goodness of Fit: `t, crit_vals, significance = stats.anderson_ksamp(array_1d)`
+- Chi Square Independence: `chi2, p, degf, expected = stats.chi2_contingency(observed_crosstab)`
+    * Degree of Freedom `(degf): (num_cols - 1) * (num_rows - 1)`
+- ANOVA: `t, p = stats.f_oneway(samp1.y, samp2.y, samp3.y, samp4.y, ...)` or `stats.kruskal`
+- Two-Sample T-Test: `t, p = stats.ttest_ind(samp1.y, samp2.y, alternative=)` or `stats.mannwhitneyu`
+- One-Sample T-Test: `t, p = stats.ttest_1samp(samp.y, totalpop.y, alternative=)`
+- Paired T-Test: `t, p = stats.ttest_rel(before_samp.y, after_samp.y, alternative=)` or `stats.wilcoxon`
+- Correlation: `corr, p = stats.pearsonr(x, y)` or `stats.spearmanr`
+    * Calculate corr itself: `df.corr()`
 
 <!-- Polished -->
 ## Probability
@@ -1157,30 +1169,30 @@ plt.scatter(X[:,0],X[:,1], c=cluster.labels_, cmap='rainbow')
 ### Calculating Probability
 - Bayes Theorem: P(A|B) = P(B|A)P(A)/P(B)
     * If you have either A or B and want to calculate B or A, use Bayes Theorem
-- Observed Rate: df.col or df[['col1','col2']].value_counts(normalize=True)
-    * Other calculations: (x == 3).mean() --- ((x == 3) or (x == 2)).mean() --- (x <= 4).mean()
-- Theoretical Distribution: stats.recipe(params).rvs(rolls).method()
-    * Can pass array (EX: (3,4)) instead of rolls to generate an array
+- Observed Rate: `df.col` or `df[['col1','col2']].value_counts(normalize=True)`
+    * Other calculations: `(x == 3).mean()` --- `((x == 3) or (x == 2)).mean()` --- `(x <= 4).mean()`
+- Theoretical Distribution: `stats.recipe(params).rvs(rolls).method()`
+    * Can pass array (EX: `(3,4)`) instead of rolls to generate an array
     * Nice chart for which method to use: https://ds.codeup.com/stats/pdf_pmf_cdf_ppf_sf_isf.png
-- Calculated Probability: np.random.choice(outcome_list, size=rolls, p=[p1, p2, p3, ...])
-    * Can pass array instead of rolls: size=(simulations, trials) as in size=(rows, columns)
+- Calculated Probability: `np.random.choice(outcome_list, size=rolls, p=[p1, p2, p3, ...])`
+    * Can pass array instead of rolls: `size=(simulations, trials) as in size=(rows, columns)`
 ### Theoretical Distributions from Parameters
 - Equal likelihood of all outcomes: Uniform (coin)
     * Not very useful for our purposes
-    * Recipe: stats.randint(low, high_not_including)
+    * Recipe: `stats.randint(low, high_not_including)`
     * P(A) = 1 / len(Options)
 - Two outcomes: Binomial (success/failure)
     * Not very useful for our purposes
-    * Recipe: stats.binom(n=rolls, p=[p_True, p_False])
+    * Recipe: `stats.binom(n=rolls, p=[p_True, p_False])`
     * P(A) = our input
 - Normal - continuous random variable (bell curve)
     * Very useful if we expect a normal distribution for something
-    * stats.norm(mean_value, stdev_size)
-    * P(A) = recipe.pdf(A) ----- .pdf because of continuous values
+    * Recipe: `stats.norm(mean_value, stdev_size)`
+    * P(A) = `recipe.pdf(A)` ----- `.pdf` because of continuous values
 - Poisson - events per time interval
     * Useful for time-related events
-    * stats.poisson(lambda_value)
-    * P(A) = recipe.pmf(A) ----- .pmf because of discrete values
+    * Recipe: `stats.poisson(lambda_value)`
+    * P(A) = `recipe.pmf(A)` ----- `.pmf` because of discrete values
 - Lots more distributions... check scipy documentation for stats module
 #### Methods for Theoretical Distributions
 - Chance of specific outcome: **.pmf**(discrete_value), and **.pdf**(continuous_value)
@@ -1204,7 +1216,7 @@ plt.scatter(X[:,0],X[:,1], c=cluster.labels_, cmap='rainbow')
 #     #  ####  #####  ###### ######    #       #    # ###### #      #    # #    # #    #   #   #  ####  #    # 
 -->
 
-# Model Preparation
+# <center>Model Preparation</center>
 
 <!-- Needs work -->
 ## Encoding
@@ -1276,7 +1288,7 @@ plt.scatter(X[:,0],X[:,1], c=cluster.labels_, cmap='rainbow')
  #####  ###### #    #  ####   ####  # #      #  ####  #    #   #   #  ####  #    # 
 -->
 
-# Classification
+# <center>Classification</center>
 
 <!-- Needs work -->
 ## Classification
@@ -1429,7 +1441,7 @@ plt.scatter(X[:,0],X[:,1], c=cluster.labels_, cmap='rainbow')
 #     # ######  ####  #    # ######  ####   ####  #  ####  #    # 
 -->
 
-# Regression
+# <center>Regression</center>
 
 <!-- Needs work -->
 ## Regression
@@ -1528,7 +1540,7 @@ plt.scatter(X[:,0],X[:,1], c=cluster.labels_, cmap='rainbow')
    #    # #    # ######     #####  ###### #    # # ######  ####  
 -->
 
-# Time Series
+# <center>Time Series</center>
 
 <!-- Needs work -->
 ## Time-Series
@@ -1598,7 +1610,7 @@ plt.scatter(X[:,0],X[:,1], c=cluster.labels_, cmap='rainbow')
 #       #    #  ####   ####  ######  ####   ####  # #    #  ####  
 -->
 
-# Natural Language Processing (NLP)
+# <center>Natural Language Processing (NLP)</center>
 
 <!-- Needs work -->
 ## Natural Language Processing (NLP)
@@ -1709,7 +1721,7 @@ plt.scatter(X[:,0],X[:,1], c=cluster.labels_, cmap='rainbow')
 #     # #    #  ####  #    # #    # ######   #      ######  ######   #   ######  ####    #   #  ####  #    # 
 -->
 
-# Anomaly Detection
+# <center>Anomaly Detection</center>
 
 <!-- Needs work -->
 ## Anomaly Detection
@@ -1777,7 +1789,7 @@ plt.scatter(X[:,0],X[:,1], c=cluster.labels_, cmap='rainbow')
 ######  ###### ###### #         ####### ###### #    # #    # #    # # #    #  ####  
 -->
 
-# Deep Learning
+# <center>Deep Learning</center>
 
 <!-- Needs work -->
 ## Deep Learning
@@ -1835,7 +1847,7 @@ plt.scatter(X[:,0],X[:,1], c=cluster.labels_, cmap='rainbow')
  #####   ####  #    # #       ####    #   ###### #    #       #    #  ####  #  ####  #    # 
 -->
 
-# Computer Vision
+# <center>Computer Vision</center>
 
 <!-- Needs work -->
 ## Computer Vision
@@ -1858,7 +1870,7 @@ plt.scatter(X[:,0],X[:,1], c=cluster.labels_, cmap='rainbow')
  #####  #    #  ####   ####   ####           #    #    # ###### # #####  #    #   #   #  ####  #    # 
 -->
 
-# Cross Validation
+# <center>Cross Validation</center>
 
 <!-- Needs work -->
 ## Cross-Validation
