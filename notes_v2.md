@@ -716,6 +716,7 @@ IXX.  [Cross-Validation             ](#cross-validation)
 
 
 
+
 <!-- 
 #     #                                                              ##    
 ##   ##   ##   ##### #####  #       ####  ##### #      # #####      #  #   
@@ -876,7 +877,7 @@ IXX.  [Cross-Validation             ](#cross-validation)
 - Compare **between features** in terms of target
     * Use conditional formatting to add a third dimension to a viz
 - **Control for "strong" features** that may drive other features to falsely-relate to target
-#### Multivariate Exploration and Algorithmic Clustering
+#### Algorithmic Clustering for Multivariate Exploration
 - Consider algorithmic clustering techniques for features; **set manual rules for clusters**
 - Apply clustering and visualize results
 - Statistically-test clusters in terms of the target, select indicative clusters
@@ -949,6 +950,47 @@ IXX.  [Cross-Validation             ](#cross-validation)
 -->
 
 # Clustering
+
+## Algorithmic Cluster Assignment
+- Designation of combined feature subsets into clusters using algorithms
+- Excellent for 3+ feature grouping and anomaly detection
+- Clusters can be useful features for supervised prediction techniques
+- Distance-based clustering **requires** scaling
+### Types of Algorithmic Clustering
+- Hierarchical Clustering (dendrograms)
+- K-Means Clustering (distance to centroid)
+- DBSCAN Video (datapoint perimeter overlap)
+
+## Heirarchical Clustering
+- Guide: https://stackabuse.com/hierarchical-clustering-with-python-and-scikit-learn/
+- **Agglomerative** (Bottom-Up): Each observation is its own cluster, then observations are grouped together
+- Divisive (Top-Down): All observations are clustered together, then the cluster is broken down into smaller and smaller groupings of observations
+### Agglomerative Hierarchical Clustering Process
+- Scale features as necessary
+- Use shc to generate the dendogram
+- Draw horizontal line at the base of the longest vertical line
+- Count the number of vertical lines that the horizontal line overlaps
+- Use that count as your cluster count hyperparameter
+- Build, fit, and predict using the AgglomerativeClustering algorithm and cluster count
+    * Starts with the two observations that are closest to one another
+    - Groups next closest, then next closest, and so on until all observations belong to one cluster
+    - Outputs array of cluster determinations
+- Assign cluster determinations to dataframe
+- Plot using scatterplot and hue=clusters
+- Compare average value of each cluster in terms of the target
+### Agglomerative Syntax
+- from sklearn.cluster import AgglomerativeClustering
+- import scipy.cluster.hierarchy as shc
+- dend = shc.dendrogram(shc.linkage(data, method='ward'))
+    * Determine cluster count here
+- cluster = AgglomerativeClustering(n_clusters=2, affinity='euclidean', linkage='ward')
+- cluster.fit_predict(X_train)
+- print(cluster.labels_)
+- plt.scatter(X[:,0],X[:,1], c=cluster.labels_, cmap='rainbow')
+
+## K-Means Clustering
+
+## Algorithmic Cluster Evaluation
 
 <!-- Needs work -->
 ## Algorithmic Clustering
