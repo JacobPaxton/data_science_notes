@@ -71,6 +71,8 @@ XI.   [Model Preparation             ](#model-preparation)
 3.    [Resampling                    ](#resampling)
 
 XII.  [Classification                ](#classification)
+1.    [Classification Overall        ](#classification-overall)
+2.    [Classification Example        ](#classification-example)
 
 XIII. [Regression                    ](#regression)
 
@@ -1233,58 +1235,53 @@ db = DBSCAN(eps=0.3, min_samples=10).fit(X_train)
 
 # Model Preparation
 
-<!-- Needs work -->
+<!-- Polished -->
 ## Encoding
-- Associate each unique value with a number (label encoding)
-    * Use label encoding when categories have an inherit order
-- One-hot encoding: 1 or 0 in new column if row is or isn't that value
-    * Use one-hot when there's no order
-- pd.get_dummies(df['col1', 'col2'], drop_first=[True, True]) ----- automagically does one-hot encoding for unique values in col1 and col2
-    * creates a new column for each unique value in col1 and col2 with 0 or 1 representing False and True respectively, drops first new column for col1 and col2 (less dimensionality)
+- Turning categorical features into a model-readable format
+- Two types: **Label encoding** (ordinal categories) and **One-hot encoding** (True/False column for each category)
+### Encoding Examples
+```
+# label encoding
+df.col.map({'lowest':0, 'low-middle':1, 'middle':2, 'middle-high':3, 'highest':4})
+# one-hot encoding
+pd.get_dummies(df['col1', 'col2'], drop_first=[True, True]) # returns encoded columns w first category dropped
+```
 
-<!-- Needs work -->
+<!-- Polished -->
 ## Scaling
-- Used to fix distance-based calculations (DO IT EVERY TIME)
-    * Definitely use on KNN, K-Means, etc
-    * Might be required on linear/logistic regression
-    * No need for decision tree and random forest
+- Making 1-10 mean the same to a machine learning model as 1-1000
+- Specifically, it equalizes the density of continuous features for machine learning
+    * Normalizes Euclidian Distance calculations: `d = sqrt((x1 - x2)^2 + (y1 - y2)^2)`
+- Always use for KNN and K-Means (distance-based), no need for decision tree and random forest
 - Split data before scaling, and only scale on train
 - Scale often... and when you scale, scale *everything* going into the model.
-- **Scaling fixes the weight of one feature compared to another**
-    * Prevents one feature from being drowned by another
-        * Mathematically, you're equalizing density of features
-    * Specifically fixes the euclidian distance calculation
-        * d = sqrt((x1 - x2)^2 + (y1 - y2)^2)
-    * In layman's terms, raw comparison of a number between 1-10 and a number between 1-1000 will give obvious preference to the 1-1000 number (the 1-1000 number moves more greatly than the 1-10 number), so scaling is needed
-- Scaling is easily done using sklearn.preprocessing functions
 ### Scaling Methods
-- Use sklearn.preprocessing MinMaxScaler, StandardScaler, RobustScaler
-- "Normalization" (MinMaxScaler) is scaling into range 0 to 1
-- StandardScaler centers the distribution's density on 0 and limits range
-    * Use this guy for normal-ish distributions!
-- RobustScaler also centers the distribution's density on 0 and limits range, but it de-weighs outliers as well
-- QuantileTransformer attempts to normalize a distribution and center it on 0... be careful, make sure to check the visualization
+- MinMaxScaler: General use, compresses all values between 0 and 1
+    * Sensitive to outliers
+- StandardScaler: Used when data distribution is normal, centers on 0 and limits range
+- RobustScaler: Same as StandardScaler but de-weighs outliers
+- QuantileTransformer: Normalizes data that is not normally-distributed, centers on 0 and limits range
     * If you really want your data to be normal then use this... it's fairly complex
 ### Scaling Syntax
-- Note: Generally you want to return the scaler in addition to the scaled data from helper functions
-- **MinMaxScaler**, **StandardScaler**, **RobustScaler**
-    * scaler = sklearn.preprocessing.MinMaxScaler() --- or the other two
-    * scaler.fit(train[['col1','col2','col3']])
-        * Make sure to pass with [['colname']], it keeps the dataframe format (where ['colname'] passes a series)
-    * scaled = scaler.transform(train[['col1','col2','col3']]) ----- creates 3-column NumPy array
-    * train[['newcol1','newcol2','newcol3']] = scaled ----- assigns array to new columns in dataframe (preserves original columns)
-- **QuantileTransformer**
-    * scaler = QuantileTransformer(output_distribution='normal')
-    * Follow above steps for rest
+```
+from sklearn.preprocessing import MinMaxScaler
+scaler = MinMaxScaler().fit(X_train[['col1','col2','col3']])
+X_train_scaled = scaler.transform(X_train[['col1','col2','col3']])
+```
 
-<!-- Needs work -->
+<!-- Polished -->
 ## Resampling
-- Needed when classes are imbalanced for classification modeling
-- Used specifically for train to help models fit, improves performance on predicting unseen data
-### SMOTE
-- Oversampling the minority class
-### Tomek
-- Undersampling the majority class
+- Generating or deleting rows to help train models
+- Required for classification when target is largely imbalanced (EX: Anomaly detection)
+- Oversampling the minority class: Synthetic Minority Oversampling Technique (SMOTE)
+- Undersampling the majority class: TomekLinks
+### Resampling Example
+```
+from imblearn.combine import SMOTETomek
+smt = SMOTETomek(random_state=42)
+X_train_res, y_train_res = smt.fit_resample(X_train, y_train)
+```
+
 
 [[Return to Top]](#table-of-contents)
 
@@ -1305,7 +1302,7 @@ db = DBSCAN(eps=0.3, min_samples=10).fit(X_train)
 
 # Classification
 
-<!-- Needs work -->
+<!-- Polished -->
 ## Classification Overall
 - Predicting a discrete target
 ### Classifiers Summary
@@ -1357,7 +1354,7 @@ db = DBSCAN(eps=0.3, min_samples=10).fit(X_train)
 - Precision: `subset = [df.prediction == 'coffee']` ----- look at predicted Yes rows
     * use Model and Baseline Accuracy against this subset
 
-<!-- Needs work -->
+<!-- Polished -->
 ## Classification Example
 ### Classifier Implementation
 ```
@@ -1383,7 +1380,7 @@ graph.render('iris_decision_tree', view=True)   # display decision tree in PDF f
 ```
 ### Classification Evaluation
 - `from sklearn.metrics import precision_score, accuracy_score, recall_score, classification_report` ----- confusion matrix calc functions
-    * `df_report = pd.DataFrame(classification_report(df.actual_observed, df.model_guesses, labels=['colname', 'colname'], output_dict=True)).T` ----- outputs nice df of metrics
+- `df_report = pd.DataFrame(classification_report(df.actual_observed, df.model_guesses, labels=['colname', 'colname'], output_dict=True)).T` ----- outputs nice df of metrics
 - `classification_report(y_train, y_pred)` ----- get metrics of train dataset
 - `clf.score(X_validate, y_validate)` ----- accuracy of model against validate dataset
 - `y_pred = clf.predict(X_validate)` ----- prediction array of model for validate dataset
