@@ -716,30 +716,6 @@ join departments using(dept_no);
 - `df1.merge(df2, left_on='df1_col', right_on='df2_col', how='outer', indicator=True)`
 - `pd.crosstab(df.col1, df.col2, margins=True, normalize=True)` ----- margins are rowwise, colwise totals
 - `df.pivot_table(index='col1', columns='col2', values='col3')` ----- where col1 and col2 meet, take all col3 values and average them (default behavior)
-#### Pandas and Datetime
-- `pd.to_datetime(date, format='%b:%d:%Y')`; `pd.to_datetime(df.date, format='%b:%d:%Y')`
-    * `pd.date_range('start_date', freq='D', periods=num_of_days)` ----- create date range from scratch
-- `df.loc[date_start:date_end]` ----- inclusive slicing of dataframe when datetime is index
-- `pd.Timedelta('14d') + pd.to_datetime('2017-11-07')` ----- add 14 days to date as expected
-    * `df.date.max() - df.date` ----- find amount of time between most recent date and all dates (time delta)
-- `df.date.dt.day` ----- element-wise conversion of date to day number, can do with more
-    * `.month`, `.year`, `.quarter`, `.day_name()` --- use `.value_counts().sort_index()`!
-- `df.col.strftime('%b %D, %Y')`
-- `df.resample('W').sum()` ----- "Downsampling", sum all values more precise than a week in esssentially a groupby
-    * requires pandas datetime index
-    * '3W' is every three weeks, can also do '3H', '3M', '3Y', etc
-- `df.asfreq('D')` ----- "Upsampling", create row for each day from a less-precise interval (weekly -> daily)
-    * `by_day.assign(ffill=lambda df: df.coffee_consumption.ffill())` ----- fill null with previous value
-    * `by_day.assign(bfill=lambda df: df.coffee_consumption.bfill())` ----- fill null with next value
-    * can also `.fillna()` as you need, or use `.loc`, etc
-- `df.colname.diff()` ----- difference between current element and previous one (subtract values)
-    * can enter a number, `.diff(3)`, to look at 3 elements ago
-    * also enter negative values (-1) to look ahead
-- `df.colname.shift()` ----- an array of colname but each value is shifted one index deeper (shift values)
-    * with proper indexing, can `.shift()` a value column for lagging and leading
-    * `shift(1)`, `shift(30)`, `shift(-90)`, etc
-- `df.index.tz`, `df.tz_localize('America/Chicago')`, `df.tz_localize(None)` ----- timezones
-- `df.resample('W').sum().colname.plot()` ----- quick line plot of a column for weekly sum
 
 [[Return to Top]](#table-of-contents)
 
@@ -1424,6 +1400,7 @@ validate_report = pd.DataFrame(
 
 # Regression
 
+<!-- Polished -->
 ## Regression Overview
 - Predicting a continuous target using a line
 - Multi-dimensional line takes slopes as coefficients on each feature
@@ -1470,6 +1447,7 @@ validate_report = pd.DataFrame(
 - **Variance (R^2)** --- r2 = ESS / TSS
     * Indicates amount of data (0% - 100%) explained by regression line
 
+<!-- Polished -->
 ## Regression Example
 ### Regressor Syntax
 - `sklearn.linear_model.LinearRegression`
@@ -1518,50 +1496,82 @@ r2 = r2_score(df.actuals, df.predictions)
    #    # #    # ######     #####  ###### #    # # ######  ####  
 -->
 
-# Time Series
+# Time-Series
 
-<!-- Needs work -->
-## Time-Series
-- Sub-methodology of supervised machine learning involving temporal data
-- Focus is on time-wise trends, making time-based predictions on how data *will* be
-- Time is linear... so time-series features involved are always linearly-correlated with each other (one goes up, another goes down... because it's on the linear timeline)
-    * This means it has to be treated differently from linear regression
-- Uses previous outcomes as features to predict future outcomes
-    * EX: Customer growth in January (a target of regression) is one observation, multiple months' observed growth together are the feature
-    * This differs from regression, which focuses on the attributes driving an outcome and has no time component
-- Some examples include:
-    - repeating upward/downward trends (seasonality)
-    - fluctuation cycles (seasonality at >2 year increments), 
-    - autocorrelation (regression of outcomes, "regression of self")
-### Forecasting
+<!-- Polished -->
+## Time-Series Overview
+- Predicting the future using the past
+- Specifically, using seasonality, fluctuation cycles, and autocorrelation for forecasting
+### Time-Series Strategy
+1. Understand the nature of your data
+    * Is it years of information? months? weeks? days? hours?
+    * From visualizations, are there immediate noticeable trends or seasonality?
+2. Downsample (aggregate) or upsample (add rows) based on the analytic goal
+    * EX: Downsample from minute-by-minute transaction data to daily transaction totals
+    * EX: Upsample **patchy** minute-by-minute transaction data to fill gaps for 'even' analysis
+3. Use rolling averages for seasonal data and autocorrelation (shifts and diffs) for all time-series options
+4. Visualize various metrics for insights
+5. Split into train and test using seasonality (if possible), or by percentage
+6. Train models using training split then predict the future - **predict test using train**
+7. Evaluate each model's RMSE, best model has lowest RMSE
+8. Use best model for future forecasting
+### Forecasters
 - Last Observed Value (as prediction)
 - Simple Average (average of all observations as prediction)
 - Moving/Rolling Average (last portion of observed for this as prediction)
     * Usually last 7 days, the average of that, as the prediction
 - Previous Cycle (exactly the last cycle as a whole [sliced] as prediction)
     * Year-Over-Year Difference is a form of this, and a good starting place when you haven't performed any time-series analysis yet. The reason is that each year has an even length, has its own seasons and trends that regularly occur in society, and is commonly referenced in most industries to check performance of production and sales. It's fairly easy to calculate, you do a .diff(365) on day-resampled data then take the mean of all values, showing the overall difference. Then you predict using the final observed year's values, adding the overall difference to each value. Then calculate RMSE as normal.
-- Holt's Linear Trend (a regression of previous cycles applied at end of observations)
-    * import statsmodels.tsa.api.Holt
-    * model = Holt(train[col], exponential=)
-    * model.fit(smoothing_level = .1, smoothing_slope=.1, optimized=False)
-    * model.predict(start=validate.index[0], end=validate.index[-1])
+- Holt's Linear Trend (a regression line of previous cycles applied at end of observations)
 - Facebook Prophet's Model (next expected cycle based on previous cycles)
     * "Pretty good, but hard to install and get working"
-### Considerations
-- In-Sample and Out-of-Sample splits are split on seasons, not randomly-selected observations
-    * Human-based split if pattern, percentage-based split if no pattern
-        * df.plot() for date index and outcome value
-        * df.resample('D').mean().plot(ax=ax, alpha=.5, label='Daily) ----- plot the data resampled to daily, can do for weekly/monthly/yearly/etc
-    * To determine seasonal splits, you'll have to look at data before you split
-    * To determine percentage splits, set train size and test size, then look at the rowcount and split the first 80% from the last 20%
-        * train_end_index = round(df.shape[0] * train_size)
-        * train = df.iloc[:train_end_index]
-        * test = df.iloc[train_end_index:]
-- Rolling averages on 3-, 7-, and 30-day windows
-    * Must apply aggregation to rolling, so: df.resample('D').mean().rolling(30).mean().plot()
-- ax = df.resample('M').mean().diff().plot() ----- plot change over time, in practice plot difference between a month and the month prior, do this lineplot for all months
-    * df.resample('M').mean().plot(ax=ax, label='Monthly Average) ----- plots using same ax as previously-defined graph
-    * df.resample('M').shift(12).plot(ax=ax, label='Last Year') ----- plots 12 months prior in place, so you can compare last year to this year
+### Forecast Evaluation Metrics
+- See regression section
+
+<!-- Polished -->
+## Time-Series Example
+### Time-Series Syntax
+- `pd.to_datetime(date, format='%b:%d:%Y')`; `pd.to_datetime(df.date, format='%b:%d:%Y')`
+    * `pd.date_range('start_date', freq='D', periods=num_of_days)` ----- create date range from scratch
+- `df.loc[date_start:date_end]` ----- inclusive slicing of dataframe when datetime is index
+- `pd.Timedelta('14d') + pd.to_datetime('2017-11-07')` ----- add 14 days to date as expected
+    * `df.date.max() - df.date` ----- find amount of time between most recent date and all dates (time delta)
+- `df.date.dt.day` ----- element-wise conversion of date to day number, can do with more
+    * `.month`, `.year`, `.quarter`, `.day_name()` --- use `.value_counts().sort_index()`!
+- `df.col.strftime('%b %D, %Y')`
+- `df.resample('W').sum()` ----- "Downsampling", sum all values more precise than a week in esssentially a groupby
+    * requires pandas datetime index
+    * '3W' is every three weeks, can also do '3H', '3M', '3Y', etc
+- `df.asfreq('D')` ----- "Upsampling", create row for each day from a less-precise interval (weekly -> daily)
+    * `by_day.assign(ffill=lambda df: df.coffee_consumption.ffill())` ----- fill null with previous value
+    * `by_day.assign(bfill=lambda df: df.coffee_consumption.bfill())` ----- fill null with next value
+    * can also `.fillna()` as you need, or use `.loc`, etc
+- `df.colname.diff()` ----- difference between current element and previous one (subtract values)
+    * can enter a number, `.diff(3)`, to look at 3 elements ago
+    * also enter negative values (-1) to look ahead
+- `df.colname.shift()` ----- an array of colname but each value is shifted one index deeper (shift values)
+    * with proper indexing, can `.shift()` a value column for lagging and leading
+    * `shift(1)`, `shift(30)`, `shift(-90)`, etc
+- `df.index.tz`, `df.tz_localize('America/Chicago')`, `df.tz_localize(None)` ----- timezones
+- `df.resample('W').sum().colname.plot()` ----- quick line plot of a column for weekly sum
+### Forecaster Implementation
+```
+# basic diff and shift plotting
+ax = df.resample('M').mean().diff().plot()  # plot difference between a month and its previous month
+df.resample('M').mean().plot(ax=ax, label='Monthly Average) # plots using same ax as previously-defined graph
+df.resample('M').shift(12).plot(ax=ax, label='Last Year') # shifts 12 months to plot last year
+# percentage splits
+train_end_index = round(df.shape[0] * train_size)
+train = df.iloc[:train_end_index]
+test = df.iloc[train_end_index:]
+# Holt's linear trend
+from statsmodels.tsa.api import Holt
+model = Holt(train[col], exponential=)
+model.fit(smoothing_level = .1, smoothing_slope=.1, optimized=False)
+model.predict(start=test.index[0], end=test.index[-1])
+```
+### Forecast Evaluation
+- See regression section
 
 [[Return to Top]](#table-of-contents)
 
