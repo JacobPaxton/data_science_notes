@@ -71,7 +71,7 @@ XI.   [Model Preparation             ](#model-preparation)
 3.    [Resampling                    ](#resampling)
 
 XII.  [Classification                ](#classification)
-1.    [Classification Overall        ](#classification-overall)
+1.    [Classification Overview       ](#classification-overall)
 2.    [Classification Example        ](#classification-example)
 
 XIII. [Regression                    ](#regression)
@@ -1128,6 +1128,12 @@ db = DBSCAN(eps=0.3, min_samples=10).fit(X_train)
     * Normal centering isn't all that statistically-valuable
 - Z-Score: statistical centering, using distance from the mean in standard deviations
     * `zscore = (value - pop_mean) / stdev_size` --- `zscore = stats.zscore(value_list)`
+### Correlation
+- The measure for linear relation between two variables; as one variable moves, does the other variable follow?
+- 2^n correlates almost perfectly with 3^n because of **similar rate** and **monotonic increase**
+- 2^n correlates very strongly with 2n - 1 and 0.5n because of **monotonic increase**
+- 2^n correlates very strongly with -1n + 9 because of **monotonic decrease**
+- 2^n does not correlate well with [1,2,1,2,1,2,1,2] because it is polytonic
 
 <!-- Polished -->
 ## Hypothesis Testing
@@ -1303,9 +1309,25 @@ X_train_res, y_train_res = smt.fit_resample(X_train, y_train)
 # Classification
 
 <!-- Polished -->
-## Classification Overall
+## Classification Overview
 - Predicting a discrete target
-### Classifiers Summary
+- **Features that have strong dependence are the best predictors**
+### Classification Strategy
+0. Prepare data; if there's decision ambiguity, leave it for exploration
+1. Bin continuous data into categories using visualizations or intervals
+    * Best-case scenario: a scatterplot of x feature with y target shows distinct grouping; use those groups
+2. Create crosstab for each feature's categories against the target categories for Chi Square tests
+    * Visualize crosstabs using conditional formatting (heatmaps) or mosaic plots
+3. Eliminate features that do not have dependent relationship with target
+4. Visualize all remaining features using crosstab conditional formatting or mosaic plots
+5. Select the main evaluation metric (Accuracy, Recall, Precision, F1 Score, etc)
+6. One-hot-encode all features
+7. Create, fit multiple models on model-training data
+8. Evaluate baseline mode class and models on selected evaluation metric for train and validate splits
+9. Tune hyperparameters and re-evaluate until satisfied
+10. Evaluate model on sequestered test split
+### Classifiers
+- Choosing a classifier: https://www.kdnuggets.com/2020/05/guide-choose-right-machine-learning-algorithm.html
 - **Decision Tree:** A sequence of rules for one-input-binary-output decisions
     * Simple to implement and explain, but prone to overfit
 - **Random Forest:** Row-wise voting from many decision trees that were fit on random features and data samples
@@ -1316,9 +1338,9 @@ X_train_res, y_train_res = smt.fit_resample(X_train, y_train)
     * Highly effective at prediction with few major downsides
 - **Logistic Regression:** Regression (calculation of coefficients) but determinations are classes instead
     * A great baseline predictive model, but usually not the best
-- **XG Boost:** Iteratively use loss function on random forest, eliminate 'weak learner trees' until loss is minimized
+- **XG Boost:** Iteratively use loss function on random forest, drop 'weak learner trees' until loss is minimized
     * World-class performance but near-impossible to explain to stakeholders
-### Evaluation Summary
+### Classifier Evaluation Summary
 - Reviewing our model to see if our predictions matched actuals for a given number of observations
     * True Positive, FP, TN, FN
     * Baseline Prediction is predicting all outcomes as True
@@ -1356,6 +1378,13 @@ X_train_res, y_train_res = smt.fit_resample(X_train, y_train)
 
 <!-- Polished -->
 ## Classification Example
+### Classifier Syntax
+- sklearn.tree.DecisionTreeClassifier
+- sklearn.ensemble.RandomForestClassifier
+- sklearn.neighbors.KNearestClassifier
+- sklearn.naive_bayes.GaussianNB
+- sklearn.linear_model.LogisticRegression
+- sklearn.xgboost.XGBClassifier
 ### Classifier Implementation
 ```
 from sklearn.tree import DecisionTreeClassifier
@@ -1407,39 +1436,38 @@ graph.render('iris_decision_tree', view=True)   # display decision tree in PDF f
 
 # Regression
 
-<!-- Needs work -->
-## Regression
-- Resources: "String and straw" animation, https://setosa.io/ev/ordinary-least-squares-regression/
-- Supervised algorithm prosecuting a labeled target
-- Instead of binary/multi target, **it's a continuous target**
-- Involves scaling as part of preparation
-    * A number like cost ($100k - $1,000k) compared to square footage (700-2500) would need to be scaled for the model (even rates of change)
-    * Outliers affect regression greatly, discover and eliminate them
-        * sns.boxplot(data=df) ----- box/whisker marks outliers
-- Regression baseline generally involves mean or median (not mode)
-    * Mode of continuous values doens't make sense... may only have one or two in common for thousands of observations
-    * Plotted baseline is a horizontal line at the median/mean
-- Evaluation is different
-    * No true/false positives because no binary check
-    * Looking at vertical distance of data and prediction from the trend line
-        * Trying to minimize the **difference** in distance
-    * May need polynomial trend line rather than linear... exploration decides it
-- Regression tends to work better on normal distributions
-- Relationships between variables being >80%, you can safely drop a variable
-### Strategy 
-- Model complexity choice: Reduction of error, variance, and bias^2 is the goal
-### Regression Algorithms
-- Linear Regression
-- Ordinary Least Squares (OLS)
-    * minimizes sum of squared differences in the linear model compared to the actual data points
-- LASSO+LARS - LassoLars
-    * uses regularization penalty for independent variables to minimize certain features (a form of automatic feature selection)
-    * Can change slope of the regression line to reduce variance and increase bias
-- Polynomial Regression
-    * curved lines (be wary of overfitting with 'too curvy' regression line)
-- Generalized Linear Model - TweedieRegressor
-    * reduces multiple distribution options
-### Evaluation
+## Regression Overview
+- Predicting a continuous target using a line
+- Multi-dimensional line takes slopes as coefficients on each feature
+- **Features that correlate strongly with the target are the best predictors** (positive or negative correlation)
+    * For our purposes, each feature is sorted least-to-greatest on x-axis, then we look at how y varies
+    * After plotting, we look for monotonicity and change rate to determine the correlation coefficient
+### Regression Strategy
+0. Prepare data; if there's decision ambiguity, leave it for exploration
+1. One-hot-encode categorical features
+2. Create a correlation crosstab
+3. Eliminate features that do not strongly correlate with the target
+    * *Also eliminate features that strongly >80% with other features*
+4. Visualize each feature against the target using scatterplots
+    * Eliminate outliers- regression is highly sensitive to them
+5. Understand each relationship with the target- is it linear? Polynomial? Monotonic? Polytonic?
+6. Decide which regression model is best based on visualizations
+    * Model complexity choice: Reduction of error, variance, and bias^2 is the goal
+7. Create, fit model on model-training data
+8. Evaluate baseline mean and model RMSE and R^2 for train and validate splits, plot residuals
+    * If residuals aren't random, revisit exploration for feature engineering then re-fit and evaluate model
+9. Tune hyperparameters and re-evaluate until satisfied
+10. Evaluate model on sequestered test split
+### Regressors
+- **Ordinary Least Squares (OLS):** Minimizes sum of squared differences between prediction and actuals
+    * Linear regression as everyone knows it, assumes normal distribution of data
+- **LASSO+LARS (LassoLars):** Feature minimization using regularization penalties
+    * Can change slope of the regression line to reduce variance and increase bias, assumes normality
+- **Polynomial Regression (PolynomialFeatures on data):**  Adjusting features to allow polynomial regression
+    * Use number of curves from exploration as hyperparameter
+- **Generalized Linear Model (TweedieRegressor):** Best option when distributions are not normal
+    * Safe option for most cases except polynomial
+### Regressor Evaluation Summary
 - A shotgun pattern in homoscedasticity check (pattern shows heteroscedasticity) isn't great, consider removing outliers or transforming... can take log of entire column (storing values in new column) then run log column through the model and visualization
 
 <!-- Needs work -->
