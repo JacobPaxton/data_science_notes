@@ -75,6 +75,8 @@ XII.  [Classification                ](#classification)
 2.    [Classification Example        ](#classification-example)
 
 XIII. [Regression                    ](#regression)
+1.    [Regression Overview           ](#regression-overall)
+2.    [Regression Example            ](#regression-example)
 
 XIV.  [Time-Series                   ](#time-series)
 
@@ -1311,7 +1313,7 @@ X_train_res, y_train_res = smt.fit_resample(X_train, y_train)
 <!-- Polished -->
 ## Classification Overview
 - Predicting a discrete target
-- **Features that have strong dependence are the best predictors**
+- **Features that have strong relationship with target are the best predictors**
 ### Classification Strategy
 0. Prepare data; if there's decision ambiguity, leave it for exploration
 1. Bin continuous data into categories using visualizations or intervals
@@ -1340,53 +1342,33 @@ X_train_res, y_train_res = smt.fit_resample(X_train, y_train)
     * A great baseline predictive model, but usually not the best
 - **XG Boost:** Iteratively use loss function on random forest, drop 'weak learner trees' until loss is minimized
     * World-class performance but near-impossible to explain to stakeholders
-### Classifier Evaluation Summary
-- Reviewing our model to see if our predictions matched actuals for a given number of observations
-    * True Positive, FP, TN, FN
-    * Baseline Prediction is predicting all outcomes as True
-- Focus on cost: Accuracy, Recall, Precision, Specificity, F1 Score, ROC/AUC
-- Confusion Matrix --- focus on Recall and Precision
-    * `df = pd.DataFrame({'prediction':[], 'actual':[]})`
-    * `pd.crosstab(df.prediction, df.actual)`
-### Accuracy 
-- Overall performance of model
-- Easy to understand and doesn't matter what the 'positive' is
-- Might be misleading when working with imbalanced class problems
-- (TP + TN) / (TP + TN + FP + FN)
-### Recall
-- Positive actual against our predictions 
-- Minimizing false negatives
-- Use when FN is more costly than FP [credit card fraud detection]
-- TP / (TP + FN)
-### Precision 
-- Our prediction against all possible actuals 
-- Minimizing false positives
-- Use when FP is more costly than FN [spam filter])
-- TP / (TP + FP)
-### More terms
-- Sensitivity (Recall)
-- Specificity (Recall for negative) 
-- F1 Score (harmonic mean of Precision and Recall)
-- ROC/AUC (how well your model discriminates between positive and negative)
-### Usage
-- Model Accuracy: `(df.actual == df.prediction).mean()`
-- Baseline Accuracy: `(df.actual == df.baseline_prediction).mean()`
-- Recall: `subset = df[df.actual == 'coffee']` ----- look at actual Yes observations
-    * use Model and Baseline Accuracy against this subset
-- Precision: `subset = [df.prediction == 'coffee']` ----- look at predicted Yes rows
-    * use Model and Baseline Accuracy against this subset
+- **One Vs Rest:** Breakdown of multiclass problem into several binary class problems
+### Classifier Evaluation Metrics
+- **Accuracy:** Overall performance of model --- (TP + TN) / (TP + TN + FP + FN)
+    * Easy to understand; Imbalanced class problem may yield misleading results
+- **Recall:** Positive actual against our predictions --- TP / (TP + FN)
+    * Minimizing false negatives; Use when FN is more costly than FP [credit card fraud detection]
+    * Also known as Sensitivity; opposite-class recall is called Specificity
+- **Precision:** Our prediction against all possible actuals --- TP / (TP + FP)
+    * Minimizing false positives; Use when FP is more costly than FN [spam filter])
+- **F1 Score:** Harmonic mean of Precision and Recall --- TP / (TP + 0.5(FP + FN))
+    * Prioritizing both Recall and Precision; Use for accuracy on an imbalanced class problem
+- **Receiver Operating Characteristic:** False Positive Rate against True Positive Rate
+    * Model performance at different thresholds; Calculate area under the curve (ROC AUC) as another metric
 
 <!-- Polished -->
 ## Classification Example
 ### Classifier Syntax
-- sklearn.tree.DecisionTreeClassifier
-- sklearn.ensemble.RandomForestClassifier
-- sklearn.neighbors.KNearestClassifier
-- sklearn.naive_bayes.GaussianNB
-- sklearn.linear_model.LogisticRegression
-- sklearn.xgboost.XGBClassifier
+- `sklearn.tree.DecisionTreeClassifier`
+- `sklearn.ensemble.RandomForestClassifier`
+- `sklearn.neighbors.KNearestClassifier`
+- `sklearn.naive_bayes.GaussianNB`
+- `sklearn.linear_model.LogisticRegression`
+- `sklearn.xgboost.XGBClassifier`
+- `sklearn.multiclass.OneVsRestClassifier`
 ### Classifier Implementation
 ```
+# basic decision tree
 from sklearn.tree import DecisionTreeClassifier
 clf = DecisionTreeClassifier(max_depth=3, random_state=123) 
 clf = clf.fit(X_train, y_train)
@@ -1394,6 +1376,7 @@ y_train_pred = clf.predict(X_train)
 y_train_pred_proba = clf.predict_proba(X_train)
 ```
 ```
+# visualize decision tree's nodes
 from sklearn.tree import export_graphviz
 import graphviz
 from graphviz import Graph
@@ -1408,14 +1391,19 @@ graph = graphviz.Source(dot_data)
 graph.render('iris_decision_tree', view=True)   # display decision tree in PDF format (a picture)
 ```
 ### Classification Evaluation
-- `from sklearn.metrics import precision_score, accuracy_score, recall_score, classification_report` ----- confusion matrix calc functions
-- `df_report = pd.DataFrame(classification_report(df.actual_observed, df.model_guesses, labels=['colname', 'colname'], output_dict=True)).T` ----- outputs nice df of metrics
-- `classification_report(y_train, y_pred)` ----- get metrics of train dataset
-- `clf.score(X_validate, y_validate)` ----- accuracy of model against validate dataset
-- `y_pred = clf.predict(X_validate)` ----- prediction array of model for validate dataset
-- `classification_report(y_validate, y_pred)` ----- metrics of model against validate
-- `clf.feature_importances_` ----- return which features mattered most
-    * The `_` character at end indicates it's a parameter of a trained model
+```
+from sklearn.metrics import classification_report
+clf.score(X_validate, y_validate)
+clf.feature_importances_
+validate_report = pd.DataFrame(
+    classification_report(
+        validate.actuals, 
+        validate.predictions, 
+        labels=['true', 'false'], 
+        output_dict=True
+    )
+).T
+```
 
 [[Return to Top]](#table-of-contents)
 
@@ -1461,59 +1449,57 @@ graph.render('iris_decision_tree', view=True)   # display decision tree in PDF f
 ### Regressors
 - **Ordinary Least Squares (OLS):** Minimizes sum of squared differences between prediction and actuals
     * Linear regression as everyone knows it, assumes normal distribution of data
-- **LASSO+LARS (LassoLars):** Feature minimization using regularization penalties
+- **LASSO+LARS:** Feature minimization using regularization penalties
     * Can change slope of the regression line to reduce variance and increase bias, assumes normality
-- **Polynomial Regression (PolynomialFeatures on data):**  Adjusting features to allow polynomial regression
-    * Use number of curves from exploration as hyperparameter
-- **Generalized Linear Model (TweedieRegressor):** Best option when distributions are not normal
+- **Generalized Linear Model (GLM):** Best option when distributions are not normal
     * Safe option for most cases except polynomial
-### Regressor Evaluation Summary
-- A shotgun pattern in homoscedasticity check (pattern shows heteroscedasticity) isn't great, consider removing outliers or transforming... can take log of entire column (storing values in new column) then run log column through the model and visualization
+- **Support Vector Regression (SVR):** Hyperplane - Boundary capture of discrete values
+    * Use for discrete value problem; if > 50,000 rows, use LinearSVR instead
+- **Polynomial Regression:** Adjusting features to allow polynomial regression
+    * Use number of curves from exploration as hyperparameter
+### Regressor Evaluation Metrics
+- **Regression line** --- y = b0 + b1x1 + b2x2 + ... bnxn + ϵ
+    * y: target; b: coefficient (slope); x: input; ϵ: expected_error
+    * Polynomial regression uses: y = b0 + b1x + b2x^2 + b3x^3 + ... + bnx^n + ϵ
+- **Residual** --- e = predicted_y - actual_y
+    * Obvious trends in residual plots (called heteroscedasticity) indicates unrecognized factors driving target
+    * Fixing heteroscedasticity: Remove outliers, transform data, or convert feature(s) to logarithmic value(s)
+- **Root Mean Square Error (RMSE)** --- RMSE = sqrt(mean(sum(residuals)))
+    * RMSE is in target's units, so calculating home value has RMSE in dollars
+    * Other error metrics: SSE (when outliers are the focus), MSE, ESS, TSS
+- **Variance (R^2)** --- r2 = ESS / TSS
+    * Indicates amount of data (0% - 100%) explained by regression line
 
-<!-- Needs work -->
-## Evaluation (Regression notes)
-- Does model add any value? Which model is better? How confident am I in the model's predictions?
-- Root-Means Square (RMSE): How much error the typical prediction has, cast in same units as target; smaller is better
-- R-Squared (R2): Variance in y (target) explained by x (predictor); closer to 1 is better
-- Remember: **units are preserved**, predicting a dollar amount means unit is dollars
-### Theoretical
-- y_i = beta_0 + (beta_1 * x_i) + e_i
-    * target = intercept + linear_addition_of_ind_vars + unexplained_error
-    * unexplained_errors are independent, same variance, normally distributed
-    * "Relationship is linear and additive"
-- estimate_y_i = beta_0 + beta_1 * x_i
-    * estimated_target = estimated_intercept + estimated_value_of_coefficients
-    * residual: e = y_i - estimate_y_i
-### Baseline
-- sns.lineplot(x='x', y='baseline', data=df) ----- plots line for baseline
-    - switch 'baseline' with 'predictions' for the regression line
-    - plt.axhline(0, ls=':') ----- plots dotted line at y=0 for visual aid
-- Regression baseline is the mean or median of all datapoints (horizontal line)
-    * Check mean and median for better performance, select best performing
-    * x-axis (independent variable) not affected by horizontal line
-### Errors
-- Residual: error (actual minus predicted) --- above line is positive, below line is negative
-- SSE: sum of squared error --- square all error distances, then add up
-    * If you especially care about outliers, this will weigh outliers higher
-- MSE: mean of squared error --- square all error distances, then average
-- **RMSE**: root mean squared error --- square all error distances, then average, then take the square root of the result
-    * Most common one
-- TSS (total error): distance from actual to baseline
-- ESS (explained error): distance from prediction line to baseline
-- SSE (unexplained error): distance from prediction line to actual
-### R^2 - Explained Variance
-- R^2 = ESS / TSS
-- R^2 == 1.0 --- all data points fall perfectly on regression line
-- R^2 == 0.0 --- all data points above and below the regression line have the same distance (mean baseline)
-### sklearn syntax
-- from sklearn.metrics import mean_squared_error
-    * MSE2 = mean_squared_error(df.y, df.yhat)
-    * MSE2_baseline = mean_squared_error(df.y, df.baseline)
-    * SSE2 = MSE2 * len(df)
-    * RMSE2 = mean_squared_error(df.y, df.yhat, squared=False)
-    * RMSE2_baseline = mean_squared_error(df.y, df.baseline, squared=False)
-- from sklearn.metrics import r2_score
-    * r2_score(df.y, df.yhat) --- score of explained variance
+## Regression Example
+### Regressor Syntax
+- `sklearn.linear_model.LinearRegression`
+- `sklearn.linear_model.LassoLars`
+- `sklearn.linear_model.TweedieRegressor`
+- `sklearn.svm.SVR` or `sklearn.svm.LinearSVR`
+- `sklearn.preprocessing.PolynomialFeatures`
+### Regressor Implementation
+```
+# basic linear regression
+from sklearn.linear_model import LinearRegression
+ols = LinearRegression().fit(X_train, y_train)
+y_train_pred = clf.predict(X_train)
+```
+```
+# plot residuals
+y_train_residuals = y_train_preds - y_train
+sns.relplot(x=y_train, y=y_train_residuals)
+plt.axhline(y=0, c='gray', alpha=.3)
+```
+### Regression Evaluation
+```
+from sklearn.metrics import mean_squared_error, r2_score
+# calculate RMSE
+MSE = mean_squared_error(validate.actuals, validate.predictions)
+SSE = MSE * len(df) # in case you need SSE
+RMSE = mean_squared_error(validate.actuals, validate.predictions, squared=False)
+# calculate r2
+r2 = r2_score(df.actuals, df.predictions)
+```
 
 [[Return to Top]](#table-of-contents)
 
