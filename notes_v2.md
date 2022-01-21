@@ -71,18 +71,20 @@ XI.   [Model Preparation             ](#model-preparation)
 3.    [Resampling                    ](#resampling)
 
 XII.  [Classification                ](#classification)
-1.    [Classification Overview       ](#classification-overall)
+1.    [Classification Overview       ](#classification-overview)
 2.    [Classification Example        ](#classification-example)
 
 XIII. [Regression                    ](#regression)
-1.    [Regression Overview           ](#regression-overall)
+1.    [Regression Overview           ](#regression-overview)
 2.    [Regression Example            ](#regression-example)
 
 XIV.  [Time-Series                   ](#time-series)
-1.    [Time-Series Overview          ](#regression-overall)
-2.    [Time-Series Example           ](#regression-example)
+1.    [Time-Series Overview          ](#time-series-overview)
+2.    [Time-Series Example           ](#time-series-example)
 
 XV.   [Natural Language Processing   ](#natural-language-processing-(NLP))
+1.    [NLP Overview                  ](#nlp-overview)
+2.    [NLP Example                   ](#nlp-example)
 
 XVI.  [Anomaly Detection             ](#anomaly-detection)
 
@@ -1602,7 +1604,7 @@ model.predict(start=test.index[0], end=test.index[-1])
 
 # Natural Language Processing (NLP)
 
-<!-- Needs work -->
+<!-- Polished -->
 ## NLP Overview
 - Analyzing words
 - Can be used for: Text Classification
@@ -1645,6 +1647,7 @@ model.predict(start=test.index[0], end=test.index[-1])
     * Can use `ngrams=` to set word groupings, ex: (1,2) means 1-word and 2-word phrases, (2,2) means only 2-word
 - Evaluate which words are most-determinative of class using SelectKBest or RFE
 
+<!-- Polished -->
 ## NLP Example
 - Update stopwords through command line: `python -c "import nltk; nltk.download('stopwords')`
 - Sentiment analysis: `df['sentiment'] = df.text.apply(lambda doc: sia.polarity_scores(doc)['compound'])`
@@ -1697,6 +1700,7 @@ tfidf_bag = pd.DataFrame(tfidf_bag.todense(), columns=tfidf.get_feature_names())
 pd.Series(dict(zip(tfidf.get_feature_names(), tfidf.idf_))).sort_values()   # series of words and their importance
 ```
 ```
+# Decision Tree
 X_train_tfidf, y_train, X_validate_tfidf, y_validate, X_test_tfidf, y_test = split_data(df)
 tree = DecisionTreeClassifier(max_depth=5)
 tree.fit(X_train_tfidf, y_train)
@@ -1714,7 +1718,6 @@ pd.Series(dict(zip(dv.get_feature_names(), tree.feature_importances_))).sort_val
 
 
 <!-- 
-#     #                                             #                                                        
    #                                                ######                                                   
   # #   #    #  ####  #    #   ##   #      #   #    #     # ###### ##### ######  ####  ##### #  ####  #    # 
  #   #  ##   # #    # ##  ##  #  #  #       # #     #     # #        #   #      #    #   #   # #    # ##   # 
@@ -1878,19 +1881,21 @@ pd.Series(dict(zip(dv.get_feature_names(), tree.feature_importances_))).sort_val
 <!-- Needs work -->
 ## Cross-Validation
 - K-fold cross validation: split *train* into more train-test splits, average prediction score across fold combinations
-    * from sklearn.model_selection import cross_val_score
-    * cross_val_score(clf, X_train, y_train, cv=5).mean() ----- eval clf model w 5 folds
-        * init empty 'scores' dictionary, loop through max_depths, eval score using this func, use scores[depth] = score
-    * from sklearn.metrics import precision_score, make_scorer
-    * cross_val_score(clf, X_train, y_train, cv=5, scorer=make_scorer(precision_score, pos_label='prediction')) ----- use a different scorer than default, pos_label converts non-binary values to binary by choosing what is 1, making everything else 0
-    * One of those folds is a test split, the rest of the folds are train splits
-    * Each fold rotates in as the test split
-    * Common fold counts: 3, 4, 5, 10 (5 most common)
 - Grid Search: use K-fold cross validation to determine best max_depth train split
-    * Basically does validate for us- choose best model here and run against test
-    * from sklearn.model_selection import GridSearchCV
-    * Defaults to .score and r2
-    * Only optimizes hyperparameters
+### K-Fold Cross Validation
+- from sklearn.model_selection import cross_val_score
+- cross_val_score(clf, X_train, y_train, cv=5).mean() ----- eval clf model w 5 folds
+    * init empty 'scores' dictionary, loop through max_depths, eval score using this func, use scores[depth] = score
+- from sklearn.metrics import precision_score, make_scorer
+- cross_val_score(clf, X_train, y_train, cv=5, scorer=make_scorer(precision_score, pos_label='prediction')) ----- use a different scorer than default, pos_label converts non-binary values to binary by choosing what is 1, making everything else 0
+- One of those folds is a test split, the rest of the folds are train splits
+- Each fold rotates in as the test split
+- Common fold counts: 3, 4, 5, 10 (5 most common)
+### Grid Search
+- Basically does validate for us- choose best model here and run against test
+- from sklearn.model_selection import GridSearchCV
+- Defaults to .score and r2
+- Only optimizes hyperparameters
 ### Examples
 - grid = GridSearchCV(clf, {'n_neighbors': range(1, 21)}, cv=5)
     * Notice how you pass hyperparameter options to GridSearchCV
