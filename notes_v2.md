@@ -79,6 +79,8 @@ XIII. [Regression                    ](#regression)
 2.    [Regression Example            ](#regression-example)
 
 XIV.  [Time-Series                   ](#time-series)
+1.    [Time-Series Overview          ](#regression-overall)
+2.    [Time-Series Example           ](#regression-example)
 
 XV.   [Natural Language Processing   ](#natural-language-processing-(NLP))
 
@@ -1501,7 +1503,7 @@ r2 = r2_score(df.actuals, df.predictions)
 <!-- Polished -->
 ## Time-Series Overview
 - Predicting the future using the past
-- Specifically, using seasonality, fluctuation cycles, and autocorrelation for forecasting
+- Specifically, using **seasonality,** **fluctuation cycles**, and **autocorrelation** for forecasting
 ### Time-Series Strategy
 1. Understand the nature of your data
     * Is it years of information? months? weeks? days? hours?
@@ -1516,14 +1518,14 @@ r2 = r2_score(df.actuals, df.predictions)
 7. Evaluate each model's RMSE, best model has lowest RMSE
 8. Use best model for future forecasting
 ### Forecasters
-- Last Observed Value (as prediction)
-- Simple Average (average of all observations as prediction)
-- Moving/Rolling Average (last portion of observed for this as prediction)
+- **Last Observed Value** (as prediction)
+- **Simple Average** (average of all observations as prediction)
+- **Moving/Rolling Average** (last portion of observed for this as prediction)
     * Usually last 7 days, the average of that, as the prediction
-- Previous Cycle (exactly the last cycle as a whole [sliced] as prediction)
+- **Previous Cycle** (exactly the last cycle as a whole [sliced] as prediction)
     * Year-Over-Year Difference is a form of this, and a good starting place when you haven't performed any time-series analysis yet. The reason is that each year has an even length, has its own seasons and trends that regularly occur in society, and is commonly referenced in most industries to check performance of production and sales. It's fairly easy to calculate, you do a .diff(365) on day-resampled data then take the mean of all values, showing the overall difference. Then you predict using the final observed year's values, adding the overall difference to each value. Then calculate RMSE as normal.
-- Holt's Linear Trend (a regression line of previous cycles applied at end of observations)
-- Facebook Prophet's Model (next expected cycle based on previous cycles)
+- **Holt's Linear Trend** (a regression line of previous cycles applied at end of observations)
+- **Facebook Prophet's Model** (next expected cycle based on previous cycles)
     * "Pretty good, but hard to install and get working"
 ### Forecast Evaluation Metrics
 - See regression section
@@ -1531,7 +1533,7 @@ r2 = r2_score(df.actuals, df.predictions)
 <!-- Polished -->
 ## Time-Series Example
 ### Time-Series Syntax
-- `pd.to_datetime(date, format='%b:%d:%Y')`; `pd.to_datetime(df.date, format='%b:%d:%Y')`
+- `pd.to_datetime(single_date, format='%b:%d:%Y')`; `pd.to_datetime(df.date, format='%b:%d:%Y')`
     * `pd.date_range('start_date', freq='D', periods=num_of_days)` ----- create date range from scratch
 - `df.loc[date_start:date_end]` ----- inclusive slicing of dataframe when datetime is index
 - `pd.Timedelta('14d') + pd.to_datetime('2017-11-07')` ----- add 14 days to date as expected
@@ -1601,9 +1603,11 @@ model.predict(start=test.index[0], end=test.index[-1])
 # Natural Language Processing (NLP)
 
 <!-- Needs work -->
-## Natural Language Processing (NLP)
-- Codeup's focus is on text classification, but there's a lot more ways to process natural language
-- Same pipeline as other methodologies, but here, we're building the corpus (dataset) that we will analyze
+## NLP Overview
+- Analyzing words
+- Can be used for: Text Classification
+- Can be used for: Sentiment Analysis
+    * Afinn and Vader are sentiment analysis tools based on social media
 ### Vocab
 - Corpus: entire dataset
 - Document: one observation
@@ -1616,45 +1620,66 @@ model.predict(start=test.index[0], end=test.index[-1])
     * Part-Of-Speech Tagging: what part of speech a word is (noun, verb, adjective, etc)
     * in nltk library, there are ways to do POS tagging!
 - Bag of Words: columns for specific words, rows for observation, values for either the wordcount, true/false existence, or overall proportion
+### Turning Text into a Classification Dataset
+0. For each class and for the entire df, smash the text together into one single space-separated string
+1. Convert all words to lowercase
+2. Remove accents and non-ascii characters
+3. Remove special characters
+4. Tokenize (break down corpus into individual words)
+5. Stem or Lemmatize the individual words (calling -> call)
+6. Remove stopwords (words that don't matter to us, ex: "the")
+7. Use `.value_counts()` on each class's string and the entire corpus, store results into separate pandas Series
+8. Concatenate every Series together into a Dataframe (each Series index is the word, so it matches up)
 ### Strategies
 - Reduce word variability. EX: 'math' vs 'Math', make into one word. "Beijing" vs "Peking" (romanized foreign names), make into one word.
-### Tactics
-- Order of reduction: original -> lowercase -> remove accents/non-ascii -> remove special characters -> tokenize (break down) -> stem/lemmatize words (calls, calling, called to call) -> remove stopwords (the) -> store transformed text for exploration
-### Specific Libraries
-- import nltk
-- from nltk.tokenize.toktok import ToktokTokenizer
-- from nltk.corpus import stopwords
-### Implementation
-- **update stopwords:** python -c "import nltk; nltk.download('stopwords')"
-- lowercase: article.lower() 
-- normalize: unicodedata.normalize('NFKD', article).encode('ascii', 'ignore').decode('utf-8')
-- remove special: re.sub(r"[^a-z0-9'\s]", "") 
-- tokenize: tokenizer = nltk.tokenize.ToktokTokenizer(); article = tokenizer.tokenize(article, return_str = True) (by sentence: nltk sent_tokenize)
-- stemming/lemmatization: 
-    * stemming: ps = nltk.porter.PorterStemmer(); stems = [ps.stem(word) for word in article.split()]; article_stemmed = ' '.join(stems)
-    * lemma: nltk.download('wordnet'); wnl = nltk.stem.WordNetLemmatizer(); lemmas = [wnl.lemmatize(word) for word in article.split()]; article_lemmatized = ' '.join(lemmas)
-- remove stopwords: stopword_list = stopwords.words('english') (can add to list as necessary with .append('word') or remove from list using .remove('word'), or add/remove punctuation, etc); words = article_lemmatized.split(); filtered_words = [word for word in words if word not in stopword_list]; article_without_stopwords = ' '.join(filtered_words)
-### Exploration
-- from wordcloud import WordCloud
-    * img = WordCloud(kwargs).generate(word_list)
-    * http://amueller.github.io/word_cloud/
-- Prepare by cleaning, normalizing, tokenizing, lemmatizing/stemming the content
-    * can use df['content_length'] = df.text.apply(len)
-    * can do df['word_count'] = df.text.split().apply(len)
-    * use relplot on message length and word count with hue of target labels
-- Now might be a good time to identify classification classes; ex: email spam, is_spam or not_spam
-- Read value counts of each word, ideally by target label
-    * for spam problem, focus on differentials, so high-good low-spam words, high-spam low-good words
-    * for spam problem, use stacked=True plt.barh charts to see words high/low spam
-- list(nltk.bigrams(sentence.split())) ----- create two-word combinations
-    * create a series from this list, then plot value counts!
-### Evaluation
-- Sentiment analysis is hand-jammed. Afinn and Vader are sentiment analysis tools based on social media. It might be best to look at whitepapers to select the best-available tool for the job, or, hand-jam.
-- nltk.sentiment; sia = nltk.sentiment.SentimentIntensityAnalyzer(); sia.polarity_scores(string) --- neg, neu, pos, compound scores returned for string
-    * nearly matches human ability to identify sentiment (0.8 vs 0.88)
-    * used primarily on short phrases (think sentences)
-    * punctuations!!, CAPITALIZATION can increase intensity
-    * df['sentiment'] = df.text.apply(lambda doc: sia.polarity_scores(doc)['compound'])
+- Ide
+
+## NLP Example
+- Update stopwords through command line: `python -c "import nltk; nltk.download('stopwords')`
+- Word clouds: http://amueller.github.io/word_cloud/
+- Sentiment analysis: `df['sentiment'] = df.text.apply(lambda doc: sia.polarity_scores(doc)['compound'])`
+    * `sia = nltk.sentiment.SentimentIntensityAnalyzer()` --- `sia.polarity_scores(string)`
+    * Used for short phrases (think sentences); Nearly matches human ability to identify sentiment (0.8 vs 0.88)
+    * Punctuations!!, CAPITALIZATION can increase intensity
+### NLP Preparation
+- Combine all documents: `text = df.text.str.cat(sep=' ')`
+- Lowercase text: `text = text.lower()`
+- Accents, ASCII: `text = unicodedata.normalize('NFKD', text).encode('ascii', 'ignore').decode('utf-8')`
+    * `import unicodedata`
+- Remove special characters: `text = re.sub(r"[^a-z0-9'\s]", "", text)` --- `import re`
+- Tokenize: `text = tokenizer.tokenize(text, return_str = True)`
+    * `from nltk.tokenize.toktok import ToktokTokenizer` ---  Can do sentence-wise tokens: `sent_tokenize`
+- Stemming: `ps = PorterStemmer()` ---  `stms = [ps.stem(word) for word in text.split()]`
+    * `from nltk.porter import PorterStemmer`
+- Lemmatization: `wnl = WordNetLemmatizer()` --- `lemmas = [wnl.lemmatize(word) for word in text.split()]`
+    * `from nltk.stem import WordNetLemmatizer`
+- Remove stopwords: 
+    * `from nltk.corpus import stopwords`
+    * `stopword_list = stopwords.words('english')`
+        * Append/remove new stopwords: `stopword_list.append('word')` or `.remove('word')`
+    * `filtered_words = [word for word in words if word not in stopword_list]`
+- Rejoin stemmed/lemmatized words: `clean_text = ' '.join(stems)` or `clean_text = ' '.join(lemmas)`
+- Regroup in two-word pairings: `pd.Series(list(nltk.bigrams(sentence.split())))`
+### NLP Exploration
+```
+# scatterplot of each row's char count by word count
+df['content_length'] = df.text.apply(len)
+df['word_count'] = df.text.split().apply(len)
+sns.relplot(df.content_length, df.word_count, hue=df.target)
+# stacked bar chart of class proportions by word
+word_counts = clean(df.text)    # create dataframe of concatenated 'spam', 'ham', and 'all' Series (step 7 and 8)
+word_counts['p_spam'] = word_counts.spam / word_counts['all']
+word_counts['p_ham'] = word_counts.ham / word_counts['all']
+word_counts[['p_spam','p_ham']].tail(20).sort_values(by='p_ham').plot.barh(stacked=True)
+```
+### NLP Text Classifier Implementation
+```
+
+```
+```
+
+```
+### NLP Text Classification Evaluation
 
 <!-- Needs work -->
 ## Modeling (NLP)
