@@ -522,8 +522,7 @@ from employees
 join dept_emp using(emp_no)
 join departments using(dept_no);
 ```
-
-<!-- Polished -->
+<!-- Needs work -->
 ## Apache Spark
 - Computational cluster manager designed to handle data that lone computers have trouble with
     * Velocity (fast gathering, lots of data, streaming)
@@ -535,75 +534,69 @@ join departments using(dept_no);
 - Can run 100% locally (coordinates computer cores) but is often overkill for one-computer tasks
 - Is 'lazy'- adds to, optimizes queries until the execution order is given
 - Alternatives: Hadoop, Dask
-### PySpark Basics
-- `import pyspark`; `spark = pyspark.sql.SparkSession.builder.getOrCreate()`; ----- import, set up JVM
-- `from pyspark.sql.functions import *` ----- import all functions, overwrite some regular python ones
-- `df = spark.createDataFrame(pandas_df)`; `df = spark.read.csv('filepath')`; ----- create spark dataframes
-- `df.show()` ----- print operation (returns None), original data doesn't change unless: df = df2; df2.show()
-    * `vertical=True` to do same as pandas df.T
-    * combine `vertical=True` with `truncate=False` to see each row's values in a separate section
-- `df.head()` ----- returns Spark row *objects* in a list
-    * `df[0]` ----- return first row object
-    * `df[0].col4` ----- return value at first row, col4
-- `df.toPandas()` ----- exactly what you think it is, be careful!
-- `df.count()`, `len(df.columns)` ----- length, width of dataframe
-- `df.explain()` ----- check Spark's intentions with current setup (not yet actioned)
+### Spark Commands
+- Check Spark's intentions before query: `df.explain()`
     * Used mainly to diagnose performance issues; orders operations from bottom-upward
-### PySpark Column Manipulation
-- `df.select('x', 'y'), df.select('*')` ----- SQL-ish column selection
-- `df.x.cast('string')` ----- cast column as string
-- `df.withColumn('year', year(df.date)).sort(col("year").asc()).show()` ----- return dataframe with 'year' column sorted in ascending order
-- `df = df.withColumnRenamed("colname_before", "colname_after")` ----- rename column
-- `df.orderBy(df.x)` --- `df.sort(df.x.asc())` --- `df.sort(col('x').desc(), desc(df.y))` ---- sorting
-- `col = (df.x + df.y).alias('z'); df.select(*, col).show()` ----- return df with new 'z' column for x + y
-- `df.selectExpr('*', 'x + y as z').show()` ----- same operation as line above
-- `tips.select('*', expr('total_bill / size AS price_per_person')).show()`
-- `df = df.withColumn("col1", expr('col1 == condition')).withColumn("col2", expr('col2 == condition'))` ------ set columns to bool values on the conditions
-- `df.select(when(df.x > 10, 'gt 10').otherwise('not gt 10'))` ----- if true then set value to first, if false then set value to second for df.x (use an alias)
-- `df.na.drop()` --- `df.na.drop(subset=['x', 'y'])` ----- drop nulls
-- `df.na.fill(0)` --- `df.na.fill(0, subset=['x', 'y'])` ----- fill nulls
-- `df1.join(df2, "joiner_col", "left").drop(col2.joiner_col).drop(col1.joiner_col)` ----- join, drop joiner cols
-### PySpark Filtering
-- `df.where(df.x < 10)` --- `df.filter(df.x < 10)` ----- only return True rows, same thing
-    * `df.where(df.x > 10).where(df.y > 10)` ----- AND logic
-    * `df.where((df.x > 10) | (df.y > 10))` ----- OR logic
-### PySpark Datetime
-- `month('date_colname')` ----- will do what you expect for all dates in column
-- `df.withColumn("col1", to_timestamp("col1", "M/d/yy H:mm"))` ----- cast as datetime using specified date format
-- `df = df.withColumn("date_calc_col", datediff(current_timestamp(), "datecol"))` ----- time difference from datecol value to now
-### PySpark Functions for String Columns
-- `df.select(concat(lit('x:', df.x)))` ----- column values of 'x: value' for values in df.x
-- `df = df.withColumn("col1", trim(lower(df.col1)))` ----- deletes start and finish whitespace
-- `regexp_extract('col', re, g)` ----- extract capture group g from re using col
-- `regexp_replace(col, re, repl)` ----- replace occurences of re with repl using col
-- `df = df.withColumn("col1", format_string("%03d", col("col1").cast("int")),)` ----- formatting
-    * Require 3 digits in values, if shorter, put 0 in front as needed to get to 3
-### PySpark Aggregation
-- `df.select(sum(df.x)), df.select(mean(df.x))` ----- sum, mean all values in column
-- `df.groupBy("col1", "col2").count().show()` ----- basic groupby
-- `df.groupBy('g').agg(mean(df.x), min(df.y), ...)` ----- normal
-- `df.crosstab('g1', 'g2')` ----- count aggregation of observations using g1 and g2 as rows, columns
-- `df.groupBy('g1').pivot('g2').agg(mean('x'))` ----- normal
-- `df.createOrReplaceTempView('df')` --- `spark.sql(''' SELECT * FROM df ''')` ----- SQL
-### PySpark Data Split
-- `train, test = df.randomSplit([0.8, 0.2], seed=123)` ----- split data into train and test
-- `train, validate, test = df.randomSplit([0.6, 0.2, 0.2], seed=123)` ----- split data into train, val, test
-- `print('train', train.count(), 'colname', len(train.columns))` ----- print shape of train split
-### PySpark to Exploration
-- Use Spark to do the heavy lifting then use Pandas dataframes for visualization/otherwise
-- `pandas_df = train.groupBy("colname").count().toPandas()` ----- Spark to do groupby, then pandas for viz
-    * Can chain pandas methods after toPandas() like this: `spark_df.toPandas().sort_values()`
-- `df.sample(fraction=0.01, seed=).toPandas()` ----- Get data sample for pandas work
-### PySpark Advanced Read Write
-- `spark.read.csv('file.csv', sep=',', header=True, inferSchema=True)`
-    * `inferSchema` just reads the file as-is and guesses schema; header is default False for spark
-- `spark.read.csv("source.csv", header=True, schema=schema)` ----- sets schema from a variable
-    * `schema = StructType([StructField("col", StringType()), StructField("col", StringType()),])`
-- `df.write.json("df_json", mode="overwrite")`
-    * Write df to a Spark-distributed **JSON** file, one way to do it
-- `df.write.format("csv").mode("overwrite").option("header", "true").save("df_csv")`
-    * Write df to a Spark-distributed **CSV** file, another way to do it
-- `df.printSchema()` ----- check column dtypes
+- Switch to SQL: `df.createOrReplaceTempView('df')` --- `spark.sql(''' SELECT * FROM df ''')`
+- Build schema: `schema = StructType([StructField("col", StringType()), StructField("col", StringType()),])`
+### Spark Wrangling Example
+```
+# SETUP
+import pyspark
+from pyspark.sql.functions import *
+spark = pyspark.sql.SparkSession.builder.getOrCreate()
+# INGEST
+df = spark.read.csv('filepath', header=True, schema=schema_struct)
+# JOIN DF
+df = df.join(df2, "joiner_col", "left").drop(df.joiner_col).drop(df2.joiner_col)
+# PRINT NULL COUNTS
+df.select([count(when(isnan(c) | col(c).isNull(), c)).alias(c) for c in df.columns]).show(vertical=True)
+# FILL, DROP NULLS
+df = df.na.fill(0, subset=['x', 'y']).na.drop()
+# CHECK DTYPES
+df.printSchema()
+# DTYPE, NAME CHANGES
+df = df.withColumn('ordinals', df.x.cast('string')).withColumnRenamed("colname_before", "colname_after")
+# TO DATETIME, TO MONTH
+df = df.withColumn("col1", month(to_timestamp("col1", "M/d/yy H:mm")))
+# DATEDIFF
+df = df.withColumn("date_calc_col", datediff(current_timestamp(), "datecol"))
+# REGEX
+df = df.withColumn('repl', regexp_replace(df.x, re, repl).withColumn('substr', regexp_extract(df.col, re, g)))
+# STRING WHITESPACE, FORMATTING
+df = df.withColumn("c1", trim(lower(df.c1))).withColumn("c1", format_string("%03d", col("c1").cast("int")),)
+# STRING CONCAT
+df = df.withColumn('c2', concat(lit('x:', df.x)))
+# ADD X + Y AS COLUMN 'Z' TWO DIFFERENT WAYS
+df = df.select(*, expr(df.x + df.y).alias('z')).selectExpr('*', 'x + y as z') 
+# WHEN
+df = df.withColumn('ten', when(df.x > 10, 'over 10').otherwise('not over 10'))
+# WHERE, OR + AND
+df = df.where((df.x > 5) | (df.y < 5)).where(df.z ==7)
+# SMALL SAMPLE
+df = df.sample(fraction=0.01, seed=42)
+# SPLIT
+train, validate, test = df.randomSplit([0.6, 0.2, 0.2], seed=42)
+# RUN ALL, SAVE LOCALLY
+df.write.json("df_json", mode="overwrite")
+train.write.format("csv").mode("overwrite").option("header", "true").save("train_csv")
+validate.write.format("csv").mode("overwrite").option("header", "true").save("validate_csv")
+test.write.format("csv").mode("overwrite").option("header", "true").save("test_csv")
+```
+### Spark Aggregation Example
+```
+# COLUMN CALCULATION
+x_y = df.select(sum(df.x)), df.select(mean(df.x))
+# VALUE COUNT TWO COLUMNS, WITH PROPORTIONS COLUMN
+value_counts = df.groupBy('col', 'target').count().sort('count', ascending=False)\
+    .withColumn('proportion', round(col('count') / df.count(), 2))
+# AGG GROUPBY
+mean_min = df.groupBy('gb').agg(mean(df.x), min(df.y))
+# CROSSTAB
+crosstab = df.crosstab('g1', 'g2')
+# PIVOT TABLE
+mean_x_given_g1_g2 = df.groupBy('g1').pivot('g2').agg(mean('x'))
+```
 
 [[Return to Top]](#table-of-contents)
 
@@ -691,6 +684,7 @@ join departments using(dept_no);
         ```
     * `pd.read_sql('SELECT * FROM employees LIMIT 10', url)`
 - `pd.DataFrame({'hi':[1,2,3,4], 'lo':[6,7,8,9]})`
+    * Show all columns: `pd.set_option('display.max_columns', None)`
 - `pd.DataFrame([['Mary','12-7-1999',23], ['Joe','12-7-1997',25]], columns=['name','bday','age'])` - row-wise
 - `df.info()`; `df.describe().T`; `df.sort_values(by=['col1,'col2'], ascending=False)`
 - `df = original_df.copy()`; `df['col'] = value_list`; `df.assign(col=series)`
