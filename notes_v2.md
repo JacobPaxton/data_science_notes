@@ -624,7 +624,16 @@ mean_x_given_g1_g2 = df.groupBy('g1').pivot('g2').agg(mean('x'))
 ```
 
 ## Spark Machine Learning
-- 
+- PySpark's 'ml' library handles most non-wrangling data science tasks
+    * `from pyspark.ml.stat import ...` for chi square and correlation tests
+    * `from pyspark.ml.feature import ...` for imputation, encoding, scaling, vectorization, and more
+    * `from pyspark.ml.classification import ...`, `ml.regression`, `ml.clustering` for modeling
+    * `from pyspark.ml.tuning import ...` for cross-validation
+    * `from pyspark.ml.evaluation import ...` for classification, regression, and clustering evaluation
+- Many functions in this library are experimental, use with caution
+### Spark Machine Learning Example
+```
+```
 
 [[Return to Top]](#table-of-contents)
 
