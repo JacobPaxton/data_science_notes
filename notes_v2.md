@@ -34,65 +34,69 @@ IV.   [APIs & Scraping               ](#apis-&-scraping)
 1.    [APIs                          ](#apis)
 2.    [Web Scraping                  ](#web-scraping)
 
-V.    [SQL & Apache Spark            ](#sql-&-apache-spark)
-1.    [SQL                           ](#sql)
-2.    [Apache Spark                  ](#apache-spark)
+V.    [SQL                           ](#sql)
+1.    [SQL Basics                    ](#sql-basics)
+2.    [SQL Intermediate              ](#sql-intermediate)
 
-VI.   [Python, NumPy, Pandas         ](#python,-numpy,-pandas)
+VI.    [Apache Spark                  ](#apache-spark)
+1.    [Spark Wrangling               ](#spark-wrangling)
+2.    [Spark MAchine Learning        ](#spark-machine-learning)
+
+VII.   [Python, NumPy, Pandas         ](#python,-numpy,-pandas)
 1.    [Python                        ](#python)
 2.    [NumPy                         ](#numpy)
 3.    [Pandas                        ](#pandas)
 
-VII.  [Matplotlib & Seaborn          ](#matplotlib-&-seaborn)
+VIII.  [Matplotlib & Seaborn          ](#matplotlib-&-seaborn)
 1.    [Visualization in Python       ](#overall-notes-for-visualizations-in-python)
 2.    [Matplotlib                    ](#matplotlib)
 3.    [Seaborn                       ](#seaborn)
 
-VIII. [Exploration                   ](#exploration)
+IX. [Exploration                   ](#exploration)
 1.    [Exploration Prep              ](#exploration-prep)
 2.    [Exploration Visualization     ](#exploration-visualization)
 3.    [Feature Engineering           ](#feature-engineering)
 4.    [Feature Selection             ](#performance-based-feature-selection)
 
-IX.   [Algorithmic Clustering        ](#algorithmic-clustering)
+X.   [Algorithmic Clustering        ](#algorithmic-clustering)
 1.    [Cluster Assignment            ](#cluster-assignment)
 2.    [K-Means Clustering            ](#k-means-clustering)
 3.    [Hierarchical Clustering       ](#hierarchical-clustering)
 4.    [DBSCAN                        ](#dbscan)
 
-X.    [Statistics                    ](#statistics)
+XI.    [Statistics                    ](#statistics)
 1.    [Metrics                       ](#metrics)
 2.    [Hypothesis Testing            ](#hypothesis-testing)
 3.    [Probability                   ](#probability)
 
-XI.   [Model Preparation             ](#model-preparation)
+XII.   [Model Preparation             ](#model-preparation)
 1.    [Encoding                      ](#encoding)
 2.    [Scaling                       ](#scaling)
 3.    [Resampling                    ](#resampling)
 
-XII.  [Classification                ](#classification)
+XIII.  [Classification                ](#classification)
 1.    [Classification Overview       ](#classification-overview)
 2.    [Classification Example        ](#classification-example)
 
-XIII. [Regression                    ](#regression)
+XIV. [Regression                    ](#regression)
 1.    [Regression Overview           ](#regression-overview)
 2.    [Regression Example            ](#regression-example)
 
-XIV.  [Time-Series                   ](#time-series)
+XV.  [Time-Series                   ](#time-series)
 1.    [Time-Series Overview          ](#time-series-overview)
 2.    [Time-Series Example           ](#time-series-example)
 
-XV.   [Natural Language Processing   ](#natural-language-processing-(NLP))
+XVI.   [Natural Language Processing   ](#natural-language-processing-(NLP))
 1.    [NLP Overview                  ](#nlp-overview)
 2.    [NLP Example                   ](#nlp-example)
 
-XVI.  [Anomaly Detection             ](#anomaly-detection)
+XVII.  [Anomaly Detection             ](#anomaly-detection)
 
-XVII. [Deep Learning                 ](#deep-learning)
+XVIII. [Deep Learning                 ](#deep-learning)
 
-XVIII.[Computer Vision               ](#computer-vision)
+XIX.[Computer Vision               ](#computer-vision)
 
-IXX.  [Cross-Validation              ](#cross-validation)
+XX.  [Cross-Validation              ](#cross-validation)
 
 <br>
 
@@ -468,19 +472,19 @@ with open('image.jpeg','wb') as f:
 
 
 <!-- 
- #####   #####  #            ##        #####                              
-#     # #     # #           #  #      #     # #####    ##   #####  #    # 
-#       #     # #            ##       #       #    #  #  #  #    # #   #  
- #####  #     # #           ###        #####  #    # #    # #    # ####   
-      # #   # # #          #   # #          # #####  ###### #####  #  #   
-#     # #    #  #          #    #     #     # #      #    # #   #  #   #  
- #####   #### # #######     ###  #     #####  #      #    # #    # #    # 
+ #####   #####  #       
+#     # #     # #       
+#       #     # #       
+ #####  #     # #       
+      # #   # # #       
+#     # #    #  #       
+ #####   #### # ####### 
 -->
 
-# SQL & Apache Spark
+# SQL
 
 <!-- Polished -->
-## SQL
+## SQL Basics
 - Structured Query Language used to query databases like MySQL for tabular data
 - SQL databases are usually hosted on beefy systems, so doing processing in SQL can be a lot faster than doing it on a local machine using Python
 ### SQL Simple Records Query
@@ -503,6 +507,8 @@ limit 100;
 ```
 select col1, AVG(col2) as average from table group by col1 having average >= 100;
 ```
+
+## SQL Intermediate
 ### SQL Subquery
 ```
 use employees;
@@ -522,8 +528,27 @@ from employees
 join dept_emp using(emp_no)
 join departments using(dept_no);
 ```
-<!-- Needs work -->
-## Apache Spark
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+<!-- 
+ #####                              
+#     # #####    ##   #####  #    # 
+#       #    #  #  #  #    # #   #  
+ #####  #    # #    # #    # ####   
+      # #####  ###### #####  #  #   
+#     # #      #    # #   #  #   #  
+ #####  #      #    # #    # #    # 
+-->
+
+# Apache Spark
+
+## Spark Wrangling
 - Computational cluster manager designed to handle data that lone computers have trouble with
     * Velocity (fast gathering, lots of data, streaming)
     * Volume (large data, bigger than memory or bigger than storage)
@@ -597,6 +622,9 @@ crosstab = df.crosstab('g1', 'g2')
 # PIVOT TABLE
 mean_x_given_g1_g2 = df.groupBy('g1').pivot('g2').agg(mean('x'))
 ```
+
+## Spark Machine Learning
+- 
 
 [[Return to Top]](#table-of-contents)
 
