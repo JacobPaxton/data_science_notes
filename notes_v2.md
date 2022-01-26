@@ -1932,3 +1932,49 @@ pd.Series(dict(zip(dv.get_feature_names(), tree.feature_importances_))).sort_val
     * Notice how you pass hyperparameter options to GridSearchCV
 
 [[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+<!-- 
+######                                                               
+#     # ###### #####  #       ####  #   # #    # ###### #    # ##### 
+#     # #      #    # #      #    #  # #  ##  ## #      ##   #   #   
+#     # #####  #    # #      #    #   #   # ## # #####  # #  #   #   
+#     # #      #####  #      #    #   #   #    # #      #  # #   #   
+#     # #      #      #      #    #   #   #    # #      #   ##   #   
+######  ###### #      ######  ####    #   #    # ###### #    #   #   
+-->
+
+# Deployment
+
+## Flask
+- Web interfacing framework built in Python
+### Flask Routing
+- Admin page: `@expose`
+- Require user to be logged in before run function: `@login_required` (Flask-Login)
+- Timeout page: `@cache.cached(timeout=50)` (Flask-Cache)
+- Run function on every page navigation regardless of page: `app.before_request()`
+- Run function for specific page navigation: `@app.route('/cool_page')`
+- Allow sending data (POST), rewriting page (PUT): `@app.route('/api/v1/users', methods=['GET','POST','PUT'])`
+    * use: `if request.method == 'POST':` to specify what to do with which HTTP request type
+- Capture args from URL input: `@app.route('/<int:year>/<int:month>/<title>')` --- `def func(x,y,z):`
+### Flask Post-Route Functions
+- Overall route conclusions: Generate page template, Provide response, or Redirect a user somewhere else
+- Page template: `Flask(__name__, template_folder='templates')` --- ... --- `return render_template('index.html')`
+- Return info for coders: `return make_response(programmatic_stuff, HTTP_response_code, headers=headers_dict)`
+- Redirect a user from `@app.route('/cool_page.html')` to elsewhere: `return redirect('/cool_page_2.html')`
+    * Better version: `return redirect(url_for('cool_page_2'))`
+- Request for everything; `request.method`, `request.args.func`, `request.data`, `request.form`, `request.headers`
+- Setting global values: `from flask import g` --- `g.key_name = value` --- `g.pop('value', None)`
+- Error handling: `@app.errorhandler(404)`
+
+## Docker
+- Containerized software
+- Excellent for software deployment and scalable solutions
+- Isolates software in a similar way to virtual machines
+    * Runs *on top of* the OS kernel, making it more lightweight than virtual machines
+- Prebuilt solutions: https://hub.docker.com
+- General resource: https://docker-curriculum.com
