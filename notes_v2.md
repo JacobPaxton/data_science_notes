@@ -1950,13 +1950,60 @@ pd.Series(dict(zip(dv.get_feature_names(), tree.feature_importances_))).sort_val
 
 # Deployment
 
+## Docker
+- Containers: Easy replication and distribution of software solutions
+- Sandboxing: Each container in a Docker daemon is **isolated** from one another, by nature
+    * A container can replicate a computer in a safe state for testing, i.e. intrusion and malware
+- Cloud Support: Install the Docker daemon on a virtual server, then simply build from an image and run
+- Infinitely Scalable: Load balancers can coordinate many daemons and containers through ex: Kubernetes
+- Lightweight: *Not* ran in a virtual machine, runs directly from OS kernel (Docker mediates)
+    * Docker daemon will initialize a virtual machine if OS kernel does not match container 
+- Base images for `docker pull` or `FROM`: https://hub.docker.com
+- Official documentation: https://docs.docker.com/engine/reference/builder/
+### Dockerfile
+- Set of instructions to build a Docker image
+- Starts with `FROM`, which takes a base image as a parameter
+- Each instruction adds a layer or an intermediate layer to the image, and runs to completion before proceeding
+- Instructions are couched in the base layer; `RUN` for the Ubuntu base image uses Linux commands, for example
+- **RUN:** Execute a command when building the image
+    * `RUN ["python3", "my_setup_script.py"]` is the same as typing this into Terminal: `python3 myscript.py`
+    * Can also use: `RUN python3 myscript.py`, but the other form is recommended
+- **COPY:** Copy a specified local directory's files into image's specified directory
+    * Use `COPY . /app` to copy the current local directory's files into image's "app" folder
+- **WORKDIR:** Specify the directory for the image to proceed to for next instructions
+    * Navigate to the runtime-script folder and use ENTRYPOINT + CMD here to run the script
+- **ENTRYPOINT:** Set the command for the image to run *every time*
+    * Can't be modified through command line; if an image is designed to use a python kernel, specify python here
+- **CMD:** Sets the command for the image to use when the image is ran
+    * Often used with ENTRYPOINT; ENTRYPOINT is excellent for selecting a kernel ("python3") to run a script
+    * With `ENTRYPOINT ["python3"]`, use: `CMD ["image_runtime_script.py"]`
+### Initializing, Running Docker Containers
+- Build image(s) from a Dockerfile, Run images from the Docker images folder
+- Build: Specify the context where the Dockerfile + needed files live, ex: `docker build .`
+    * `-t author/purpose:version`: add image tag (image name)
+- Run: Specify which compiled image to use, ex: `docker run -d -p 80:80 --rm image_name`
+    * `-d`: detach from Terminal; `p`: assign ports; `--rm`: remove container on exit
+    * Run named image: `docker run author/purpose` (assumes latest version if not specified)
+    * Alias an image during the run command: `--name alias_name`
+### Example Dockerfile
+```
+FROM ubuntu:latest
+RUN apt-get update -y
+RUN apt-get install -y python3-pip python3-dev build-essential
+COPY . /app
+WORKDIR /app
+RUN pip3 install -r requirements.txt    # requirements.txt specifies py libraries to install
+ENTRYPOINT ["python3"]
+CMD ["app.py"]
+```
+
 ## Flask
-- Web interfacing framework built in Python
-### Flask Routing
-- Admin page: `@expose`
-- Require user to be logged in before run function: `@login_required` (Flask-Login)
-- Timeout page: `@cache.cached(timeout=50)` (Flask-Cache)
-- Run function on every page navigation regardless of page: `app.before_request()`
+- Web interfacing framework built on Python
+- Excellent for translating HTTP requests into function calls
+- Walkthrough of everything-Flask: https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world
+- Links, links, links for Flask-related content: https://www.fullstackpython.com/flask.html
+### Flask Basic Routing
+- Run function on every page navigation regardless of page: `@app.before_request()`
 - Run function for specific page navigation: `@app.route('/cool_page')`
 - Allow sending data (POST), rewriting page (PUT): `@app.route('/api/v1/users', methods=['GET','POST','PUT'])`
     * use: `if request.method == 'POST':` to specify what to do with which HTTP request type
@@ -1970,11 +2017,54 @@ pd.Series(dict(zip(dv.get_feature_names(), tree.feature_importances_))).sort_val
 - Request for everything; `request.method`, `request.args.func`, `request.data`, `request.form`, `request.headers`
 - Setting global values: `from flask import g` --- `g.key_name = value` --- `g.pop('value', None)`
 - Error handling: `@app.errorhandler(404)`
+### Flask Example
+```
+# Import all the packages you need for your model below
+import pickle
+import numpy as np
+import sys
+import os
+from sklearn.ensemble import RandomForestClassifier
+# Import Flask for creating API
+from flask import Flask, request
+port = int(os.environ.get('PORT', 5000))
+# Load the trained model from current directory
+with open('./anomaly_detection_model.sav', 'rb') as model_sav:
+    rf = pickle.load(model_sav)
+# Load the trained scaler from current directory
+with open('./anomaly_scaler.sav', 'rb') as scaler_sav:
+    scaler = pickle.load(scaler_sav)
+# Initialise a Flask app
+app = Flask(__name__)
+# Create an API endpoint
+@app.route('/predict')
+def predict_anomaly():
+    # read all necessary request parameters
+    srv_count = request.args.get('srv_count')
+    num_failed_logins = request.args.get('num_failed_logins')
+    # create numpy array for inputs
+    input_array = np.array([[srv_count, num_failed_logins]])
+    # scale the input
+    scaled_inputs = scaler.transform(input_array)
+    # predict the scaled input
+    predict_result = rf.predict(scaled_inputs)
+    # return the result back
+    return 'Predicted result for observation ' + str(input_array) + ' is: ' + str(predict_result)
+if __name__ == '__main__':
+    app.run(debug=True,host='0.0.0.0',port=port)
 
-## Docker
-- Containerized software
-- Excellent for software deployment and scalable solutions
-- Isolates software in a similar way to virtual machines
-    * Runs *on top of* the OS kernel, making it more lightweight than virtual machines
-- Prebuilt solutions: https://hub.docker.com
-- General resource: https://docker-curriculum.com
+# Example call when running: http://localhost:5000/predict?srv_count=500&num_failed_logins=0
+```
+
+## Apache Kafka
+- Distributed stream processing
+- Kafka 'broker' listens on port 9092 for TCP connection
+    * Distributed system has multiple brokers, each has full copy of topics, each listens on different ports
+    * One broker is 'leader' on a *partition* or topic while others are followers, as necessary
+- Kafka 'producer' publishes to a 'topic' in the Kafka broker, each publish adds a row in the topic marked by index
+    * With partitions, the producer selects the partition to add a row to
+    * Non-Kafka: Publish once, consume once (gone after): "Queue"; Publish once, consume many (not gone): "Pub/Sub"
+    * Kafka: All consumers in a group is "Queue"-style, all in separate groups is "Pub/Sub"-style
+- Kafka 'consumer' reads the topic and all its rows from index 0 onward
+    * Consumer groups distribute the partitions of a topic evenly between consumers in the group on 'consume'
+    * The max number of consumers in a group is the number of partitions in the topic
