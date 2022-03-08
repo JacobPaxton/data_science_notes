@@ -38,65 +38,65 @@ V.    [SQL                           ](#sql)
 1.    [SQL Basics                    ](#sql-basics)
 2.    [SQL Intermediate              ](#sql-intermediate)
 
-VI.    [Apache Spark                  ](#apache-spark)
+VI.   [Apache Spark                  ](#apache-spark)
 1.    [Spark Wrangling               ](#spark-wrangling)
 2.    [Spark MAchine Learning        ](#spark-machine-learning)
 
-VII.   [Python, NumPy, Pandas         ](#python,-numpy,-pandas)
+VII.  [Python, NumPy, Pandas         ](#python,-numpy,-pandas)
 1.    [Python                        ](#python)
 2.    [NumPy                         ](#numpy)
 3.    [Pandas                        ](#pandas)
 
-VIII.  [Matplotlib & Seaborn          ](#matplotlib-&-seaborn)
+VIII. [Matplotlib & Seaborn          ](#matplotlib-&-seaborn)
 1.    [Visualization in Python       ](#overall-notes-for-visualizations-in-python)
 2.    [Matplotlib                    ](#matplotlib)
 3.    [Seaborn                       ](#seaborn)
 
-IX. [Exploration                   ](#exploration)
+IX.   [Exploration                   ](#exploration)
 1.    [Exploration Prep              ](#exploration-prep)
 2.    [Exploration Visualization     ](#exploration-visualization)
 3.    [Feature Engineering           ](#feature-engineering)
 4.    [Feature Selection             ](#performance-based-feature-selection)
 
-X.   [Algorithmic Clustering        ](#algorithmic-clustering)
+X.    [Algorithmic Clustering        ](#algorithmic-clustering)
 1.    [Cluster Assignment            ](#cluster-assignment)
 2.    [K-Means Clustering            ](#k-means-clustering)
 3.    [Hierarchical Clustering       ](#hierarchical-clustering)
 4.    [DBSCAN                        ](#dbscan)
 
-XI.    [Statistics                    ](#statistics)
+XI.   [Statistics                    ](#statistics)
 1.    [Metrics                       ](#metrics)
 2.    [Hypothesis Testing            ](#hypothesis-testing)
 3.    [Probability                   ](#probability)
 
-XII.   [Model Preparation             ](#model-preparation)
+XII.  [Model Preparation             ](#model-preparation)
 1.    [Encoding                      ](#encoding)
 2.    [Scaling                       ](#scaling)
 3.    [Resampling                    ](#resampling)
 
-XIII.  [Classification                ](#classification)
+XIII. [Classification                ](#classification)
 1.    [Classification Overview       ](#classification-overview)
 2.    [Classification Example        ](#classification-example)
 
-XIV. [Regression                    ](#regression)
+XIV.  [Regression                    ](#regression)
 1.    [Regression Overview           ](#regression-overview)
 2.    [Regression Example            ](#regression-example)
 
-XV.  [Time-Series                   ](#time-series)
+XV.   [Time-Series                   ](#time-series)
 1.    [Time-Series Overview          ](#time-series-overview)
 2.    [Time-Series Example           ](#time-series-example)
 
-XVI.   [Natural Language Processing   ](#natural-language-processing-(NLP))
+XVI.  [Natural Language Processing   ](#natural-language-processing-(NLP))
 1.    [NLP Overview                  ](#nlp-overview)
 2.    [NLP Example                   ](#nlp-example)
 
-XVII.  [Anomaly Detection             ](#anomaly-detection)
+XVII. [Anomaly Detection             ](#anomaly-detection)
 
-XVIII. [Deep Learning                 ](#deep-learning)
+XVIII.[Deep Learning                 ](#deep-learning)
 
-XIX.[Computer Vision               ](#computer-vision)
+XIX.  [Computer Vision               ](#computer-vision)
 
-XX.  [Cross-Validation              ](#cross-validation)
+XX.   [Cross-Validation              ](#cross-validation)
 
 <br>
 
