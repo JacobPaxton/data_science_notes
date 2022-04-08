@@ -34,69 +34,81 @@ IV.   [APIs & Scraping               ](#apis-&-scraping)
 1.    [APIs                          ](#apis)
 2.    [Web Scraping                  ](#web-scraping)
 
-V.    [SQL                           ](#sql)
+V.    [Front-End                     ](#front-end)
+1.    [HTML                          ](#html)
+2.    [CSS                           ](#css)
+3.    [Javascript                    ](#javascript)
+4.    [Bootstrap 5                   ](#bootstrap-5)
+5.    [jQuery                        ](#jquery)
+
+VI.   [SQL                           ](#sql)
 1.    [SQL Basics                    ](#sql-basics)
 2.    [SQL Intermediate              ](#sql-intermediate)
 
-VI.   [Apache Spark                  ](#apache-spark)
+VII.  [Apache Spark                  ](#apache-spark)
 1.    [Spark Wrangling               ](#spark-wrangling)
 2.    [Spark MAchine Learning        ](#spark-machine-learning)
 
-VII.  [Python, NumPy, Pandas         ](#python,-numpy,-pandas)
+VIII. [Python, NumPy, Pandas         ](#python,-numpy,-pandas)
 1.    [Python                        ](#python)
 2.    [NumPy                         ](#numpy)
 3.    [Pandas                        ](#pandas)
 
-VIII. [Matplotlib & Seaborn          ](#matplotlib-&-seaborn)
+IX.   [Matplotlib & Seaborn          ](#matplotlib-&-seaborn)
 1.    [Visualization in Python       ](#overall-notes-for-visualizations-in-python)
 2.    [Matplotlib                    ](#matplotlib)
 3.    [Seaborn                       ](#seaborn)
 
-IX.   [Exploration                   ](#exploration)
+X.    [Exploration                   ](#exploration)
 1.    [Exploration Prep              ](#exploration-prep)
 2.    [Exploration Visualization     ](#exploration-visualization)
 3.    [Feature Engineering           ](#feature-engineering)
 4.    [Feature Selection             ](#performance-based-feature-selection)
 
-X.    [Algorithmic Clustering        ](#algorithmic-clustering)
+XI.   [Algorithmic Clustering        ](#algorithmic-clustering)
 1.    [Cluster Assignment            ](#cluster-assignment)
 2.    [K-Means Clustering            ](#k-means-clustering)
 3.    [Hierarchical Clustering       ](#hierarchical-clustering)
 4.    [DBSCAN                        ](#dbscan)
 
-XI.   [Statistics                    ](#statistics)
+XII.  [Statistics                    ](#statistics)
 1.    [Metrics                       ](#metrics)
 2.    [Hypothesis Testing            ](#hypothesis-testing)
 3.    [Probability                   ](#probability)
 
-XII.  [Model Preparation             ](#model-preparation)
+XIII. [Model Preparation             ](#model-preparation)
 1.    [Encoding                      ](#encoding)
 2.    [Scaling                       ](#scaling)
 3.    [Resampling                    ](#resampling)
 
-XIII. [Classification                ](#classification)
+XIV.  [Classification                ](#classification)
 1.    [Classification Overview       ](#classification-overview)
 2.    [Classification Example        ](#classification-example)
 
-XIV.  [Regression                    ](#regression)
+XV.   [Regression                    ](#regression)
 1.    [Regression Overview           ](#regression-overview)
 2.    [Regression Example            ](#regression-example)
 
-XV.   [Time-Series                   ](#time-series)
+XVI.  [Time-Series                   ](#time-series)
 1.    [Time-Series Overview          ](#time-series-overview)
 2.    [Time-Series Example           ](#time-series-example)
 
-XVI.  [Natural Language Processing   ](#natural-language-processing-(NLP))
+XVII. [Natural Language Processing   ](#natural-language-processing-(NLP))
 1.    [NLP Overview                  ](#nlp-overview)
 2.    [NLP Example                   ](#nlp-example)
 
-XVII. [Anomaly Detection             ](#anomaly-detection)
+XVIII.[Anomaly Detection             ](#anomaly-detection)
 
-XVIII.[Deep Learning                 ](#deep-learning)
+XIX.  [Deep Learning                 ](#deep-learning)
 
-XIX.  [Computer Vision               ](#computer-vision)
+XX.   [Computer Vision               ](#computer-vision)
 
-XX.   [Cross-Validation              ](#cross-validation)
+XXI.  [Cross-Validation              ](#cross-validation)
+
+XXII. [Deployment                    ](#deployment)
+1.    [Docker                        ](#docker)
+2.    [Flask                         ](#flask)
+3.    [Apache Kafka                  ](#apache-kafka)
 
 <br>
 
@@ -463,6 +475,163 @@ r.raw.decode_content = True   # set the 'decode_content' of file.raw as True to 
 with open('image.jpeg','wb') as f: 
     shutil.copyfileobj(r.raw, f)   # save unzipped image data to 'image.jpeg'
 ```
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+<!-- 
+ #######                                  #######               
+ #       #####   ####  #    # #####       #       #    # #####  
+ #       #    # #    # ##   #   #         #       ##   # #    # 
+ #####   #    # #    # # #  #   #   ##### #####   # #  # #    # 
+ #       #####  #    # #  # #   #         #       #  # # #    # 
+ #       #   #  #    # #   ##   #         #       #   ## #    # 
+ #       #    #  ####  #    #   #         ####### #    # #####  
+-->
+
+# Front End
+
+<!-- Needs work -->
+## HTML
+- Foundation of web pages
+- Specifically elements, tags, and attributes
+    - Element: start-tag + content + end-tag
+    - Tags: the start and end of HTML elements
+    - Attributes: additional information about element, located in start-tag
+- When there's no end-tag, it's considered an empty element (ex: line break)
+- Attributes values are wrapped with double-quotes except when double-quotes are used inside the value
+- Wrapping an img tag in the 'a href="site"' tags makes the image into a clickable link
+- Add small icon to browser tab: in head, link rel="icon" type="image/x-icon" href="filepath"
+### HTML Attributes
+- img src: file path, includes the file name (ex: img src="/static/imgs/image.jpg")
+- img alt: text to display if src doesn't resolve
+- (tag) style: add style to element like color, font, size, and more
+    - h1 style="font-size:60px;"
+    - the above style value is CSS, always "property:value" format
+- (tag) title: display the value of title as a tooltip when hovering over element with mouse
+- a href: hyperlinks, use target="_blank" for new-tab open, "_parent" to move up in directory, "_top" for focus
+    - Click to open email client: a href="mailto:email@site.com" text /a
+    - Add title="" to give tooltip text on link hover
+    - Use href="#uniqueidthing" to jump to a specific id attribute on the page, to jump to other page: page.html#id
+### Empty HTML Tags
+- br: line break
+- hr: horizontal line
+### HTML Example
+```
+<!DOCTYPE html> 
+<html lang="en">
+  <head>
+    <title>HTML Example</title>
+    <meta charset="utf-8">
+  </head>
+  <body>
+    <h1>Large Heading</h1>
+    <h6>Smallest Heading</h6>
+    <br>
+    <p>Paragraph</p>
+    <pre>preserve the formatted, wonky, multi-gapped, multi-spaced, etc text here</pre>
+    <a href="url_here">Link</a>
+    <img src="filepath" alt="text_if_cant_open_img" style="width:300px;height:300px;">
+  </body>
+</html>
+```
+### HTML Table Example
+```
+<table style="width:100%">
+    <caption>Table Caption Here</caption>
+    <colgroup>
+        <col span=2 style="background-color: #D6EEEE">
+    </colgroup>
+    <tr>
+        <th style="width:70%">FirstNameColumnHeader</th>
+        <th>LastNameColumnHeader</th>
+    </tr>
+    <tr style="height:200px">
+        <td>person1 firstname</td>
+        <td>person1 lastname</td>
+    </tr>
+    <tr>
+        <td>person2 firstname</td>
+        <td>person2 lastname</td>
+    </tr>
+</table>
+```
+
+<!-- Needs work -->
+## CSS
+- Customization for HTML - "Cascading Style Sheets"
+- Most common is linking external CSS files into HTML using the "link" tag, used to style many HTML pages
+- Can be specified in its own element with tag "style" (internal), used to style entire HTML page from head
+- Can be given inside HTML elements (inline) with style="property:value"
+- External: link rel="stylesheet" href="filepath/file.css" where file.css is formatted like Internal CSS
+- Internal: style body {property:value; property:value; ...} h1 {property:value;} p {property:value;} /style
+    - Can set style for multiple elements at once: body {property:value} h1 a p {property:value}
+- Inline: p style="property:value;"
+### CSS Elements
+- Formatting elements: b strong i em mark small del ins sub sup
+- Citation elements: 
+    - blockquote (with attribute cite="website") 
+    - q (normal quote) 
+    - abbr (with attribute title="full name of abbreviation") 
+    - address (contents are contact information) 
+    - cite (contents are the title of a reference)
+    - bdo (used like this: bdo dir="rtl" to see contents reversed)
+- img, map (clickable spots), area (define click area), and picture (flexibility) are all useful things for pictures
+### CSS Stylings
+- Color formats: name - rgb(255, 99, 71) - #ff6347 - hsl(9, 100%, 64%) - rgba(1, 2, 3, alpha) - hsla(., ., ., alpha)
+    - Fun fact: HEX colors (#ff6347) are in #RRGGBB format where RR GG BB are hex value for each color
+    - Another fun fact: setting RR GG BB as equal makes gray colors
+    - HSL is hue - saturation - lightness where hue=0 is red, hue=120 is green, hue=240 is blue
+- Link colors: in Internal CSS, unclicked is a:link { property:value; }, clicked is a:visited, hover is a:hover
+- "background-color:powderblue;" "color:red" "font-size:60px;" "font-family:verdana;" "text-align:center;"
+- "border:2px solid Violet;" "padding:30px;" (between content and element) "margin:50px" (buffer outside element)
+- Float image on hover: p img ... style="float:left;" text_here /p
+- Background image to non-image element: "background-image: url('image_url_here');"
+    - Can also set background image for entire page by setting in Internal CSS: body { background-image...; }
+    - This defaults to repeating-fill, so set this: background-repeat:no-repeat;
+    - Covering an element: background-attachment:fixed; background-size:cover; background-size: 100% 100%;
+### HTML Table Example - CSS
+```
+<style>
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    border-radius: 10px;
+    border-style: dotted; <!-- many options for style here -->
+    border-color: #96D4D4;
+}
+table {
+    border-spacing: 30px
+}
+th {
+    text-align: left;
+    padding-top: 10px;
+    padding-left: 10px;
+    border-bottom: 1px solid #ddd
+}
+tr:hover {background-color: #D6EEEE;}
+tr:nth-child(even) {background-color: #D6EEEE;}
+</style>
+```
+
+<!-- Needs work -->
+## Javascript
+- HTML into action!
+### Use Cases
+- button onclick="document.location='default.asp'" "HTML Tutorial /button
+
+<!-- Needs work -->
+## Bootstrap 5
+- Front end framework for fast web development
+- All about HTML and CSS design templates
+
+<!-- Needs work -->
+## jQuery
+- Simplifies Javascript for web dev
 
 [[Return to Top]](#table-of-contents)
 
