@@ -25,10 +25,14 @@ III.  [JavaScript                    ](#javascript)
 2.    [JavaScript Examples           ](#javascript-basics)
 
 IV.   [Bootstrap                     ](#bootstrap)
-1.    [Bootstrap 5                   ](#bootstrap-5)
+1.    [Bootstrap 5 Basics            ](#bootstrap-5)
+2.    [Bootstrap 5 Example           ](#bootstrap-5)
 
 V.    [jQuery                        ](#jquery)
 1.    [jQuery Basics                 ](#jquery-basics)
+
+VI.   [D3.js                         ](#d3.js)
+1.    [D3 Basics                     ](#d3-basics)
 
 <br>
 
@@ -50,7 +54,7 @@ V.    [jQuery                        ](#jquery)
 
 # HTML
 
-<!-- Needs work -->
+<!-- Polished -->
 ## HTML Basics
 - Foundation of web pages
 - Specifically elements, tags, and attributes
@@ -88,6 +92,7 @@ V.    [jQuery                        ](#jquery)
 - hidden: pass information to `<submit>` that isn't visible to user, ex: customer ID
 - number: same as `<text>` but only numbers are allowed
 - range: slide bar that doesn't show value, ex: volume slider
+    - use `<input type="range" step="10">` to add 10 ticks to range bar (default range is 0-100), slider can only tick onto the steps
 - tel: telephone numbers, must set pattern ex: `pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}"`
 - `<input list="name_of_list_1234"><datalist id="name_of_list_1234">`
     - `<datalist> </datalist>` contains option elements like: `<option value="the_option">`
@@ -118,7 +123,7 @@ V.    [jQuery                        ](#jquery)
 - `<br>`: line break
 - `<hr>`: horizontal line
 
-<!-- Needs work -->
+<!-- Polished -->
 ## HTML Examples
 ```
 <!DOCTYPE html> 
@@ -186,7 +191,7 @@ V.    [jQuery                        ](#jquery)
 
 # CSS
 
-<!-- Needs work -->
+<!-- Polished -->
 ## CSS Basics
 - Customization for HTML - "Cascading Style Sheets"
 - Most common is linking external CSS files into HTML using the "link" tag, used to style many HTML pages
@@ -220,7 +225,7 @@ V.    [jQuery                        ](#jquery)
     - This defaults to repeating-fill, so set this: `background-repeat:no-repeat;`
     - Covering an element: `background-attachment:fixed;` `background-size:cover;` `background-size: 100% 100%;`
 
-<!-- Needs work -->
+<!-- Polished -->
 ## CSS Examples
 ### HTML Table Example - CSS
 ```
@@ -284,6 +289,57 @@ tr:nth-child(even) {background-color: #D6EEEE;}
     - NOTE: *Hyphens are restricted for subtraction, use camelCase or under_scores instead of hyphen-ated*
 - Python dict format in Javascript is an object, works the same, and same case for Python lists and Javascript arrays
 - Python lambda is supported in simpler terms, like this: `const x = function (a, b) {return a * b};`
+- Use `numbervalue.toFixed(2)` to round to two decimal points, use `.toPrecision(2)` to ex: simplify 9.71 to 9.7
+- Use `Number(thing)` to convert a thing to a number
+    - Doing `Number(new Date("2017-09-30"))` returns number of milliseconds from 1970-01-01 to 2017-09-30
+    - Can do parseInt(thing) to only return an integer
+- `const car = carlist[0]` is fine, so is `carlist[0] = 'Chevy'`, so is persondict.firstname
+### Javascript String Work
+- Expected methods: `.length`, `.toUpperCase()` and `toLowerCase()`, `.trim()`, `.split("")` and `.split(",")`
+- Slicing: `.slice(start, end)`, `.substring(start, end)`, `.substr(start, count)`
+    - slice does start and end, substring is slice but can't do negative values, substr does count-from start
+    - Includes start, doesn't include end, first character is at index 0, omit second argument to get rest of string
+- Replace: `.replace("replaceme", "withme")` --- return a copy, only replace case-sensitive first match
+    - Replace case-sensitive and all instances with "withme": `.replace(/replaceme/gi, "withme")`
+- Index: `.charAt(index)`, `.charCodeAt(index)`, `str[index]`
+- Addition: `str1.concat(" ", str2)`, `str.padStart(42, "?")` or padEnd()
+- Locate index: `.search("first_index_of_me")`, `.indexOf("first_index_of_me", startpos)`, `lastIndexOf("string", startpos)`
+    - returns -1 if string not found; looks for first character of string, so if startpos inside string, continues through
+    - Only .search can use REGEX, it can't use startpos though
+- REGEX: `.match(/regexhere/gi)` --- /g for match-all, /i for case-insensitive
+- Return true/false: `.includes("string")`, `startsWith("string")` or endsWith(), 
+- Use "template literals" to do cool string stuff, ex: `hello (\n) how are you`
+    - Span multiple lines with a string; can also use `blahblah $(var1 * var2) blahblah` to put vars / expressions in string
+    - Great for putting HTML into variables
+### Javascript Array Work
+- Javascript arrays work like Python lists with `array.sort()`, `array.reverse()`, `array.length`, `array[0]`, `array[array.length - 1]`
+    - Sorting numbers is funky, use: `numeric_array.sort(function(a, b){return a - b});`, for more sorting just look up a solution (don't bother)
+- Detect if an object is an array: `object.isArray();` or `myarray instanceof Array;`
+- Make an array from something: `array.from(something)`
+- Perform element-wise operations: `array.map(myfunction);`
+- Combine all elements using a function: `array.reduce(myfunction); function myFunction(total, value, index, array) { return total + value; }`
+    - Can start with a total value by adding a second parameter to reduce, ex: `array.reduce(myfunction, starttotal);`
+    - Can work from right to left (default is left to right): `.reduceRight()`
+- Mask (filter elements): `array.filter(myfunction);`
+- Check if all elements or some elements pass a conditional: `array.every(myfunction);` and `array.some(myfunction);`
+- Search an array using an element: `array.indexOf("element")` return first index of found-element, `.lastIndexOf()` for last index, `.includes(elem)`
+- Search an array using a function: `array.find(myfunction")` to return first found-element, `.findIndex(func)` for index of found-element
+- Add element to end of array: `array.push(newelement);` or `array[array.length] = newelement;`
+    - For `.push()`, when you set the output to a variable, it returns the length of the array
+- Add element to beginning of array: `array.unshift(newelement);` 
+    - Unshift itself returns new length of array (like with push)
+- Add element(s) anywhere in array: `array.splice(startindex, deletecountfromstartindex, newelement, newelement, newelement, ...);`
+    - EX: ["apple","banana","orange"] for `array.splice(2,0,"grape","lemon");` returns ["apple,"banana","grape","lemon","orange"]
+    - Changing 0 to 1 in above example yields: ["apple","banana","grape","lemon"] because 2,1 indicates removing 1 element starting from index 2
+        - Returning a splice with removed items will return those returned items
+    - Adding no new elements and a index,delete combo (ex: `array.splice(15,3);`) will remove elements but leave no gaps like `delete array[15]`
+- Remove last element of array: `array.pop();` or RETURN last element of array after popped: `const lastelement = array.pop();`
+- Remove first element of array: `array.shift();`, can also return removed first value like above
+- Delete element and leave a gap in that spot: `delete array[42];`
+- Loop through array: `let text = "<ul>"; for (let i = 0; i < arraylength; i++) { text += "<li>" + fruits[i] + "</li>"; } text += "</ul>";`
+    - Above is while looping the array, add list elements to an unordered list. Pretty simple.
+    - Can also use `array.forEach(myfunction);` to do the same
+- Convert array to one string with comma-separation: `array.toString();` or `array.join(',');`
 ### Javascript in Action
 - Modifying HTML element attributes: `<script>document.getElementById("identifier").attribute = "new value";</script>`
     - Can modify CSS style like this: `<script>document.getElementById("identifier").style.fontSize = "35px";</script>`
@@ -319,21 +375,123 @@ tr:nth-child(even) {background-color: #D6EEEE;}
 
 
 <!--
-######                                                        
-#     #  ####   ####  #####  ####  ##### #####    ##   #####  
-#     # #    # #    #   #   #        #   #    #  #  #  #    # 
-######  #    # #    #   #    ####    #   #    # #    # #    # 
-#     # #    # #    #   #        #   #   #####  ###### #####  
-#     # #    # #    #   #   #    #   #   #   #  #    # #      
-######   ####   ####    #    ####    #   #    # #    # #      
+######                                                           ####### 
+#     #  ####   ####  #####  ####  ##### #####    ##   #####     #       
+#     # #    # #    #   #   #        #   #    #  #  #  #    #    #       
+######  #    # #    #   #    ####    #   #    # #    # #    #    ######  
+#     # #    # #    #   #        #   #   #####  ###### #####           # 
+#     # #    # #    #   #   #    #   #   #   #  #    # #         #     # 
+######   ####   ####    #    ####    #   #    # #    # #          #####  
 -->
 
 # Bootstrap
 
-<!-- Needs work -->
-## Bootstrap 5
+<!-- Polished -->
+## Bootstrap 5 Basics
 - HTML, CSS, and Javascript through pre-designed templates
-- Designed to speed up front-end development
+- Designed to speed and standardize up front-end development
+- Default HTML gets customized when Bootstrap is included
+- Requires `<!DOCTYPE html></html>` because it uses HTML5 elements and CSS
+- Allow mobile-device rendering and touch zooming: `<meta name="viewport" content="width=device-width, initial-scale=1">`
+- div: use `class="container-fluid"` or less-commonly `class="container"` for foundational display settings
+    - Use padding with containers: `<div class="container pt-5"></div>`, also: `p-5` (pad div <-> contained), `my-5` (document <-> div)
+    - Allow containers to resize to small, large, etc: `<div class="container-sm">` or `<div class="container-xxl">` and more
+- Works off grid system, up to 12 columns in width, where span=1 is one column alone and span=4 is four columns combined into one
+    - Use this: `<div class="col-sm-1">` when expecting small device and you want the div element to span 1 column; `col-sm-5` spans 5 columns
+    - `col-sm-*` sizing sets the minimum-allowable width in pixels, important for screen size considerations, each size is kinda designed for screen orientation and device so look up stuff
+    - div columns should always be nested in div rows
+### Bootstrap 5 Specifics
+- Importing BS5 stylesheet: `<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">`
+- Importing BS5 scripts: `<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>`
+- background colors via `class="bg-dark"` and other bg classes
+    - `bg-success`, `bg-warning`, `bg-danger` for green, yellow, and red text background coloring
+    - for alerting outcomes, use `alert` instead
+- alerting: like `class="alert-success"`
+    - inside a div with an alert class, `<a href="link" class="alert-link">` keeps div alert color
+    - dismiss alert: add to class `alert-dismissable`, then inside the div, `<button type="button" class="btn-close" data-bs-dismiss="alert"></button>`
+    - fade-away animation with dismiss button: add `fade` and `show` to div class
+    - use a "toast" for auto-fadeaway alerts
+- button formatting inside `<button>` element: `class="btn"` and more like `btn-outline-primary`, `btn-sm` or `btn-lg`
+    - active button uses `class="active"` and deactivated button uses the *attribute* "disabled"
+    - spinner icon in button (loading): inside `<button></button>` element, add `<span class="spinner-border spinner-border-sm"></span>` and Loading...
+    - buttons side-by-side: `btn-group` in div class with buttons inside div element, also `btn-group-lg` or `btn-group-sm`, also `btn-group-vertical`
+    - dropdown button: `<div class="dropdown-menu"></div>` with an `<a class="dropdown-item" href="link">Button Label<a>` for each dropdown item
+- text colors via `class="text-white"` and other text classes
+    - `text-success`, `text-warning`, `text-danger` for green yellow and red text coloring
+- font size via usual `class="h1"` thru `h6` but also `class="display-1` thru `display-6`, "display" does larger and skinnier than headings
+    - `class="lead"` is used for first paragraph of article, slightly bigger for emphasis (lead into content)
+- text location-ing: use class= for `text-start`, `text-center`, or `text-end` for left, center, and right alignment
+    - `text-break` breaks up long text, `text-nowrap` does opposite
+- table formatting via `class="table` and additional table classes like `table-striped` and `table-hover`
+    - `table-sm` cuts cell padding in half, `table-responsive` adds horizontal scrollbar when needed (can indicate `table-responsive-sm` and more)
+    - color row in table using class in `<tr>` element, for cell coloring add class to `<td>`, pretty simple
+- round edges of image: `class="rounded"` or `class="rounded-circle"`
+- aligning images: `class="float-start"` (left) or `float-end` (right) or `mx-auto d-block` (center)
+    - resize based on device: throw in a `class="img-fluid"`
+- progress bar for user: `<div class="progress"><div class="progress-bar" style="width:50%"></div></div>` where width is manual indication of progress
+    - outside-div is used for progress bar's container while inside-div is used for the bar itself
+    - can add text to inside-div to put text on the bar like percentage
+    - can add background color like normal
+    - animated stripe is done using iside-div class `progress-bar-striped progress-bar-animated`
+- pagination: `<ul class="pagination"> <li class="page-item"><a class="page-link" href="link">1</a></li> ...more li elements... </ul>`
+    - active-page is indicated using `<li class="page-item active"><a>2</a><li>`
+    - when first page is selected, can't go previous, so use `class="page-item disabled"` for Previous button
+    - pagination heirarchy (navigate to root folder(s)): `<ul class="breadcrumb"><li class-"breadcrumb-item"><a>topfolder</a></li><li><a>middle</a></li>`
+        - indicate current location and disable link to it: don't include `<a></a>` routing and use `<li class="breadcrumb-item active">`
+    - indicate pagination block size: `pagination-sm`
+    - indicate pagination location: `class="pagination justify-content-center"` or `justify-content-end`
+- list groups are nice in some cases, smash rows together vertically and do stuff inside `<ul class="list-group">`
+- cards (yes, like trading cards, businessman profile cards, etc) is done using `<div class="card">`
+- collapsible element via button: `<button data-bs-toggle="collapse" data-bs-target="#element_id_here">Button's Text</button>`
+    - the content to collapse/reopen is indicated in raw `<div id="element_id_here" class="collapsible">Text to collapse or reopen</div>` using id target
+    - default is text initially collapsed, to show text first use `class="collapse show"`
+- list group with collapsible-text on each list item: just use w3schools lol, it's in BS5 Collapse section
+- page navigation section: `<ul class="nav">` with `<li class="nav-item"><a class="nav-link" href="link">Link Name</a></li>`
+    - set page nav formatting in `<ul>` like you'd expect
+- navigation bar: `<nav class="navbar navbar-expand-sm bg-light">` with div for portions of nav bar and ul for nav section
+    - delete out `navbar-expand-sm` to make nav vertical, there's a lot more customization with this too just look it up
+    - overlay-side nav on click is "offcanvas"
+- sliding images: `<div class="carousel slide">`
+- show dialog box / popup window: just look at w3schools BS5 Tooltip
+    - Popover is a more flexible version
+- utilities: border - float - shadow - ratio - visibile or invisible - btn-close - color or bg-color
+    - Bootstrap 5 uses flexboxes instead of float
+### Bootstrap 5 Forms
+- text input: `form-label` for label padding, `form-control` for the text boxes
+- single-selection input: `form-check-label` for label padding, `form-check` for the selection element
+    - Use: `<select class="form-select"><option>1></option><option>2</option>...</select>`
+    - Sizing: `form-select-lg`, disable: add attr "disabled"
+- multi-selection input (ctrl+click) and radio: `form-check-label` for label padding, `form-check-input` for the multi-select element
+- data lists (type to filter): `form-label` and `form-control`
+- toggle switches: `<div class="form-check form-switch"><input class="form-check-input" type="checkbox">` and uses `form-check-label` with `for`
+- input group (text plus button as example): `<div class="input-group"><input type="text" class="form-control"><button class="btn btn-success" type="submit">Go</button></div>`
+- use rows and columns for input sections: `<div class="row"><div class="col"><input></div><div class="col"><input></div></div>`
+- change input section sizes: `class="form-control form-control-sm"`
+- disable field: add attribute "disabled" or "readonly"
+- floating stuff in inputs (looks nice): `<div class="form-floating"><textarea class="form-control"></textarea><label>Floating Label (always after input box)</label></div>`
+- throw red shit at user when they're missing inputs: `<form class="was-validated"></form>`
+    - field: `<input type="text" class="form-control" id="uname" placeholder="Enter username" name="uname" required>`
+    - field still empty: `<div class="valid-feedback">Valid.</div>`
+    - field has input: `<div class="invalid-feedback">Please fill out this field.</div>`
+#### Bootstrap 5 Form Example
+```
+<form action="/nav_here_on_submit" method="POST">
+    <div class="form-floating mb-3 mt-3">
+        <input type="text" class="form-control" id="email" placeholder="Enter email" name="email">
+        <label for="email">Email</label>
+    </div>
+    <div class="mb-3">
+        <label for="pwd" class="form-label">Password:</label>
+        <input type="password" class="form-control" id="pwd" placeholder="Enter password" name="pswd">
+    </div>
+    <div class="form-check mb-3">
+        <label class="form-check-label">
+            <input class="form-check-input" type="checkbox" name="remember">Remember me
+        </label>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+```
 
 [[Return to Top]](#table-of-contents)
 
@@ -359,3 +517,91 @@ tr:nth-child(even) {background-color: #D6EEEE;}
 - Simplifies Javascript for web dev
 
 [[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+<!--
+######   #####                      #     #                                      
+#     # #     #         #  ####     #     # #  ####  #    #   ##   #       ####  
+#     #       #         # #         #     # # #      #    #  #  #  #      #      
+#     #  #####          #  ####     #     # #  ####  #    # #    # #       ####  
+#     #       #         #      #     #   #  #      # #    # ###### #           # 
+#     # #     #    #    # #    #      # #   # #    # #    # #    # #      #    # 
+######   #####      ####   ####        #    #  ####   ####  #    # ######  #### 
+-->
+
+# D3.js
+
+<!-- Needs work -->
+## D3 Basics
+- Data-Driven Documents (D3) for interactive JavaScript visualizations
+- Foundation for Plotly.js and more
+- Uses Scalable Vector Graphics (SVG) rendering
+    - SVG is an image that is text-based, similar in structure to HTML
+    - SVG is initialized in HTML as the `<svg></svg>` element, SVG elements go inside this tag
+    - The `<svg></svg>` element itself requires width and height declaration, ex: `<svg width="500" height="500"></svg>`
+- D3.js script import: `<script src="https://d3js.org/d3.v4.min.js"></script>`
+- Download the "minified" script for offline use at https://d3js.org
+    - This script contains the "d3" object that we use for all D3 work
+- First step is to attach the d3 object to an element using `d3.select("#element_id")`
+    - can use `d3.selectAll("element")` to attach one d3 object to multiple elements
+- After attaching, you can use method chaining to adjust d3 object
+- If you see "d" in places like `function (d) {};`, "d" is usually just referring to data
+### D3 Select Methods
+- Add text to first-found `<p>` element: `d3.select("p").text("Text here")`, same as doing `<p>Text here</p>`
+- Add element just before end of `<body></body>` element: `d3.select("body").append("p").text("Text here")` (method chaining used here)
+- Add element to specific position inside `<body></body>` element: `d3.select("body").insert("p", "button")`
+    - Puts `<p></p>` inside `<div></div>` and right before `<button></button>`, or: `<div><p></p><button></button></div>`
+- Remove element: `d3.select("p").remove()` for first found, or `d3.selectAll("p").remove()` for all
+- Edit inner HTML: `d3.select("p").html("<span>Add me!</span>")`, same as changing `<p></p>` to `<p><span>Add me!</span></p>`
+- Add attribute to element: `d3.select("p").attr("class","error")`, same as changing `<p></p>` to `<p class="error"></p>`
+    - Can also do this using: `d3.select("p").classed("error", true)` or remove the property by setting `"error", true` to `"error", false`
+- Add "required" property to text input box: `d3.select("input").property("required",true)`, same as `<input type="..." required>`
+- Change styling of an element: `d3.select("p").style("color","red")`, same as `<p style="color:red"></p>`
+- Run function on d3 object: `d3.select("body").data(data_var).text(function (d,i) {statements_here; return d;});`
+    - `.text` is passing data_var (provided by `.data`) into function as "d" variable and returning "d" into body as text
+    - Can put functions in a lot of places, ex: `d3.selectAll("p").style("color", function(d,i) { if (true) {return "green";} });`
+- Events: `d3.select("p").on("mouseover", function() {d3.select(this).style("background-color", "orange");}).on("mouseout", function() {...});`
+    - Check if click, mouseover, or mouseout: `d3.select("p").dispatch()`
+    - Access aspects of event object: d3.event
+    - Mouse/element coordinates: `d3.mouse(this)` (returns x and y of mouse pointer when mouseover this), `d3.touch()` (container coords)
+- Animation: "scheduled" via `d3.select("p").transition(store_transition_as_this_var_here).style("background-color", "red")`
+    - Usually put `.style` or `.attr` etc after the following animation config settings (duration, ease, delay)
+    - Add `.duration(milliseconds)` to specify how long animation will take
+    - Change transition style: `.easeElastic()`, `.easeBounce()`, and several more
+    - Delay transition beginning: `.delay(milliseconds)`
+- Data ingest from var: `d3.selectAll("p").data(mydata)` will element-wise add to each found `<p></p>` element
+    - EX: `const mydata = [11,22,33,44]; d3.selectAll("p").data(mydata).text(function(d,i){return d;});`
+    - Typically add "enter" and append" like: `d3.selection.data(mydata).enter().append("span").text(function ...);`
+        - `.enter().append("span")` creates enough additional "span" elements to get all of mydata's elements a spot
+        - No enter() for THREE p tags will add 11 to first p, 22 to second, 33 to third- "44" will not be added because there's no fourth p tag
+    - "mydata" needs to be an array (or a function returning an array-like result) or else `.data()` won't work
+    - Can ascribe single static value to element(s) by using `.datum(value)` instead of `data(values)`
+- Data ingest from file: `d3.csv(url)`, `d3.json(url)`, `d3.tsv(url)`, `d3.xml(url)`
+    - Each of these can take a function as a second argument for what to do with the data (called a "callback")
+    - When using a callback function, two arguments are passed: `error` (containing whether ingest succeeded or not) and `data`, 
+        - EX: `d3.csv("filepath", function (error, data) {statements;});`
+- Schedule data for removal: create a variable with d3 work and add `.exit()`, then to actually remove, chain `.remove()` to the variable
+    - `var p = d3.selection.methods.exit()` then `p.remove();`
+### D3 SVG Work
+- Proper way to initialize SVG is with variable declaration of width, height, and svg
+    - EX: `<script>var width = 500; var height = 500; var svg = d3.select("body").append("svg").attr("width",width).attr("height",height);</script>`
+- Proper way to create SVG elements is by appending a new element to the svg variable and method-chaining its attributes/other
+    - Non-standard: `<line x1="100" y1="100" x2="500" y2="500" stroke="green"/>` --- ending "/" is a quick way to do `</line>`
+    - Standard: `svg.append("line").attr("x1", 100).attr("y1", 100)...`
+- Styling SVG elements is done in CSS: `<style>svg rect { fill: orange; } svg text { fill: white; }</style>`
+- Grouping elements: use `var g = svg.append("g").attr("transform", function(d,i) {return "translate(0,0)";});`
+    - "transform" indicates all elements transform (move coords) together
+    - Create the grouped-object like this: `var ellipse = g.append("ellipse").attrs.append("text")` and then `g.append("text").attrs.text("words");`
+    - Move around: `<g transform="translate(0,20)"><rect ... /><text .../></g>` --- move 20 pixels down (increasing numbers = further from top-left)
+    - Append "g" elements for each datapoint: `var bar = graph.selectAll("g").data(data).enter().append("g").attr("transform", function ...)`
+        - Can do: `.attr("transform", function (d,i) { return "translate(0," + i * barHeight + ")"; });`
+- SVG element styling is done using: `.attr("fill", "green")` syntax with fill, stroke, stroke-width, opacity, font-family, font-size
+- SVG Line: `.append("line")` with attr: x1, x2, y1, y2, stroke
+- SVG Rectangle: `.append("rect")` with attr: x, y, width, height (x and y are coords for top-left corner)
+- SVG Circle: `.append("circle")` with attr: cx, cy, r (cx and cy are coords of center of circle, r is radius)
+- SVG Ellipse: `.append("ellipse")` with attr: cx, cy, rx, ry (rx is x-radius, ry is y-radius)
+- SVG Text: `.append("text")` with attr: x, y (top-left for x and y)
