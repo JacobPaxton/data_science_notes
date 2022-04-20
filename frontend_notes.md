@@ -270,15 +270,19 @@ tr:nth-child(even) {background-color: #D6EEEE;}
 
 # JavaScript
 
-<!-- Needs work -->
+<!-- Polished -->
 ## Javascript Basics
 - HTML into action!
+- Best practices: https://www.w3schools.com/js/js_conventions.asp and https://www.w3schools.com/js/js_best_practices.asp
+    - Also: https://www.w3schools.com/js/js_mistakes.asp and https://www.w3schools.com/js/js_performance.asp
 - Initiated and closed in HTML by `<script>` and `</script>`
     - External Javascript is pulled in with this syntax: `<script src="folder/javascript_code.js"></script>`
     - External Javascript files do not have `<script>` nor `</script>`
 - Display script-disabled content: `<noscript>text_here</noscript>` (common use: "Please enable Javascript")
 - Javascript actions are always followed by semicolon (few exceptions, just use semicolon every time)
 - Functions work just like in other languages but with this syntax (definition): `function nameHere() { action; }`
+    - Can simplify functions like this: `newfunc = () => { statements_here; }` or even simpler: `newfunc = () => returned_thing`
+### Javascript Specifics
 - Javascript restricted keywords: var let const if switch for function return try
     - `var`, `let`, and `const` declare variables, can just do: `var a;` and assign value later like `a = 12`
     - `let` is "block scope" meaning it holds value inside a block but not outside- var is global scope
@@ -294,6 +298,24 @@ tr:nth-child(even) {background-color: #D6EEEE;}
     - Doing `Number(new Date("2017-09-30"))` returns number of milliseconds from 1970-01-01 to 2017-09-30
     - Can do parseInt(thing) to only return an integer
 - `const car = carlist[0]` is fine, so is `carlist[0] = 'Chevy'`, so is persondict.firstname
+- Most math-related functions are used through methods of `Math`, like `Math.PI`, `Math.round(13.268);`,  and more
+    - Math methods: https://www.w3schools.com/jsref/jsref_obj_math.asp
+    - `Math.random();` generates a random number between 0 (include) and 1 (exclude), multiply/floor the random gen to get moar numbers
+- Useful comparison operator in addition to usual ones: with x = 5, `x === "5";` returns false, `x !== "5"` returns true (value *and* type)
+- If/Else: `if (condition) {run_statements} else if (condition) {run_statements} else {run_statements}`, no semicolon ending needed
+    - Another version: `switch (input_me) { case first_match_input_try: statement; statement; case second_match_input_try: statement; ... }`
+- Try/Catch: works as usual with `try { statements_here; } catch(err) { document.getElementById("demo").innerHTML = err.message; }`
+    - Add on code to execute regardless of error or no-error: `try ... catch (err) ... finally { statements_here }`
+- Send out your own error, pretty much anywhere: `throw "error";`, not limited to strings for output
+- `this`: The object called `this` can refer to many things and helps with changing aspects of whatever contains `this`
+    - Tutorial on `this`: https://www.w3schools.com/js/js_this.asp
+- Class: only used as a template for objects, syntax: `class Car {constructor(name, year) {this.name = name; this.year = year;}}`
+    - After building a class, create objects using it as the template: `let myCar1 = new Car("Ford", 2014);` `let myCar2 = new Car("Audi", 2019);`
+    - Class methods run functions to create class properties: `class Cat {constructor(name, year) {...} age() { statements_here; }};`
+- Imports/Exports: Used for files and syntax is: "person.js" contains `export {name, age};` and call with `import { name, age } from "./person.js";`
+- JSON (Javascript Object Notation) syntax is: `"employees": [{"firstName":"John", "lastName":"Doe"}, {"firstName":"Anna", "lastName":"Smith"}]`
+    - Can create a JSON object from a string: `const obj = JSON.parse(text);` and call the contents with `obj.employees[1].firstName`
+- Debugging: `console.log(thingy);` (print to console), `debugger;` (halt code to examine current state), browser console
 ### Javascript String Work
 - Expected methods: `.length`, `.toUpperCase()` and `toLowerCase()`, `.trim()`, `.split("")` and `.split(",")`
 - Slicing: `.slice(start, end)`, `.substring(start, end)`, `.substr(start, count)`
@@ -307,13 +329,23 @@ tr:nth-child(even) {background-color: #D6EEEE;}
     - returns -1 if string not found; looks for first character of string, so if startpos inside string, continues through
     - Only .search can use REGEX, it can't use startpos though
 - REGEX: `.match(/regexhere/gi)` --- /g for match-all, /i for case-insensitive
+    - Can test your REGEX like this: `/e/.test("The best things in life are free!");` which returns true
 - Return true/false: `.includes("string")`, `startsWith("string")` or endsWith(), 
 - Use "template literals" to do cool string stuff, ex: `hello (\n) how are you`
     - Span multiple lines with a string; can also use `blahblah $(var1 * var2) blahblah` to put vars / expressions in string
     - Great for putting HTML into variables
+- Dates: `const d = new Date(year, month, day, hour, minute, second, and millisecond);` or `const d = new Date("January 29th, 2017 11:13:00");`
+    - Month specifically uses the month indices, so January: 0, February: 1 and more- rest are normal
+    - Only one parameter in `Date(parameter);` is milliseconds, including more goes to the year-month-day formula
+    - Date objects have methods like `d.toDateString();` and more for outputs specifically
+        - Main use: `d.getFullYear();` and similar date-get methods, look here for them: https://www.w3schools.com/jsref/jsref_obj_date.asp
+        - Can set portions of date object after creation using: `d.setFullYear();` and more methods
+    - More formats for creating a date object like "2015-06-12", look up stuff
 ### Javascript Array Work
 - Javascript arrays work like Python lists with `array.sort()`, `array.reverse()`, `array.length`, `array[0]`, `array[array.length - 1]`
     - Sorting numbers is funky, use: `numeric_array.sort(function(a, b){return a - b});`, for more sorting just look up a solution (don't bother)
+    - To only house unique elements, use: `const letters = new Set(["a", "b", "c", ...])`, "Set" has several methods for add/remove/etc work
+    - To create (better) objects, use `Map`, ex: `const fruits = new Map([ ["apples", 500], ["bananas", 300], ["oranges", 200] ]);`, has methods
 - Detect if an object is an array: `object.isArray();` or `myarray instanceof Array;`
 - Make an array from something: `array.from(something)`
 - Perform element-wise operations: `array.map(myfunction);`
@@ -340,6 +372,19 @@ tr:nth-child(even) {background-color: #D6EEEE;}
     - Above is while looping the array, add list elements to an unordered list. Pretty simple.
     - Can also use `array.forEach(myfunction);` to do the same
 - Convert array to one string with comma-separation: `array.toString();` or `array.join(',');`
+### Javascript Loop Work
+- Loop kinds: `for`, `for/in`, `for/of`, `while`, `do/while`, also the `break;` and `continue;` work as expected
+    - Cool aspect: put Javascript statements in a block like `l420: { statements_here; }` then put in the statements `break l420;` or `continue l420;`
+- For (by itself): `for (execute_initial; condition_while_true_continue_loop; execute_when_complete_iteration) { statements_here; }`
+    - Generally used like this: `for (let i = 0; i < 100; i++) { statements_here; }`
+    - Can put multiple variable declarations in first statement (comma-separated)
+    - Each statement is optional! be careful of course, syntax is: `for ( ; ; ) { statements_here }` to use no initial statements
+- For/in: `for (key in object) { statements_here }`, only used for looping properties of an object or an array
+    - "key" is just a placeholder variable, often `let x`, works for keys or variables
+    - Don't use this when the object/array has an important order to it
+- For/of: similar syntax to for/in, but is used to loop values not keys (Arrays, Strings, Maps, NodeLists, and more)
+- For Each: `array.forEach(myfunction);`, following this syntax (where function is declared elsewhere), and applies function to each element
+- While: `while (condition) { statements_here }`, variant of this is `do { statements_here } while (condition);`
 ### Javascript in Action
 - Modifying HTML element attributes: `<script>document.getElementById("identifier").attribute = "new value";</script>`
     - Can modify CSS style like this: `<script>document.getElementById("identifier").style.fontSize = "35px";</script>`
@@ -357,11 +402,13 @@ tr:nth-child(even) {background-color: #D6EEEE;}
     - Access object's key values: `person.firstName` or `person["firstName"]` or `person.fullName()`
 - Example function definition: `function functionName(param1, param2) { statement1; statement2; }`
     - Reminder: using `let` inside a function makes the variable block-scope, as in can't be used outside function
+    - Async/Await are used for things like the bulk-submit button, waits for file upload then does success-fail operation
 - Example function call: `document.getElementById("selector").innerHTML = functionName();`
     - Can also be called like this (self-invoked): `(function () { statement1; statement2; })();`
     - Portions of functions can be called like this: `person.fullName.call(person3);`
     - apply() instead of call() does an array instead of separate function arguments
 
+<!-- Needs work -->
 ## Javascript Examples
 - Put text into id'd element: script document.getElementById("identifier").innerHTML = "input!"; /script
     - set style: document.getElementById("identifier").style.color = "red"
@@ -515,6 +562,8 @@ tr:nth-child(even) {background-color: #D6EEEE;}
 <!-- Needs work -->
 ## jQuery Basics
 - Simplifies Javascript for web dev
+- Big use is simplifying `document.getElementsByClassName("intro");` to `$(".intro")` and more
+    - Classes: `$(".classname")`, elements: `$("elementtag")`, ID: `$("#identifier")`, drilling: `$("div p.classname")`
 
 [[Return to Top]](#table-of-contents)
 
@@ -605,3 +654,8 @@ tr:nth-child(even) {background-color: #D6EEEE;}
 - SVG Circle: `.append("circle")` with attr: cx, cy, r (cx and cy are coords of center of circle, r is radius)
 - SVG Ellipse: `.append("ellipse")` with attr: cx, cy, rx, ry (rx is x-radius, ry is y-radius)
 - SVG Text: `.append("text")` with attr: x, y (top-left for x and y)
+
+## D3 Examples
+```
+Examples here... eventually...
+```
