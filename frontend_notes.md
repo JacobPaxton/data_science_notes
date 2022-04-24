@@ -559,11 +559,46 @@ tr:nth-child(even) {background-color: #D6EEEE;}
 
 # jQuery
 
-<!-- Needs work -->
+<!-- Polished -->
 ## jQuery Basics
 - Simplifies Javascript for web dev
-- Big use is simplifying `document.getElementsByClassName("intro");` to `$(".intro")` and more
-    - Classes: `$(".classname")`, elements: `$("elementtag")`, ID: `$("#identifier")`, drilling: `$("div p.classname")`
+- Main syntax: `$("#elementID").action(callback_function);` or `$("elementID").action(function() { $(this).hide(); functions_here; });`
+    - The `$("selector");` syntax is a simplified version of `document.getElement[...options_here]("selector");`
+    - Selector formatting: `$(".classname")`, `$("elementtag")`, `$("#elementID")`, `$("div p.classname")`
+        - More selections here: https://www.w3schools.com/jquery/jquery_selectors.asp
+    - jQuery has many actions that you can chain to your selection
+- Often put in an await-page-ready function using this syntax: `$(document).ready(function () { functions_awaiting_ready; });`
+    - Shorter version: `$(function () { functions_awaiting_ready; });`
+### jQuery Actions
+- List of user-based actions: https://www.w3schools.com/jquery/jquery_ref_events.asp
+- Common actions: `$("p").click();`, `dblclick`, `mouseenter`, `mouseleave`, `mousedown`, `mouseup`, `hover`, `focus`, `blur`
+- Attach multiple actions on one selection: `$("p").on({ mouseenter: function(){$(this).css("color", "green");}, mouseleave: function, ... })`
+### jQuery Effects
+- List of action-resultant effects: https://www.w3schools.com/jquery/jquery_ref_effects.asp
+- Common effects: `$("p").hide();`, `show`, `toggle`, `delay`, `fadeIn`, `fadeOut`, `fadeToggle`, `slideDown`, `slideUp`, `slideToggle`
+    - Set speed of effect: `$("p").toggle(1000, callback_function)` where 1000 is duration in milliseconds to perform "toggle"
+- Change multiple CSS properties (animate): `(selector).animate({styles},speed,easing,callback)`
+    - EX: `$("button").click(function() { $("div").animate({height: '300px', opacity: 'toggle', left: '+=10px'}, "slow"); } ); `
+    - Callback is done after animation is performed
+- Chaining effects: `$("#p1").css("color", "red").slideUp(2000).slideDown(2000);`
+- Reading content of HTML: `$("#id").text()` (plaintext content), `.html()` (text + `<b>` and similar), `.val()` (contents of value attribute)
+    - EX: `alert("Text: " + $("#test").text());` or `alert("Text: " + $("#test").text("change contents to this!"));`
+    - Can use a function to set contents, ex: `.text(function_here)`, works with `html` and `val` too
+- Contents of other attributes: `$("p").attr("href")`
+    - Can set/change attributes and values, ex: `$("#id").attr("href":"link", "title":"title_here", ...)` or use functions: `"href": function`
+- Contents of CSS: `$("p").css("background-color");` would return what background-color is set for `<p>`, `"background-color", "yellow"` sets it
+    - Can set multiple CSS at once: `$("p").css({"background-color": "yellow", "font-size": "200%"});`
+    - Simpler reads: `$("#test").width()`, `.outerHeight()`, and more
+### jQuery HTML Editing
+- List of possible edits for HTML/CSS: https://www.w3schools.com/jquery/jquery_ref_html.asp
+- Adding to HTML: `$("p").append("The End!");`, `.prepend("The Beginning!);`, `.after("After p!");`, `.before("Before p!");`
+- Removing from HTML: `$("p").remove();` (removes p and any child elements), `$("p").empty();` (removes child elements from p)
+    - Can be specific with removal: `$("p").remove(".classofp1, .classofp2")` removes only `<p class="classofp1">` or `classofp2`
+- Adding/Removing CSS Classes: `$("p").addClass("cool");`, `removeClass("notcool")`, `toggleClass("maybecool")`
+- Traversing up/down HTML elements: `$("span").parent()`, `parents`, `parentsUntil("elementtag")`, `children()`, `children("p.first")`, `find("span")`
+    - Sideways traversal: `siblings(optional_tag)`, `next()`, `nextAll()`, `nextUntil("tag")`, `prev()`, `prevAll()`, `prevUntil("tag")`
+    - More: `first()`, `last()`, `eq(pos_in_group)`, `filter(".intro")` (whitelist), `not(".intro")` (blacklist)
+    - Traversal is awesome, see: https://www.w3schools.com/jquery/jquery_ref_traversing.asp
 
 [[Return to Top]](#table-of-contents)
 
@@ -659,3 +694,5 @@ tr:nth-child(even) {background-color: #D6EEEE;}
 ```
 Examples here... eventually...
 ```
+
+[[Return to Top]](#table-of-contents)
