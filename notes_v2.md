@@ -42,7 +42,7 @@ VI.   [Apache Spark                  ](#apache-spark)
 1.    [Spark Wrangling               ](#spark-wrangling)
 2.    [Spark MAchine Learning        ](#spark-machine-learning)
 
-VII.  [Python, NumPy, Pandas         ](#python,-numpy,-pandas)
+VII.  [Python, NumPy, Pandas         ](#python-numpy-pandas)
 1.    [Python                        ](#python)
 2.    [NumPy                         ](#numpy)
 3.    [Pandas                        ](#pandas)
@@ -219,18 +219,75 @@ XXI.  [Deployment                    ](#deployment)
 - Log in to a SQL server: `-u username -p -h ip_address` ----- -p prompts for a password
 - Create a new file using VS Code: `code filename.filetype`
 - Launch Jupyter Notebook server: `jupyter notebook`
+    * Need to have your PATH set up for this and have the software installed
 - Multi-line cursor: Hold command, clickdrag
 
 <!-- Polished -->
 ## Git
-- git clone github_repo_ssh_link
-- git pull, git status, git add, git commit -m 'message', git push
-- Use .gitignore
-- git merge issue: 
-    1. pull repo down to new folder
-    2. copy changed files manually to new folder
-    3. push from new folder
-    4. delete old folder using rm -rf folder_name
+- Excellent version control for files
+- Get your git set up: 
+    1. Install Git on your computer: https://git-scm.com/downloads
+    2. Create Github account
+    3. Set your Github credentials on your computer
+        - In your Terminal or Command Prompt, run command: `git config --global user.name "github_username"`
+        - In your Terminal or Command Prompt, run command: `git config --global user.email "email_used_for_github_account"`
+    4. Generate an SSH key for connecting with Github
+        - In your Terminal or Command Prompt, run command: `ssh-keygen -t rsa -b 4096 -C "email_used_for_github_account"`
+        - Hit ENTER on keyboard when it asks where to save the key (ENTER uses default save location)
+    5. Add your SSH key to Github here: https://github.com/settings/ssh/new
+        - MacOS: Terminal or Windows: Git BASH, can simply run this command: `cat ~/.ssh/id_rsa.pub | pbcopy`
+        - Paste that into the link and give it a title, whatever you want for title is fine
+    6. Click "Add SSH Key", done
+    7. Check if it's working: 
+        - Create new repository on Github
+        - Click "Code" button dropdown
+        - Click SSH
+        - Copy that text
+        - Open Terminal or Git BASH or CMD or whatever you use
+        - Enter `git clone that_text_you_just_copied`
+            - EX: `git clone git@github.com:JacobPaxton/data_science_notes.git`
+            - Can also do HTTPS clone: `git clone https://github.com/JacobPaxton/data_science_notes.git`
+        - If it clones, great- it worked
+        - Add a random new file to the folder it created
+        - In Terminal or Git BASH or CMD or whatever, type `git add .` then `git commit -m 'my first commit'` then `git push`
+        - If the above line works, you are 100% ready to go
+- Protect your passwords and other secrets: `code .gitignore` -> add files as single lines for git to ignore, so they don't get pushed
+    - Commit and push your .gitignore to your Github repository to start ignoring your secrets
+- Always start with creating a new Github repo, not a local one. Starting locally is annoying, gotta do several more steps
+- Access and modify your `git config` file (called .gitconfig): Navigate to home directory (`cd ~`) then type `code .gitconfig`
+### Git for Solo Dev Work
+- No one's committing/pushing except you, so pushes are safe
+- Create an empty repository on Git then clone it down with `git clone`
+- Make changes to files as you need
+- Check files that are different from most recent commit: `git status`
+- Add files to be committed: `git add file1` or multiple at once `git add file2 file3 file4 foldername/file5` or all files `git add .`
+    - Remove file from being added: `git restore --staged file1`
+- Check files have been added: `git status`
+- Commit file changes with a message: `git commit -m 'message goes here to state changes'`
+    - Always use a commit message and keep the commit message useful, it's extremely helpful
+- Check that the commit went through: `git status` (should no longer see the files you added and committed in status)
+- Push the commit to Github: `git push`
+### Git for Team Dev Work
+- Team dev work is much more convoluted than solo dev work
+- Update your local files for changes made to the team repo using `git pull`
+    - This command updates files you're not working with, and does not update files you're working with
+    - Run this command often, and especially before committing your work
+- Create a new branch for your changes: `git branch -c new_branch_name`
+- Move to that branch: `git checkout new_branch_name`
+    - This command copies your current branch and work to the new branch, and moves you there
+- Run normal Add and Commit in the new branch like normal (`git add file1 file2 file42` `git commit -m 'add cool new feature'`)
+- Push to the new branch: `git push origin new_branch_name:new_branch_name`
+    - This command creates a new branch on Github called "new_branch_name" 
+    - It maps the local branch to the Github branch like this: `git push origin name_of_local_branch_to_send_up:name_of_GitHub_branch_to_receive`
+    - Creating a new branch is always very safe because it does not overwrite any work, it's separate
+- For the new branch, create a merge request (do this on Github)
+## Resolving Merge Conflicts
+- If you make a mistake and have a "merge conflict", this is how to resolve the issue (my method):
+1. Pull the Github repo down to a new folder using `git clone`
+2. Copy the changed files manually to the new folder's repo that you just created and cloned
+3. Run your Terminal/BASH/CMD in that new folder and do the `git add filename` `git commit -m "message"` `git push` as normal
+4. Delete the old folder after successfully pushing your work
+5. Move the new folder to where the old folder was- good as new!!
 
 <!-- Polished -->
 ## Jupyter Notebook
@@ -255,27 +312,30 @@ XXI.  [Deployment                    ](#deployment)
 - Absolute reference using hold_clickdrag + fn + F4
 - Double-click bottom right of function cell to apply to all rows in selected column(s)
 ### Spreadsheet Functions
-- `=B2-B3` ----- subtract cell B3 from cell B2
-- `=SUM(num_cells1, num_cells2)`, `=AVERAGE(num_cells1, num_cells2)`, `=COUNT(cells)`
-    * `=COUNTIF()`, `=SUMIF()`
-- `=MOD(numeric_cells, number)` ----- remainders
-- `=POWER(numeric_cells, number)` ----- raise to a power
-- `=CEILING(numeric_cells)`, `=FLOOR(numeric_cells)` ----- round up, round down
-- `=CONCATENATE(cells, cells, " ", cells, " ", ...)` ----- smash values together in new range
-- `=SPLIT(cells, delimiter)` ----- as expected
-- `=LEN(cells)` ----- number of characters in cell
-- `=REPLACE(text, position, length, new_text)`
-- `=SUBSTITUTE(text_to_search, search_for, replace_with, [occurrence_number])`
-- `=LEFT(cells, num_of_chars)`, `=MID(cells, start_index, steps_to_read))`, `=RIGHT(cells, num_of_chars)`
-- `=UPPER(cells)`, `=LOWER(cells)`, `=PROPER(cells)`
-- `=NOW()`, `=TODAY()`, `=TIME(hour_cell, minute_cell, second_cell)`, `=DATEDIF(start_cells, end_cells, step)`
-    * `=YEAR(cells)`, `=MONTH(cells)`, `DAY(cells)`, `=HOUR(cells)`, `=MINUTE(cells)`, `=SECOND(cells)`
-- `=VLOOKUP(key, range_to_search(use fn+f4 to 'lock' it), col_to_return, FALSE)` ----- vertically searches range_to_search for key, if it finds it, returns col_to_return, if it's not exact match, ignores it (due to FALSE)
+- Basic cell-to-cell operations: `=B2-B3` (subtraction)
+- Multi-cell operations: Sum `=SUM(num_cells1, num_cells2)`, Average `=AVERAGE(num_cells1, num_cells2)`, Count `=COUNT(cells)`
+    * `=COUNTIF(cells_to_check, condition_for_each_cell_to_satisfy_to_be_counted)`, `=SUMIF(cells, if_here_is_true_for_cell_then_sum)`
+- Remainders: `=MOD(numeric_cells, number)`
+- Raise cells by power: `=POWER(numeric_cells, number)`
+- Round up to int: `=CEILING(numeric_cells)`, round down to int: `=FLOOR(numeric_cells)`
+- Combine cells into one cell: `=CONCATENATE(cells, cells, " ", cells, " ", ...)`
+- Split cell into many cells using delimiter: `=SPLIT(cells, delimiter)`, delimiter of "mn" allows split on all of any "m" or "n"
+- Count number of characters in cell: `=LEN(cells)`
+- Replace by index and steps: `=REPLACE(text, position, length, new_text)`
+- Replace by matching: `=SUBSTITUTE(text_to_search, search_for, replace_with, [occurrence_number])`
+- Return substring: from left `=LEFT(cells, num_of_chars)`, `=MID(cells, start_index, steps_to_read))`, from right `=RIGHT(cells, num_of_chars)`
+- Capitalization: `=UPPER(cells)`, `=LOWER(cells)`, `=PROPER(cells)`
+- Time and date request: `=NOW()`, `=TODAY()`, `=TIME(hour_cell, minute_cell, second_cell)`, `=DATEDIF(start_cells, end_cells, step)`
+    * Convert time and date: `=YEAR(cells)`, `=MONTH(cells)`, `DAY(cells)`, `=HOUR(cells)`, `=MINUTE(cells)`, `=SECOND(cells)`
+- Search cells: `=VLOOKUP(key, range_to_search(use fn+f4 to 'lock' it), col_to_return, FALSE)`
+    * Vertically searches range_to_search for key, if it finds it, returns col_to_return, if it's not exact match, ignores it (due to FALSE)
     * VLOOKUP looks at first column specified... be careful
-- `=IF(AND(cond1, OR(cond2, cond3)), truth_value, false_value)`, `=IFERROR(value, truth_value)`
+- Conditional returns: `=IF(AND(cond1, OR(cond2, cond3)), truth_value, false_value)`
     * *Conditions can come from cells*
-- `=INDEX(range, MATCH(string_to_match, range))`
-- `=SPARKLINE(range, {'charttype','bar';'color','red';'max',max(range); etc})` ----- creates a red in-cell bar chart of data from range with maxed bar when reaching max value of range
+- Return if error in cell: `=IFERROR(value, truth_value)`
+- Find the index of a cell with matching contents: `=INDEX(range, MATCH(string_to_match, range))`
+- Line inside cell: `=SPARKLINE(range, {'charttype','bar';'color','red';'max',max(range); etc})`
+    * Creates a red in-cell bar chart of data from range with maxed bar when reaching max value of range
 
 <!-- Polished -->
 ## Power BI
@@ -346,16 +406,19 @@ XXI.  [Deployment                    ](#deployment)
 | Capture group: ()  EX: (?P<colname>regex_exp)    |
 ```
 ### REGEX Queries
-- `re.search(regexg, subject)` ----- random search, report first-found start/stop index and matched string
-- `re.match(regexp, subject)` ----- re.search but from beginning
-- `re.findall(regexp, subject)` ----- report all matches using list
-- `re.sub(regexp, sub_in, subject)` ----- return string with subbed-in substring
-- `df.colname.str.extract(regexp)` ----- return dataframe where each column is one capture group's results
+- Randomly search for match: `re.search(regexg, subject)`
+- Search from beginning for match: `re.match(regexp, subject)`
+- Put all matches in list (very useful): `re.findall(regexp, subject)`
+- Return match with subbed-in substring: `re.sub(regexp, sub_in, subject)`
+- Capture groups into dataframe columns: `df.colname.str.extract(regexp)`
 #### REGEX Query Options
-- `re.IGNORECASE` is as expected; `re.MULTILINE` is new query per line; `re.VERBOSE` is ignore whitespace
-- use `|` to add multiple flags, ex: `re.findall(regexp, subject, re.IGNORECASE | re.MULTILINE)`
+- Search while ignoring case: `re.IGNORECASE`
+- Run new query on each line: `re.MULTILINE`
+- Ignore whitespace: `re.VERBOSE`
+- Use `|` to add multiple flags, ex: `re.findall(regexp, subject, re.IGNORECASE | re.MULTILINE)`
 ### REGEX examples
 - `r'a'` ----- r marks string as a raw string, all characters taken as-is
+    - Can go without raw strings, just need to "except" characters, ex: `r'yes/no'` is `'yes\/no`, `r'hi...'` is `'hi\.\.\.'`
 - `r'\w\w'` ----- find two in-sequence alphanumeric chars
     * 'abc 123' becomes `['ab','12']` because it consumes 'ab' and '12', so no 'bc' or '23'
 - `r'\w+'` ----- capture max combo of each alphanumeric
@@ -430,9 +493,9 @@ XXI.  [Deployment                    ](#deployment)
 - `soup.find_all("b")` ----- return list of `<b></b>` tags
     - `soup.find_all(["a","b"])` ----- return list of any `<a></a>` and `<b></b>` tags
 - `soup.find_all(has_class_but_no_id)` ----- return tags that are returned as True from function
-    * ```
-        def has_class_but_no_id(tag): 
-            return tag.has_attr('class') and not tag.has_attr('id')
+    *   ```
+            def has_class_but_no_id(tag): 
+                return tag.has_attr('class') and not tag.has_attr('id')
         ```
     * `soup.find_all(True)` ----- return all tags
 - `soup.find_all(id='link2')` ----- search all tags with id attribute value of 'link2'
@@ -656,7 +719,7 @@ mean_x_given_g1_g2 = df.groupBy('g1').pivot('g2').agg(mean('x'))
 #        #     #   #    #  ####  #    #             #    # #                  #      #####  
  -->
 
-# Python, NumPy, Pandas
+# Python NumPy Pandas
 
 <!-- Polished -->
 ## Python
@@ -2008,8 +2071,11 @@ CMD ["app.py"]
 - Walkthrough of everything-Flask: https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world
 - Links, links, links for Flask-related content: https://www.fullstackpython.com/flask.html
 ### Flask Basic Routing
+- Routing typically set in a file called views.py or app.py, allows page navigation from a Python framework
 - Run function on every page navigation regardless of page: `@app.before_request()`
 - Run function for specific page navigation: `@app.route('/cool_page')`
+    - Common return: `return_template(cool_page.html, global_var_thingy="coolthing")` ----- loads cool_page.html when nav to /cool_page
+    - Global variables can be called in HTML like this: `{{ global_var_thingy }}`, works as expected, do Python work in views.py or app.py
 - Allow sending data (POST), rewriting page (PUT): `@app.route('/api/v1/users', methods=['GET','POST','PUT'])`
     * use: `if request.method == 'POST':` to specify what to do with which HTTP request type
 - Capture args from URL input: `@app.route('/<int:year>/<int:month>/<title>')` --- `def func(x,y,z):`

@@ -22,10 +22,10 @@ II.   [CSS                           ](#css)
 
 III.  [JavaScript                    ](#javascript)
 1.    [JavaScript Basics             ](#javascript-basics)
-2.    [JavaScript Examples           ](#javascript-basics)
+2.    [JavaScript Examples           ](#javascript-examples)
 
 IV.   [Bootstrap                     ](#bootstrap)
-1.    [Bootstrap 5 Basics            ](#bootstrap-5)
+1.    [Bootstrap 5 Basics            ](#bootstrap-5-basics)
 2.    [Bootstrap 5 Example           ](#bootstrap-5)
 
 V.    [jQuery                        ](#jquery)
