@@ -17,12 +17,12 @@ I.    [Activity Logging and Search      ](#logs-and-search)
 2.    [Log Aggregation                  ](#log-aggregation)
 
 II.   [ELK Stack                        ](#elk-stack)
-1.    [Elastic Search                   ](#elastic-search)
-2.    [Kibana                           ](#kibana)
-3.    [Beats                            ](#beats)
-4.    [Logstash                         ](#logstash)
+1.    [Elastic Search                   ](#elastic-searchhttpswwwelasticcoelasticsearch)
+2.    [Kibana                           ](#kibanahttpswwwelasticcokibana)
+3.    [Beats                            ](#beatshttpswwwelasticcobeats)
+4.    [Logstash                         ](#logstashhttpswwwelasticcologstash)
 
-III.  [Splunk                           ](#splunk)
+III.  [Splunk                           ](#splunkhttpswwwsplunkcom)
 1.    [Splunk Overview                  ](#splunk-overview)
 2.    [Splunk Examples                  ](#splunk-examples)
 
@@ -67,10 +67,10 @@ IX.   [Behavior-Based Detection         ](#behavior-based-detection)
 X.    [Attack Detection Tools           ](#attack-detection-tools)
 
 XI.   [Attackers and Strategies         ](#attackers-and-strategies)
-1.    [APT28                            ](#apt28)
-2.    [APT29                            ](#apt29)
-3.    [Leviathan                        ](#leviathan)
-4.    [Sandworm Team                    ](#sandworm-team)
+1.    [APT28                            ](#apt28httpsattackmitreorggroupsg0007)
+2.    [APT29                            ](#apt29httpsattackmitreorggroupsg0016)
+3.    [Leviathan                        ](#leviathanhttpsattackmitreorggroupsg0065)
+4.    [Sandworm Team                    ](#sandworm-teamhttpsattackmitreorggroupsg0034)
 
 <br>
 
@@ -131,18 +131,27 @@ XI.   [Attackers and Strategies         ](#attackers-and-strategies)
 # ELK Stack
 
 <!-- Needs work -->
-## Elastic Search
-- Website: https://www.elastic.co/elasticsearch/
+## [Elastic Search](https://www.elastic.co/elasticsearch/)
 - RESTful (JSON-based) search and analytics engine for distributed sources
+- "Index" is the word for database
+- An index's data is distributed across "shards"
+### Elastic Search in Python
+- Walkthrough: http://blog.adnansiddiqi.me/getting-started-with-elasticsearch-7-in-python/
+- `pip install elasticsearch` and `pip install elasticsearch-dsl`
+- Create an index using PUT, access the index using the URL and /index-name-here
+- Delete an index using a specific curl command
+    - Example with "company" index in POSTMAN app: `curl -X DELETE \ http://localhost:9200/company/ \ -H 'cache-control: no-cache' \ -H 'content-type: application/json' \ -H 'postman-token: c67845af-5c96-a6ce-06dd-50ad3d8070b0'`
+- Add data (a document) to the index using POST and JSON format, returns with index name, type, ID, and more
+- Query for a document using its ID (IDs are random unless explicitly specified, don't typically specify it but DO store ID for queries)
+- Return all documents using URL/index-name-here/doc/_search (essentially same as SQL `select * from table`)
+- Schema of an index (called mapping): stored as `{ "mappings": { "properties": { "col1": {"type":"date"}, "col2": {"type":"text"}, ... } } }`
 
 <!-- Needs work -->
 ## [Kibana](https://www.elastic.co/kibana/)
-- Website: https://www.elastic.co/kibana/
 - User interface for Elastic Search
 
 <!-- Needs work -->
-## Beats
-- Website: https://www.elastic.co/beats/
+## [Beats](https://www.elastic.co/beats/)
 - Single-purpose movement of data from distributed sources to Elastic Search or Logstash
 - Filebeat: logs and other data
 - Packetbeat: network data
@@ -151,8 +160,7 @@ XI.   [Attackers and Strategies         ](#attackers-and-strategies)
 - Others: Metricbeat (metrics), Auditbeat (audit data), Heartbeat (uptime monitoring)
 
 <!-- Needs work -->
-## Logstash
-- Website: https://www.elastic.co/logstash/
+## [Logstash](https://www.elastic.co/logstash/)
 - Server-side system to ingest data from multiple sources, transform it, and send it to "favorite stash"
 
 [[Return to Top]](#table-of-contents)
@@ -172,12 +180,12 @@ XI.   [Attackers and Strategies         ](#attackers-and-strategies)
  #####  #      ######  ####  #    # #    #  
 -->
 
-# Splunk
+# [Splunk](https://www.splunk.com/)
 
 <!-- Needs work -->
 ## Splunk Overview
 - Log search, security, etc in a unified tool
-### SPL
+### [SPL](https://docs.splunk.com/Splexicon:SPL)
 - SPL is the abbreviation for Search Processing Language. SPL is designed by Splunk for use with Splunk software.
     - SPL example: `(CommandLine="rundll32.exe %APPDATA%\*.dat",*" OR CommandLine="rundll32.exe %APPDATA%\*.dll",#1")`
 - SPL encompasses all the search commands and their functions, arguments, and clauses. Its syntax was originally based on the Unix pipeline and SQL. The scope of SPL includes data searching, filtering, modification, manipulation, insertion, and deletion.
@@ -258,9 +266,8 @@ XI.   [Attackers and Strategies         ](#attackers-and-strategies)
 ## Execution
 ### Command and Scripting Interpreter - [T1059](https://attack.mitre.org/techniques/T1059/)
 - [T1059.003](https://attack.mitre.org/techniques/T1059/003/): Windows Command Shell, use of CMD to execute commands and scripts
-    - Search Processing Language (SPL): `(CommandLine="rundll32.exe %APPDATA%\*.dat",*" OR CommandLine="rundll32.exe %APPDATA%\*.dll",#1")`
-    - https://bogusecurity.com/2019/12/26/sofacy-trojan-loader-activity/
-    - Potential: https://www.trendmicro.com/vinfo/us/threat-encyclopedia/malware/Trojan.Win32.DLOADR.AUSUSN/
+    - Splunk SPL ([bogusecurity](https://bogusecurity.com/2019/12/26/sofacy-trojan-loader-activity/)): `(CommandLine="rundll32.exe %APPDATA%\*.dat",*" OR CommandLine="rundll32.exe %APPDATA%\*.dll",#1")`
+    - Potential Trend Micro coverage: https://www.trendmicro.com/vinfo/us/threat-encyclopedia/malware/Trojan.Win32.DLOADR.AUSUSN/
 - Artifacts/traces of the specific attack type
 - Manual detection of the specific attack type
 
@@ -522,25 +529,25 @@ XI.   [Attackers and Strategies         ](#attackers-and-strategies)
 # Attackers and Strategies
 
 <!-- Needs work -->
-## APT28
+## [APT28](https://attack.mitre.org/groups/G0007/)
 - Background
 - Hashes and Detection Strategies
 ### APT28 Strategy 1
 - **Initial Access** - T1566.001/T1566.002: Spearphishing Attachment/Spearphishing Link
-    - [T1566.001](#https://attack.mitre.org/techniques/T1566/001/): APT28 sent spearphishing emails containing malicious Microsoft Office and RAR attachments.
-    - [T1566.002](#https://attack.mitre.org/techniques/T1566/002/): APT28 sent spearphishing emails which used a URL-shortener service to masquerade as a legitimate service and to redirect targets to credential harvesting sites.
+    - [T1566.001](https://attack.mitre.org/techniques/T1566/001/): APT28 sent spearphishing emails containing malicious Microsoft Office and RAR attachments.
+    - [T1566.002](https://attack.mitre.org/techniques/T1566/002/): APT28 sent spearphishing emails which used a URL-shortener service to masquerade as a legitimate service and to redirect targets to credential harvesting sites.
 - **Execution** - T1059.003: Windows Command Shell
-    - [T1059.003](#https://attack.mitre.org/techniques/T1059/003/): An APT28 loader Trojan uses a cmd.exe and batch script to run its payload. The group has also used macros to execute payloads.
+    - [T1059.003](https://attack.mitre.org/techniques/T1059/003/): An APT28 loader Trojan uses a cmd.exe and batch script to run its payload. The group has also used macros to execute payloads.
 - **C2** - T1071.001/T1071.003: Web Protocols/Mail Protocols
-    - [T1071.001](#https://attack.mitre.org/techniques/T1071/001/): Later implants used by APT28, such as CHOPSTICK, use a blend of HTTP, HTTPS, and other legitimate channels for C2, depending on module configuration.
-    - [T1071.003](#https://attack.mitre.org/techniques/T1071/003/): APT28 has used IMAP, POP3, and SMTP for a communication channel in various implants, including using self-registered Google Mail accounts and later compromised email servers of its victims.
+    - [T1071.001](https://attack.mitre.org/techniques/T1071/001/): Later implants used by APT28, such as CHOPSTICK, use a blend of HTTP, HTTPS, and other legitimate channels for C2, depending on module configuration.
+    - [T1071.003](https://attack.mitre.org/techniques/T1071/003/): APT28 has used IMAP, POP3, and SMTP for a communication channel in various implants, including using self-registered Google Mail accounts and later compromised email servers of its victims.
 - **Exfiltration** - T1048.002: Exfiltration Over Asymmetric Encrypted Non-C2 Protocol
-    - [T1048.002](#https://attack.mitre.org/techniques/T1048/002/): APT28 has exfiltrated archives of collected data previously staged on a target's OWA server via HTTPS.
+    - [T1048.002](https://attack.mitre.org/techniques/T1048/002/): APT28 has exfiltrated archives of collected data previously staged on a target's OWA server via HTTPS.
 ### APT28 Extra Techniques
 - 
 
 <!-- Needs work -->
-## APT29
+## [APT29](https://attack.mitre.org/groups/G0016/)
 - Background
 - Hashes and Detection Strategies
 ### APT29 Strategy 1
@@ -552,7 +559,7 @@ XI.   [Attackers and Strategies         ](#attackers-and-strategies)
 - 
 
 <!-- Needs work -->
-## Leviathan
+## [Leviathan](https://attack.mitre.org/groups/G0065/)
 - Background
 - Hashes and Detection Strategies
 ### Leviathan Strategy 1
@@ -564,7 +571,7 @@ XI.   [Attackers and Strategies         ](#attackers-and-strategies)
 - 
 
 <!-- Needs work -->
-## Sandworm Team
+## [Sandworm Team](https://attack.mitre.org/groups/G0034/)
 - Background
 - Hashes and Detection Strategies
 ### Sandworm Team Strategy 1
