@@ -136,7 +136,7 @@ XI.   [Attackers and Strategies         ](#attackers-and-strategies)
 - RESTful (JSON-based) search and analytics engine for distributed sources
 
 <!-- Needs work -->
-## Kibana
+## [Kibana](https://www.elastic.co/kibana/)
 - Website: https://www.elastic.co/kibana/
 - User interface for Elastic Search
 
@@ -250,14 +250,14 @@ XI.   [Attackers and Strategies         ](#attackers-and-strategies)
 
 <!-- Needs work -->
 ## Initial Access
-### Phishing - [T1566](#https://attack.mitre.org/techniques/T1566/)
+### Phishing - [T1566](https://attack.mitre.org/techniques/T1566/)
 - Artifacts/traces of the specific attack type
 - Manual detection of the specific attack type
 
 <!-- Needs work -->
 ## Execution
-### Command and Scripting Interpreter - [T1059](#https://attack.mitre.org/techniques/T1059/)
-- [T1059.003](#https://attack.mitre.org/techniques/T1059/003/): Windows Command Shell, use of CMD to execute commands and scripts
+### Command and Scripting Interpreter - [T1059](https://attack.mitre.org/techniques/T1059/)
+- [T1059.003](https://attack.mitre.org/techniques/T1059/003/): Windows Command Shell, use of CMD to execute commands and scripts
     - Search Processing Language (SPL): `(CommandLine="rundll32.exe %APPDATA%\*.dat",*" OR CommandLine="rundll32.exe %APPDATA%\*.dll",#1")`
     - https://bogusecurity.com/2019/12/26/sofacy-trojan-loader-activity/
     - Potential: https://www.trendmicro.com/vinfo/us/threat-encyclopedia/malware/Trojan.Win32.DLOADR.AUSUSN/
@@ -287,13 +287,13 @@ XI.   [Attackers and Strategies         ](#attackers-and-strategies)
 
 <!-- Needs work -->
 ## Command and Control
-### Application Layer Protocol - [T1071](#https://attack.mitre.org/techniques/T1071/)
+### Application Layer Protocol - [T1071](https://attack.mitre.org/techniques/T1071/)
 - Artifacts/traces of the specific attack type
 - Manual detection of the specific attack type
 
 <!-- Needs work -->
 ## Exfiltration
-### Exfiltration Over Alternative Protocol - [T1048](#https://attack.mitre.org/techniques/T1048/)
+### Exfiltration Over Alternative Protocol - [T1048](https://attack.mitre.org/techniques/T1048/)
 - Artifacts/traces of the specific attack type
 - Manual detection of the specific attack type
 
