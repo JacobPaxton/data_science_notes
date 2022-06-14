@@ -91,6 +91,8 @@ XVI.  [Natural Language Processing   ](#natural-language-processing-(NLP))
 2.    [NLP Example                   ](#nlp-example)
 
 XVII. [Anomaly Detection             ](#anomaly-detection)
+1.    [Anomaly Detection Strategy    ](#anomaly-detection-strategy)
+2.    [Anomaly Detection Examples    ](#anomaly-detection-examples)
 
 XVIII.[Deep Learning                 ](#deep-learning)
 
@@ -297,6 +299,8 @@ XXI.  [Deployment                    ](#deployment)
 - Edit mode: TAB for autocomplete of methods/variables/filenames, Shift TAB for full context at cursor location
 - Edit mode: Split cell into two cells at cursor with option shift -
 - Hold option and left click to drag multi-line cursor
+- iPython "Magic" functions start with `%%`, ex: `%%writefile` which is aliased in jupyterNB as `file`
+    - `for file in os.listdir(os.getcwd()):` is same as `for %%writefile in os.listdir(os.getcwd())`
 
 <!-- Polished -->
 ## Excel & Google Sheets
@@ -764,6 +768,7 @@ mean_x_given_g1_g2 = df.groupBy('g1').pivot('g2').agg(mean('x'))
 - `s[11] = 12`; `s.drop(11, inplace=True)`; `s.fillna('no_value')`; `s.dropna()`; 
 - `s.dtype`, `s.size`, `s.shape`, `s.describe()`, `s.head()`, `s.tail()`, `s.value_counts()`, `s.astype('int')`, `s.isin(list)`
 - `s.max()`, `s.min()`, `s.idxmax()`, `s.idxmin()`
+- `s.sum()`, `s.mean()`, `s.std()`
 - `s.any()`, `s.all()` ----- True if any, True if all; returns column-wise when df.any() or df.all()
 - `s.isna()`, `s.notna()`, `s.fillna(value)`, `s.dropna()`
     - `s.isna().sum()`, `s.isna().mean()`
@@ -790,6 +795,7 @@ mean_x_given_g1_g2 = df.groupBy('g1').pivot('g2').agg(mean('x'))
     * `pd.read_sql('SELECT * FROM employees LIMIT 10', url)`
 - `pd.DataFrame({'hi':[1,2,3,4], 'lo':[6,7,8,9]})`
     * Show all columns: `pd.set_option('display.max_columns', None)`
+    * Set value precision: `pd.options.display.float_format = '{:.5f}'.format`
 - `pd.DataFrame([['Mary','12-7-1999',23], ['Joe','12-7-1997',25]], columns=['name','bday','age'])` - row-wise
 - `df.info()`; `df.describe().T`; `df.sort_values(by=['col1,'col2'], ascending=False)`
 - `df = original_df.copy()`; `df['col'] = value_list`; `df.assign(col=series)`
@@ -1179,8 +1185,10 @@ plt.scatter(X_train[:,0],X_train[:,1], c=cluster.labels_, cmap='rainbow')
     * C-based
 ### DBSCAN Clustering Example
 ```
-from sklearn.cluster import DBSCAN
-db = DBSCAN(eps=0.3, min_samples=10).fit(X_train)
+dbsc = DBSCAN(eps=.1, min_samples=20).fit(scaled_df) # eps: radius; min_samples: minimum num in radius to not be called outlier
+clustered_df = dbsc.transform(scaled_df)
+clustered_df.labels                                  # show cluster numbers (outliers are "-1")
+clustered_df[clustered_df.labels == cluster_num]     # show values in a specific cluster
 ```
 
 [[Return to Top]](#table-of-contents)
@@ -1828,54 +1836,77 @@ pd.Series(dict(zip(dv.get_feature_names(), tree.feature_importances_))).sort_val
 
 # Anomaly Detection
 
-<!-- Needs work -->
-## Anomaly Detection
-- Finding outliers (numerical distance) and anomalies (general difference) for the purpose of further investigation
-    * Can come from novel patterns or from outlier datapoints
-- Domain knowledge is almost always preferable to raw detection techniques
-### Cases
-- Contextual: "This action is okay here, but not okay here"
-- Noise: "This action is more clean than normal"
-- Point Anomaly: "This action is too far from the norm"
-- Collective: "This action had an unusual combination"
-- Novelty: "This pattern is unseen"
-### Techniques
-- Stats: Standard metrics like average and standard deviation, also moving averages
-- Classification: Support Vector Machine (a regression of classification), Random Forest, Isolation Forest (calculates number of splits needed to isolate a specified point)
-- Clustering: KMeans and DBSCAN
-- Density: KNN Local Outlier Factor
-### Anomalies - Continuous Values
-- Use IQR to detect outliers
-- Use Z-score to detect outliers
-- Be careful of 'dogmatic' approaches to this (EX: always using >2 STD [2 sigma] to detect outliers)
-### Anomalies - Discrete Values
-- Use probabilities to detect low-occurence combinations! value_counts(normalize=True)
-- Given time-series data, group on minute, hour, day, etc then value_counts(normalize=True)
-### Anomalies - Time-Series Values
-- Exponentially-weighted moving averages
-    * Hyperparameter alpha set to 0 is traditional average (average all values in series
-    * alpha set to 1 is most recent value (each moving average is most recent value)
-    * alpha set to anything between 0 and 1 gives weight to past values and determines how quickly things fall off in terms of weight (weigh recent values more than older values, average the weighted values)
-    * The value you set alpha to is dependent on how many anomalous values you want
-- Bollinger bands - anomalies outside the bands
-    * Used a lot in finance and stock market analysis
-    * Calculate each band in dataframe... there might be a library out there to help
-    * Midband is moving average (you set this, can also be exponentially-weighted moving average)
-    * Upperband = Midband + (K * moving standard deviation), where K is hyperparameter
-        * Standard values for K are 2 and 20
-        * The value you set K to is dependent on how many anomalous values you want
-    * Lowerband = Midband - (K * moving standard deviation)
+<!-- Polished -->
+## Anomaly Detection Strategy
+- Distances, clustering, and domain knowledge to identify anomalies amongst normal data
+- Wide variety of problem sets, overlapping technique use cases
+### General Approach
+0. Use domain knowledge / target first as MVP, then move on
+1. Start with visuals for each available feature, investigate what is visually anomalous
+    * Value counts (histogram) for categorical features (*consider normalizing*)
+    * Numerical values over time (line plot) via resampling, averages, counts, sums
+    * Categorical v numerical (bar chart) via groupby and aggregation (average, sum)
+    * Numerical value v numerical value (scatter plot) via row-wise coords or `sns.pairplot`
+2. Move to statistical outliers for each numerical feature using Z-score and IQR rule
+3. Move to trend (time-relevant) outliers in categorical/numerical features using Bollinger bands
+4. Document observations and potential lines of investigation
+### Prosecuting Anomalies by Availability
+- Timestamps enable a lot of anomaly detection actions
+- User identifiers (ex: user1, user2, ...; ex: admin, user, ...; ex: group1, group2, ...) also enable a lot
+- Action details (ex: request details, inputs, errors, etc) are great for action grouping
+- Observation timestamp + user details + action details allows nearly all anomaly detection techniques
+### Time-Series Metrics
+- Exponentially-Weighted Moving Average (EWMA) - used as "expected value" in distance-based outlier detection
+    * Tune EWMA's alpha parameter to tighten/loosen conformity to most-current value (smoothing)
+    * alpha=0: average at location of all previous values; alpha=1: current value exactly; larger alpha means more of past considered
+- Bollinger Bands - upper/mid/lower bands for values in trend, used a lot in finance and stock market analysis
+    * Mid band is moving average; Upper band is mid band + (K * moving STD); Lower band is mid band - (K * moving STD)
+        * Standard values for K are 2 and 20; larger K means less outliers
     * %b is a calculation of volatility, anything above 1 or below 0 is outside the bands
-### Anomalies - Clustering
-- DBSCAN - anomalies by cluster
-    * Distance-based (requires scaling) cluster creation algorithm
-    * Often done against count and nunique agg funcs for discrete vars
-    * dbsc = DBSCAN(eps=.1, min_samples=20).fit(scaled_df)
-        * eps is radius, min_samples is minimum amount of datapoints within the radius to be determined non-outlier data - so here, require 20 values in radius .1, anything not included is considered an outlier
-    * clustered_df = dbsc.transform(scaled_df)
-    * clustered_df.labels ----- show cluster numbers
-    * clustered_df[clustered_df.labels == cluster_num] ----- show values in a specific cluster
-        * outlier cluster is always clustered_df.labels == -1
+### Anomaly Clustering - [DBSCAN](#dbscan)
+- DBSCAN (Density-Based Spatial Clustering of Applications with Noise) - king of cluster-based outlier detection
+- Requires minimum amount of points in a given radius to be considered a non-outlier cluster
+    * SCALING NEEDED
+- Any point(s) that don't meet given non-outlier requirements is returned in cluster "-1"
+- Often done with count/nunique as numeric variable (nunique being too-low or too-high is anomalous)
+
+<!-- Polished -->
+## Anomaly Detection Examples
+### Time Anomalies
+- Outside expected times: Manual determination of anomaly via date/time filter
+    * `df["unexpected_time"] = ((df.time < time(9,0)) & (df.time > time(17,0)) | (df.date.weekday > 5) | df.date.isin(holidays)`
+- Too quickly: Downsampling / Reduction of time precision in rows, then value count of event/imprecise_time combinations
+    * `df["minute"] = df.time.dt.to_period("min")`, `df.groupby(["user_id","minute"]).url_path.count().sort_values(ascending=False)`
+    * `df[df["group"].isin(group_list)].groupby('group').resample('W').size().unstack(0).plot()`
+- Should never happen / Should always happen: New column for met_condition, filter by met_condition
+    * `df["bad"] = df["commandline"] == "su -"`, `df[df["bad"]]`
+    * `df["good"] = df["user_id"].isin(permitted_user_list)`
+- Outside expected value range at time: Designate upper/lower/mid Bollinger bands (EWMA or rolling), classify outliers using filtering
+    * `std = s.ewm(alpha=.1).std()`; `df['mid'] = s.ewm(alpha=.1).mean()`; `df['high'] = mid + K * std`; `df['low'] = mid - K * std`
+    * `df[['high', 'low']].plot(color='black', alpha=.6, ls=':', figsize=(16, 6))`; `df.mid.plot(color='black', alpha=.6, ls='--')`
+    * `df['%b'] = (s - df.low) / (df.high - df.low)`; `high_out = bands[bands['%b'] > 1]`, `low_out = bands[bands['%b'] < 0]`
+    * `plt.plot(bands.index, bands.actual, label='coolname')`; `plt.vlines(up_out.index, *plt.ylim(), color='black', ls='--', label='Ups')`
+### Numerical Anomalies
+- Unusual observed y in x: IQR rule or Z-score, classify outliers using filtering
+    * `q1 = col.quantile(0.25)`; `q3 = col.quantile(0.75)`; `iqr = q3 - q1`; `lower_bound = q1 - k * iqr`; `upper_bound = q3 + k * iqr`
+    * `stats.zscore(col)`
+### Combination Anomalies
+- Unusual combination of categories: Value counts of 2+ categorical features
+    * `df[["categorical_feature_1","categorical_feature_2","categorical_feature_3"]].value_counts().unstack().plot.barh()`
+- Unusual numerical value attributed to category: Split numerical into ordinal categories, then value counts (same as above)
+    * `pd.cut(s, bins=[0,2,5], labels=['low','high'], right=False)`
+- Unusually-high amount of same categorical combo at time: New column for is_combination, downsample with count() logic, then EWMA
+    * `df[["is_combination"]].resample("D").sum()`
+- Outlier clustering for all-numerical features: DBSCAN clustering, scale features then train/plot clusters
+    * See: [DBSCAN Clustering](#dbscan); **K-Means is worse for outlier detection** because it groups on centroids (includes outliers)
+    * With categories EX: two categories, three all-numerical clusters per category, average each cluster's features, compare averages
+### Pattern Anomalies
+- Find specific sequence of events for actor: Filter to actor, resample as needed, use dataframe shifting to create met_condition column
+    * `open_then_close = (df.actor == "p1") & (df.act == "open") & (df.actor.shift(-1) == "p1") & (df.act.shift(-1) == "close_doc")`
+    * Consider merging event logs into one continuous dataframe using actor IDs as the key
+- Find unusual sequence of events for actor: Filter to actor, list comprehension, value counts of same-values lists
+    * `three_event_sequences = [[s[i],s[i+1],s[i+2]] for i in s.index if i+2 < len(s)]`
+    * Consider merging event logs into one continuous dataframe using actor IDs as the key
 
 [[Return to Top]](#table-of-contents)
 
