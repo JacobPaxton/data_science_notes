@@ -122,6 +122,8 @@ VI.   [D3.js                         ](#d3.js)
 ### Empty HTML Tags
 - `<br>`: line break
 - `<hr>`: horizontal line
+### Jinja
+- `{% block page_content %}` and more of these python-work-in-HTML is from Jinja
 
 <!-- Polished -->
 ## HTML Examples

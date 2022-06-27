@@ -17,10 +17,8 @@ I.    [Activity Logging and Search      ](#logs-and-search)
 2.    [Log Aggregation                  ](#log-aggregation)
 
 II.   [ELK Stack                        ](#elk-stack)
-1.    [Elastic Search                   ](#elastic-searchhttpswwwelasticcoelasticsearch)
-2.    [Kibana                           ](#kibanahttpswwwelasticcokibana)
-3.    [Beats                            ](#beatshttpswwwelasticcobeats)
-4.    [Logstash                         ](#logstashhttpswwwelasticcologstash)
+1.    [ELK Stack Basics                 ](#elk-stack-basics)
+2.    [Elastic Search in Python         ](#elastic-search-in-python)
 
 III.  [Splunk                           ](#splunkhttpswwwsplunkcom)
 1.    [Splunk Overview                  ](#splunk-overview)
@@ -106,10 +104,48 @@ XI.   [Attackers and Strategies         ](#attackers-and-strategies)
 
 <!-- Needs work -->
 # Logs and Search
+
 ## System Logs
-- 
+- Logging activity and data of all sorts of sources, proprietary, integrated, free, and more
+### Sysmon (System Monitor) Logs
+- Free tool, monitors and logs system activity to the Windows event log
+- Process creation, network connection, file creation or modification, driver loads, raw disk access, remote threads, process memory access
+- Doesn't hide from intruders; doesn't generate logs of the logs it has created
+### Windows Security Logs
+- Window-specific, monitors security-related activities
+- Attempted and successful unauthorized activity, problem troubleshooting, login/logout
+- Sysadmin can delete specific logs, separate rights, and even clear the log- priv escalation
+### Windows System Logs
+- Windows-specific, monitors application/system events including errors, warnings; uses event IDs
+- Windows system components (drivers, built-in interfaces), installed programs
+- Shows basic, non-harmful errors that can be misconstrued by scammers to be serious
+### Netflow Logs (from Cisco)
+- Monitors network traffic flow, network traffic volume, router/switch IP information
+    - Netflow Collector and Analyzer is a GUI for this information
+- Network admins can use these to identify which users/protocols/applications are high-volume
+- No mentioned downsides
+### PCAP (Packet Capture)
+- API for collecting network traffic
+- Saves packets and a lot of various metadata, very popular and widely used
+- No mentioned downsides
+### Firewall Logs
+- Monitors how firewall handles traffic, identifies suspicious activity (real-time)
+- Connection: Time and date, kind (TCP/UDP), receiving port, and dropped/accepted packets
+### Proxy Logs
+- Monitors users/applications that access the network and app/service requests
+- HTTP version/request method, content type, user agent, client username/IP/source port, requested resource, and more
+### Browser History Logs
+- Browser activity
+- Forensics the websites visited, timestamp, access numbers, if data entered, downloads
+- Excellent at leaking data and providing vulnerabilities to illicit actors, esp through plugins
+### DNS Logs
+- Extremely detailed information about DNS data that is sent/received by DNS server
+- Records requested, client IP, request flags, zone transfers, query logs, rate timing, and DNS signing
+- No mentioned downsides- built to identify various DNS attacks (hijack, tunnel, DOS, C2, cache poisoning)
+
 ## Log Aggregation
-- 
+- The effort to bring disparate log sources into one unified picture
+- Many competing technologies with varying performance
 
 [[Return to Top]](#table-of-contents)
 
@@ -131,11 +167,28 @@ XI.   [Attackers and Strategies         ](#attackers-and-strategies)
 # ELK Stack
 
 <!-- Needs work -->
-## [Elastic Search](https://www.elastic.co/elasticsearch/)
+## ELK Stack Basics
+- Aggregated log storage and querying with frontend and ingest capability
+### [Elastic Search](https://www.elastic.co/elasticsearch/)
 - RESTful (JSON-based) search and analytics engine for distributed sources
 - "Index" is the word for database
 - An index's data is distributed across "shards"
-### Elastic Search in Python
+- Elastic Common Schema: standardized field names, values, and dtypes for Elasticsearch
+    * https://www.elastic.co/guide/en/ecs/1.4/ecs-reference.html
+    * https://www.elastic.co/guide/en/beats/winlogbeat/7.9/exported-fields-ecs.html
+### [Kibana](https://www.elastic.co/kibana/)
+- User interface for Elastic Search
+### [Beats](https://www.elastic.co/beats/)
+- Single-purpose movement of data from distributed sources to Elastic Search or Logstash
+- Filebeat: logs and other data
+- Packetbeat: network data
+- Winlogbeat: Windows event logs
+- Functionbeat: cloud data
+- Others: Metricbeat (metrics), Auditbeat (audit data), Heartbeat (uptime monitoring)
+### [Logstash](https://www.elastic.co/logstash/)
+- Server-side system to ingest data from multiple sources, transform it, and send it to "favorite stash"
+
+## Elastic Search in Python
 - Walkthrough: http://blog.adnansiddiqi.me/getting-started-with-elasticsearch-7-in-python/
 - `pip install elasticsearch` and `pip install elasticsearch-dsl`
 - Create an index using PUT, access the index using the URL and /index-name-here
@@ -145,23 +198,6 @@ XI.   [Attackers and Strategies         ](#attackers-and-strategies)
 - Query for a document using its ID (IDs are random unless explicitly specified, don't typically specify it but DO store ID for queries)
 - Return all documents using URL/index-name-here/doc/_search (essentially same as SQL `select * from table`)
 - Schema of an index (called mapping): stored as `{ "mappings": { "properties": { "col1": {"type":"date"}, "col2": {"type":"text"}, ... } } }`
-
-<!-- Needs work -->
-## [Kibana](https://www.elastic.co/kibana/)
-- User interface for Elastic Search
-
-<!-- Needs work -->
-## [Beats](https://www.elastic.co/beats/)
-- Single-purpose movement of data from distributed sources to Elastic Search or Logstash
-- Filebeat: logs and other data
-- Packetbeat: network data
-- Winlogbeat: Windows event logs
-- Functionbeat: cloud data
-- Others: Metricbeat (metrics), Auditbeat (audit data), Heartbeat (uptime monitoring)
-
-<!-- Needs work -->
-## [Logstash](https://www.elastic.co/logstash/)
-- Server-side system to ingest data from multiple sources, transform it, and send it to "favorite stash"
 
 [[Return to Top]](#table-of-contents)
 

@@ -92,7 +92,8 @@ XVI.  [Natural Language Processing   ](#natural-language-processing-(NLP))
 
 XVII. [Anomaly Detection             ](#anomaly-detection)
 1.    [Anomaly Detection Strategy    ](#anomaly-detection-strategy)
-2.    [Anomaly Detection Examples    ](#anomaly-detection-examples)
+2.    [Anomaly Detection Syntax      ](#anomaly-detection-syntax)
+3.    [Anomaly Detection Examples    ](#anomaly-detection-examples)
 
 XVIII.[Deep Learning                 ](#deep-learning)
 
@@ -1871,7 +1872,7 @@ pd.Series(dict(zip(dv.get_feature_names(), tree.feature_importances_))).sort_val
 - Often done with count/nunique as numeric variable (nunique being too-low or too-high is anomalous)
 
 <!-- Polished -->
-## Anomaly Detection Examples
+## Anomaly Detection Syntax
 ### Time Anomalies
 - Outside expected times: Manual determination of anomaly via date/time filter
     * `df["unexpected_time"] = ((df.time < time(9,0)) & (df.time > time(17,0)) | (df.date.weekday > 5) | df.date.isin(holidays)`
@@ -1907,6 +1908,53 @@ pd.Series(dict(zip(dv.get_feature_names(), tree.feature_importances_))).sort_val
 - Find unusual sequence of events for actor: Filter to actor, list comprehension, value counts of same-values lists
     * `three_event_sequences = [[s[i],s[i+1],s[i+2]] for i in s.index if i+2 < len(s)]`
     * Consider merging event logs into one continuous dataframe using actor IDs as the key
+
+<!-- Polished -->
+## Anomaly Detection Examples
+### Bollinger Bands and Anomalous Temperatures
+```
+plt.rc('figure', figsize=(13, 6))
+plt.rc('axes.spines', top=False, right=False)
+plt.rc('font', size=13)
+
+def to_fahrenheit(k):
+    return k * 9/5 - 459.67
+
+url = "https://gist.githubusercontent.com/ryanorsinger/0ec766c66f4089bdcbc1d4fb294a3394/raw/197c1f0d7b55a45f29437811bc73d9c4ef8af647/sa_temps.csv"
+s = pd.read_csv(url, index_col='datetime', parse_dates=True).temp
+s = s.dropna()
+s = to_fahrenheit(s)
+s = s.resample('D').mean()
+
+K = 2
+N = 20
+# std = s.rolling(N).std()
+std = s.ewm(alpha=.1).std()
+bands = pd.DataFrame()
+# bands['mid'] = s.rolling(N).mean()
+bands['mid'] = s.ewm(alpha=.1).mean()
+bands['upper'] = bands['mid'] + K * std
+bands['lower'] = bands['mid'] - K * std
+bands['actual'] = s
+
+t = bands.loc['2013']
+t[['upper', 'lower']].plot(color='black', alpha=.6, ls=':', figsize=(16, 6))
+t.mid.plot(color='black', alpha=.6, ls='--')
+t.actual.plot()
+plt.legend('')
+plt.xlabel('')
+
+bands['%b'] = (bands.actual - bands.lower) / (bands.upper - bands.lower)
+upper_outliers = bands[bands['%b'] > 1]
+lower_outliers = bands[bands['%b'] < 0]
+
+plt.plot(bands.index, bands.actual, label='Temperature (deg F)')
+plt.vlines(upper_outliers.index, *plt.ylim(), color='black', ls='--', label='Upper Outlier')
+plt.vlines(lower_outliers.index, *plt.ylim(), color='black', ls=':', label='Lower Outlier')
+plt.title('San Antonio Temperature Over Time')
+plt.legend()
+plt.xlim(pd.to_datetime('2013'), pd.to_datetime('2014'))
+```
 
 [[Return to Top]](#table-of-contents)
 
@@ -1950,21 +1998,25 @@ pd.Series(dict(zip(dv.get_feature_names(), tree.feature_importances_))).sort_val
     * Distance-based, optimizing connections to reach an answer
     * Backpropogation against feedforward
 ### Implementation
-- from tensorflow import keras; from keras import models, layers
-- from keras.datasets import mnist ----- very popular image classification dataset
-- (train_images, train_labels), (test_images, test_labels) = mnist.load_data()
-- train_images = train_images.reshape((60000, 28 * 28)); train_images = train_images.astype('float32') / 255 ----- reshape data for model
-- test_images = test_images.reshape((10000, 28 * 28)); test_images = test_images.astype('float32') / 255
-- network = models.Sequential() ----- create the model
-- network.add(layers.Dense(512, activation='relu', input_shape(28*28,))) ----- add a layer
-- network.add(layers.Dense(10, activation='softmax')) ----- add output layer
-- network.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
-    * compile the model
-- train_labels = keras.utils.to_categorical(train_labels)
-- test_labels = keras.utils.to_categorical(test_labels)
-- network.fit(train_images, train_labels, epochs=20, batch_size=128)
-- test_loss, test_acc = network.evaluate(test_images, test_labels)
-- print(f'accuracy of network on test set: {test_acc}')
+```
+from tensorflow import keras
+from keras import models, layers
+from keras.datasets import mnist # very popular image classification dataset
+(train_images, train_labels), (test_images, test_labels) = mnist.load_data()
+train_images = train_images.reshape((60000, 28 * 28)); 
+train_images = train_images.astype('float32') / 255 # reshape data for model
+test_images = test_images.reshape((10000, 28 * 28)); test_images = test_images.astype('float32') / 255
+network = models.Sequential() # create the model
+network.add(layers.Dense(512, activation='relu', input_shape(28*28,))) # add a layer
+network.add(layers.Dense(10, activation='softmax')) # add output layer
+network.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+# compile the model
+train_labels = keras.utils.to_categorical(train_labels)
+test_labels = keras.utils.to_categorical(test_labels)
+network.fit(train_images, train_labels, epochs=20, batch_size=128)
+test_loss, test_acc = network.evaluate(test_images, test_labels)
+print(f'accuracy of network on test set: {test_acc}')
+```
 
 [[Return to Top]](#table-of-contents)
 
