@@ -949,6 +949,77 @@ df.corr().style.background_gradient(vmin=-1, vmax=1, cmap='coolwarm_r').format('
 
 
 <!-- 
+######                                        ##       ######                       
+#     # #       ####  ##### #      #   #     #  #      #     #   ##    ####  #    # 
+#     # #      #    #   #   #       # #       ##       #     #  #  #  #      #    # 
+######  #      #    #   #   #        #       ###       #     # #    #  ####  ###### 
+#       #      #    #   #   #        #      #   # #    #     # ######      # #    # 
+#       #      #    #   #   #        #      #    #     #     # #    # #    # #    # 
+#       ######  ####    #   ######   #       ###  #    ######  #    #  ####  #    # 
+-->
+
+# Plotly & Dash
+
+<!-- Polished -->
+## Plotly Express
+- Very fast creation of interactive visualizations
+- Great for data exploration with hover-tooltips, best used with drop-in scripts
+- `import plotly.express as px`
+### Plotly Examples
+```
+df = px.data.iris()
+
+# scatterplot (2 numerical features) & category-based trendlines ("color" parameter), with violinplots on sides
+fig = px.scatter(df, x="sepal_width", y="sepal_length", color="species", 
+                 marginal_y="violin", marginal_x="box", 
+                 trendline="ols", 
+                 template="none")
+fig.show()
+
+# very cool plot... hard to explain... put in lots of numerical features... keep observation count small... go!
+fig = px.parallel_coordinates(df, color="species_id", 
+                              labels={"species_id": "Species", 
+                                      "sepal_width": "Sepal Width", "sepal_length": "Sepal Length", 
+                                      "petal_width": "Petal Width", "petal_length": "Petal Length"
+                                     },
+                              color_continuous_scale=px.colors.diverging.Tealrose, 
+                              color_continuous_midpoint=2)
+fig.show()
+
+# clean box plots
+df = px.data.tips()
+fig = px.box(df, x="day", y="total_bill", color="smoker", notched=True)
+fig.show()
+
+# fast plot to geographical map, sized/colored circles
+df = px.data.carshare()
+fig = px.scatter_mapbox(df, lat="centroid_lat", lon="centroid_lon", color="peak_hour", size="car_hours",
+                        color_continuous_scale=px.colors.cyclical.IceFire, 
+                        size_max=15, zoom=10,
+                        mapbox_style="carto-positron")
+fig.show()
+
+# 3-D scatterplot
+df = px.data.election()
+fig = px.scatter_3d(df, 
+                    x="Joly", y="Coderre", z="Bergeron", 
+                    color="winner", size="total", hover_name="district", symbol="result", 
+                    color_discrete_map = {"Joly": "blue", "Bergeron": "green", "Coderre":"red"})
+fig.show()
+```
+
+<!-- Polished -->
+## Dash
+- 
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+<!-- 
 #######                                                                 
 #       #    # #####  #       ####  #####    ##   ##### #  ####  #    #
 #        #  #  #    # #      #    # #    #  #  #    #   # #    # ##   #
