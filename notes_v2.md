@@ -1403,15 +1403,16 @@ X_train_res, y_train_res = smt.fit_resample(X_train, y_train)
 - Predicting a discrete target
 - **Features that have strong relationship with target are the best predictors**
 ### Classification Strategy
-0. Prepare data; if there's decision ambiguity, leave it for exploration
-1. Bin continuous data into categories using visualizations or intervals
-    * Best-case scenario: a scatterplot of x feature with y target shows distinct grouping; use those groups
-2. Create crosstab for each feature's categories against the target categories for Chi Square tests
+0. Prepare data; if there's decision ambiguity (ex: imputation), leave it for exploration (drop the column(s) for MVP, revisit)
+1. Continuous/Ordinal features: Convert to categorical- bin continuous data into categories using visualizations or intervals
+    * Best-case scenario: a scatterplot of x feature with y target shows distinct groupings; use those groups
+    * Reason for this is simple: Categorical target can only really be statistically evaluated using Chi2 tests (category v category)
+2. Categorical/Discrete features: Create crosstab for each feature's categories against the target categories for Chi Square tests
     * Visualize crosstabs using conditional formatting (heatmaps) or mosaic plots
-3. Eliminate features that do not have dependent relationship with target
-4. Visualize all remaining features using crosstab conditional formatting or mosaic plots
+3. After step #2 and #3: Eliminate features that do not have dependent relationship with target
+4. Visualize all dependent features (the ones that remain after tests) using crosstab conditional formatting or mosaic plots
 5. Select the main evaluation metric (Accuracy, Recall, Precision, F1 Score, etc)
-6. One-hot-encode all features
+6. One-hot-encode all features (because they are categorical)
 7. Create, fit multiple models on model-training data
 8. Evaluate baseline mode class and models on selected evaluation metric for train and validate splits
 9. Tune hyperparameters and re-evaluate until satisfied
@@ -1521,10 +1522,10 @@ validate_report = pd.DataFrame(
     * After plotting, we look for monotonicity and change rate to determine the correlation coefficient
 ### Regression Strategy
 0. Prepare data; if there's decision ambiguity, leave it for exploration
-1. One-hot-encode categorical features
-2. Create a correlation crosstab
+1. One-hot-encode or label-encode categorical features (convert categorical data to numerical)
+2. Create a correlation crosstab (ex: df.corr()) to see what features correlate with target
 3. Eliminate features that do not strongly correlate with the target
-    * *Also eliminate features that strongly >80% with other features*
+    * *Also eliminate features that strongly >80% with other features*, due to features-learning-features issues
 4. Visualize each feature against the target using scatterplots
     * Eliminate outliers- regression is highly sensitive to them
 5. Understand each relationship with the target- is it linear? Polynomial? Monotonic? Polytonic?
@@ -1715,7 +1716,8 @@ model.predict(start=test.index[0], end=test.index[-1])
 <!-- Polished -->
 ## NLP Overview
 - Analyzing words
-- Can be used for: Text Classification
+- Can be used for: Classifying what the text is for / revealing, ex: word choice predicting dialect
+    * Regression for NLP isn't really a thing
 - Can be used for: Sentiment Analysis
     * Afinn and Vader are sentiment analysis tools based on social media
 - Word clouds: http://amueller.github.io/word_cloud/
