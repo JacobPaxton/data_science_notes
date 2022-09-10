@@ -52,69 +52,72 @@ IX.   [Apache Spark                  ](#apache-spark)
 1.    [Spark Wrangling               ](#spark-wrangling)
 2.    [Spark MAchine Learning        ](#spark-machine-learning)
 
-X.    [Python, NumPy, Pandas         ](#python-numpy-pandas)
-1.    [Python                        ](#python)
+X.    [Python                        ](#python)
+1.    [Python Basics                 ](#python-basics)
+2.    [Python Specifics              ](#python-specifics)
+
+XI.   [NumPy and Pandas              ](#numpy-pandas)
 2.    [NumPy                         ](#numpy)
 3.    [Pandas                        ](#pandas)
 
-XI.   [Matplotlib & Seaborn          ](#matplotlib-&-seaborn)
+XII.  [Matplotlib & Seaborn          ](#matplotlib-&-seaborn)
 1.    [Visualization in Python       ](#overall-notes-for-visualizations-in-python)
 2.    [Matplotlib                    ](#matplotlib)
 3.    [Seaborn                       ](#seaborn)
 
-XII.  [Exploration                   ](#exploration)
+XIII. [Exploration                   ](#exploration)
 1.    [Exploration Prep              ](#exploration-prep)
 2.    [Exploration Visualization     ](#exploration-visualization)
 3.    [Feature Engineering           ](#feature-engineering)
 4.    [Feature Selection             ](#performance-based-feature-selection)
 
-XIII. [Algorithmic Clustering        ](#algorithmic-clustering)
+XIV.  [Algorithmic Clustering        ](#algorithmic-clustering)
 1.    [Cluster Assignment            ](#cluster-assignment)
 2.    [K-Means Clustering            ](#k-means-clustering)
 3.    [Hierarchical Clustering       ](#hierarchical-clustering)
 4.    [DBSCAN                        ](#dbscan)
 
-XIV.  [Statistics                    ](#statistics)
+XV.   [Statistics                    ](#statistics)
 1.    [Metrics                       ](#metrics)
 2.    [Hypothesis Testing            ](#hypothesis-testing)
 3.    [Probability                   ](#probability)
 
-XV.   [Model Preparation             ](#model-preparation)
+XVI.  [Model Preparation             ](#model-preparation)
 1.    [Encoding                      ](#encoding)
 2.    [Scaling                       ](#scaling)
 3.    [Resampling                    ](#resampling)
 
-XVI.  [Classification                ](#classification)
+XVII. [Classification                ](#classification)
 1.    [Classification Overview       ](#classification-overview)
 2.    [Classification Example        ](#classification-example)
 
-XVII. [Regression                    ](#regression)
+XVIII.[Regression                    ](#regression)
 1.    [Regression Overview           ](#regression-overview)
 2.    [Regression Example            ](#regression-example)
 
-XVIII.[Time-Series                   ](#time-series)
+XIX.  [Time-Series                   ](#time-series)
 1.    [Time-Series Overview          ](#time-series-overview)
 2.    [Time-Series Example           ](#time-series-example)
 
-XIX. [Natural Language Processing   ](#natural-language-processing-(NLP))
+XX.   [Natural Language Processing   ](#natural-language-processing-(NLP))
 1.    [NLP Overview                  ](#nlp-overview)
 2.    [NLP Example                   ](#nlp-example)
 
-XX.   [Anomaly Detection             ](#anomaly-detection)
+XXI.  [Anomaly Detection             ](#anomaly-detection)
 1.    [Anomaly Detection Strategy    ](#anomaly-detection-strategy)
 2.    [Anomaly Detection Syntax      ](#anomaly-detection-syntax)
 3.    [Anomaly Detection Examples    ](#anomaly-detection-examples)
 
-XXI.  [Deep Learning                 ](#deep-learning)
+XXII. [Deep Learning                 ](#deep-learning)
 1.    [Deep Learning Basics          ](#deep-learning-basics)
 
-XXII. [Computer Vision               ](#computer-vision)
+XXIII.[Computer Vision               ](#computer-vision)
 1.    [Computer Vision Basics        ](#computer-vision-basics)
 
-XXIII.[Cross-Validation              ](#cross-validation)
+XXIV. [Cross-Validation              ](#cross-validation)
 1.    [Cross-Validation Basics       ](#cross-validation-basics)
 
-XXIV. [Deployment                    ](#deployment)
+XXV.  [Deployment                    ](#deployment)
 1.    [Docker                        ](#docker)
 2.    [Flask                         ](#flask)
 3.    [Apache Kafka                  ](#apache-kafka)
@@ -851,41 +854,113 @@ mean_x_given_g1_g2 = df.groupBy('g1').pivot('g2').agg(mean('x'))
 
 
 <!-- 
-#####  #   # ##### #    #  ####  #    #             #    # #####              #####  #####  
-#    #  # #    #   #    # #    # ##   #             ##   # #    #             #    # #    # 
-#    #   #     #   ###### #    # # #  #    #####    # #  # #    #    #####    #    # #    # 
-#####    #     #   #    # #    # #  # #             #  # # #####              #####  #    # 
-#        #     #   #    # #    # #   ##             #   ## #                  #      #    # 
-#        #     #   #    #  ####  #    #             #    # #                  #      #####  
+######                                   
+#     # #   # ##### #    #  ####  #    # 
+#     #  # #    #   #    # #    # ##   # 
+######    #     #   ###### #    # # #  # 
+#         #     #   #    # #    # #  # # 
+#         #     #   #    # #    # #   ## 
+#         #     #   #    #  ####  #    # 
  -->
 
-# Python NumPy Pandas
+# Python
 
 <!-- Polished -->
-## Python
+## Python Basics
+- Interpreted programming language (interpreter reads code one line at a time and performs computer actions)
+- Typically one statement per line; though you can span multiple lines with parentheses surrounding a statement
+- *Indentation is used for code blocks*; though you can run the following statement (and similar) just fine: `if True: print("It's true!!")`
+- Excellent language for its community support and massive amount of libraries
+- Python's ongoing improvements and Python style guides: https://peps.python.org/pep-0000/
+### Python Variables
+- Python only makes objects; these contain the value, type, and identity (memory location) for the object's contents
+    * value: `print(x)`, type: `print(type(x))`, identity: `print(id(x))`; note that `x` can be a value itself, too (ex: `type(1))`
+    * Each object is indexed at the variable... object at index `x` contains that variable's value, type, and identity
+- Python creates and dumps objects as needed; when `i = 1` is done, object's value=1, type=int, and identity=i
+    * Assigning j to i points j at the i object but with j identity; any further assignment unlinks these
+- Python objects that contain numbers or strings are immutable, as in, a new object is created for the change and old is dumped
+- Python objects that contain lists or dicts are mutable, as in, the object itself is modified (no creation/dump for changes)
+### Python Errors
+- SyntaxError and IndentationError are reported before *any* code runs; the rest is reported during runtime
+- SyntaxError: "illegal" code, ex: `print("hi") print("there!") print("all on one line?...")`
+- IndentationError: didn't indent properly, ex: not indenting a `for` loop
+- ValueError: can't perform operation on that data type, ex: `int("hi")`
+- TypeError: similar to value error, ex: `"abc" + 42`
+- NameError: didn't initialize a variable before its use, ex: `print(greeting)`
+- Logic error: the code ran, but the output is wrong, ex: `42 * 1` when you meant `42 * 10` (this is also called a bug)
+### Python Libraries
 - Python Standard Library: https://docs.python.org/3/library/
-### Native Python
-- `print('hi', end='\n\n')` ----- print with a single space underneath (as if typing "hi" then hitting enter twice)
-    * `print('hi', end=' ')` -> `print('there!')` ----- two print statements on one line as in: `hi there!`
-- `['hi', 'lo'] + ['med']` --- `5 * ['hi', 'lo']`
-- `for i, col in enumerate(cols)` ----- this is the correct order
-- `string.count('a')` ----- count number of `'a'` in string
-- `(" ".join(['c','a','r'])).split(" ")` ----- make `'c a r'` then split back into `['c','a','r']`
-- `' 123 '.strip().isnumeric()` ----- deletes left/right whitespace, new lines, and tabs; returns True
-- `[x if x % 2 == 0 else x - 1 for x in [1,2,3,4,5]]` ----- returns `[0,2,2,4,4]`
-- `print(f"|{x:<8}|{y:<8}|{z:<8}|")` ----- formatted output
-- `food_list.sort(key=lambda x: len(x) * -1)` ----- sort food_list by descending string lengths
-    * Use lambda to create one-time functions or short functions
+- Standard libraries come with Python itself and require no additional installation
+- To install libraries not in the standard library, you can use pip, which comes with Python installation
+    * From command line (not python IDE or ipython): `pip install package_name_here` aka `pip install pandas` or `pip install numpy`
+
+## Python Specifics
+- Output with no return: `print("Hello world!")` - `print(x)` - `print(x * 3)`, `print("Hello!", end="\n\n\n\n\n")`
+    * Can print on same line using multiple print statements by changing `end`, ex: `print("Hello", end=" ")` -> `print("World!")`
+- Assignment: `x = 123` - `x = x + 1` - `x += 1` - `x *= 5` - `x /= 5` - `x //= 3` - `x -= 1`
+- Non-assignment: `x + 15` - `x * 3` - `x / 100` - `x // 2` - `x - 1.872`
+- Evaluation: `x == "Hello!"` - `x >= 5` - `x < 10` - `1 in [3,2,1,"Go!"]` - `x * 3 == 22`
+    * if/else: `if True: print("yup")` - `if False: print("never gonna see this")` --- `if x > 5: print("hi")` -> `else: print("yo")`
+    * while: `while True: print("forever repeating!")` - `while x > 5: print("forever repeating until x not greater than 5!")`
+- For-loop: `for x in [1,2,3,4,5]: print(x)` --- `for i, col in enumerate(columns)` (i starts at 0 and increments +1 each loop iteration)
+    * Immediately skip to next iteration of the loop with `continue` --- Immediately end the loop with `break`
+### Variables: String, Integer, Float, List, Dict
+- **String** as you'd expect: `x = "Hello"` -- `x + " " + "world!"` -- `f"{x} world!"` -- `"-"*50` (fifty dashes)
+    * Check out: `"e" in "Hello"` -- `"Hello".count('l')` -- `"Hello".split('e')` -- `"\n cool text\n  ".strip()` -- `"123".isnumeric()`
+    * Also check: `"5 is %20d" % 5` -- `"pi is %0.2f" % 3.14159265358` -- `f"|{123:<8}|{1:<8}|"`
+- **Integer** as you'd expect: `x = 1`; `x * 3`; `x / 2` (returns 0.5); `x // 2` (returns 0); `x + 3.1` (returns 4.1)
+- **Float** as you'd expect: `x = 2.5`; `x * 2` (returns 5.0); `x / 2` (returns 1.25); `x // 2` (returns 1.0)
+- **List** as you'd expect: `x = [6,8,2]`; `x + [3]` (returns [6,8,2,3]); `x * 2` (returns [6,8,2,6,8,2]); `x[1]` (returns 8)
+    * Check out: `6 in x` - `x[1:]` - `x[:2]` - `x[1:29]` - `" ".join(["Hello","World!"])` - `"".join(["a","b","c","d"])`
+    * Also check: `x.append(29)` - `x.extend([40,41,42])` - `52 + x.pop(0)` - `x[0] = 101` - `x.sort()` (this row causes permanent changes)
+        * Specify sort method: `food_list.sort(key=lambda x: len(x) * -1)` ----- sort food_list by descending string lengths
+    * Also check: `[d for d in x]` - `[d for d in x if d > 3]` (returns [6,8]) - `[d * 21 for d in x if d < 8]` (returns [126,42])
+        * These are list comprehensions; they can do element-wise changes and even filter using if/else
+        * Can get fairly complicated if you want, ex: `[x if x % 2 == 0 else x - 1 for x in [1,2,3,4,5]]` (returns `[0,2,2,4,4]`)
+- **Dict** as you'd expect: `x = {'i':1, 'cats':["Luna", "Milo"]}` --- `x["dogs"] = ["Spot"]` -> `x["dogs"][0]` (returns "Spot")
+    * Check out: `x.keys()` - `x.values()` - `"cats" in x.keys()` - `for key in x.keys(): print(x[key])`
+    * Also check: `x["dogs"].append("Max")` (permanently modifies x["dogs"]) - `{"a":{"b":{"c":{"d":1}}}}["a"]["b"]["c"]["d"]`
+- Convert to other type: `x = int(x)`, `x = float(x)`, `x = str(x)`, `x = dict(x)`, `x = list(x)`, ...
+### Variable: Class
+- Initialized with `class ClassName` or `class ClassName(param1, param2, ...)` --- start with capital letter typically for it
+- A class's methods are initialized with `def method_name(self, param1, param2, ...)`
+    * Use `def __init__(self, param1, param2, ...)` to store code that will run on class creation
+    * Code should go into `__init__` or into other methods... don't leave code exposed inside a function
+- An object is created via `cool_object1 = ClassName()` or `cool_object1 = ClassName(param1, param2, ...)`
+- A created object's methods are called via `cool_object1.method_name()` or `cool_object1.method_name(param1, param2, ...)`
+    * You do not need to assign the output of called methods to anything; methods will update the class
+    * EX: `def method1(self, name): self.cool_name = name` -> `cool_object1.method1("Tim")` -> `cool_object1.cool_name` returns "Tim"
+### Functions
+- Biggest usage is repeatability / store-away code in other files, ex: util.py, called via `import filename` aka `import util`
+    * Directory traversal to import your function files: `from scripts/custom import util`, `from .. import cool_util`
+- Generally structured like this: `def function_name(param1, param2):` with an indented code block immediately following it
+    * Called in code after definition like this: `function_name(24, "hello", [1,2,3,4,5])`
+    * Can create empty functions by typing `pass` in the function's code block
+- Can also be created on the fly and stored to variables with `lambda`
+    * EX: `func = lambda param1, param2: param1 + param2` -> `func(2, 2)`
+    * Mainly used for short/temporary functions like this example that don't really require function definition somewhere
+### Oddities
 - Run code from string: `exec(string_containing_code)` --- `exec(module_name + "." + function_name + "(" + param_input + ")")`
     * Can't assign output of `exec` to a variable; must assign inside the `exec()` call
-### Python Details
-- Errors
-    * SyntaxError: "illegal" code, ex: `print("hi") print("there!")`, found before *any* code is ran
-    * IndentationError: didn't indent properly, ex: not indenting a `for` loop
-    * ValueError: can't perform operation on that data type, ex: `int("hi")`
-    * TypeError: similar to value error, ex: `"abc" + 42`
-    * NameError: didn't initialize a variable before its use, ex: `print(greeting)`
-    * Logic error: the code ran, but the output is wrong, ex: `42 * 1` when you meant `42 * 10` (this is also called a bug)
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+<!-- 
+#     #               ######                    ######                                     
+##    # #    # #    # #     # #   #             #     #   ##   #    # #####    ##    ####  
+# #   # #    # ##  ## #     #  # #              #     #  #  #  ##   # #    #  #  #  #      
+#  #  # #    # # ## # ######    #      #####    ######  #    # # #  # #    # #    #  ####  
+#   # # #    # #    # #         #               #       ###### #  # # #    # ######      # 
+#    ## #    # #    # #         #               #       #    # #   ## #    # #    # #    # 
+#     #  ####  #    # #         #               #       #    # #    # #####  #    #  ####  
+ -->
+
+# NumPy Pandas
 
 <!-- Polished -->
 ## NumPy
