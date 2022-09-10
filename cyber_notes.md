@@ -14,7 +14,8 @@
 
 I.    [Activity Logging and Search      ](#logs-and-search)
 1.    [System Logs                      ](#system-logs)
-2.    [Log Aggregation                  ](#log-aggregation)
+2.    [Implementing Logging             ](#implementing-logging)
+3.    [Log Aggregation                  ](#log-aggregation)
 
 II.   [ELK Stack                        ](#elk-stack)
 1.    [ELK Stack Basics                 ](#elk-stack-basics)
@@ -128,6 +129,8 @@ XI.   [Attackers and Strategies         ](#attackers-and-strategies)
 - API for collecting network traffic
 - Saves packets and a lot of various metadata, very popular and widely used
 - No mentioned downsides
+### Zeek Logs
+- Network activity capture, very useful addition to PCAP
 ### Firewall Logs
 - Monitors how firewall handles traffic, identifies suspicious activity (real-time)
 - Connection: Time and date, kind (TCP/UDP), receiving port, and dropped/accepted packets
@@ -142,6 +145,9 @@ XI.   [Attackers and Strategies         ](#attackers-and-strategies)
 - Extremely detailed information about DNS data that is sent/received by DNS server
 - Records requested, client IP, request flags, zone transfers, query logs, rate timing, and DNS signing
 - No mentioned downsides- built to identify various DNS attacks (hijack, tunnel, DOS, C2, cache poisoning)
+
+## Implementing Logging
+- 
 
 ## Log Aggregation
 - The effort to bring disparate log sources into one unified picture
