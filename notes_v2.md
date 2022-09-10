@@ -15,93 +15,106 @@
 I.    [General Notes                 ](#general-notes)
 1.    [Advice                        ](#advice)
 2.    [Storytelling                  ](#storytelling)
-3.    [Datasets                      ](#datasets)
+3.    [Systems Development Lifecycle ](#systems-development-lifecycle-(SDLC))
+4.    [Datasets                      ](#datasets)
 
-II.   [Software                      ](#software)
+II.   [Algorithms                    ](#algorithms)
+1.    [Algorithm Basics              ](#algorithms-basics)
+
+III.  [Data Structures               ](#data-structures)
+1.    [Data Structures Basics        ](#data-structures-basics)
+2.    [Data Structures Examples      ](#data-structures-examples)
+
+IV.   [git                           ](#git)
+1.    [git Basics                    ](#git-basics)
+
+V.    [Software                      ](#software)
 1.    [Terminal                      ](#terminal)
-2.    [Git                           ](#git)
-3.    [Jupyter Notebook              ](#jupyter-notebook)
-4.    [Excel & Google Sheets         ](#excel-&-google-sheets)
-5.    [Power BI                      ](#power-bi)
-6.    [Sequel Ace                    ](#sequel-ace)
-7.    [Visual Studio Code            ](#vs-code)
-8.    [Tableau Public                ](#tableau-public)
+2.    [Jupyter Notebook              ](#jupyter-notebook)
+3.    [Excel & Google Sheets         ](#excel-&-google-sheets)
+4.    [Power BI                      ](#power-bi)
+5.    [Sequel Ace                    ](#sequel-ace)
+6.    [Visual Studio Code            ](#vs-code)
+7.    [Tableau Public                ](#tableau-public)
 
-III.  [Regular Expressions (REGEX)   ](#regular-expressions-(regex))
+VI.   [Regular Expressions (REGEX)   ](#regular-expressions-(regex))
 1.    [REGEX                         ](#regex)
 
-IV.   [APIs & Scraping               ](#apis-&-scraping)
+VII.  [APIs & Scraping               ](#apis-&-scraping)
 1.    [APIs                          ](#apis)
 2.    [Web Scraping                  ](#web-scraping)
 
-V.    [SQL                           ](#sql)
+VIII. [SQL                           ](#sql)
 1.    [SQL Basics                    ](#sql-basics)
 2.    [SQL Intermediate              ](#sql-intermediate)
 
-VI.   [Apache Spark                  ](#apache-spark)
+IX.   [Apache Spark                  ](#apache-spark)
 1.    [Spark Wrangling               ](#spark-wrangling)
 2.    [Spark MAchine Learning        ](#spark-machine-learning)
 
-VII.  [Python, NumPy, Pandas         ](#python-numpy-pandas)
+X.    [Python, NumPy, Pandas         ](#python-numpy-pandas)
 1.    [Python                        ](#python)
 2.    [NumPy                         ](#numpy)
 3.    [Pandas                        ](#pandas)
 
-VIII. [Matplotlib & Seaborn          ](#matplotlib-&-seaborn)
+XI.   [Matplotlib & Seaborn          ](#matplotlib-&-seaborn)
 1.    [Visualization in Python       ](#overall-notes-for-visualizations-in-python)
 2.    [Matplotlib                    ](#matplotlib)
 3.    [Seaborn                       ](#seaborn)
 
-IX.   [Exploration                   ](#exploration)
+XII.  [Exploration                   ](#exploration)
 1.    [Exploration Prep              ](#exploration-prep)
 2.    [Exploration Visualization     ](#exploration-visualization)
 3.    [Feature Engineering           ](#feature-engineering)
 4.    [Feature Selection             ](#performance-based-feature-selection)
 
-X.    [Algorithmic Clustering        ](#algorithmic-clustering)
+XIII. [Algorithmic Clustering        ](#algorithmic-clustering)
 1.    [Cluster Assignment            ](#cluster-assignment)
 2.    [K-Means Clustering            ](#k-means-clustering)
 3.    [Hierarchical Clustering       ](#hierarchical-clustering)
 4.    [DBSCAN                        ](#dbscan)
 
-XI.   [Statistics                    ](#statistics)
+XIV.  [Statistics                    ](#statistics)
 1.    [Metrics                       ](#metrics)
 2.    [Hypothesis Testing            ](#hypothesis-testing)
 3.    [Probability                   ](#probability)
 
-XII.  [Model Preparation             ](#model-preparation)
+XV.   [Model Preparation             ](#model-preparation)
 1.    [Encoding                      ](#encoding)
 2.    [Scaling                       ](#scaling)
 3.    [Resampling                    ](#resampling)
 
-XIII. [Classification                ](#classification)
+XVI.  [Classification                ](#classification)
 1.    [Classification Overview       ](#classification-overview)
 2.    [Classification Example        ](#classification-example)
 
-XIV.  [Regression                    ](#regression)
+XVII. [Regression                    ](#regression)
 1.    [Regression Overview           ](#regression-overview)
 2.    [Regression Example            ](#regression-example)
 
-XV.   [Time-Series                   ](#time-series)
+XVIII.[Time-Series                   ](#time-series)
 1.    [Time-Series Overview          ](#time-series-overview)
 2.    [Time-Series Example           ](#time-series-example)
 
-XVI.  [Natural Language Processing   ](#natural-language-processing-(NLP))
+XIX. [Natural Language Processing   ](#natural-language-processing-(NLP))
 1.    [NLP Overview                  ](#nlp-overview)
 2.    [NLP Example                   ](#nlp-example)
 
-XVII. [Anomaly Detection             ](#anomaly-detection)
+XX.   [Anomaly Detection             ](#anomaly-detection)
 1.    [Anomaly Detection Strategy    ](#anomaly-detection-strategy)
 2.    [Anomaly Detection Syntax      ](#anomaly-detection-syntax)
 3.    [Anomaly Detection Examples    ](#anomaly-detection-examples)
 
-XVIII.[Deep Learning                 ](#deep-learning)
+XXI.  [Deep Learning                 ](#deep-learning)
+1.    [Deep Learning Basics          ](#deep-learning-basics)
 
-XIX.  [Computer Vision               ](#computer-vision)
+XXII. [Computer Vision               ](#computer-vision)
+1.    [Computer Vision Basics        ](#computer-vision-basics)
 
-XX.   [Cross-Validation              ](#cross-validation)
+XXIII.[Cross-Validation              ](#cross-validation)
+1.    [Cross-Validation Basics       ](#cross-validation-basics)
 
-XXI.  [Deployment                    ](#deployment)
+XXIV. [Deployment                    ](#deployment)
 1.    [Docker                        ](#docker)
 2.    [Flask                         ](#flask)
 3.    [Apache Kafka                  ](#apache-kafka)
@@ -176,6 +189,27 @@ XXI.  [Deployment                    ](#deployment)
 - Start with overview in presentation, dissect the focus later (start with churn v not churned, then dive into churn data)
 - Relate the problem to the audience's interests and focus for maximum effect
 
+## Systems Development Lifecycle (SDLC)
+- Framework for delivering software
+- Waterfall: takes it one step at a time, fully-complete each step then move on
+    * All requirements defined ahead of time; inflexible for later requirements or issues, and may be restarted
+- AGILE: quickly builds from scratch to small, doing the full "spiral", then repeats from small to big, big to bigger, and onward
+    * Flexible for requirement changes or issues; but who knows when to call things "finished"
+### Steps of SDLC
+- Analysis: choosing which requirements to build for
+    * Software requirements specification (SRS) used to define all finalized requirements (includes UML diagrams)
+- Design: choosing the solutions to solve those requirements
+- Implementation: building the chosen solutions
+- Testing: ensuring the built solutions are functional and solve the requirements
+### Universal Modeling Language (UML) Diagrams
+- Often used in the SDLC
+    * Analysis: Use case diagram, ex: user choices, choice results
+    * Design: Class diagram, ex: classes and their initialized variables (with types!), inheritance arrows, "unfilled diamond"
+    * Implementation: Activity diagram, a flowchart displaying the logic of the program plus code language
+    * Testing: Sequence diagram, ex: client-server communication sequence
+- Each diagram is not only prescribable to a single element of SDLC; they overlap somewhat
+    * EX: can use the Use case diagram for multiple... but, you should use multiple/different diagrams
+
 <!-- Polished -->
 ## Datasets
 ### From Python
@@ -204,29 +238,102 @@ XXI.  [Deployment                    ](#deployment)
 
 
 <!-- 
- #####                                                  
-#     #  ####  ###### ##### #    #   ##   #####  ###### 
-#       #    # #        #   #    #  #  #  #    # #      
- #####  #    # #####    #   #    # #    # #    # #####  
-      # #    # #        #   # ## # ###### #####  #      
-#     # #    # #        #   ##  ## #    # #   #  #      
- #####   ####  #        #   #    # #    # #    # ###### 
+   #                                                             
+  # #   #       ####   ####  #####  # ##### #    # #    #  ####  
+ #   #  #      #    # #    # #    # #   #   #    # ##  ## #      
+#     # #      #      #    # #    # #   #   ###### # ## #  ####  
+####### #      #  ### #    # #####  #   #   #    # #    #      # 
+#     # #      #    # #    # #   #  #   #   #    # #    # #    # 
+#     # ######  ####   ####  #    # #   #   #    # #    #  ####  
 -->
 
-# Software
+# Algorithms
+
+## Algorithms Basics
+- Efficient computation; decreased "computational complexity" (runtime + memory)
+    * See also: space complexity (memory amount used), auxiliary space complexity (not including "n" datapoints)
+- Simple changes to slow code can speed it up immensely
+- Heuristic algorithms don't perfectly solve problems but are FAST (good enough solution, but much faster than great/perfect)
+    * EX: knapsack problem, add the highest-value item that can fit until no more items can be added (good, not perfect)
+- Knowing algorithms + use cases, and cases where algorithms don't work ("NP-complete"), is key to efficient code
+### Example Algorithms
+- Linear search: go element by element to check for a match
+- Binary search: when data is ordered, split in half and check left/right of split, then choose and split again
+- Bucket sort: using simpler operations to sort, then doing multiple complex-sort operations
+    * EX: Sorting words, sort first on starting letter (a, b, c, ...) into buckets, then sort all of a, then all of b, ...
+- Longest common substring
+- Dijkstra's shortest path
+### NP-Complete (lacking algorithms)
+- Cliques: Detecting when n points are interconnected from a graph of points
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
+######                          #####                                                               
+#     #   ##   #####   ##      #     # ##### #####  #    #  ####  ##### #    # #####  ######  ####  
+#     #  #  #    #    #  #     #         #   #    # #    # #    #   #   #    # #    # #      #      
+#     # #    #   #   #    #     #####    #   #    # #    # #        #   #    # #    # #####   ####  
+#     # ######   #   ######          #   #   #####  #    # #        #   #    # #####  #           # 
+#     # #    #   #   #    #    #     #   #   #   #  #    # #    #   #   #    # #   #  #      #    # 
+######  #    #   #   #    #     #####    #   #    #  ####   ####    #    ####  #    # ######  ####  
+-->
+
+# Data Structures
+
+## Data Structures Basics
+### Hash Table
+- Hash something into an array's index, store that something at that index
+- Hashing strategy is your choice; goal is to simplify lookups
+    * EX: if you're looking up names, why not hash first letter like: a->0, b->1, c->2, d->3, ...
+    * EX: if you're looking up values, why not hash first number like: 0->0, 1->1, 2->2, 3->3, ...
+- Linked lists are attached to each index to handle multi-attribution
+    * EX: name lookup, multiple names start with a; a->0, so append the (name, info) tuple onto the list at array[0]
+    * Result is ex: `array[0] = [("aaron", "tall"), ("abigail", "short")]` --- `array[1] = [("bobby", "short")]` --- ...
+- Lookups are much faster this way; hash the value you want to look up, then search in the short list for the info you want
+    * EX: name lookup for `"abigail"`: hash the name via `hash("abigail") -> 0` --- go to 0 via `array[0]` --- find `"abigail"` there
+    * Hash strategy should consider the length of the overall array and the length of each linked list; neither should be too long
+    * The "short lists" in the array can be linked lists for easier append/sort operations
+### Linked List
+- A list that doesn't have the structure of a typical array; instead, one item links to the next
+    * This structure doesn't exist in native Python but of course can be manually created (using classes; create class of each head)
+    * Involves a **head** (data/next combo), the **data**, and the loc of the **next** item (and sometimes the previous item...)
+    * A bit complicated to delete...
+- Excellent at handling problemsets involving sorting long arrays
+    * Just update the values of "next" for the head being moved and the head before it... done.
+    * Typical arrays involve placing the value being moved and shifting every value after it, which is inefficient
+- Can be simple linked (just has "next" in head), doubly linked ("next" and "previous"), and/or circular (last item links "next" to first)
+
+## Data Structures Examples
+### Hash Table - Linked Lists
+- 
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
+ ####  ##### ##### 
+#    #   #     #   
+#        #     #   
+#  ###   #     #   
+#    #   #     #   
+ ####  #####   #   
+-->
+
+# git
 
 <!-- Polished -->
-## Terminal
-- `mkdir`, `rmdir`, `rm`, `cp`, `mv`, `cd`, `ls`, `pwd`, `cwd`
-- `curl -O url_address` ----- copy down a file from a URL (often used for raw Github files)
-- Log in to a SQL server: `-u username -p -h ip_address` ----- -p prompts for a password
-- Create a new file using VS Code: `code filename.filetype`
-- Launch Jupyter Notebook server: `jupyter notebook`
-    * Need to have your PATH set up for this and have the software installed
-- Multi-line cursor: Hold command, clickdrag
-
-<!-- Polished -->
-## Git
+## git Basics
 - Excellent version control for files
 - Get your git set up: 
     1. Install Git on your computer: https://git-scm.com/downloads
@@ -258,7 +365,7 @@ XXI.  [Deployment                    ](#deployment)
     - Commit and push your .gitignore to your Github repository to start ignoring your secrets
 - Always start with creating a new Github repo, not a local one. Starting locally is annoying, gotta do several more steps
 - Access and modify your `git config` file (called .gitconfig): Navigate to home directory (`cd ~`) then type `code .gitconfig`
-### Git for Solo Dev Work
+### git for Solo Dev Work
 - No one's committing/pushing except you, so pushes are safe
 - Create an empty repository on Git then clone it down with `git clone`
 - Make changes to files as you need
@@ -270,7 +377,7 @@ XXI.  [Deployment                    ](#deployment)
     - Always use a commit message and keep the commit message useful, it's extremely helpful
 - Check that the commit went through: `git status` (should no longer see the files you added and committed in status)
 - Push the commit to Github: `git push`
-### Git for Team Dev Work
+### git for Team Dev Work
 - Team dev work is much more convoluted than solo dev work
 - Update your local files for changes made to the team repo using `git pull`
     - This command updates files you're not working with, and does not update files you're working with
@@ -292,6 +399,36 @@ XXI.  [Deployment                    ](#deployment)
 4. Delete the old folder after successfully pushing your work
 5. Move the new folder to where the old folder was- good as new!!
 
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
+ #####                                                  
+#     #  ####  ###### ##### #    #   ##   #####  ###### 
+#       #    # #        #   #    #  #  #  #    # #      
+ #####  #    # #####    #   #    # #    # #    # #####  
+      # #    # #        #   # ## # ###### #####  #      
+#     # #    # #        #   ##  ## #    # #   #  #      
+ #####   ####  #        #   #    # #    # #    # ###### 
+-->
+
+# Software
+
+<!-- Polished -->
+## Terminal
+- `mkdir`, `rmdir`, `rm`, `cp`, `mv`, `cd`, `ls`, `pwd`, `cwd`
+- `curl -O url_address` ----- copy down a file from a URL (often used for raw Github files)
+- Log in to a SQL server: `-u username -p -h ip_address` ----- -p prompts for a password
+- Create a new file using VS Code: `code filename.filetype`
+- Launch Jupyter Notebook server: `jupyter notebook`
+    * Need to have your PATH set up for this and have the software installed
+- Multi-line cursor: Hold command, clickdrag
+
 <!-- Polished -->
 ## Jupyter Notebook
 - Excellent interface for iPython with easy-to-use UI
@@ -300,8 +437,6 @@ XXI.  [Deployment                    ](#deployment)
 - Edit mode: TAB for autocomplete of methods/variables/filenames, Shift TAB for full context at cursor location
 - Edit mode: Split cell into two cells at cursor with option shift -
 - Hold option and left click to drag multi-line cursor
-- iPython "Magic" functions start with `%%`, ex: `%%writefile` which is aliased in jupyterNB as `file`
-    - `for file in os.listdir(os.getcwd()):` is same as `for %%writefile in os.listdir(os.getcwd())`
 
 <!-- Polished -->
 ## Excel & Google Sheets
@@ -730,7 +865,8 @@ mean_x_given_g1_g2 = df.groupBy('g1').pivot('g2').agg(mean('x'))
 ## Python
 - Python Standard Library: https://docs.python.org/3/library/
 ### Native Python
-- `print('hi', end='\n\n')`
+- `print('hi', end='\n\n')` ----- print with a single space underneath (as if typing "hi" then hitting enter twice)
+    * `print('hi', end=' ')` -> `print('there!')` ----- two print statements on one line as in: `hi there!`
 - `['hi', 'lo'] + ['med']` --- `5 * ['hi', 'lo']`
 - `for i, col in enumerate(cols)` ----- this is the correct order
 - `string.count('a')` ----- count number of `'a'` in string
@@ -740,6 +876,16 @@ mean_x_given_g1_g2 = df.groupBy('g1').pivot('g2').agg(mean('x'))
 - `print(f"|{x:<8}|{y:<8}|{z:<8}|")` ----- formatted output
 - `food_list.sort(key=lambda x: len(x) * -1)` ----- sort food_list by descending string lengths
     * Use lambda to create one-time functions or short functions
+- Run code from string: `exec(string_containing_code)` --- `exec(module_name + "." + function_name + "(" + param_input + ")")`
+    * Can't assign output of `exec` to a variable; must assign inside the `exec()` call
+### Python Details
+- Errors
+    * SyntaxError: "illegal" code, ex: `print("hi") print("there!")`, found before *any* code is ran
+    * IndentationError: didn't indent properly, ex: not indenting a `for` loop
+    * ValueError: can't perform operation on that data type, ex: `int("hi")`
+    * TypeError: similar to value error, ex: `"abc" + 42`
+    * NameError: didn't initialize a variable before its use, ex: `print(greeting)`
+    * Logic error: the code ran, but the output is wrong, ex: `42 * 1` when you meant `42 * 10` (this is also called a bug)
 
 <!-- Polished -->
 ## NumPy
@@ -1924,6 +2070,14 @@ pd.Series(dict(zip(dv.get_feature_names(), tree.feature_importances_))).sort_val
 2. Move to statistical outliers for each numerical feature using Z-score and IQR rule
 3. Move to trend (time-relevant) outliers in categorical/numerical features using Bollinger bands
 4. Document observations and potential lines of investigation
+### Behavioral Anomalies Examples
+- A user accessed, read, changed or copied files that are not associated with their work routine.
+- A user copied files to a personal workstation when policy permits working with them only from a specialized system.
+- A user accessed critical systems or data outside of normal business hours.
+- A user tried to access a system not associated with their work.
+- A user account was used to log on from multiple endpoints at the same time, or different users logged on from the same endpoint at the same time.
+- There was an unusually large number of manipulations with sensitive data.
+- Old accounts became active again.
 ### Prosecuting Anomalies by Availability
 - Timestamps enable a lot of anomaly detection actions
 - User identifiers (ex: user1, user2, ...; ex: admin, user, ...; ex: group1, group2, ...) also enable a lot
@@ -2049,7 +2203,7 @@ plt.xlim(pd.to_datetime('2013'), pd.to_datetime('2014'))
 # Deep Learning
 
 <!-- Needs work -->
-## Deep Learning
+## Deep Learning Basics
 - Obscured machine learning
 - We'll use Tensor Flow, the Keras front end
     * PyTorch is a competitor to Tensor Flow
@@ -2111,7 +2265,7 @@ print(f'accuracy of network on test set: {test_acc}')
 # Computer Vision
 
 <!-- Needs work -->
-## Computer Vision
+## Computer Vision Basics
 - 
 
 [[Return to Top]](#table-of-contents)
@@ -2131,10 +2285,10 @@ print(f'accuracy of network on test set: {test_acc}')
  #####  #    #  ####   ####   ####           #    #    # ###### # #####  #    #   #   #  ####  #    # 
 -->
 
-# Cross Validation
+# Cross-Validation
 
 <!-- Needs work -->
-## Cross-Validation
+## Cross-Validation Basics
 - K-fold cross validation: split *train* into more train-test splits, average prediction score across fold combinations
 - Grid Search: use K-fold cross validation to determine best max_depth train split
 ### K-Fold Cross Validation
