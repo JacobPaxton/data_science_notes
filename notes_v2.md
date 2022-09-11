@@ -12,115 +12,118 @@
 
 # Table of Contents
 
-I.    [General Notes                 ](#general-notes)
-1.    [Advice                        ](#advice)
-2.    [Storytelling                  ](#storytelling)
-3.    [Systems Development Lifecycle ](#systems-development-lifecycle-(SDLC))
-4.    [Datasets                      ](#datasets)
+I.      [Approaching Data              ](#approaching-data)
+1.      [Advice                        ](#advice)
+2.      [Datasets                      ](#datasets)
 
-II.   [Algorithms                    ](#algorithms)
-1.    [Algorithm Basics              ](#algorithms-basics)
+II.     [Algorithms                    ](#algorithms)
+1.      [Algorithm Basics              ](#algorithms-basics)
 
-III.  [Data Structures               ](#data-structures)
-1.    [Data Structures Basics        ](#data-structures-basics)
-2.    [Data Structures Examples      ](#data-structures-examples)
+III.    [Data Structures               ](#data-structures)
+1.      [Data Structures Basics        ](#data-structures-basics)
+2.      [Data Structures Examples      ](#data-structures-examples)
 
-IV.   [git                           ](#git)
-1.    [git Basics                    ](#git-basics)
+IV.     [git                           ](#git)
+1.      [Terminal                      ](#terminal)
+2.      [git Basics                    ](#git-basics)
+3.      [git for Solo Dev Work         ](#git-for-solo-work)
+4.      [git for Tean Dev Work         ](#git-for-team-dev-work)
 
-V.    [Software                      ](#software)
-1.    [Terminal                      ](#terminal)
-2.    [Jupyter Notebook              ](#jupyter-notebook)
-3.    [Excel & Google Sheets         ](#excel-&-google-sheets)
-4.    [Power BI                      ](#power-bi)
-5.    [Sequel Ace                    ](#sequel-ace)
-6.    [Visual Studio Code            ](#vs-code)
-7.    [Tableau Public                ](#tableau-public)
+V.      [Regular Expressions (REGEX)   ](#regular-expressions-(regex))
+1.      [REGEX                         ](#regex)
 
-VI.   [Regular Expressions (REGEX)   ](#regular-expressions-(regex))
-1.    [REGEX                         ](#regex)
+VI.     [APIs & Scraping               ](#apis-&-scraping)
+1.      [APIs                          ](#apis)
+2.      [Web Scraping                  ](#web-scraping)
 
-VII.  [APIs & Scraping               ](#apis-&-scraping)
-1.    [APIs                          ](#apis)
-2.    [Web Scraping                  ](#web-scraping)
+VII.    [SQL                           ](#sql)
+1.      [SQL Basics                    ](#sql-basics)
+2.      [SQL Intermediate              ](#sql-intermediate)
 
-VIII. [SQL                           ](#sql)
-1.    [SQL Basics                    ](#sql-basics)
-2.    [SQL Intermediate              ](#sql-intermediate)
+VIII.   [Apache Spark                  ](#apache-spark)
+1.      [Spark Wrangling               ](#spark-wrangling)
+2.      [Spark MAchine Learning        ](#spark-machine-learning)
 
-IX.   [Apache Spark                  ](#apache-spark)
-1.    [Spark Wrangling               ](#spark-wrangling)
-2.    [Spark MAchine Learning        ](#spark-machine-learning)
+IX.     [Python                        ](#python)
+1.      [Python Basics                 ](#python-basics)
+2.      [Python Specifics              ](#python-specifics)
 
-X.    [Python                        ](#python)
-1.    [Python Basics                 ](#python-basics)
-2.    [Python Specifics              ](#python-specifics)
+X.      [NumPy and Pandas              ](#numpy-pandas)
+1.      [NumPy                         ](#numpy)
+2.      [Pandas                        ](#pandas)
 
-XI.   [NumPy and Pandas              ](#numpy-pandas)
-2.    [NumPy                         ](#numpy)
-3.    [Pandas                        ](#pandas)
+XI.     [Matplotlib & Seaborn          ](#matplotlib-&-seaborn)
+1.      [Visualization in Python       ](#overall-notes-for-visualizations-in-python)
+2.      [Matplotlib                    ](#matplotlib)
+3.      [Seaborn                       ](#seaborn)
 
-XII.  [Matplotlib & Seaborn          ](#matplotlib-&-seaborn)
-1.    [Visualization in Python       ](#overall-notes-for-visualizations-in-python)
-2.    [Matplotlib                    ](#matplotlib)
-3.    [Seaborn                       ](#seaborn)
+XII.    [Exploration                   ](#exploration)
+1.      [Exploration Prep              ](#exploration-prep)
+2.      [Exploration Visualization     ](#exploration-visualization)
+3.      [Feature Engineering           ](#feature-engineering)
+4.      [Feature Selection             ](#performance-based-feature-selection)
 
-XIII. [Exploration                   ](#exploration)
-1.    [Exploration Prep              ](#exploration-prep)
-2.    [Exploration Visualization     ](#exploration-visualization)
-3.    [Feature Engineering           ](#feature-engineering)
-4.    [Feature Selection             ](#performance-based-feature-selection)
+XIII.   [Algorithmic Clustering        ](#algorithmic-clustering)
+1.      [Cluster Assignment            ](#cluster-assignment)
+2.      [K-Means Clustering            ](#k-means-clustering)
+3.      [Hierarchical Clustering       ](#hierarchical-clustering)
+4.      [DBSCAN                        ](#dbscan)
 
-XIV.  [Algorithmic Clustering        ](#algorithmic-clustering)
-1.    [Cluster Assignment            ](#cluster-assignment)
-2.    [K-Means Clustering            ](#k-means-clustering)
-3.    [Hierarchical Clustering       ](#hierarchical-clustering)
-4.    [DBSCAN                        ](#dbscan)
+XIV.    [Statistics                    ](#statistics)
+1.      [Metrics                       ](#metrics)
+2.      [Hypothesis Testing            ](#hypothesis-testing)
+3.      [Probability                   ](#probability)
 
-XV.   [Statistics                    ](#statistics)
-1.    [Metrics                       ](#metrics)
-2.    [Hypothesis Testing            ](#hypothesis-testing)
-3.    [Probability                   ](#probability)
+XV.     [Analytic Software             ](#analytic-software)
+2.      [Jupyter Notebook              ](#jupyter-notebook)
+3.      [Excel & Google Sheets         ](#excel-&-google-sheets)
+4.      [Power BI                      ](#power-bi)
+6.      [Visual Studio Code            ](#vs-code)
+7.      [Tableau Public                ](#tableau-public)
 
-XVI.  [Model Preparation             ](#model-preparation)
-1.    [Encoding                      ](#encoding)
-2.    [Scaling                       ](#scaling)
-3.    [Resampling                    ](#resampling)
+XVI.    [Model Preparation             ](#model-preparation)
+1.      [Encoding                      ](#encoding)
+2.      [Scaling                       ](#scaling)
+3.      [Resampling                    ](#resampling)
 
-XVII. [Classification                ](#classification)
-1.    [Classification Overview       ](#classification-overview)
-2.    [Classification Example        ](#classification-example)
+XVII.   [Classification                ](#classification)
+1.      [Classification Overview       ](#classification-overview)
+2.      [Classification Example        ](#classification-example)
 
-XVIII.[Regression                    ](#regression)
-1.    [Regression Overview           ](#regression-overview)
-2.    [Regression Example            ](#regression-example)
+XVIII.  [Regression                    ](#regression)
+1.      [Regression Overview           ](#regression-overview)
+2.      [Regression Example            ](#regression-example)
 
-XIX.  [Time-Series                   ](#time-series)
-1.    [Time-Series Overview          ](#time-series-overview)
-2.    [Time-Series Example           ](#time-series-example)
+XIX.    [Time-Series                   ](#time-series)
+1.      [Time-Series Overview          ](#time-series-overview)
+2.      [Time-Series Example           ](#time-series-example)
 
-XX.   [Natural Language Processing   ](#natural-language-processing-(NLP))
-1.    [NLP Overview                  ](#nlp-overview)
-2.    [NLP Example                   ](#nlp-example)
+XX.     [Natural Language Processing   ](#natural-language-processing-(NLP))
+1.      [NLP Overview                  ](#nlp-overview)
+2.      [NLP Example                   ](#nlp-example)
 
-XXI.  [Anomaly Detection             ](#anomaly-detection)
-1.    [Anomaly Detection Strategy    ](#anomaly-detection-strategy)
-2.    [Anomaly Detection Syntax      ](#anomaly-detection-syntax)
-3.    [Anomaly Detection Examples    ](#anomaly-detection-examples)
+XXI.    [Anomaly Detection             ](#anomaly-detection)
+1.      [Anomaly Detection Strategy    ](#anomaly-detection-strategy)
+2.      [Anomaly Detection Syntax      ](#anomaly-detection-syntax)
+3.      [Anomaly Detection Examples    ](#anomaly-detection-examples)
 
-XXII. [Deep Learning                 ](#deep-learning)
-1.    [Deep Learning Basics          ](#deep-learning-basics)
+XXII.   [Deep Learning                 ](#deep-learning)
+1.      [Deep Learning Basics          ](#deep-learning-basics)
 
-XXIII.[Computer Vision               ](#computer-vision)
-1.    [Computer Vision Basics        ](#computer-vision-basics)
+XXIII.  [Computer Vision               ](#computer-vision)
+1.      [Computer Vision Basics        ](#computer-vision-basics)
 
-XXIV. [Cross-Validation              ](#cross-validation)
-1.    [Cross-Validation Basics       ](#cross-validation-basics)
+XXIV.   [Cross-Validation              ](#cross-validation)
+1.      [Cross-Validation Basics       ](#cross-validation-basics)
 
-XXV.  [Deployment                    ](#deployment)
-1.    [Docker                        ](#docker)
-2.    [Flask                         ](#flask)
-3.    [Apache Kafka                  ](#apache-kafka)
+XXV.    [Deployment                    ](#deployment)
+1.      [Docker                        ](#docker)
+2.      [Flask                         ](#flask)
+3.      [Apache Kafka                  ](#apache-kafka)
+
+XXVI.   [Stakeholders                  ](#stakeholders)
+1.      [Storytelling                  ](#storytelling)
+2.      [Systems Development Lifecycle ](#systems-development-lifecycle-sdlc)
 
 <br>
 
@@ -133,16 +136,16 @@ XXV.  [Deployment                    ](#deployment)
 
 
 <!-- 
-#     #                            
-##    #  ####  ##### ######  ####  
-# #   # #    #   #   #      #      
-#  #  # #    #   #   #####   ####  
-#   # # #    #   #   #           # 
-#    ## #    #   #   #      #    # 
-#     #  ####    #   ######  ####  
+   #                                                                        ######                      
+  # #   #####  #####  #####   ####    ##    ####  #    # # #    #  ####     #     #   ##   #####   ##   
+ #   #  #    # #    # #    # #    #  #  #  #    # #    # # ##   # #    #    #     #  #  #    #    #  #  
+#     # #    # #    # #    # #    # #    # #      ###### # # #  # #         #     # #    #   #   #    # 
+####### #####  #####  #####  #    # ###### #      #    # # #  # # #  ###    #     # ######   #   ###### 
+#     # #      #      #   #  #    # #    # #    # #    # # #   ## #    #    #     # #    #   #   #    # 
+#     # #      #      #    #  ####  #    #  ####  #    # # #    #  ####     ######  #    #   #   #    # 
 -->
 
-# General Notes
+# Approaching Data
 
 <!-- Polished -->
 ## Advice
@@ -151,67 +154,6 @@ XXV.  [Deployment                    ](#deployment)
 ### Tidy Data
 - Tidying Data: https://vita.had.co.nz/papers/tidy-data.pdf
 - One value per cell: split out multi-value cells, 'melt' one-hot columns into single column, handle nulls
-
-<!-- Polished -->
-## Storytelling
-- Data requires velocity to be useful
-- Finding relationships and stories in data, documenting is and isn'ts
-- Goal is to remove redundant/unimportant variables for the story
-- Hypothesize and visualize loop, and if that isn't enough, run statistical tests
-- "What data sources do we have, what are customers doing, how are we reaching people..."
-- "What is our observation???"
-    * titanic_db observations are... people on the titanic.
-### Trello
-- Requirements Stage: Talk with stakeholders about their requirements and a timeline
-- Decision Stage: Decide which requirements you will be able to complete
-    * Goal is to complete *all* user requirements for this "sprint" (the timeline)
-    * You choose how in-depth to go for each requirement
-### Stakeholders
-- Move functions and analysis to separate .ipynb as required for stakeholders
-    * Stakeholders want just the end product: give them it
-    * Stakeholders want the models and end product: give them it
-    * Stakeholders want everything: give them everything
-### Visualization Considerations
-- Expert-level visualizations != presentation-level visualization
-    * The pivot tables are more appropriate for Appendix
-    * If the audience has to read it, don't include it
-- Serve the "why" first, then follow with the specifics
-    * Leading with specifics will lose your audience
-- Give the "why" some amplifying, relative information to help seat your audience
-    * Avoid cluttering the "why" with too much amplification
-- Design the velocity with your audience in mind
-- Prepare to Create; Talk and Listen; Sketch; Prototype
-    * Clear physical and mental room; Know your data; Understand your audience and Big Idea
-    * Determine which framework to use (persuasive, man-in-hole, story), determine context, challenge, and solution
-    * Understand your audience and use an appropriate approach
-    * A topic isn't a big idea... use your chances to express the big idea
-    * Explain out loud what your project is, take notes of feedback, make corrections [I'm working on... I'm trying to show... Why...]
-    * Use everything so far to sketch out your ideas (brainstorm)
-    * Refine the sketches into presentation material
-- A non-correlation can be more important than a correlation
-- Start with overview in presentation, dissect the focus later (start with churn v not churned, then dive into churn data)
-- Relate the problem to the audience's interests and focus for maximum effect
-
-## Systems Development Lifecycle (SDLC)
-- Framework for delivering software
-- Waterfall: takes it one step at a time, fully-complete each step then move on
-    * All requirements defined ahead of time; inflexible for later requirements or issues, and may be restarted
-- AGILE: quickly builds from scratch to small, doing the full "spiral", then repeats from small to big, big to bigger, and onward
-    * Flexible for requirement changes or issues; but who knows when to call things "finished"
-### Steps of SDLC
-- Analysis: choosing which requirements to build for
-    * Software requirements specification (SRS) used to define all finalized requirements (includes UML diagrams)
-- Design: choosing the solutions to solve those requirements
-- Implementation: building the chosen solutions
-- Testing: ensuring the built solutions are functional and solve the requirements
-### Universal Modeling Language (UML) Diagrams
-- Often used in the SDLC
-    * Analysis: Use case diagram, ex: user choices, choice results
-    * Design: Class diagram, ex: classes and their initialized variables (with types!), inheritance arrows, "unfilled diamond"
-    * Implementation: Activity diagram, a flowchart displaying the logic of the program plus code language
-    * Testing: Sequence diagram, ex: client-server communication sequence
-- Each diagram is not only prescribable to a single element of SDLC; they overlap somewhat
-    * EX: can use the Use case diagram for multiple... but, you should use multiple/different diagrams
 
 <!-- Polished -->
 ## Datasets
@@ -336,8 +278,19 @@ XXV.  [Deployment                    ](#deployment)
 # git
 
 <!-- Polished -->
+## Terminal
+- `mkdir`, `rmdir`, `rm`, `cp`, `mv`, `cd`, `ls`, `pwd`, `cwd`
+- `curl -O url_address` ----- copy down a file from a URL (often used for raw Github files)
+- Log in to a SQL server: `-u username -p -h ip_address` ----- -p prompts for a password
+- Create a new file using VS Code: `code filename.filetype`
+- Launch Jupyter Notebook server: `jupyter notebook`
+    * Need to have your PATH set up for this and have the software installed
+- Multi-line cursor: Hold command, clickdrag
+
+<!-- Polished -->
 ## git Basics
 - Excellent version control for files
+### git Setup
 - Get your git set up: 
     1. Install Git on your computer: https://git-scm.com/downloads
     2. Create Github account
@@ -368,7 +321,8 @@ XXV.  [Deployment                    ](#deployment)
     - Commit and push your .gitignore to your Github repository to start ignoring your secrets
 - Always start with creating a new Github repo, not a local one. Starting locally is annoying, gotta do several more steps
 - Access and modify your `git config` file (called .gitconfig): Navigate to home directory (`cd ~`) then type `code .gitconfig`
-### git for Solo Dev Work
+
+## git for Solo Work
 - No one's committing/pushing except you, so pushes are safe
 - Create an empty repository on Git then clone it down with `git clone`
 - Make changes to files as you need
@@ -380,7 +334,8 @@ XXV.  [Deployment                    ](#deployment)
     - Always use a commit message and keep the commit message useful, it's extremely helpful
 - Check that the commit went through: `git status` (should no longer see the files you added and committed in status)
 - Push the commit to Github: `git push`
-### git for Team Dev Work
+
+## git for Team Dev Work
 - Team dev work is much more convoluted than solo dev work
 - Update your local files for changes made to the team repo using `git pull`
     - This command updates files you're not working with, and does not update files you're working with
@@ -394,129 +349,13 @@ XXV.  [Deployment                    ](#deployment)
     - It maps the local branch to the Github branch like this: `git push origin name_of_local_branch_to_send_up:name_of_GitHub_branch_to_receive`
     - Creating a new branch is always very safe because it does not overwrite any work, it's separate
 - For the new branch, create a merge request (do this on Github)
-## Resolving Merge Conflicts
+### Resolving Merge Conflicts
 - If you make a mistake and have a "merge conflict", this is how to resolve the issue (my method):
 1. Pull the Github repo down to a new folder using `git clone`
 2. Copy the changed files manually to the new folder's repo that you just created and cloned
 3. Run your Terminal/BASH/CMD in that new folder and do the `git add filename` `git commit -m "message"` `git push` as normal
 4. Delete the old folder after successfully pushing your work
 5. Move the new folder to where the old folder was- good as new!!
-
-[[Return to Top]](#table-of-contents)
-
-
-
-
-
-
-
-<!-- 
- #####                                                  
-#     #  ####  ###### ##### #    #   ##   #####  ###### 
-#       #    # #        #   #    #  #  #  #    # #      
- #####  #    # #####    #   #    # #    # #    # #####  
-      # #    # #        #   # ## # ###### #####  #      
-#     # #    # #        #   ##  ## #    # #   #  #      
- #####   ####  #        #   #    # #    # #    # ###### 
--->
-
-# Software
-
-<!-- Polished -->
-## Terminal
-- `mkdir`, `rmdir`, `rm`, `cp`, `mv`, `cd`, `ls`, `pwd`, `cwd`
-- `curl -O url_address` ----- copy down a file from a URL (often used for raw Github files)
-- Log in to a SQL server: `-u username -p -h ip_address` ----- -p prompts for a password
-- Create a new file using VS Code: `code filename.filetype`
-- Launch Jupyter Notebook server: `jupyter notebook`
-    * Need to have your PATH set up for this and have the software installed
-- Multi-line cursor: Hold command, clickdrag
-
-<!-- Polished -->
-## Jupyter Notebook
-- Excellent interface for iPython with easy-to-use UI
-- Command mode for cell operations, edit mode for editing lines
-- Command mode: dd for cell deletion, y for code cell, m for markdown cell
-- Edit mode: TAB for autocomplete of methods/variables/filenames, Shift TAB for full context at cursor location
-- Edit mode: Split cell into two cells at cursor with option shift -
-- Hold option and left click to drag multi-line cursor
-
-<!-- Polished -->
-## Excel & Google Sheets
-- Spreadsheets with extra functionality
-- Use Conditional Formatting and Alternating Colors for readability
-- Summary statistics can be initiated from any cell for any cell range... convention is to put a small table in the Sheet next to the values to show the statistics
-- Filtering: Select all, Data, Create Filter, hover over column you want to filter, apply a filter to it
-- Filter Views: allows you to view the filtered version while the shared view for others is unchanged 
-    * Can save the view and share it with others if you want, it appears listed under the Filter Views tab in Google Sheets
-- Pivot Table: Select All (the entire table, for convenience), Insert, Create Pivot Table (make a new sheet), add rows and columns using interface
-    * Insert, Chart... ----- Produces chart, can customize
-- Call functions with the character: =
-- Absolute reference using hold_clickdrag + fn + F4
-- Double-click bottom right of function cell to apply to all rows in selected column(s)
-### Spreadsheet Functions
-- Basic cell-to-cell operations: `=B2-B3` (subtraction)
-- Multi-cell operations: Sum `=SUM(num_cells1, num_cells2)`, Average `=AVERAGE(num_cells1, num_cells2)`, Count `=COUNT(cells)`
-    * `=COUNTIF(cells_to_check, condition_for_each_cell_to_satisfy_to_be_counted)`, `=SUMIF(cells, if_here_is_true_for_cell_then_sum)`
-- Remainders: `=MOD(numeric_cells, number)`
-- Raise cells by power: `=POWER(numeric_cells, number)`
-- Round up to int: `=CEILING(numeric_cells)`, round down to int: `=FLOOR(numeric_cells)`
-- Combine cells into one cell: `=CONCATENATE(cells, cells, " ", cells, " ", ...)`
-- Split cell into many cells using delimiter: `=SPLIT(cells, delimiter)`, delimiter of "mn" allows split on all of any "m" or "n"
-- Count number of characters in cell: `=LEN(cells)`
-- Replace by index and steps: `=REPLACE(text, position, length, new_text)`
-- Replace by matching: `=SUBSTITUTE(text_to_search, search_for, replace_with, [occurrence_number])`
-- Return substring: from left `=LEFT(cells, num_of_chars)`, `=MID(cells, start_index, steps_to_read))`, from right `=RIGHT(cells, num_of_chars)`
-- Capitalization: `=UPPER(cells)`, `=LOWER(cells)`, `=PROPER(cells)`
-- Time and date request: `=NOW()`, `=TODAY()`, `=TIME(hour_cell, minute_cell, second_cell)`, `=DATEDIF(start_cells, end_cells, step)`
-    * Convert time and date: `=YEAR(cells)`, `=MONTH(cells)`, `DAY(cells)`, `=HOUR(cells)`, `=MINUTE(cells)`, `=SECOND(cells)`
-- Search cells: `=VLOOKUP(key, range_to_search(use fn+f4 to 'lock' it), col_to_return, FALSE)`
-    * Vertically searches range_to_search for key, if it finds it, returns col_to_return, if it's not exact match, ignores it (due to FALSE)
-    * VLOOKUP looks at first column specified... be careful
-- Conditional returns: `=IF(AND(cond1, OR(cond2, cond3)), truth_value, false_value)`
-    * *Conditions can come from cells*
-- Return if error in cell: `=IFERROR(value, truth_value)`
-- Find the index of a cell with matching contents: `=INDEX(range, MATCH(string_to_match, range))`
-- Line inside cell: `=SPARKLINE(range, {'charttype','bar';'color','red';'max',max(range); etc})`
-    * Creates a red in-cell bar chart of data from range with maxed bar when reaching max value of range
-
-<!-- Polished -->
-## Power BI
-- From a cursory look, a mix of Excel and some table join functionality. Popular software.
-
-<!-- Polished -->
-## Sequel ACE
-- Excellent interface for SQL database reads and querying
-
-<!-- Polished -->
-## VS Code
-- One-stop interface for file editing and viewing
-
-<!-- Polished -->
-## Tableau Public
-- Excellent software for interactive visualizations and dashboards
-- No autosaves and sometimes-glitchy upload... save your work often
-### Tableau Resources
-- The Superstore CSV is popular to learn and demo Tableau
-- Faith: https://public.tableau.com/app/profile/faith.kane
-- Sean Oslin: https://public.tableau.com/app/profile/sean.oslin
-### Tableau Usage
-- Explore your data in Google Sheets first
-    * Tableau is a bit slow for *exploration* compared to pivot tables in Google Sheets
-- Data Source: Used for changing files across the project
-    * Hide unnecessary columns from project using drop-downs in each column
-    * Filter results at top-right (intuitive)
-- Sheets: Used for building individual charts
-    * Plot by rows and columns, use Marks for conditional formatting and tooltips
-    * Change chart type in top right, change chart dimensions using top-middle dropdown
-    * Adjust display options for numbers, add trend lines, annotations, and more
-        * Everything-formatting: Context Menu > Format
-    * Create calculated fields for aggregation, level of detail (LOD) calculations, and more
-    * If stuck, build new file using Python/Pandas and add the new file to new sheet
-- Dashboard: Show multiple sheets in one place
-    * Add non-sheet elements from bottom left
-    * Create multi-sheet filters
-- Story: Used for presentation of sheets and dashboards
 
 [[Return to Top]](#table-of-contents)
 
@@ -698,6 +537,7 @@ with open('image.jpeg','wb') as f:
 ## SQL Basics
 - Structured Query Language used to query databases like MySQL for tabular data
 - SQL databases are usually hosted on beefy systems, so doing processing in SQL can be a lot faster than doing it on a local machine using Python
+- Sequel ACE: Excellent GUI for SQL database reads and querying
 ### SQL Simple Records Query
 ```
 show databases; use database_name; show tables; describe table_name;
@@ -895,32 +735,36 @@ mean_x_given_g1_g2 = df.groupBy('g1').pivot('g2').agg(mean('x'))
     * From command line (not python IDE or ipython): `pip install package_name_here` aka `pip install pandas` or `pip install numpy`
 
 ## Python Specifics
-- Output with no return: `print("Hello world!")` - `print(x)` - `print(x * 3)`, `print("Hello!", end="\n\n\n\n\n")`
+- Output with no return: `print("Hello world!")` -- `print(x)` -- `print(x * 3)` -- `print("Hello!", end="\n\n\n\n\n")`
     * Can print on same line using multiple print statements by changing `end`, ex: `print("Hello", end=" ")` -> `print("World!")`
-- Assignment: `x = 123` - `x = x + 1` - `x += 1` - `x *= 5` - `x /= 5` - `x //= 3` - `x -= 1`
-- Non-assignment: `x + 15` - `x * 3` - `x / 100` - `x // 2` - `x - 1.872`
-- Evaluation: `x == "Hello!"` - `x >= 5` - `x < 10` - `1 in [3,2,1,"Go!"]` - `x * 3 == 22`
-    * if/else: `if True: print("yup")` - `if False: print("never gonna see this")` --- `if x > 5: print("hi")` -> `else: print("yo")`
-    * while: `while True: print("forever repeating!")` - `while x > 5: print("forever repeating until x not greater than 5!")`
+- Assignment: `x = 123` -- `x = -x + 1` -- `x += 1` -- `x *= 5.3` -- `x /= 17` -- `x //= 3` -- `x -= 1` -- `x **= 0.1` -- `x %= 3`
+- Non-assignment: `x + 15` -- `x * 3` -- `x / 100` -- `x // 2` -- `x - 1.872` -- `x ** 3` -- `x = x + (2 * 5)` -- `x % 15`
+- Evaluation: `x == "Hello!"` -- `x >= 5` -- `x < 10` -- `1 in [3,2,1,"Go!"]` -- `x * 3 == 22`
+    * if/else: `if True: print("yup")` -- `if False: print("never gonna see this")` --- `if x > 5: print("hi")` -> `else: print("yo")`
+    * while: `while True: print("forever repeating!")` -- `while x > 5: print("forever repeating until x not greater than 5!")`
 - For-loop: `for x in [1,2,3,4,5]: print(x)` --- `for i, col in enumerate(columns)` (i starts at 0 and increments +1 each loop iteration)
     * Immediately skip to next iteration of the loop with `continue` --- Immediately end the loop with `break`
 ### Variables: String, Integer, Float, List, Dict
 - **String** as you'd expect: `x = "Hello"` -- `x + " " + "world!"` -- `f"{x} world!"` -- `"-"*50` (fifty dashes)
     * Check out: `"e" in "Hello"` -- `"Hello".count('l')` -- `"Hello".split('e')` -- `"\n cool text\n  ".strip()` -- `"123".isnumeric()`
-    * Also check: `"5 is %20d" % 5` -- `"pi is %0.2f" % 3.14159265358` -- `f"|{123:<8}|{1:<8}|"`
-- **Integer** as you'd expect: `x = 1`; `x * 3`; `x / 2` (returns 0.5); `x // 2` (returns 0); `x + 3.1` (returns 4.1)
-- **Float** as you'd expect: `x = 2.5`; `x * 2` (returns 5.0); `x / 2` (returns 1.25); `x // 2` (returns 1.0)
-- **List** as you'd expect: `x = [6,8,2]`; `x + [3]` (returns [6,8,2,3]); `x * 2` (returns [6,8,2,6,8,2]); `x[1]` (returns 8)
-    * Check out: `6 in x` - `x[1:]` - `x[:2]` - `x[1:29]` - `" ".join(["Hello","World!"])` - `"".join(["a","b","c","d"])`
-    * Also check: `x.append(29)` - `x.extend([40,41,42])` - `52 + x.pop(0)` - `x[0] = 101` - `x.sort()` (this row causes permanent changes)
+    * Also check: `"5 is %20d" % 5` -- `"pi is %0.2f" % 3.14159265358` -- `'{:.2f}'.format(1.12345)` -- `f"|{123:<8}|{1:<8}|"`
+- **Integer** as you'd expect: `x = 1` -- `x * 3` -- `x / 2` (returns 0.5) -- `x // 2` (returns 0) -- `x + 3.1` (returns 4.1)
+    * Can also use underscores for *code readability*, ex: `print(1_000_000_000)` (prints 1000000000)
+- **Float** as you'd expect: `x = 2.5` -- `x * 2` (returns 5.0) -- `x / 2` (returns 1.25) -- `x // 2` (returns 1.0)
+    * Can also use scientific notation for float: `x = 3.249e20` -- `x = 2.91e-5`
+    * Can also use underscores for *code readability*, ex: `print(1_000_000.01)` (prints 1000000.01)
+- **List** as you'd expect: `x = [6,8,2]` -- `x + [3]` (returns [6,8,2,3]) -- `x * 2` (returns [6,8,2,6,8,2]) -- `x[1]` (returns 8)
+    * Check out: `6 in x` -- `x[1:]` -- `x[:2]` -- `x[1:29]` -- `" ".join(["Hello","World!"])` -- `"".join(["a","b","c","d"])`
+    * Also check: `x.append(29)` -- `x.extend([40,41,42])` -- `52 + x.pop(0)` -- `x[0] = 101` -- `x.sort()`
+        * These are permanent changes to `x`; *do not assign any of these to `x`* as in `x = x.append(...)`, it doesn't work
         * Specify sort method: `food_list.sort(key=lambda x: len(x) * -1)` ----- sort food_list by descending string lengths
-    * Also check: `[d for d in x]` - `[d for d in x if d > 3]` (returns [6,8]) - `[d * 21 for d in x if d < 8]` (returns [126,42])
+    * Also check: `[d for d in x]` -- `[d for d in x if d > 3]` (returns [6,8]) -- `[d * 21 for d in x if d < 8]` (returns [126,42])
         * These are list comprehensions; they can do element-wise changes and even filter using if/else
         * Can get fairly complicated if you want, ex: `[x if x % 2 == 0 else x - 1 for x in [1,2,3,4,5]]` (returns `[0,2,2,4,4]`)
 - **Dict** as you'd expect: `x = {'i':1, 'cats':["Luna", "Milo"]}` --- `x["dogs"] = ["Spot"]` -> `x["dogs"][0]` (returns "Spot")
-    * Check out: `x.keys()` - `x.values()` - `"cats" in x.keys()` - `for key in x.keys(): print(x[key])`
-    * Also check: `x["dogs"].append("Max")` (permanently modifies x["dogs"]) - `{"a":{"b":{"c":{"d":1}}}}["a"]["b"]["c"]["d"]`
-- Convert to other type: `x = int(x)`, `x = float(x)`, `x = str(x)`, `x = dict(x)`, `x = list(x)`, ...
+    * Check out: `x.keys()` -- `x.values()` -- `"cats" in x.keys()` -- `for key in x.keys(): print(x[key])`
+    * Also check: `x["dogs"].append("Max")` (permanently modifies x["dogs"]) --- `{"a":{"b":{"c":{"d":1}}}}["a"]["b"]["c"]["d"]`
+- Convert to other type: `x = int(x)` -- `x = float(x)` -- `x = str(x)` -- `x = dict(x)` -- `x = list(x)` -- ...
 ### Variable: Class
 - Initialized with `class ClassName` or `class ClassName(param1, param2, ...)` --- start with capital letter typically for it
 - A class's methods are initialized with `def method_name(self, param1, param2, ...)`
@@ -1612,6 +1456,107 @@ clustered_df[clustered_df.labels == cluster_num]     # show values in a specific
 
 
 <!-- 
+   #                                                  #####                                                  
+  # #   #    #   ##   #      #   # ##### #  ####     #     #  ####  ###### ##### #    #   ##   #####  ###### 
+ #   #  ##   #  #  #  #       # #    #   # #    #    #       #    # #        #   #    #  #  #  #    # #      
+#     # # #  # #    # #        #     #   # #          #####  #    # #####    #   #    # #    # #    # #####  
+####### #  # # ###### #        #     #   # #               # #    # #        #   # ## # ###### #####  #      
+#     # #   ## #    # #        #     #   # #    #    #     # #    # #        #   ##  ## #    # #   #  #      
+#     # #    # #    # ######   #     #   #  ####      #####   ####  #        #   #    # #    # #    # ###### 
+-->
+
+# Analytic Software
+
+<!-- Polished -->
+## Jupyter Notebook
+- Excellent interface for iPython with easy-to-use UI
+- Command mode for cell operations, edit mode for editing lines
+- Command mode: dd for cell deletion, y for code cell, m for markdown cell
+- Edit mode: TAB for autocomplete of methods/variables/filenames, Shift TAB for full context at cursor location
+- Edit mode: Split cell into two cells at cursor with option shift -
+- Hold option and left click to drag multi-line cursor
+
+<!-- Polished -->
+## Excel & Google Sheets
+- Spreadsheets with extra functionality
+- Use Conditional Formatting and Alternating Colors for readability
+- Summary statistics can be initiated from any cell for any cell range... convention is to put a small table in the Sheet next to the values to show the statistics
+- Filtering: Select all, Data, Create Filter, hover over column you want to filter, apply a filter to it
+- Filter Views: allows you to view the filtered version while the shared view for others is unchanged 
+    * Can save the view and share it with others if you want, it appears listed under the Filter Views tab in Google Sheets
+- Pivot Table: Select All (the entire table, for convenience), Insert, Create Pivot Table (make a new sheet), add rows and columns using interface
+    * Insert, Chart... ----- Produces chart, can customize
+- Call functions with the character: =
+- Absolute reference using hold_clickdrag + fn + F4
+- Double-click bottom right of function cell to apply to all rows in selected column(s)
+### Spreadsheet Functions
+- Basic cell-to-cell operations: `=B2-B3` (subtraction)
+- Multi-cell operations: Sum `=SUM(num_cells1, num_cells2)`, Average `=AVERAGE(num_cells1, num_cells2)`, Count `=COUNT(cells)`
+    * `=COUNTIF(cells_to_check, condition_for_each_cell_to_satisfy_to_be_counted)`, `=SUMIF(cells, if_here_is_true_for_cell_then_sum)`
+- Remainders: `=MOD(numeric_cells, number)`
+- Raise cells by power: `=POWER(numeric_cells, number)`
+- Round up to int: `=CEILING(numeric_cells)`, round down to int: `=FLOOR(numeric_cells)`
+- Combine cells into one cell: `=CONCATENATE(cells, cells, " ", cells, " ", ...)`
+- Split cell into many cells using delimiter: `=SPLIT(cells, delimiter)`, delimiter of "mn" allows split on all of any "m" or "n"
+- Count number of characters in cell: `=LEN(cells)`
+- Replace by index and steps: `=REPLACE(text, position, length, new_text)`
+- Replace by matching: `=SUBSTITUTE(text_to_search, search_for, replace_with, [occurrence_number])`
+- Return substring: from left `=LEFT(cells, num_of_chars)`, `=MID(cells, start_index, steps_to_read))`, from right `=RIGHT(cells, num_of_chars)`
+- Capitalization: `=UPPER(cells)`, `=LOWER(cells)`, `=PROPER(cells)`
+- Time and date request: `=NOW()`, `=TODAY()`, `=TIME(hour_cell, minute_cell, second_cell)`, `=DATEDIF(start_cells, end_cells, step)`
+    * Convert time and date: `=YEAR(cells)`, `=MONTH(cells)`, `DAY(cells)`, `=HOUR(cells)`, `=MINUTE(cells)`, `=SECOND(cells)`
+- Search cells: `=VLOOKUP(key, range_to_search(use fn+f4 to 'lock' it), col_to_return, FALSE)`
+    * Vertically searches range_to_search for key, if it finds it, returns col_to_return, if it's not exact match, ignores it (due to FALSE)
+    * VLOOKUP looks at first column specified... be careful
+- Conditional returns: `=IF(AND(cond1, OR(cond2, cond3)), truth_value, false_value)`
+    * *Conditions can come from cells*
+- Return if error in cell: `=IFERROR(value, truth_value)`
+- Find the index of a cell with matching contents: `=INDEX(range, MATCH(string_to_match, range))`
+- Line inside cell: `=SPARKLINE(range, {'charttype','bar';'color','red';'max',max(range); etc})`
+    * Creates a red in-cell bar chart of data from range with maxed bar when reaching max value of range
+
+<!-- Polished -->
+## Power BI
+- From a cursory look, a mix of Excel and some table join functionality. Popular software.
+
+<!-- Polished -->
+## VS Code
+- One-stop interface for file editing and viewing
+
+<!-- Polished -->
+## Tableau Public
+- Excellent software for interactive visualizations and dashboards
+- No autosaves and sometimes-glitchy upload... save your work often
+### Tableau Resources
+- The Superstore CSV is popular to learn and demo Tableau
+- Faith: https://public.tableau.com/app/profile/faith.kane
+- Sean Oslin: https://public.tableau.com/app/profile/sean.oslin
+### Tableau Usage
+- Explore your data in Google Sheets first
+    * Tableau is a bit slow for *exploration* compared to pivot tables in Google Sheets
+- Data Source: Used for changing files across the project
+    * Hide unnecessary columns from project using drop-downs in each column
+    * Filter results at top-right (intuitive)
+- Sheets: Used for building individual charts
+    * Plot by rows and columns, use Marks for conditional formatting and tooltips
+    * Change chart type in top right, change chart dimensions using top-middle dropdown
+    * Adjust display options for numbers, add trend lines, annotations, and more
+        * Everything-formatting: Context Menu > Format
+    * Create calculated fields for aggregation, level of detail (LOD) calculations, and more
+    * If stuck, build new file using Python/Pandas and add the new file to new sheet
+- Dashboard: Show multiple sheets in one place
+    * Add non-sheet elements from bottom left
+    * Create multi-sheet filters
+- Story: Used for presentation of sheets and dashboards
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+<!--
 #     #                                ######                                                                  
 ##   ##  ####  #####  ###### #         #     # #####  ###### #####    ##   #####    ##   ##### #  ####  #    # 
 # # # # #    # #    # #      #         #     # #    # #      #    #  #  #  #    #  #  #    #   # #    # ##   # 
@@ -2524,3 +2469,86 @@ if __name__ == '__main__':
 - Kafka 'consumer' reads the topic and all its rows from index 0 onward
     * Consumer groups distribute the partitions of a topic evenly between consumers in the group on 'consume'
     * The max number of consumers in a group is the number of partitions in the topic
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+<!-- 
+ #####                                                                              
+#     # #####   ##   #    # ###### #    #  ####  #      #####  ###### #####   ####  
+#         #    #  #  #   #  #      #    # #    # #      #    # #      #    # #      
+ #####    #   #    # ####   #####  ###### #    # #      #    # #####  #    #  ####  
+      #   #   ###### #  #   #      #    # #    # #      #    # #      #####       # 
+#     #   #   #    # #   #  #      #    # #    # #      #    # #      #   #  #    # 
+ #####    #   #    # #    # ###### #    #  ####  ###### #####  ###### #    #  ####  
+-->
+
+# Stakeholders
+
+<!-- Polished -->
+## Storytelling
+- Data requires velocity to be useful
+- Finding relationships and stories in data, documenting is and isn'ts
+- Goal is to remove redundant/unimportant variables for the story
+- Hypothesize and visualize loop, and if that isn't enough, run statistical tests
+- "What data sources do we have, what are customers doing, how are we reaching people..."
+- "What is our observation???"
+    * titanic_db observations are... people on the titanic.
+### Trello
+- Requirements Stage: Talk with stakeholders about their requirements and a timeline
+- Decision Stage: Decide which requirements you will be able to complete
+    * Goal is to complete *all* user requirements for this "sprint" (the timeline)
+    * You choose how in-depth to go for each requirement
+### Stakeholders Considerations
+- Move functions and analysis to separate .ipynb as required for stakeholders
+    * Stakeholders want just the end product: give them it
+    * Stakeholders want the models and end product: give them it
+    * Stakeholders want everything: give them everything
+### Visualization Considerations
+- Expert-level visualizations != presentation-level visualization
+    * The pivot tables are more appropriate for Appendix
+    * If the audience has to read it, don't include it
+- Serve the "why" first, then follow with the specifics
+    * Leading with specifics will lose your audience
+- Give the "why" some amplifying, relative information to help seat your audience
+    * Avoid cluttering the "why" with too much amplification
+- Design the velocity with your audience in mind
+- Prepare to Create; Talk and Listen; Sketch; Prototype
+    * Clear physical and mental room; Know your data; Understand your audience and Big Idea
+    * Determine which framework to use (persuasive, man-in-hole, story), determine context, challenge, and solution
+    * Understand your audience and use an appropriate approach
+    * A topic isn't a big idea... use your chances to express the big idea
+    * Explain out loud what your project is, take notes of feedback, make corrections [I'm working on... I'm trying to show... Why...]
+    * Use everything so far to sketch out your ideas (brainstorm)
+    * Refine the sketches into presentation material
+- A non-correlation can be more important than a correlation
+- Start with overview in presentation, dissect the focus later (start with churn v not churned, then dive into churn data)
+- Relate the problem to the audience's interests and focus for maximum effect
+
+<!-- Polished -->
+## Systems Development Lifecycle (SDLC)
+- Framework for delivering software
+- Waterfall: takes it one step at a time, fully-complete each step then move on
+    * All requirements defined ahead of time; inflexible for later requirements or issues, and may be restarted
+- AGILE: quickly builds from scratch to small, doing the full "spiral", then repeats from small to big, big to bigger, and onward
+    * Flexible for requirement changes or issues; but who knows when to call things "finished"
+### Steps of SDLC
+- Analysis: choosing which requirements to build for
+    * Software requirements specification (SRS) used to define all finalized requirements (includes UML diagrams)
+- Design: choosing the solutions to solve those requirements
+- Implementation: building the chosen solutions
+- Testing: ensuring the built solutions are functional and solve the requirements
+### Universal Modeling Language (UML) Diagrams
+- Often used in the SDLC
+    * Analysis: Use case diagram, ex: user choices, choice results
+    * Design: Class diagram, ex: classes and their initialized variables (with types!), inheritance arrows, "unfilled diamond"
+    * Implementation: Activity diagram, a flowchart displaying the logic of the program plus code language
+    * Testing: Sequence diagram, ex: client-server communication sequence
+- Each diagram is not only prescribable to a single element of SDLC; they overlap somewhat
+    * EX: can use the Use case diagram for multiple... but, you should use multiple/different diagrams
+
+[[Return to Top]](#table-of-contents)
