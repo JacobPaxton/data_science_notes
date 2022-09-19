@@ -15,114 +15,120 @@ I.    [Approaching Data              ](#approaching-data)
 1.    [Advice                        ](#advice)
 2.    [Datasets                      ](#datasets)
 ---
-II.   [Algorithms                    ](#algorithms)
+II.   [Algorithms and Tricks         ](#algorithms-and-tricks)
 1.    [Algorithm Basics              ](#algorithms-basics)
+2.    [Speed Tricks                  ](#speed-tricks)
 ---
 III.  [Data Structures               ](#data-structures)
 1.    [Data Structures Basics        ](#data-structures-basics)
 2.    [Data Structures Examples      ](#data-structures-examples)
 ---
-IV.   [Command Line and Git          ](#git)
+IV.   [Databases                     ](#databases)
+1.    [Database Basics               ](#database-basics)
+2.    [Relational Databases          ](#relational-databases)
+---
+V.    [Command Line and Git          ](#git)
 1.    [Terminal                      ](#terminal)
 2.    [git Basics                    ](#git-basics)
 3.    [git for Solo Dev Work         ](#git-for-solo-work)
 4.    [git for Tean Dev Work         ](#git-for-team-dev-work)
 ---
-V.    [Regular Expressions (REGEX)   ](#regular-expressions-(regex))
+VI.   [Regular Expressions (REGEX)   ](#regular-expressions-(regex))
 1.    [REGEX                         ](#regex)
 ---
-VI.   [APIs & Scraping               ](#apis-&-scraping)
+VII.  [APIs & Scraping               ](#apis-&-scraping)
 1.    [APIs                          ](#apis)
 2.    [Web Scraping                  ](#web-scraping)
 ---
-VII.  [SQL                           ](#sql)
+VIII. [SQL                           ](#sql)
 1.    [SQL Basics                    ](#sql-basics)
 2.    [SQL Intermediate              ](#sql-intermediate)
+3.    [SQL Management                ](#sql-management)
 ---
-VIII. [Apache Spark                  ](#apache-spark)
+IX.   [Apache Spark                  ](#apache-spark)
 1.    [Spark Wrangling               ](#spark-wrangling)
 2.    [Spark MAchine Learning        ](#spark-machine-learning)
 ---
-IX.   [Python                        ](#python)
+X.    [Python                        ](#python)
 1.    [Python Basics                 ](#python-basics)
 2.    [Python Specifics              ](#python-specifics)
 ---
-X.    [NumPy and Pandas              ](#numpy-pandas)
+XI.   [NumPy and Pandas              ](#numpy-pandas)
 1.    [NumPy                         ](#numpy)
 2.    [Pandas                        ](#pandas)
 ---
-XI.   [Matplotlib & Seaborn          ](#matplotlib-&-seaborn)
+XII.  [Matplotlib & Seaborn          ](#matplotlib-&-seaborn)
 1.    [Visualization in Python       ](#overall-notes-for-visualizations-in-python)
 2.    [Matplotlib                    ](#matplotlib)
 3.    [Seaborn                       ](#seaborn)
 ---
-XII.  [Exploration                   ](#exploration)
+XIII. [Exploration                   ](#exploration)
 1.    [Exploration Prep              ](#exploration-prep)
 2.    [Exploration Visualization     ](#exploration-visualization)
 3.    [Feature Engineering           ](#feature-engineering)
 4.    [Feature Selection             ](#performance-based-feature-selection)
 ---
-XIII. [Algorithmic Clustering        ](#algorithmic-clustering)
+XIV.  [Algorithmic Clustering        ](#algorithmic-clustering)
 1.    [Cluster Assignment            ](#cluster-assignment)
 2.    [K-Means Clustering            ](#k-means-clustering)
 3.    [Hierarchical Clustering       ](#hierarchical-clustering)
 4.    [DBSCAN                        ](#dbscan)
 ---
-XIV.  [Statistics                    ](#statistics)
+XV.   [Statistics                    ](#statistics)
 1.    [Metrics                       ](#metrics)
 2.    [Hypothesis Testing            ](#hypothesis-testing)
 3.    [Probability                   ](#probability)
 ---
-XV.   [Analytic Software             ](#analytic-software)
+XVI.  [Analytic Software             ](#analytic-software)
 1.    [Jupyter Notebook              ](#jupyter-notebook)
 2.    [Excel & Google Sheets         ](#excel-&-google-sheets)
 3.    [Power BI                      ](#power-bi)
 4.    [Visual Studio Code            ](#vs-code)
 5.    [Tableau Public                ](#tableau-public)
 ---
-XVI.  [Model Preparation             ](#model-preparation)
+XVII. [Model Preparation             ](#model-preparation)
 1.    [Encoding                      ](#encoding)
 2.    [Scaling                       ](#scaling)
 3.    [Resampling                    ](#resampling)
 ---
-XVII. [Classification                ](#classification)
+XVIII.[Classification                ](#classification)
 1.    [Classification Overview       ](#classification-overview)
 2.    [Classification Example        ](#classification-example)
 ---
-XVIII.[Regression                    ](#regression)
+XIX.  [Regression                    ](#regression)
 1.    [Regression Overview           ](#regression-overview)
 2.    [Regression Example            ](#regression-example)
 ---
-XIX.  [Time-Series                   ](#time-series)
+XX.   [Time-Series                   ](#time-series)
 1.    [Time-Series Overview          ](#time-series-overview)
 2.    [Time-Series Example           ](#time-series-example)
 ---
-XX.   [Natural Language Processing   ](#natural-language-processing-(NLP))
+XXI.  [Natural Language Processing   ](#natural-language-processing-(NLP))
 1.    [NLP Overview                  ](#nlp-overview)
 2.    [NLP Example                   ](#nlp-example)
 ---
-XXI.  [Anomaly Detection             ](#anomaly-detection)
+XXII. [Anomaly Detection             ](#anomaly-detection)
 1.    [Anomaly Detection Strategy    ](#anomaly-detection-strategy)
 2.    [Anomaly Detection Syntax      ](#anomaly-detection-syntax)
 3.    [Anomaly Detection Examples    ](#anomaly-detection-examples)
 ---
-XXII. [Deep Learning                 ](#deep-learning)
+XXIII.[Deep Learning                 ](#deep-learning)
 1.    [Deep Learning Basics          ](#deep-learning-basics)
 ---
-XXIII.[Computer Vision               ](#computer-vision)
+XXIV. [Computer Vision               ](#computer-vision)
 1.    [Computer Vision Basics        ](#computer-vision-basics)
 ---
-XXIV. [Cross-Validation              ](#cross-validation)
+XXV.  [Cross-Validation              ](#cross-validation)
 1.    [Cross-Validation Basics       ](#cross-validation-basics)
 ---
-XXV.  [Deployment                    ](#deployment)
+XXVI. [Deployment                    ](#deployment)
 1.    [Docker                        ](#docker)
 2.    [Flask                         ](#flask)
 3.    [Apache Kafka                  ](#apache-kafka)
 ---
-XXVI. [Stakeholders                  ](#stakeholders)
+XXVII.[Stakeholders                  ](#stakeholders)
 1.    [Storytelling                  ](#storytelling)
-2.    [Systems Development Lifecycle ](#systems-development-lifecycle-sdlc)
+2.    [Requirements                  ](#requirements)
 
 <br>
 
@@ -182,16 +188,16 @@ XXVI. [Stakeholders                  ](#stakeholders)
 
 
 <!-- 
-   #                                                             
-  # #   #       ####   ####  #####  # ##### #    # #    #  ####  
- #   #  #      #    # #    # #    # #   #   #    # ##  ## #      
-#     # #      #      #    # #    # #   #   ###### # ## #  ####  
-####### #      #  ### #    # #####  #   #   #    # #    #      # 
-#     # #      #    # #    # #   #  #   #   #    # #    # #    # 
-#     # ######  ####   ####  #    # #   #   #    # #    #  ####  
+   #                                                                  ##       #######                               
+  # #   #       ####   ####  #####  # ##### #    # #    #  ####      #  #         #    #####  #  ####  #    #  ####  
+ #   #  #      #    # #    # #    # #   #   #    # ##  ## #           ##          #    #    # # #    # #   #  #      
+#     # #      #      #    # #    # #   #   ###### # ## #  ####      ###          #    #    # # #      ####    ####  
+####### #      #  ### #    # #####  #   #   #    # #    #      #    #   # #       #    #####  # #      #  #        # 
+#     # #      #    # #    # #   #  #   #   #    # #    # #    #    #    #        #    #   #  # #    # #   #  #    # 
+#     # ######  ####   ####  #    # #   #   #    # #    #  ####      ###  #       #    #    # #  ####  #    #  ####  
 -->
 
-# Algorithms
+# Algorithms and Tricks
 
 ## Algorithms Basics
 - Efficient computation; decreased "computational complexity" (runtime + memory)
@@ -201,14 +207,31 @@ XXVI. [Stakeholders                  ](#stakeholders)
     * EX: knapsack problem, add the highest-value item that can fit until no more items can be added (good, not perfect)
 - Knowing algorithms + use cases, and cases where algorithms don't work ("NP-complete"), is key to efficient code
 ### Example Algorithms
+- All possible outcomes: use recursion and ex: string indexing/splits (word scramble)
 - Linear search: go element by element to check for a match
 - Binary search: when data is ordered, split in half and check left/right of split, then choose and split again
+    * Recursion is an excellent implementation for this (search half -> search half -> etc (if found, break; else, search half, call self))
+- Selection sort (SLOW): find smallest in entire array, swap with index 0; from index 1, find smallest in entire remaining array, swap
+    * Keep swapping like this until finished; if the index itself is the smallest, just move to next index and continue
+- Insertion sort (SLOW): check next vs previous, if smaller, swap, repeat checks until encounter index 0 or a smaller number, check next...
+- Quicksort: split array into low/high segments using midpoints & left/right indices inward move, swap midpoint to low segment until overlap
+    * Recursion is an excellent implementation for this (repeatedly appending to high/low partitions and swapping midpoint to low partition)
+- Merge sort: halve array repeatedly until multiple arrays of length 1; reverse the halving into temp arrays while sorting at each step
+    * Increment left-half and right-half index while comparing each selected value; move a value in left, increment left +1 (same for right)
 - Bucket sort: using simpler operations to sort, then doing multiple complex-sort operations
     * EX: Sorting words, sort first on starting letter (a, b, c, ...) into buckets, then sort all of a, then all of b, ...
 - Longest common substring
 - Dijkstra's shortest path
 ### NP-Complete (lacking algorithms)
 - Cliques: Detecting when n points are interconnected from a graph of points
+
+## Speed Tricks
+- Get prefix of integer without converting it to string: Floor division by 10*n, ex: 965 from 965486 by doing `965486 // 1000`
+- Speed up array additions: init the array with all-zero values (np.zeroes(len(chosen_length))) and use index assignment
+    * Appending to an array (changing array length) is computationally-expensive; index assignment is faster
+### Recursion
+- Function calling itself, ex: countdowns
+
 
 [[Return to Top]](#table-of-contents)
 
@@ -231,6 +254,17 @@ XXVI. [Stakeholders                  ](#stakeholders)
 # Data Structures
 
 ## Data Structures Basics
+- Unicode: numeric representation of characters (called "code points")
+    * Look up character in unicode: `ord('?')` -- Get character using its code point: `chr(63)`
+### Class
+- Object containing attributes and methods
+- Instantiation involves creating a new instance of a defined class and setting default attributes
+    * Class definitions are typically capitalized, ex: `class ClassName():`
+    * In Python, the `__init__` constructor (a method) is always called upon class instantiation
+- Attributes are set on instantiation and further assignment via "attribute reference operators", ex: `self.title = "Walden"`
+- Classes can call other classes, ex: `def ClassName1` -> `def __init__(self)` -> `ClassName2.__init__(self)`
+    * Class **inheriting attributes** is "derived class"; class giving properties is called "base class"
+    * Classes "containing" another class (person and their item) isn't attribute inheritance...
 ### Hash Table
 - Hash something into an array's index, store that something at that index
 - Hashing strategy is your choice; goal is to simplify lookups
@@ -256,6 +290,94 @@ XXVI. [Stakeholders                  ](#stakeholders)
 ## Data Structures Examples
 ### Hash Table - Linked Lists
 - 
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
+######                                                         
+#     #   ##   #####   ##   #####    ##    ####  ######  ####  
+#     #  #  #    #    #  #  #    #  #  #  #      #      #      
+#     # #    #   #   #    # #####  #    #  ####  #####   ####  
+#     # ######   #   ###### #    # ######      # #           # 
+#     # #    #   #   #    # #    # #    # #    # #      #    # 
+######  #    #   #   #    # #####  #    #  ####  ######  ####  
+-->
+
+# Databases
+
+<!-- Polished -->
+## Database Basics
+- Data storage, can be structures or unstructured (unstructured is called NoSQL, aka "not only SQL")
+    * Structured databases are optimized for tabular data, unstructured databases are optimized for big data
+- Primary key: column with no duplicate values or nulls, used as the index for a table
+    * Primary key can be one column (simple primary key) or multiple (composite primary key, has rules like of-minimum-complexity)
+    * Foreign key is a column that refers to another table's primary key; must only use values from the primary key but can be null/repeat
+        * Foreign key typically is named after primary key; Flight ->refer-> Aircraft, Flight gets foreign key "AssignedAircraftCode"
+    * Aritifial key is created by database designer when a table's columns aren't suitable for being the primary key
+- Query: NOT JUST READING DATA; query can insert new data, retrieve data, update data, or delete data
+    * CRUD: Create data, Read data, Update data, Delete data ("CRUD operations")
+    * Update queries require the data-to-be-updated to exist in the database
+- Transaction: group of queries to accomplish a goal, ex: funds transfer has two actions (remove money from one, add to other)
+    * Database *systems* must ensure entirety or none of a transaction is performed, ex: can't allow funds transfer to partially complete
+    * Databases are not required to have transactions (can just allow queries by themselves)
+- Join: bringing a left and right table together using "inner" (only matching rows) or "outer" (all-left, all-right, all-full) logic
+    * Equijoin (normal) / non-equijoin (conditional); self-join (need to use table aliases); cross-join (all possible combinations)
+- Database knowledge/rankings: https://db-engines.com/en/
+### DB Roles
+- Database Administrator: specifically securing databases, making them available
+- Database Designer: what you'd expect (overall structure, specific field types, etc; all within company's budget/other limitations)
+- Database Programmer: not what you'd expect; they build programs that *use* a database (combining query languages with gen-purpose ones)
+- Database User: someone who uses the DB programmer's programs; they run queries, etc
+### DB Architecture
+- Query processor: interpret query, create a plan for modifying/reading the database (efficiently), return results to the application
+- Storage manager: receive query, translate it into low-level filesystem commands (uses indices)
+- Transaction manager: handles sets of queries, deconflicts overlaps
+- Log: complete record of all inserts, updates, and deletes processed by the database
+    * Used for database recovery (ex: mid-transaction quits, complete loss) so **logs do not store reads (queries)**
+- Catalog: directory of tables, columns, indexes, and other database objects
+    * The indices inside the catalog help optimize database work; the catalog overall does not
+### DB Design
+- Three phases: Analysis, Logical Design, and Physical Design
+- Analysis: define requirements for entity/attributes/relationships (ER diagrams and glossary)
+    * 1- Discover entities, relationships, and attributes (interviews, reading user guides, etc)
+    * 2- Determine cardinality
+    * 3- Distinguish independent and dependent entities
+    * 4- Create supertype and subtype entities
+- Logical Design: implements requirements (table diagrams)
+    * 1- Implement entities; 2- Implement relationships; 3- Implement attributes; 4- Normalize tables
+    * Table diagram: tables + columns (solid dots are keys); tables linked by arrows; arrows show columns referring to (->) keys
+    * Some boxes in a table diagram are tables that only contain relationships (these boxes are actual tables in the database)
+- Physical Design: adding indexes to tables (indexes allow faster queries)
+    * Rare, but there are physical design diagrams too (showing what the indexes are referring to); table diagrams are more important
+
+<!-- Polished -->
+## Relational Databases
+- Column-level constraint (one column) vs Table-level constraint (more than one column)
+### Relational DB Model Basics
+- Domain: named set (actual **set**) of possible database values, ex: integers, strings, booleans, ...
+- Tuple: finite-length sequence of values where each value is from a fixed domain, ex: (Integers, DictionaryWords, LogicalValues)
+    * Each position in the tuple is an attribute
+- Relation: named set (actual **set**) of tuples where each tuple has the same sequence
+- Relational rules: logical constraints that ensure data is valid and conforms to business policy.
+    * Structural rules: governs data universally, ex: unique primary key, unique column names, no duplicate rows, only one value in a cell
+    * Business rules: "local rules", ex: unique column values, no missing values, delete cascade (delete row and related rows)
+    * Referential integrity rules: foreign key constraints, ex: must match an value in primary key, if composite can't be partially null
+### Relational Algebra
+- Relational algebra is table operations (uses set theory)
+    * Query optimizers convert code to relational algebra expressions, create alt versions, compare costs (processing time), and choose best
+- Select: selects a subset of rows of a table; 
+- Project: eliminates one or more columns of a table.
+- Product: lists all possible combinations of rows of two tables.
+- Join: a product operation followed by a select operation.
+- Union: combines two tables by selecting all rows of both tables.
+- Intersect: combines two tables by selecting only rows common to both tables.
+- Difference: combines two tables by selecting rows that appear in one table but not the other.
 
 [[Return to Top]](#table-of-contents)
 
@@ -535,29 +657,34 @@ with open('image.jpeg','wb') as f:
 <!-- Polished -->
 ## SQL Basics
 - Structured Query Language used to query databases like MySQL for tabular data
+- Actually a composition of FIVE languages: Data Definition, Data Query, Data Manipulation, Data Control, and Data Transaction Languages
 - SQL databases are usually hosted on beefy systems, so doing processing in SQL can be a lot faster than doing it on a local machine using Python
 - Sequel ACE: Excellent GUI for SQL database reads and querying
 ### SQL Simple Records Query
 ```
 show databases; use database_name; show tables; describe table_name;
-select date_col, col1 as Col1, col2, col3, 
+select distinct date_col, col1 as Col1, col2, col3, 
 IF(date_col > curdate(), True, False) as "Future"
 case 
-    when year(date_col) like '19%%' then '1900s' 
+    when year(date_col) like '19__' then '1900s' 
     when year(date_col) like '20%' then '2000s' 
     else 'bad_input' 
     end as Century
 from table_name 
 join table_2 using(date_col)
-where (col2 between 10 and 20) and (col2 not 15) and (col3 in ('irene', 'layla')) and (year(date_col) like '201%')
+where (col2 between 10 and 20) and (col2 not 15) and (col3 in ('irene', 'layla')) and (year(date_col) like binary '201_')
 order by col2 asc, Col1 desc
 limit 100;
 ```
 ### SQL Aggregation Query
 ```
+select SUM(x) + SUM(y) from table; -- sum each column, then sum totals; ignores NULL just fine
+select SUM(x + y);                 -- rowwise sum; **BE CAREFUL** because in this way, NULL + 100 = NULL
+select MAX(x);
 select col1, AVG(col2) as average from table group by col1 having average >= 100;
 ```
 
+<!-- Polished -->
 ## SQL Intermediate
 ### SQL Subquery
 ```
@@ -578,6 +705,36 @@ from employees
 join dept_emp using(emp_no)
 join departments using(dept_no);
 ```
+
+<!-- Needs work -->
+## SQL Management
+- `CREATE DATABASE db_name;`
+- `CREATE TABLE Employee (ID INT, Name VARCHAR(60) NOT NULL, BirthDate DATE DEFAULT '2000-01-01', Salary DECIMAL(7,2), PRIMARY KEY (ID));`
+    * `IndexCol AUTO_INCREMENT` --- `Column VARCHAR(50) UNIQUE` --- `HireDate DATE CHECK (HireDate > BirthDate)`
+    * `UNIQUE (Col1, Col2)` --- `CHECK (cond1 AND cond2)` --- `CONSTRAINT UniqueNameHiredate UNIQUE (Name, HireDate)`
+    * `DROP TABLE Employee`
+- `ALTER TABLE Employee ADD ColumnName DataType;` --- `... CHANGE CurrentColumnName NewColumnName NewDataType;` --- `... DROP ColumnName;`
+- `CREATE VIEW viewtable AS SELECT ...` (new table from one or more base tables; avoid personal info, focus on relevant stuff, etc)
+    * Don't use this for database changes
+    * Can specify `WITH CHECK OPTION;` at end to restrict changes to a view table that don't fit the WHERE clause
+- `CREATE INDEX`
+- `INSERT INTO account VALUES (290, 'Ethan Carr', 5000);`
+    * `INSERT INTO movie VALUES (1, 'Rogue One: A Star Wars Story', '2016-12-10'), (2, 'Hidden Figures', '2017-01-06'), ...;`
+- `UPDATE Account SET Balance = 4500 WHERE ID = 831;`
+- `DELETE FROM Account WHERE ID = 572;` --- `TRUNCATE TABLE Account` (drop all rows and reset auto-increment)
+- `SELECT Name FROM Compensation WHERE BirthDate IS NULL;` (don't use `BirthDate = NULL`, won't work)
+- `RESTRICT` (reject), `SET NULL`, `SET DEFAULT`, `CASCADE` (accept and also change related) for handling "referential integrity violations"
+    * EX: `... FOREIGN KEY (ManagerID) REFERENCES Employee(ID) ON DELETE CASCADE ON UPDATE SET NULL;`
+### SQL Data Types
+- SIGNED (positive or negative), UNSIGNED (positive only)
+- DATE (YYYY-MM-DD), TIME (hh:mm:ss), DATETIME (YYYY-MM-DD hh:mm:ss), TIMESTAMP (times)
+- TINYINT (255), SMALLINT (65_535), MEDIUMINT (16_777_215), INT/INTEGER (4_294_967_295), BIGINT (2e64 - 1)
+- DECIMAL(digits,decimalplaces), FLOAT (6.8e38), DOUBLE (1.8e308)
+- CHAR (255), VARCHAR (65_535)
+- BLOB, BINARY, VARBINARY, IMAGE (0101011101)
+- POLYGON, POINT, GEOMETRY (coordinate-related; POINT is a tuple (x,y))
+- XML, JSON (documents)
+- NULL in any column (can enforce no-null in a column by setting it to NOT NULL)
 
 [[Return to Top]](#table-of-contents)
 
@@ -717,8 +874,8 @@ mean_x_given_g1_g2 = df.groupBy('g1').pivot('g2').agg(mean('x'))
     * Each object is indexed at the variable... object at index `x` contains that variable's value, type, and identity
 - Python creates and dumps objects as needed; when `i = 1` is done, object's value=1, type=int, and identity=i
     * Assigning j to i points j at the i object but with j identity; any further assignment unlinks these
-- Python objects that contain numbers or strings are immutable, as in, a new object is created for the change and old is dumped
-- Python objects that contain lists or dicts are mutable, as in, the object itself is modified (no creation/dump for changes)
+- Python objects that contain numbers, strings, or tuples are immutable; a new object is created for the change and old is dumped
+- Python objects that contain lists or dicts are mutable; the object itself is modified (no creation/dump for changes)
 ### Python Errors
 - SyntaxError and IndentationError are reported before *any* code runs; the rest is reported during runtime
 - SyntaxError: "illegal" code, ex: `print("hi") print("there!") print("all on one line?...")`
@@ -726,65 +883,141 @@ mean_x_given_g1_g2 = df.groupBy('g1').pivot('g2').agg(mean('x'))
 - ValueError: can't perform operation on that data type, ex: `int("hi")`
 - TypeError: similar to value error, ex: `"abc" + 42`
 - NameError: didn't initialize a variable before its use, ex: `print(greeting)`
+- NotImplementedError: function has no body
+- AssertionError: `assert` statement fails, or `import unittest` unit test assertion fails
+- RuntimeError: example is when recursion function runs 1,000 times (can be adjusted via `sys.setrecursionlimit()`)
 - Logic error: the code ran, but the output is wrong, ex: `42 * 1` when you meant `42 * 10` (this is also called a bug)
+- Capture all but logic errors via `try`-`except` statements, ex: `try: code` -> `except NameError: code`
+    * Use `try` with `raise` to force errors/non-errors to the `except` statement, ex: `raise TypeError("Not integer!")`
+        * Can raise your own errors: `class CoolError(Exception): def __init__...` -> `raise CoolError(...)`
+    * Use `finally` after the `except` statement to run code regardless of errors, ex: `finally: print("Terminated.")`
 ### Python Libraries
 - Python Standard Library: https://docs.python.org/3/library/
 - Standard libraries come with Python itself and require no additional installation
 - To install libraries not in the standard library, you can use pip, which comes with Python installation
     * From command line (not python IDE or ipython): `pip install package_name_here` aka `pip install pandas` or `pip install numpy`
+#### Common Standard Libraries
+- sys, os, importlib, csv, collections, math, random, hashlib
+#### Common pip Installs
+- `pip install numpy pandas matplotlib seaborn sklearn scipy sklearn`
 
+<!-- Polished -->
 ## Python Specifics
 - Output with no return: `print("Hello world!")` -- `print(x)` -- `print(x * 3)` -- `print("Hello!", end="\n\n\n\n\n")`
     * Can print on same line using multiple print statements by changing `end`, ex: `print("Hello", end=" ")` -> `print("World!")`
+- Get user's input: `input("Please enter a number:")`
+- File work: `f = open(filepath)` -- `f.read()` -- `f.readline()` -- `f.readlines()` - `f.write("hi")` -- `f.close()`
+    * Typical way: `with open(filepath, "rw") as f:` -> `number = f.read()` -> `new = number * 10` -> `f.write(new)`
 - Assignment: `x = 123` -- `x = -x + 1` -- `x += 1` -- `x *= 5.3` -- `x /= 17` -- `x //= 3` -- `x -= 1` -- `x **= 0.1` -- `x %= 3`
 - Non-assignment: `x + 15` -- `x * 3` -- `x / 100` -- `x // 2` -- `x - 1.872` -- `x ** 3` -- `x = x + (2 * 5)` -- `x % 15`
-- Evaluation: `x == "Hello!"` -- `x >= 5` -- `x < 10` -- `1 in [3,2,1,"Go!"]` -- `x * 3 == 22`
-    * if/else: `if True: print("yup")` -- `if False: print("never gonna see this")` --- `if x > 5: print("hi")` -> `else: print("yo")`
+- Relational evaluation: `x == "Hello!"` -- `x >= 5` -- `x < 10` -- `1 in [3,2,1,"Go!"]` -- `x * 3 == 22` -- `id(x) is not id(y)`
+    * if (branching): `if True: print("yup")` -- `if False: print("never gonna see this")`
+    * if/elif/else (branching): `if x >= 5: print("hi")` -> `elif x >= 0: print("sup")` -> `else: print("yo")`
+    * Conditional expression: `output_when_true if condition else output_when_false`
     * while: `while True: print("forever repeating!")` -- `while x > 5: print("forever repeating until x not greater than 5!")`
+- Logical evaluation: `True and True` -- `True and False` -- `True or False` -- `True and not False`
 - For-loop: `for x in [1,2,3,4,5]: print(x)` --- `for i, col in enumerate(columns)` (i starts at 0 and increments +1 each loop iteration)
     * Immediately skip to next iteration of the loop with `continue` --- Immediately end the loop with `break`
-### Variables: String, Integer, Float, List, Dict
-- **String** as you'd expect: `x = "Hello"` -- `x + " " + "world!"` -- `f"{x} world!"` -- `"-"*50` (fifty dashes)
-    * Check out: `"e" in "Hello"` -- `"Hello".count('l')` -- `"Hello".split('e')` -- `"\n cool text\n  ".strip()` -- `"123".isnumeric()`
-    * Also check: `"5 is %20d" % 5` -- `"pi is %0.2f" % 3.14159265358` -- `'{:.2f}'.format(1.12345)` -- `f"|{123:<8}|{1:<8}|"`
-- **Integer** as you'd expect: `x = 1` -- `x * 3` -- `x / 2` (returns 0.5) -- `x // 2` (returns 0) -- `x + 3.1` (returns 4.1)
-    * Can also use underscores for *code readability*, ex: `print(1_000_000_000)` (prints 1000000000)
-- **Float** as you'd expect: `x = 2.5` -- `x * 2` (returns 5.0) -- `x / 2` (returns 1.25) -- `x // 2` (returns 1.0)
-    * Can also use scientific notation for float: `x = 3.249e20` -- `x = 2.91e-5`
-    * Can also use underscores for *code readability*, ex: `print(1_000_000.01)` (prints 1000000.01)
-- **List** as you'd expect: `x = [6,8,2]` -- `x + [3]` (returns [6,8,2,3]) -- `x * 2` (returns [6,8,2,6,8,2]) -- `x[1]` (returns 8)
-    * Check out: `6 in x` -- `x[1:]` -- `x[:2]` -- `x[1:29]` -- `" ".join(["Hello","World!"])` -- `"".join(["a","b","c","d"])`
-    * Also check: `x.append(29)` -- `x.extend([40,41,42])` -- `52 + x.pop(0)` -- `x[0] = 101` -- `x.sort()`
-        * These are permanent changes to `x`; *do not assign any of these to `x`* as in `x = x.append(...)`, it doesn't work
-        * Specify sort method: `food_list.sort(key=lambda x: len(x) * -1)` ----- sort food_list by descending string lengths
-    * Also check: `[d for d in x]` -- `[d for d in x if d > 3]` (returns [6,8]) -- `[d * 21 for d in x if d < 8]` (returns [126,42])
-        * These are list comprehensions; they can do element-wise changes and even filter using if/else
-        * Can get fairly complicated if you want, ex: `[x if x % 2 == 0 else x - 1 for x in [1,2,3,4,5]]` (returns `[0,2,2,4,4]`)
-- **Dict** as you'd expect: `x = {'i':1, 'cats':["Luna", "Milo"]}` --- `x["dogs"] = ["Spot"]` -> `x["dogs"][0]` (returns "Spot")
-    * Check out: `x.keys()` -- `x.values()` -- `"cats" in x.keys()` -- `for key in x.keys(): print(x[key])`
-    * Also check: `x["dogs"].append("Max")` (permanently modifies x["dogs"]) --- `{"a":{"b":{"c":{"d":1}}}}["a"]["b"]["c"]["d"]`
-- Convert to other type: `x = int(x)` -- `x = float(x)` -- `x = str(x)` -- `x = dict(x)` -- `x = list(x)` -- ...
+- Loop-else: `while x > 0: print(x)` -> `else:(print("Quit out!"))` --- `for x in [1,2,3,4]: print(x)` -> `else: print("Done!")`
+- Convert variables to different types: `x = int(x)` -- `x = float(x)` -- `x = str(x)` -- `x = dict(x)` -- `x = list(x)` -- ...
+### Variable: String
+- Technically known as a "sequence type" construct; takes sequence-type functions/methods, ex: `len("hello")`
+- As you'd expect: `x = "Hello"` -- `x + " world!"` -- `f"{x} world!"` -- `"-"*50` (fifty "-") -- `len(x)` -- `x[3]` -- `x[-1]`
+- Check out: `"e" in "Hello"` -- `"Hello".count('l')` -- `"Hello".find('o')` -- `"wowowow".find("w", 5, 7)` -- `"Hello".split('e')`
+- Also check: `"Hello world!".replace("Hello", "Hola")` -- `"GATTACA".replace("T", "G")` -- `"AAAA".replace("A", "B", 2)`
+- Also check: `"hello".upper()` -- `"HeLlO wOrLd!".lower()` -- `"big".title()` -- `"\n cool text\n  ".strip()` -- `"123".isnumeric()`
+    * More methods like these: `isalnum()` -- `isdigit()` -- `startswith('yo')` -- `endswith('peace')`
+- Also check: `"5 is %20d" % 5` -- `"pi is %0.2f" % 3.14159265358` -- `f"|{123:^8}|{1:^8}|"` -- `f"|{123:m>4}|{1:m>8}|"`
+    * `d`: digit, `f`: fixed point (default 6 decimal places), `b`: binary, `x`: hexadecimal, `e`: exponent (1.21e11)
+- Also check: `'{1:.2f} {0}'.format('Gigawatts', 1.21)` -- `'{word} {p}{punct}'.format(p="Joe", word="Hi", punct="!")`
+- Also check: `r"\nHello\n"` (`r` indicates a raw string, which ignores the escape character `\`; returns "\nHello\n")
+### Variable: Integer
+- Technically known as a "numeric type" construct
+- As you'd expect: `x = 1` -- `x * 3` -- `x / 2` (returns 0.5) -- `x // 2` (returns 0) -- `x + 3.1` (returns 4.1)
+- Can also use underscores for *code readability*, ex: `print(1_000_000_000)` (prints 1000000000)
+### Variable: Float
+- Technically known as a "numeric type" construct
+- As you'd expect: `x = 2.5` -- `x * 2` (returns 5.0) -- `x / 2` (returns 1.25) -- `x // 2` (returns 1.0)
+- Can also use scientific notation for float: `x = 3.249e20` -- `x = 2.91e-5`
+- Can also use underscores for *code readability*, ex: `print(1_000_000.01)` (prints 1000000.01)
+### Variable: List
+- Technically known as a "container" construct; takes sequence-type functions/methods, ex: `len([1,2,3,4,5])`
+- As you'd expect: `x = [6,8,2]` -- `x + [3]` (returns [6,8,2,3]) -- `x * 2` (returns [6,8,2,6,8,2]) -- `x[1]` (returns 8)
+- Check out: `6 in x` -- `x[1:]` -- `x[:2]` -- `x[1:29]` -- `x.index(8)` -- `"".join(["a","b","c","d"])` -- `sum(x)`
+- Also check: `x.append(29)` -- `x.extend([40,41])` -- `52 + x.pop(0)` -- `x.remove(6)` -- `x.sort()` -- `x.reverse()` -- `x.insert(1, 79)`
+    * These are permanent changes to `x`; *do not assign any of these to `x`* as in `x = x.append(...)`, it doesn't work
+    * Specify sort method: `food_list.sort(key=lambda x: len(x) * -1)` ----- sort food_list by descending string lengths
+        * Generally you'll want to use `sorted(list_here, key=str.lower)`
+- Also check: `x.sort()` -- `sorted(x)` -- `x.reverse()` -- `reversed(x)` -- `sorted(x, key=str.lower, reverse=True)` (key=max, ...)
+- Also check: `[d for d in x]` -- `[d for d in x if d > 3]` (returns [6,8]) -- `[d * 21 for d in x if d < 8]` (returns [126,42])
+    * These are list comprehensions; they return lists and perform element-wise changes and even filter using if/else
+    * Can get fairly complicated if you want, ex: `[x if x % 2 == 0 else x - 1 for x in [1,2,3,4,5]]` (returns `[0,2,2,4,4]`)
+### Variable: Dictionary 
+- Technically known as a "container" construct; takes mapping-type functions/methods, ex: `len([1,2,3,4,5])`
+    * Dict keys can be any immutable variable (integer, string, tuple); dict values can be any variable
+- As you'd expect: `x = {'i':1, 'cats':["Luna", "Milo"]}` --- `x["dogs"] = ["Spot"]` -> `x["dogs"][0]` (returns "Spot") --- `del x['i']`
+- Check out: `x.items()` -- `x.keys()` -- `x.values()` -- `"cats" in x.keys()` -- `for key in x.keys(): print(x[key])` 
+- Also check: `x["dogs"].append("Max")` (permanently modifies x["dogs"]) -- `x.update({"trees":["Oak"]})` -- `{"a":{"b":1}}["a"]["b"]`
+- Also check: `{key:value for (key,value) in x.items()}` --- `{f"{key}2":(value*10) for (key,value) in x.items() if key != 'i'}`
+    * These are dict comprehensions; they return dictionaries and perform key-value-pair changes and even filter using if/else
+    * Can get fairly complicated if you want, ex: `{key:('even' if value%2==0 else 'odd') for (key,value) in {"i":1, "j":2}.items()}`
+        * ex2: `{outer_k: {float(inner_v) for (inner_k, inner_v) in outer_v.items()} for (outer_k, outer_v) in nested_dict.items()}`
+- Also check: `{"a":1, "b":2}.get("a")` -- `{"a":1, "b":2}.get("zzz", "doesn't exist!")` -- `{"a":1, "b":2, "c":3}.pop("c", "nope!")`
 ### Variable: Class
 - Initialized with `class ClassName` or `class ClassName(param1, param2, ...)` --- start with capital letter typically for it
 - A class's methods are initialized with `def method_name(self, param1, param2, ...)`
+    * Methods always have a first parameter of `self` and must be defined as such (`def broken_method(p1, p2)` won't work)
     * Use `def __init__(self, param1, param2, ...)` to store code that will run on class creation
-    * Code should go into `__init__` or into other methods... don't leave code exposed inside a function
+        * Class attributes are set to defaults via `__init__`
+    * Code does not have to be put inside methods (ex: setting a static variable like `marathon_length = 5000` for `class Runner`)
+        * ...but it should be put inside methods, or kept outside of class definition altogether
 - An object is created via `cool_object1 = ClassName()` or `cool_object1 = ClassName(param1, param2, ...)`
 - A created object's methods are called via `cool_object1.method_name()` or `cool_object1.method_name(param1, param2, ...)`
     * You do not need to assign the output of called methods to anything; methods will update the class
     * EX: `def method1(self, name): self.cool_name = name` -> `cool_object1.method1("Tim")` -> `cool_object1.cool_name` returns "Tim"
+### Variable: Set
+- Unindexed grouping of **distinct** values: `s1.pop()` (random pop) -- `s1.add()` -- `s1.remove()` -- `s1.clear()`
+- Can pass string or list to `set()` to return a grouping of only distinct values
+- Set theory: doing work with more than one set (update, intersection, difference, union, symmetric difference)
+    * Can pass more than one set to ex: `s1.update(s2, s3, s4, ...)` (inplace combination of sets, don't assign output to a variable!)
+- Check out: `s1.update(s2)` (combine sets inplace) -- ` s1.intersection(s2)` (in-common values) -- `s1.difference(s2)` (unique to s1)
+- Also check: `s1.union(s2)` (uniques of combined set) -- `s1.symmetric_difference(s2)` (values that only appear in one set)
+### Other Variables
+- Tuple: immutable grouping of values, iterable (has index)
 ### Functions
 - Biggest usage is repeatability / store-away code in other files, ex: util.py, called via `import filename` aka `import util`
     * Directory traversal to import your function files: `from scripts/custom import util`, `from .. import cool_util`
+    * Can reload your function files, `from importlib import reload` -> `reload(util)`
+    * Run certain code in the util.py *only* if the util.py is directly invoked (not imported): `if __name__ == '__main__': (code)`
 - Generally structured like this: `def function_name(param1, param2):` with an indented code block immediately following it
     * Called in code after definition like this: `function_name(24, "hello", [1,2,3,4,5])`
+    * Can check function docstring using `help(function_name)`
     * Can create empty functions by typing `pass` in the function's code block
 - Can also be created on the fly and stored to variables with `lambda`
     * EX: `func = lambda param1, param2: param1 + param2` -> `func(2, 2)`
     * Mainly used for short/temporary functions like this example that don't really require function definition somewhere
+- Can either return one object or return nothing (void function); `return x1, x2, x3` returns the tuple `(x1, x2, x3)` (one object)
+- Global variables (defined outside a function) can be modified from inside functions via: `global var_name` -> `var_name += 1`
+    * Globally-defined container structs (lists, dicts) can be changed from inside functions **without** `global`... be careful!!
+    * Can check locally-defined and globally-defined variables: `print(locals())`, `print(globals())`
+- Parameters, default parameters, args, and kwargs for function declaration; `*args` sets a tuple, `**kwargs` sets a dict
+    * Parameters aren't optional and come first; default params come next and are optional; then `*args` and/or `**kwargs` at the end
+    * Note `*args` and `**kwargs` are optional, and that `*` and `**` can be followed by anything, ex: `*coolstuff` and `**coolerstuff`
 ### Oddities
 - Run code from string: `exec(string_containing_code)` --- `exec(module_name + "." + function_name + "(" + param_input + ")")`
     * Can't assign output of `exec` to a variable; must assign inside the `exec()` call
+- Slide stride: `list_or_string_name[start:end:step]` --- yep this is real, step indicates how many indices to move
+- Take inputs from command line: `python cool.py 12 6` where cool.py has `cool1 = sys.argv[1]` (12) and `cool2 = sys.argv[2]` (6)
+    * Make sure to check `len(sys.argv)` before assigning expected parameters... typical failed-input should kill program / print error
+- Changing what's printed for printing a class: `def __str__(self):` -> `return ('{} costs only ${:.2f}.'.format(self.name, self.price))`
+    * `print(instantiated_class)` -> prints `self.name costs only self.price.`
+- Operator overloading: `class ClassName:` -> `def __lt__(self, other)` -> `if self.height < other.height: return "Yup"`
+    * `__lt__` refers to Less Than (<), a "rich comparison"; there's more, like `le` (<=), `gt` (>), `ge` (>=), `eq` (==), and `ne` (!=)
+    * Any python operator can be overloaded like this; including `__add__` (+), `__int__` (int()), `__and__` (and), and many more
+    * Changing the operator definitions requires two arguments: `self` and `other`
+- Unit tests in classes: `import unittest` -> `class TestCircle(unittest.TestCase):`
+    * `def test_compute_area(self):` -> `c = Circle(0)` (Circle has self.compute_area()) -> `self.assertEqual(c.compute_area(), 0.0)`
+    * `if __name__ == "__main__":` -> `unittest.main()` ----- this returns AssertionError
 
 [[Return to Top]](#table-of-contents)
 
@@ -811,6 +1044,7 @@ mean_x_given_g1_g2 = df.groupBy('g1').pivot('g2').agg(mean('x'))
 - Excellent library for *numerical* data, especially w/ 3+ dimensions, and generating pseudo numbers for testing
 ### NumPy Implementation
 - `np.absolute(np.array([1,-2,3,-4,5]))` ----- absolute values for very basic array
+- `np.sin(...)`, `np.cos(...)`, ...
 - `np.arange(1,10,0.5)` ----- returns `array([1, 1.5, 2, 2.5, ..., 9.5])`, 1 to 10 in steps of 0.5
 - `np.linspace(0,10,5)` ----- returns `array([0, 2.5, 5, 7.5, 10])`, 5 equidistant steps between 0 and 10
 - `(np.random.rand(5, 5) * 10).round()` ----- 5x5 array of integers 0-10
@@ -931,6 +1165,37 @@ mean_x_given_g1_g2 = df.groupBy('g1').pivot('g2').agg(mean('x'))
 - Highly customizable, but needs a lot of work to be presentable
 - Push plots to scripts to make things easily repeatable
 - Customization options: https://matplotlib.org/stable/tutorials/introductory/customizing.html
+### Formatted Strings for Plot Customization
+- `plt.plot(x, height, formatted_string_here)`
+- Colors: b (Blue), g (Green), r (Red), w (White), k (Black), y (Yellow), m (Magenta), c (Cyan)
+- Line styles (don't use with markers): - (Solid line), -- (Dashed line), -. (Dashed-dot line), : (Dotted line)
+- Markers (don't use with line styles):	. (Point), , (Pixel), o	(Circle), +	(Plus), X (X), | (Vertical line), * (Star), _ (Horizontal line)
+    * More: 1 (Tri-down), 2 (Tri-up), 3 (Tri-left), 4 (Tri-right), v (Triangle-down), ^ (Triangle-up), < (Triangle-left), > (Triangle-right)
+    * More: h (Hexagon1), H (Hexagon2), d (Thin diamond), D (Diamond), p (Pentagon), s (Square)
+### Line Properties
+- alpha (float): alpha compositing enables transparency
+- antialiased (Boolean): Enabled anti-aliasing of the line
+- color (A matplotlib color): Color of the markers, line
+- solid_capstyle ('butt', 'round', or 'projecting'): How the cap of a line appears
+- solid_joinstyle ('miter', 'round', or 'bevel'): How the join of a line appears
+- data ([x_data, y_data]): The arrays of x and y coordinates
+- label (string): The label to use for the line
+- linestyle ('-', '--', '-.', ':', ... (see above)): The style of the line
+- linewidth (float): The width of the line when drawn.
+- marker ('+', ',', '.', '1', '2', ... (see above)): The style of the marker to use
+- markersize (float): The size of the marker
+- visible (Boolean): Show/hide the line
+### Useful Methods
+- Span lines: `.axvline(x), .axhline(height)`
+- String label: `.text(x, height, text_string)`
+- Legend: `.legend(shadow=True, loc="upper_right")`
+- Annotation: `.annotate(string, xy, xytext, arrowprops=arrow_properties)`
+    * Setting arrowprops: `arrowprops={'facecolor': 'black', 'shrink': 0.1, 'headlength': 10, 'width': 2, ...}`
+- Create individual figures (not in subplots): `plt.figure(1)` -> `plt.bar(...)` -> `plt.figure(2)` -> `plt.bar(...)` -> `plt.show()`
+    * Use subplots for *related* charts; use this for different ones
+- Set axes widths: `.axis([xmin, xmax, ymin, ymax])`
+- Set dual y axis (y axis on left and on right): `.twinx` (requires shared x axis)
+    * `fig = plt.figure()`, `left_axis = fig.add_subplot(1, 1, 1)`, `right_axis = left_axis.twinx()`, `left_axis.plot()`, `right_axis.plot()`
 ### Basic Matplotlib Example
 ```
 s = pd.Series([-3,-2,-1,0,1,2,3])
@@ -939,7 +1204,7 @@ df = pd.DataFrame({'category':cats, 'original':s, 'squared':s**2, 'absolute_time
 plt.figure(figsize=(10,5))
 plt.style.use('bmh')
 plt.subplot(121)
-plt.plot(s, s ** 2, c='green')
+plt.plot(s, s ** 2, c='green') # try this: plt.plot(s, s ** 2, "r--")
 plt.title("Plot of $a^2$")
 plt.xlabel("x")
 plt.yticks(s**2)
@@ -2528,14 +2793,15 @@ if __name__ == '__main__':
 - Start with overview in presentation, dissect the focus later (start with churn v not churned, then dive into churn data)
 - Relate the problem to the audience's interests and focus for maximum effect
 
-<!-- Polished -->
-## Systems Development Lifecycle (SDLC)
+<!-- Needs work -->
+## Requirements
+### Systems Development Lifecycle (SDLC)
 - Framework for delivering software
 - Waterfall: takes it one step at a time, fully-complete each step then move on
     * All requirements defined ahead of time; inflexible for later requirements or issues, and may be restarted
 - AGILE: quickly builds from scratch to small, doing the full "spiral", then repeats from small to big, big to bigger, and onward
     * Flexible for requirement changes or issues; but who knows when to call things "finished"
-### Steps of SDLC
+#### Steps of SDLC
 - Analysis: choosing which requirements to build for
     * Software requirements specification (SRS) used to define all finalized requirements (includes UML diagrams)
 - Design: choosing the solutions to solve those requirements
@@ -2549,5 +2815,37 @@ if __name__ == '__main__':
     * Testing: Sequence diagram, ex: client-server communication sequence
 - Each diagram is not only prescribable to a single element of SDLC; they overlap somewhat
     * EX: can use the Use case diagram for multiple... but, you should use multiple/different diagrams
+### ER Diagram
+- Entity-Relationship Diagram
+- Shows entities (each a single thing), their attributes (ex: its cost), and their relationship to other entities (ex: customer-has-bill)
+- Typically used for expressing stakeholder databasing requirements on a chart (the documentation of the Discovery stage)
+- Usually tied with a Glossary (data dictionary / repository) that explains each entity and its synonyms
+    * GLOSSARY | [e/r/a] Name: [name] | Synonyms: [syn1], [syn2] | Description: A [name] is ... [name] includes... but excludes...
+#### Entity, Relationship, Attribute Specifics
+- Entity/Relationship/Attribute: Type is the definition; Instance is a specific instantiated element of the definition
+- Entity: The block, contains attributes
+    * Entity, but also can be supertype entity (entity and container of entities) and subtype entity (contained-entity)
+        * Supertype is usually for something like Car, containing ElectricCar and DieselCar and GasCar (categories, but also, entities)
+        * Super/sub relationship is called "IsA relationship" (Manager-IsAn-Employee)
+        * Subtype entity's primary key is identical to the supertype primary key *AND* is a foreign key referencing it
+        * Can be partitioned; supertype has partition attributes, each partition is tied to them and contains subtype entities
+        * In ER diagrams, supertype entity boxes contain the boxes for subtype entities
+    * Can be dependent (A only exists as part of B (master)) or independent (A can exist with/without B)
+        * Dependent entities usually have a composite key; combo the foreign key (refer master) and a column that makes the combo unique
+    * Dependence (remember: *entity only exists in relation to one or more entities*) is expressed as arrows instead of lines
+    * In entity-relationship model, it's called "existence dependence"; but in relational model, it's called "functional dependence"
+- Relationship: The line, links entities; the line has a word attached indicating what the relationship is (ex: Schedules, ArrivesAt, ...)
+    * Specifics of relationship type/aspects is called **Cardinality**
+    * Relationship maxima/minima: maxima is max-possible (only one, or many), minima is min-possible (can-be-zero, min one)
+    * Maxima/minima are set as M (many), 1 (one), or 0 (zero), and these one-chars are nested on the line against the entity it describes
+        * For style purposes, M - 1 - 0 is sometimes expressed differently (crow's foot (M) - bar across line (1) - circle (0))
+        * Primary key (0) means you can have nulls in foreign; (1) means you cannot (every value could be null, violating the minimum-1)
+        * One-Many or Many-One use foreign keys; Many-Many uses a new table with only a composite foreign key (use cascade/restrict rules)
+    * Maxima precedes minima; minima is encapsulated in parentheses. EX: maxima many and min zero is M(0)
+    * EX: [Flight] 1(1) --Includes-- M(0) [Booking]
+- Attribute: lines in the block; each attribute name is singular, but maxima/minima are placed to right of them
+    * Attribute maxima/minima: same as relationship maxima/minima (see above), but are entity-attribute descriptors
+    * Can also signal "required" (1) or "optional" (0) after maxima/minima to say "require at least one" or "optionally zero"
+    * EX: [Employee] FullName M-1(1), PassportNumber 1-M(0), SkillCode M-M(0)
 
 [[Return to Top]](#table-of-contents)
