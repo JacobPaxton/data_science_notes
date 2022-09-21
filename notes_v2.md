@@ -13,11 +13,16 @@
 # Table of Contents
 I.    [Approaching Data              ](#approaching-data)
 1.    [Advice                        ](#advice)
-2.    [Datasets                      ](#datasets)
+2.    [Data                          ](#data)
+3.    [Datasets                      ](#datasets)
+
 ---
 II.   [Algorithms and Tricks         ](#algorithms-and-tricks)
-1.    [Algorithm Basics              ](#algorithms-basics)
+1.    [Algorithm Basics              ](#algorithm-basics)
 2.    [Speed Tricks                  ](#speed-tricks)
+3.    [Sort Algorithms               ](#sort-algorithms)
+4.    [Search Algorithms             ](#search-algorithms)
+5.    [Other Algorithms              ](#other-algorithms)
 ---
 III.  [Data Structures               ](#data-structures)
 1.    [Data Structures Basics        ](#data-structures-basics)
@@ -58,7 +63,7 @@ XI.   [NumPy and Pandas              ](#numpy-pandas)
 2.    [Pandas                        ](#pandas)
 ---
 XII.  [Matplotlib & Seaborn          ](#matplotlib-&-seaborn)
-1.    [Visualization in Python       ](#overall-notes-for-visualizations-in-python)
+1.    [Visualization in Python       ](#overall-notes-for-python-vizualization)
 2.    [Matplotlib                    ](#matplotlib)
 3.    [Seaborn                       ](#seaborn)
 ---
@@ -141,33 +146,57 @@ XXVII.[Stakeholders                  ](#stakeholders)
 
 
 <!-- 
-   #                                                                        ######                      
-  # #   #####  #####  #####   ####    ##    ####  #    # # #    #  ####     #     #   ##   #####   ##   
- #   #  #    # #    # #    # #    #  #  #  #    # #    # # ##   # #    #    #     #  #  #    #    #  #  
-#     # #    # #    # #    # #    # #    # #      ###### # # #  # #         #     # #    #   #   #    # 
-####### #####  #####  #####  #    # ###### #      #    # # #  # # #  ###    #     # ######   #   ###### 
-#     # #      #      #   #  #    # #    # #    # #    # # #   ## #    #    #     # #    #   #   #    # 
-#     # #      #      #    #  ####  #    #  ####  #    # # #    #  ####     ######  #    #   #   #    # 
+   #                                                                              
+  # #   #####  #####  #####   ####    ##    ####  #    # # #    #  ####  
+ #   #  #    # #    # #    # #    #  #  #  #    # #    # # ##   # #    # 
+#     # #    # #    # #    # #    # #    # #      ###### # # #  # #      
+####### #####  #####  #####  #    # ###### #      #    # # #  # # #  ### 
+#     # #      #      #   #  #    # #    # #    # #    # # #   ## #    # 
+#     # #      #      #    #  ####  #    #  ####  #    # # #    #  ####  
+
+######                      
+#     #   ##   #####   ##   
+#     #  #  #    #    #  #  
+#     # #    #   #   #    # 
+#     # ######   #   ###### 
+#     # #    #   #   #    # 
+######  #    #   #   #    # 
 -->
 
 # Approaching Data
 
 <!-- Polished -->
 ## Advice
-- Zach: Consistency > Intensity, Motivation is important, Doing data science > learning about data science, Publish!, If it's worth doing, it's worth getting started
-- Zach: ask in interview "what does professional development look like for your employees?"
+- Zach: Consistency > Intensity
+- Zach: Motivation is important
+- Zach: Doing data science is better learning about data science
+- Zach: Publish your work, even if it's not great- it shows improvement, passion
+- Zach: If it's worth doing, it's worth getting started
+- Zach: Ask "what does professional development look like for your employees?"
 ### Tidy Data
-- Tidying Data: https://vita.had.co.nz/papers/tidy-data.pdf
-- One value per cell: split out multi-value cells, 'melt' one-hot columns into single column, handle nulls
+- Structured data having one value per cell and minimizing/eliminating nulls
+- Split multi-value cells into dedicated columns
+- "Melt" multiple columns into a single column
+- Handle nulls by imputation, fill, drop, etc
+- Paper on tidy data: https://vita.had.co.nz/papers/tidy-data.pdf
+
+<!-- Polished -->
+## Data
+### Unicode
+- Unicode: numeric representation of characters (called "code points")
+- Look up character in unicode with Python: `ord('?')`
+- Get character using its unicode "code point" in Python: `chr(63)`
 
 <!-- Polished -->
 ## Datasets
+- Sometimes it's just better to start with clean data
+- Other times you don't have a choice...
 ### Import-able Datasets (Python)
-- pandas datareader: https://pandas-datareader.readthedocs.io/en/latest/remote_data.html
-- from pydataset import data --- df = data('iris')
-- import seaborn as sns --- df = sns.load_dataset('iris')
-- from vega_datasets import data --- df = data('iris')
-- from sklearn import datasets --- array = datasets.load_iris()['data']
+- `from pydataset import data` --- `df = data('iris')`
+- `import seaborn as sns` --- `df = sns.load_dataset('iris')`
+- `from vega_datasets import data` --- `df = data('iris')`
+- `from sklearn import datasets` --- `array = datasets.load_iris()['data']`
+- datareader https://pandas-datareader.readthedocs.io/en/latest/remote_data.html
 ### Downloads
 - Massive list: https://github.com/awesomedata/awesome-public-datasets
 - Massive list: https://www.data-is-plural.com/archive/
@@ -177,8 +206,8 @@ XXVII.[Stakeholders                  ](#stakeholders)
 - Search various: https://huggingface.co/datasets
 - Search various: https://datasetsearch.research.google.com
 - NLP: https://machinelearningmastery.com/datasets-natural-language-processing/
-- Computer vision: https://visualdata.io/discovery
-- Computer vision from satellites: https://github.com/chrieke/awesome-satellite-imagery-datasets
+- Computer vision (CV): https://visualdata.io/discovery
+- Satellite CV: https://github.com/chrieke/awesome-satellite-imagery-datasets
 
 [[Return to Top]](#table-of-contents)
 
@@ -188,50 +217,122 @@ XXVII.[Stakeholders                  ](#stakeholders)
 
 
 <!-- 
-   #                                                                  ##       #######                               
-  # #   #       ####   ####  #####  # ##### #    # #    #  ####      #  #         #    #####  #  ####  #    #  ####  
- #   #  #      #    # #    # #    # #   #   #    # ##  ## #           ##          #    #    # # #    # #   #  #      
-#     # #      #      #    # #    # #   #   ###### # ## #  ####      ###          #    #    # # #      ####    ####  
-####### #      #  ### #    # #####  #   #   #    # #    #      #    #   # #       #    #####  # #      #  #        # 
-#     # #      #    # #    # #   #  #   #   #    # #    # #    #    #    #        #    #   #  # #    # #   #  #    # 
-#     # ######  ####   ####  #    # #   #   #    # #    #  ####      ###  #       #    #    # #  ####  #    #  ####  
+   #                                                                  ##           
+  # #   #       ####   ####  #####  # ##### #    # #    #  ####      #  #     
+ #   #  #      #    # #    # #    # #   #   #    # ##  ## #           ##       
+#     # #      #      #    # #    # #   #   ###### # ## #  ####      ###       
+####### #      #  ### #    # #####  #   #   #    # #    #      #    #   # # 
+#     # #      #    # #    # #   #  #   #   #    # #    # #    #    #    #  
+#     # ######  ####   ####  #    # #   #   #    # #    #  ####      ###  #  
+
+#######                           
+   #    #####  #  ####  #    #  ####  
+   #    #    # # #    # #   #  #      
+   #    #    # # #      ####    ####  
+   #    #####  # #      #  #        # 
+   #    #   #  # #    # #   #  #    # 
+   #    #    # #  ####  #    #  ####  
 -->
 
 # Algorithms and Tricks
 
-## Algorithms Basics
-- Efficient computation; decreased "computational complexity" (runtime + memory)
-    * See also: space complexity (memory amount used), auxiliary space complexity (not including "n" datapoints)
+<!-- Polished -->
+## Algorithm Basics
+- Efficient computing can make or break the user experience
 - Simple changes to slow code can speed it up immensely
-- Heuristic algorithms don't perfectly solve problems but are FAST (good enough solution, but much faster than great/perfect)
-    * EX: knapsack problem, add the highest-value item that can fit until no more items can be added (good, not perfect)
-- Knowing algorithms + use cases, and cases where algorithms don't work ("NP-complete"), is key to efficient code
-### Example Algorithms
-- All possible outcomes: use recursion and ex: string indexing/splits (word scramble)
-- Linear search: go element by element to check for a match
-- Binary search: when data is ordered, split in half and check left/right of split, then choose and split again
-    * Recursion is an excellent implementation for this (search half -> search half -> etc (if found, break; else, search half, call self))
-- Selection sort (SLOW): find smallest in entire array, swap with index 0; from index 1, find smallest in entire remaining array, swap
-    * Keep swapping like this until finished; if the index itself is the smallest, just move to next index and continue
-- Insertion sort (SLOW): check next vs previous, if smaller, swap, repeat checks until encounter index 0 or a smaller number, check next...
-- Quicksort: split array into low/high segments using midpoints & left/right indices inward move, swap midpoint to low segment until overlap
-    * Recursion is an excellent implementation for this (repeatedly appending to high/low partitions and swapping midpoint to low partition)
-- Merge sort: halve array repeatedly until multiple arrays of length 1; reverse the halving into temp arrays while sorting at each step
-    * Increment left-half and right-half index while comparing each selected value; move a value in left, increment left +1 (same for right)
-- Bucket sort: using simpler operations to sort, then doing multiple complex-sort operations
-    * EX: Sorting words, sort first on starting letter (a, b, c, ...) into buckets, then sort all of a, then all of b, ...
+- Knowing where algorithms are great / are useless informs excellent code design
+- Knowing where to be perfect / where to cut corners can secure victory
+### Specific Algorithmic Goals
+- Goal of decreasing "computational complexity": lowering runtime + memory use
+- Goal of decreasing "space complexity": lowering memory use by itself
+- Goal of decreasing "auxiliary space complexity": lowering data overhead
+
+<!-- Polished -->
+## Speed Tricks
+- Use heuristic algorithms; they're "good enough" at extremely high speed
+- Use floor division and modulo on integers to get integer "substrings"
+    * EX: `965486 // 1000` to get first-three, `965486 % 1000` to get last-three
+- Appending to an array is slow; init array with length and use index assignment
+    * EX: Numpy array of zeroes via `np.zeroes(len(chosen_array_length))`
+### Recursion
+- Function calling itself until goal achieved / no more work remains
+- Especially good at all-possible-outcomes problems
+    * EX: Scramble words using string indexing/splits recursively
+### Hash Tables and Linked Lists
+- Hash tables are fast... especially with linked lists
+- Each hash "bucket" contains a linked list
+- Linked lists are appended to / sorted extremely quickly
+- p1 EX: Buckets are [0,1,2,...] based on the alphabet (a = 0, b = 1, ...)
+- p2 EX: Choose the bucket you know the value to be in ("a" are in bucket 0)
+- p3 EX: `a[0] = ("A1", n1)`, `n1 = ("A2", n2)` --- `x[1] = ("B1", n3)`, ...
+### NP-Complete (lacking algorithms)
+- NP-Complete: impossible to "solve" via algorithm
+    * "Cliques", finding any subset of vertices where each is connected to every
+- Knowing NP-complete problems saves mental cycles trying to find a solution
+- Use heuristic algorithms for best-possible solution at speed to "solve"!
+
+<!-- Polished -->
+## Sort Algorithms
+- Sorting is crucial for all storytelling; max/min values, large/small, etc
+- Speeding up sorts is not only possible but necessary in many cases
+### Selection sort - O(n^2)
+- Search the *entire* array for the smallest value and move it to the start
+- The "start" moves forward as the smallest values are moved to the beginning
+- Perfect sort, paid for by slow speed
+### Insertion sort - O(n^2)
+- Compare two values, swap them if second value is larger than first
+- On a swap, comparison moves backward; second value compared to before-first
+- On no swap (or index 0 reached when moving backward), comparison moves forward
+- Perfect sort, paid for by slow speed
+### Quicksort - O(n^2)
+- Check midpoint and swap with lowest/highest index after comparison
+- Array becomes partitioned into low partition and high partition over time
+- Perfect sort, paid for by slow speed
+### Merge sort - O(n * log n)
+- Halve array repeatedly, then recombine halves iteratively while sorting
+- Each sort appends the lowest of either half to a combined array
+- After halves sorted, take combined array and compare to another combined one
+- Perfect sort, slightly faster than the above sorts
+### Bucket sort - DEPENDS!
+- Intelligent split of array into buckets, sort each bucket, then recombine
+- Many approaches for bucket choices; the choice makes/breaks the sort speed
+    * Values between zero and one: 10 buckets (0.1xx, 0.2xx, 0.3xx, ...)
+    * Alphabetical: 26 buckets (Axx, Bxx, Cxx, ...)
+- Too many buckets is too slow; too few buckets is also too slow (careful!)
+    * Elbow method to determine best combo?...
+- Best choice for bucket internals is the [linked list](#linked-list)
+
+<!-- Polished -->
+## Search Algorithms
+- Speedy searches can make a world of difference in processing
+- You can be very smart about the way you search
+### Linear Search - O(n)
+- From the first value, iterate forward until the value is found
+- No requirements except for data to be iterable in some way
+- Traditional way to search; boring and slow
+### Binary Search - O(log n)
+- Split in half repeatedly while playing marco polo
+- Requires data to already be sorted
+### Hash Table - O(n)
+- Look for values using its hash
+
+<!-- Polished -->
+## Heuristic Algorithms
+- Heuristic algorithms don't perfectly solve problems but are FAST
+### Background of Heuristics
+- Being perfect and slow is sometimes necessary (sorting)
+- Being imperfect and speedy is sometimes preferred (solving problems)
+- Being imperfect and speedy is sometimes necessary (rounding decimals)
+- Accuracy requirements steer heuristic choices
+### Knapsack Problem
+- Knapsack problem: fit max amount of defined-size objects into bag
+- Perfect method tries all possible combinations to get max (very slow, perfect)
+- Heuristic method repeatedly chooses largest that fits (extremely fast, decent)
+
+<!-- Polished -->
+## Other Algorithms
 - Longest common substring
 - Dijkstra's shortest path
-### NP-Complete (lacking algorithms)
-- Cliques: Detecting when n points are interconnected from a graph of points
-
-## Speed Tricks
-- Get prefix of integer without converting it to string: Floor division by 10*n, ex: 965 from 965486 by doing `965486 // 1000`
-- Speed up array additions: init the array with all-zero values (np.zeroes(len(chosen_length))) and use index assignment
-    * Appending to an array (changing array length) is computationally-expensive; index assignment is faster
-### Recursion
-- Function calling itself, ex: countdowns
-
 
 [[Return to Top]](#table-of-contents)
 
@@ -242,53 +343,65 @@ XXVII.[Stakeholders                  ](#stakeholders)
 
 
 <!-- 
-######                          #####                                                               
-#     #   ##   #####   ##      #     # ##### #####  #    #  ####  ##### #    # #####  ######  ####  
-#     #  #  #    #    #  #     #         #   #    # #    # #    #   #   #    # #    # #      #      
-#     # #    #   #   #    #     #####    #   #    # #    # #        #   #    # #    # #####   ####  
-#     # ######   #   ######          #   #   #####  #    # #        #   #    # #####  #           # 
-#     # #    #   #   #    #    #     #   #   #   #  #    # #    #   #   #    # #   #  #      #    # 
-######  #    #   #   #    #     #####    #   #    #  ####   ####    #    ####  #    # ######  ####  
+######                       
+#     #   ##   #####   ##      
+#     #  #  #    #    #  #     
+#     # #    #   #   #    #   
+#     # ######   #   ######   
+#     # #    #   #   #    #    
+######  #    #   #   #    # 
+
+ #####
+#     # ##### #####  #    #  ####  ##### #    # #####  ######  ####  
+#         #   #    # #    # #    #   #   #    # #    # #      #      
+ #####    #   #    # #    # #        #   #    # #    # #####   ####  
+      #   #   #####  #    # #        #   #    # #####  #           # 
+#     #   #   #   #  #    # #    #   #   #    # #   #  #      #    # 
+ #####    #   #    #  ####   ####    #    ####  #    # ######  ####  
 -->
 
 # Data Structures
 
+<!-- Polished -->
 ## Data Structures Basics
-- Unicode: numeric representation of characters (called "code points")
-    * Look up character in unicode: `ord('?')` -- Get character using its code point: `chr(63)`
 ### Class
-- Object containing attributes and methods
-- Instantiation involves creating a new instance of a defined class and setting default attributes
-    * Class definitions are typically capitalized, ex: `class ClassName():`
-    * In Python, the `__init__` constructor (a method) is always called upon class instantiation
-- Attributes are set on instantiation and further assignment via "attribute reference operators", ex: `self.title = "Walden"`
-- Classes can call other classes, ex: `def ClassName1` -> `def __init__(self)` -> `ClassName2.__init__(self)`
-    * Class **inheriting attributes** is "derived class"; class giving properties is called "base class"
-    * Classes "containing" another class (person and their item) isn't attribute inheritance...
+- The blueprints of an object
+- Contains attributes (descriptors) and methods (functions)
+- Blueprint is outlined in a class definition; classes are typically capitalized
+- Is only a blueprint until the program "instantiates" it (creates an object)
+- Instantiation creates the object and sets the default attributes and methods
+- Defaults are set by the class's "constructor" on instantiation
+- After creation, the object is modified using "attribute reference operators"
+    * In Python, object modification looks like this: `book1.title = "Walden"`
+- An object is highly flexible and its methods can instantiate other objects
+- An object can also inherit attributes from another class
+- A "derived class" inherits attributes from a "base class"
 ### Hash Table
-- Hash something into an array's index, store that something at that index
-- Hashing strategy is your choice; goal is to simplify lookups
-    * EX: if you're looking up names, why not hash first letter like: a->0, b->1, c->2, d->3, ...
-    * EX: if you're looking up values, why not hash first number like: 0->0, 1->1, 2->2, 3->3, ...
-- Linked lists are attached to each index to handle multi-attribution
-    * EX: name lookup, multiple names start with a; a->0, so append the (name, info) tuple onto the list at array[0]
-    * Result is ex: `array[0] = [("aaron", "tall"), ("abigail", "short")]` --- `array[1] = [("bobby", "short")]` --- ...
-- Lookups are much faster this way; hash the value you want to look up, then search in the short list for the info you want
-    * EX: name lookup for `"abigail"`: hash the name via `hash("abigail") -> 0` --- go to 0 via `array[0]` --- find `"abigail"` there
-    * Hash strategy should consider the length of the overall array and the length of each linked list; neither should be too long
-    * The "short lists" in the array can be linked lists for easier append/sort operations
+- A mapping of keys (hashes) to values
+- Uses hashing function(s) to create the key for the value
+- Hashing functions range from very simple/DIY to highly complex/academic
+- The key (the hashed value) is used as the index for the value
+- A hash table key is often a "bucket" of values (thirty values in one bucket)
+- Buckets are fast!! Much faster to find values this way
+    * No buckets: find the 3/8" wrench in a *pile* of wrenches, hammers, drills
+    * Buckets: find the 3/8" wrench in the wrench bucket, ignoring other buckets
+- Finding the value involves: hashing it -> going to the matching hash (bucket)
+- Buckets are implemented efficiently via ["linked lists"](#linked-list)
+    * Each bucket contains a linked list; linked lists have speedy appends/sorts
 ### Linked List
-- A list that doesn't have the structure of a typical array; instead, one item links to the next
-    * This structure doesn't exist in native Python but of course can be manually created (using classes; create class of each head)
-    * Involves a **head** (data/next combo), the **data**, and the loc of the **next** item (and sometimes the previous item...)
-    * A bit complicated to delete...
+- Many element+pointer combos where a combo's pointers reference prev/next combo
 - Excellent at handling problemsets involving sorting long arrays
-    * Just update the values of "next" for the head being moved and the head before it... done.
-    * Typical arrays involve placing the value being moved and shifting every value after it, which is inefficient
-- Can be simple linked (just has "next" in head), doubly linked ("next" and "previous"), and/or circular (last item links "next" to first)
+    * Just update two neighbor combos' pointers; no need to update entire array
+- Compiled languages ex: C++ incorporate pointers natively, easy linked list
+- Interpreted languages ex: Python don't incorporate pointers, avoid linked list
+- The element+pointer combo (one item in the linked list) is a "head"
+- The "head" is split into the data (a la payload) and the pointer(s)
+- A linked list's pointers can be simply-linked, doubly-linked, and/or circular
+    * Simple: link next, doubly: link next & prev, circular: last link to first
+- Because there's no structure, a linked list is usually deleted by a function
 
+<!-- Needs work -->
 ## Data Structures Examples
-### Hash Table - Linked Lists
 - 
 
 [[Return to Top]](#table-of-contents)
@@ -378,6 +491,31 @@ XXVII.[Stakeholders                  ](#stakeholders)
 - Union: combines two tables by selecting all rows of both tables.
 - Intersect: combines two tables by selecting only rows common to both tables.
 - Difference: combines two tables by selecting rows that appear in one table but not the other.
+### Normal Forms
+- Normalization is the process of *decomposing* tables into more tables that each have a higher normal form
+- Normalization is mainly used for tables with high variability; static-ish tables can be queried faster if they’re NOT normalized!!
+    * Undoing normalization is called “denormalization”; be careful in doing this!!
+- First normal form 
+    * Previous form: unstructured data
+    * Now clean: All unique rows/columns, 1 value/cell, values in column domain
+    * Still dirty: one or more columns are not fully dependent on the primary key (has partial dependency, or none)
+    * To do: move dependent columns out to their own table with foreign key
+- Second normal form
+    * Previous form: All unique rows/cols, 1 value/cell, values in column domain, but partial dependencies
+    * Now clean: all columns are fully dependent on the primary key (no more partial dependency)
+    * Still dirty: one or more columns can be guessed from another non-key column (has transitive dependency)
+    * To do: move the guess-able columns to their own table with foreign key
+- Third normal form
+    * Previous form: All unique rows/cols, 1 value/cell, values in column domain, no partial dependency, but transitive dependency
+    * Now clean: No columns guessable from other non-keys (no more transitive dependency)
+    * Still dirty: Part/all of the primary key is dependent on 1+ non-key column(s)
+    * To do: move the offending portion of the primary key (and copy the column(s) it depends on) out into new tables
+- Boyce Codd normal form
+    * Previous form: All unique rows/cols, 1 value/cell, values in column domain, no partial/transitive depend, but nonkey -> key
+    * Now clean: No portion of primary key is dependent on a non-key column
+    * Still dirty: multivalued dependence
+- Fourth normal form: removed multivalued dependence (two independent plural attributes) (rare)
+- Fifth normal form: removed join dependence (table-to-table dependency where one table has more columns) (rare)
 
 [[Return to Top]](#table-of-contents)
 
@@ -1153,7 +1291,7 @@ mean_x_given_g1_g2 = df.groupBy('g1').pivot('g2').agg(mean('x'))
 # Matplotlib & Seaborn
 
 <!-- Polished -->
-## Overall Notes for Visualizations in Python
+## Overall Notes for Python Vizualization
 - **Amazing charts for inspiration:** https://www.python-graph-gallery.com/all-charts/
 - LaTeX Notation: Wrap math in dollar signs like $a^2$
     * Character chart: https://www.caam.rice.edu/~heinken/latex/symbols.pdf
