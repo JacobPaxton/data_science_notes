@@ -1,28 +1,36 @@
 # <center><strong>Data Science Notes, v2</strong></center>
 
 <!-- 
-#######                                                  #####                                                 
-   #      ##   #####  #      ######     ####  ######    #     #  ####  #    # ##### ###### #    # #####  ####  
-   #     #  #  #    # #      #         #    # #         #       #    # ##   #   #   #      ##   #   #   #      
-   #    #    # #####  #      #####     #    # #####     #       #    # # #  #   #   #####  # #  #   #    ####  
-   #    ###### #    # #      #         #    # #         #       #    # #  # #   #   #      #  # #   #        # 
-   #    #    # #    # #      #         #    # #         #     # #    # #   ##   #   #      #   ##   #   #    # 
-   #    #    # #####  ###### ######     ####  #          #####   ####  #    #   #   ###### #    #   #    ####  
+#######                                              
+   #      ##   #####  #      ######     ####  ###### 
+   #     #  #  #    # #      #         #    # #      
+   #    #    # #####  #      #####     #    # #####  
+   #    ###### #    # #      #         #    # #      
+   #    #    # #    # #      #         #    # #      
+   #    #    # #####  ###### ######     ####  #      
+                                                     
+ #####                                                 
+#     #  ####  #    # ##### ###### #    # #####  ####  
+#       #    # ##   #   #   #      ##   #   #   #      
+#       #    # # #  #   #   #####  # #  #   #    ####  
+#       #    # #  # #   #   #      #  # #   #        # 
+#     # #    # #   ##   #   #      #   ##   #   #    # 
+ #####   ####  #    #   #   ###### #    #   #    ####  
 -->
 
 # Table of Contents
 I.    [Approaching Data              ](#approaching-data)
 1.    [Advice                        ](#advice)
-2.    [Data                          ](#data)
+2.    [Data Overview                 ](#data-overview)
 3.    [Datasets                      ](#datasets)
-
 ---
 II.   [Algorithms and Tricks         ](#algorithms-and-tricks)
 1.    [Algorithm Basics              ](#algorithm-basics)
 2.    [Speed Tricks                  ](#speed-tricks)
 3.    [Sort Algorithms               ](#sort-algorithms)
 4.    [Search Algorithms             ](#search-algorithms)
-5.    [Other Algorithms              ](#other-algorithms)
+5.    [Heuristic Algorithms          ](#heuristic-algorithms)
+6.    [Other Algorithms              ](#other-algorithms)
 ---
 III.  [Data Structures               ](#data-structures)
 1.    [Data Structures Basics        ](#data-structures-basics)
@@ -30,20 +38,24 @@ III.  [Data Structures               ](#data-structures)
 ---
 IV.   [Databases                     ](#databases)
 1.    [Database Basics               ](#database-basics)
-2.    [Relational Databases          ](#relational-databases)
+2.    [Database Documentation        ](#database-documentation)
+3.    [Database Operations           ](#database-operations)
+4.    [Relational Databases          ](#relational-databases)
 ---
-V.    [Command Line and Git          ](#git)
+V.    [git & Terminal                ](#git--terminal)
 1.    [Terminal                      ](#terminal)
 2.    [git Basics                    ](#git-basics)
 3.    [git for Solo Dev Work         ](#git-for-solo-work)
 4.    [git for Tean Dev Work         ](#git-for-team-dev-work)
 ---
 VI.   [Regular Expressions (REGEX)   ](#regular-expressions-(regex))
-1.    [REGEX                         ](#regex)
+1.    [REGEX Basics                  ](#regex-basics)
 ---
-VII.  [APIs & Scraping               ](#apis-&-scraping)
+VII.  [APIs & Scraping               ](#apis--scraping)
 1.    [APIs                          ](#apis)
 2.    [Web Scraping                  ](#web-scraping)
+3.    [Requests & Beautiful Soup     ](#requests--beautiful-soup)
+4.    [Selenium                      ](#selenium)
 ---
 VIII. [SQL                           ](#sql)
 1.    [SQL Basics                    ](#sql-basics)
@@ -52,7 +64,7 @@ VIII. [SQL                           ](#sql)
 ---
 IX.   [Apache Spark                  ](#apache-spark)
 1.    [Spark Wrangling               ](#spark-wrangling)
-2.    [Spark MAchine Learning        ](#spark-machine-learning)
+2.    [Spark Machine Learning        ](#spark-machine-learning)
 ---
 X.    [Python                        ](#python)
 1.    [Python Basics                 ](#python-basics)
@@ -133,7 +145,7 @@ XXVI. [Deployment                    ](#deployment)
 ---
 XXVII.[Stakeholders                  ](#stakeholders)
 1.    [Storytelling                  ](#storytelling)
-2.    [Requirements                  ](#requirements)
+2.    [Systems Development Lifecycle ](#systems-development-lifecycle-sdlc)
 
 <br>
 
@@ -146,14 +158,14 @@ XXVII.[Stakeholders                  ](#stakeholders)
 
 
 <!-- 
-   #                                                                              
+   #                                                                     
   # #   #####  #####  #####   ####    ##    ####  #    # # #    #  ####  
  #   #  #    # #    # #    # #    #  #  #  #    # #    # # ##   # #    # 
 #     # #    # #    # #    # #    # #    # #      ###### # # #  # #      
 ####### #####  #####  #####  #    # ###### #      #    # # #  # # #  ### 
 #     # #      #      #   #  #    # #    # #    # #    # # #   ## #    # 
 #     # #      #      #    #  ####  #    #  ####  #    # # #    #  ####  
-
+                                                                         
 ######                      
 #     #   ##   #####   ##   
 #     #  #  #    #    #  #  
@@ -181,7 +193,7 @@ XXVII.[Stakeholders                  ](#stakeholders)
 - Paper on tidy data: https://vita.had.co.nz/papers/tidy-data.pdf
 
 <!-- Polished -->
-## Data
+## Data Overview
 ### Unicode
 - Unicode: numeric representation of characters (called "code points")
 - Look up character in unicode with Python: `ord('?')`
@@ -217,21 +229,21 @@ XXVII.[Stakeholders                  ](#stakeholders)
 
 
 <!-- 
-   #                                                                  ##           
-  # #   #       ####   ####  #####  # ##### #    # #    #  ####      #  #     
- #   #  #      #    # #    # #    # #   #   #    # ##  ## #           ##       
-#     # #      #      #    # #    # #   #   ###### # ## #  ####      ###       
+   #                                                                  ##    
+  # #   #       ####   ####  #####  # ##### #    # #    #  ####      #  #   
+ #   #  #      #    # #    # #    # #   #   #    # ##  ## #           ##    
+#     # #      #      #    # #    # #   #   ###### # ## #  ####      ###    
 ####### #      #  ### #    # #####  #   #   #    # #    #      #    #   # # 
 #     # #      #    # #    # #   #  #   #   #    # #    # #    #    #    #  
-#     # ######  ####   ####  #    # #   #   #    # #    #  ####      ###  #  
-
-#######                           
-   #    #####  #  ####  #    #  ####  
-   #    #    # # #    # #   #  #      
-   #    #    # # #      ####    ####  
-   #    #####  # #      #  #        # 
-   #    #   #  # #    # #   #  #    # 
-   #    #    # #  ####  #    #  ####  
+#     # ######  ####   ####  #    # #   #   #    # #    #  ####      ###  # 
+                                                                            
+ #####                                 #######                               
+#     # #####  ###### ###### #####        #    #####  #  ####  #    #  ####  
+#       #    # #      #      #    #       #    #    # # #    # #   #  #      
+ #####  #    # #####  #####  #    #       #    #    # # #      ####    ####  
+      # #####  #      #      #    #       #    #####  # #      #  #        # 
+#     # #      #      #      #    #       #    #   #  # #    # #   #  #    # 
+ #####  #      ###### ###### #####        #    #    # #  ####  #    #  ####  
 -->
 
 # Algorithms and Tricks
@@ -343,15 +355,15 @@ XXVII.[Stakeholders                  ](#stakeholders)
 
 
 <!-- 
-######                       
-#     #   ##   #####   ##      
-#     #  #  #    #    #  #     
-#     # #    #   #   #    #   
-#     # ######   #   ######   
-#     # #    #   #   #    #    
+######                      
+#     #   ##   #####   ##   
+#     #  #  #    #    #  #  
+#     # #    #   #   #    # 
+#     # ######   #   ###### 
+#     # #    #   #   #    # 
 ######  #    #   #   #    # 
-
- #####
+                            
+ #####                                                               
 #     # ##### #####  #    #  ####  ##### #    # #####  ######  ####  
 #         #   #    # #    # #    #   #   #    # #    # #      #      
  #####    #   #    # #    # #        #   #    # #    # #####   ####  
@@ -426,96 +438,173 @@ XXVII.[Stakeholders                  ](#stakeholders)
 
 <!-- Polished -->
 ## Database Basics
-- Data storage, can be structures or unstructured (unstructured is called NoSQL, aka "not only SQL")
-    * Structured databases are optimized for tabular data, unstructured databases are optimized for big data
-- Primary key: column with no duplicate values or nulls, used as the index for a table
-    * Primary key can be one column (simple primary key) or multiple (composite primary key, has rules like of-minimum-complexity)
-    * Foreign key is a column that refers to another table's primary key; must only use values from the primary key but can be null/repeat
-        * Foreign key typically is named after primary key; Flight ->refer-> Aircraft, Flight gets foreign key "AssignedAircraftCode"
-    * Aritifial key is created by database designer when a table's columns aren't suitable for being the primary key
-- Query: NOT JUST READING DATA; query can insert new data, retrieve data, update data, or delete data
-    * CRUD: Create data, Read data, Update data, Delete data ("CRUD operations")
-    * Update queries require the data-to-be-updated to exist in the database
-- Transaction: group of queries to accomplish a goal, ex: funds transfer has two actions (remove money from one, add to other)
-    * Database *systems* must ensure entirety or none of a transaction is performed, ex: can't allow funds transfer to partially complete
-    * Databases are not required to have transactions (can just allow queries by themselves)
-- Join: bringing a left and right table together using "inner" (only matching rows) or "outer" (all-left, all-right, all-full) logic
-    * Equijoin (normal) / non-equijoin (conditional); self-join (need to use table aliases); cross-join (all possible combinations)
-- Database knowledge/rankings: https://db-engines.com/en/
-### DB Roles
+- Database: file system with query engine, generally structured or unstructured
+- Most structured databases use relational database management systems (RDBMS)
+- Relational databases follow set theory and handle tabular data
+- Most unstructured databases use NoSQL, or "not only SQL"
+- NoSQL databases handle "big data" - Veracity, Volume, Velocity, Variety
+- Info about databases, database rankings: https://db-engines.com/en/
+### Database Roles
 - Database Administrator: specifically securing databases, making them available
-- Database Designer: what you'd expect (overall structure, specific field types, etc; all within company's budget/other limitations)
-- Database Programmer: not what you'd expect; they build programs that *use* a database (combining query languages with gen-purpose ones)
-- Database User: someone who uses the DB programmer's programs; they run queries, etc
-### DB Architecture
-- Query processor: interpret query, create a plan for modifying/reading the database (efficiently), return results to the application
-- Storage manager: receive query, translate it into low-level filesystem commands (uses indices)
+- Database Designer: focused on database structure and staying within limits
+- Database Programmer: scripting queries using general purpose programming langs
+- Database User: query runner (allowed by DB admin, aided by DB programmer)
+### Database Architecture
+- Query processor: interpret/streamline queries for the storage manager
+- Storage manager: translate queries into low-level filesystem commands
+- File system: the simple storage of data, coordinated by storage manager
 - Transaction manager: handles sets of queries, deconflicts overlaps
-- Log: complete record of all inserts, updates, and deletes processed by the database
-    * Used for database recovery (ex: mid-transaction quits, complete loss) so **logs do not store reads (queries)**
+- Log: complete record of every processed insert/update/delete (ignoring reads)
+    * Used for database recovery (ex: mid-transaction quits, complete DB loss)
 - Catalog: directory of tables, columns, indexes, and other database objects
-    * The indices inside the catalog help optimize database work; the catalog overall does not
-### DB Design
-- Three phases: Analysis, Logical Design, and Physical Design
-- Analysis: define requirements for entity/attributes/relationships (ER diagrams and glossary)
-    * 1- Discover entities, relationships, and attributes (interviews, reading user guides, etc)
-    * 2- Determine cardinality
-    * 3- Distinguish independent and dependent entities
-    * 4- Create supertype and subtype entities
-- Logical Design: implements requirements (table diagrams)
-    * 1- Implement entities; 2- Implement relationships; 3- Implement attributes; 4- Normalize tables
-    * Table diagram: tables + columns (solid dots are keys); tables linked by arrows; arrows show columns referring to (->) keys
-    * Some boxes in a table diagram are tables that only contain relationships (these boxes are actual tables in the database)
-- Physical Design: adding indexes to tables (indexes allow faster queries)
-    * Rare, but there are physical design diagrams too (showing what the indexes are referring to); table diagrams are more important
+### Database Design Process
+- Three phases of database design: Analysis, Logical Design, and Physical Design
+- Often expressed via entity-relationship (ER) diagrams and table diagrams
+    * Analysis uses ER diagrams, Logical Design uses table diagrams
+- Analysis: define requirements for entity/attributes/relationships
+* 1- Discover entities, relationships, and attributes (like an investigation)
+* 2- Determine cardinality (aspects of relationships, ex: many-to-one, min-zero)
+* 3- Distinguish independent and dependent entities (room depends on building)
+* 4- Create supertype and subtype entities (building has foyer, rooms, closets)
+- Logical Design: implement the discovered requirements as a database
+* 1- Implement entities (create tables in the database)
+* 2- Implement relationships (connect tables using foreign keys/etc)
+* 3- Implement attributes (add columns to the tables)
+* 4- Normalize tables (reduce/remove redundancy, etc)
+- Physical Design: add indexes to tables (indexes speed up queries)
+* 1- Use the database systems to do this
+
+<!-- Polished -->
+## Database Documentation
+- Two main kinds: Entity-Relationship (ER) diagram and table diagram
+- ER diagrams show requirements, table diagrams show requirement implementation
+- ER diagrams map easily to table diagrams; Analysis maps to Logical Design
+- ER diagrams have entities, their attributes, and entity-entity relationships
+- Table diagrams have database tables, their columns, and table-table relations
+### ER Diagram
+- Charting entities, their attributes, and entity-entity relationships
+    * E/A/R types (blueprint) and instances (created)
+- This typically precedes database design; it helps structure requirements
+- Usually combined with a glossary (elaborates on entity/attribute/relationship)
+- Entity: one "thing", even entity names follow this non-plural rule
+- Attributes: descriptive aspects of an element, ex: thing's name, date, etc
+- Entity relationships: a truck (thing) relates to the truck depot (thing)
+- Cardinality: maxima, minima (modality), and require (applies to entity/attr)
+### Entities
+- The building block of ER diagrams, and the future tables of a database
+- An entity is singular (even in name) and contains attributes and/or entities
+- Supertype entity: an entity containing other entities (Car: DieselCar/GasCar)
+- Subtype entity: an entity contained by another entity (DieselCar)
+- Super/Sub relationships are called "IsA relationships" (DieselCar-IsA-Car)
+- Subtype entity pri-key must match supertype's pri-key and be foreign key to it
+- Partition: a grouping of subtypes linked to a supertype's attribute
+    * Subtypes inside a partition must be mutually-exclusive (no double dipping)
+    * Subtypes of one partition can share values w/ subtype of another partition
+    * EX: Card: TypeAttr:[CreditCard/DebitCard], CompanyAttr:[VISA/Mastercard]
+### Attributes
+- The descriptive elements of an entity
+- Attributes are singular and names are clearly expressed in the glossary
+    * For car entity's "FuelType" attribute, "Type" is defined in dictionary
+- Attributes have maxima/minima/require cardinality in both ER & table diagrams
+- EX: [Employee] FullName M-1(1), PassportNumber 1-M(0), SkillCode M-M(0)
+### Relationships
+- The link between entities
+- Relationships are named as Entity-Relationship-Entity, ex: "Person-Owns-Car"
+- Relationships happen between entities including supertype/subtype entities
+- Super/Sub have dependent relationship; regular entities may be independent
+- Dependence: one thing only exists when another thing does, ex: person - nose
+    * Dependence is expressed via arrows/diamonds; "A depends on B" is B -> A
+    * Dependent entities usually have composite primary key (foreign + primary)
+- Independence: either thing can exist or not, ex: car, garage
+- Dependence can be "existence dependence" (ER) or "functional dependence" (R)
+- Relationships have maxima/minima/require cardinality; format is max(min)
+    * Other formats use symbols; crow's foot is many, dash is one, o is zero
+- EX: [Flight] 1(1) --Includes-- M(0) [Booking] exactly one flight, any bookings
+### Table Diagram
+- Converted version of the ER diagram
+- Entity -> Table; Attribute -> Column; Relationship -> Foreign Key
+- Much more specific than ER diagrams, meant to directly describe DB schema
+- Attributes now have type declarations, ex: VARCHAR(100)
+- Foreign keys now have a line directly connecting them to their primary key
+### Glossary
+- Glossary: data dictionary/repository, explains ER/table diagram words
+#### Example Glossary Entry
+```
+* [entity/relationship/attribute] Name: [name] 
+* Synonyms: [syn1], [syn2]
+* Description: A [name] is ... [name] includes... but excludes...
+```
+
+<!-- Polished -->
+## Database Operations
+### Primary Key
+- Primary key: the column(s) that uniquely identify each row in a table
+- Can be simple (one column) or composite (multiple columns)
+- Primary key must be minimal-complexity (least columns)
+    * Choose a car's VIN instead of the composite of year/make/model/owner/plate
+- Each entry in the primary key must be unique, and no single value can be null
+- Primary keys should be as simple as possible
+    * Choose auto-incrementing integers instead of 256-bit hash
+- Can create an artificial key if primary key assembly is complex/not possible
+    * Artificial key is generally auto-incrementing integers
+### Queries
+- Query: a database operation, includes data retrieval and insert/update/delete
+- Queries are CRUD operations; Create, Read, Update, and Delete data
+- "Create" queries add brand new table(s) to a database
+- "Read" queries display data from a database
+- "Update" queries modify existing table(s) in a database
+- "Delete" queries remove table(s) from a database
+- Queries can be grouped into multi-query "transactions"
+- Funds transfer is a transaction; remove money from one account, add to other
+- Transactions are *not* allowed to partially-execute, ex: only removing money
+    * Database systems ensure either entire or none of transaction is performed
+### Joins
+- Join: bringing tables together into one table
+- Many types of joins; inner/outer, equijoin/non-equijoin, self-join, cross-join
+- "Outer" join: bring tables together while allowing unmatched rows
+- "Inner" join: bring tables together while dropping unmatched rows
+- "Equijoin": using a matching key to join tables
+- "Non-equijoin": use conditional evaluation to join tables
+- "Self-join": join the same table onto a copy of itself
+- "Cross-join": all possible row combinations of two or more tables
 
 <!-- Polished -->
 ## Relational Databases
-- Column-level constraint (one column) vs Table-level constraint (more than one column)
+- Two-dimensional tables, connected, queryable
 ### Relational DB Model Basics
-- Domain: named set (actual **set**) of possible database values, ex: integers, strings, booleans, ...
-- Tuple: finite-length sequence of values where each value is from a fixed domain, ex: (Integers, DictionaryWords, LogicalValues)
-    * Each position in the tuple is an attribute
-- Relation: named set (actual **set**) of tuples where each tuple has the same sequence
-- Relational rules: logical constraints that ensure data is valid and conforms to business policy.
-    * Structural rules: governs data universally, ex: unique primary key, unique column names, no duplicate rows, only one value in a cell
-    * Business rules: "local rules", ex: unique column values, no missing values, delete cascade (delete row and related rows)
-    * Referential integrity rules: foreign key constraints, ex: must match an value in primary key, if composite can't be partially null
+- Domain: named **set** of possible database values, ex: integers, strings, ...
+- Tuple: collection of domains, ex: `(Integers, DictionaryWords, LogicalValues)`
+- Relation: named **set** of tuples (each tuple must have the same sequence)
+- Relational rules: general term for structural, business, ref. integrity rules
+- Structural rules: governs data universally for all databases
+    * Unique primary key, unique column names / rows, only one value in a cell
+- Business rules: "local rules" enforced by the database system / requirements
+    * Unique column values, no missing values, deletion cascade
+- Referential integrity rules: foreign key constraints
+    * Must match a value in primary key, if composite can't be partially null
+- Constraints: Column-level (one column) vs Table-level (more than one column)
+### Foreign Key
+- Column of one table referencing another table's primary key
+- Foreign key typically adopts the name of the primary key it references
+- Values in foreign key must exist in the referred-primary key (ref. integrity)
+- Values in foreign key can be null unless the primary key is marked "required"
+    * If all foreign key values are null, then zero connections to pri-key (bad)
+- Values in foreign key can be duplicates unless reference to pri-key is 1-to-1
+    * Foreign key may also be marked "unique" to disallow duplicates
+- 1-to-1 / 1-to-M has foreign key; M-to-M has new table w/ composite foreign key
+    * Use CASCADE/RESTRICT constraints to assist DB management during CRUD ops
 ### Relational Algebra
 - Relational algebra is table operations (uses set theory)
-    * Query optimizers convert code to relational algebra expressions, create alt versions, compare costs (processing time), and choose best
-- Select: selects a subset of rows of a table; 
-- Project: eliminates one or more columns of a table.
-- Product: lists all possible combinations of rows of two tables.
-- Join: a product operation followed by a select operation.
-- Union: combines two tables by selecting all rows of both tables.
-- Intersect: combines two tables by selecting only rows common to both tables.
-- Difference: combines two tables by selecting rows that appear in one table but not the other.
-### Normal Forms
-- Normalization is the process of *decomposing* tables into more tables that each have a higher normal form
-- Normalization is mainly used for tables with high variability; static-ish tables can be queried faster if they’re NOT normalized!!
-    * Undoing normalization is called “denormalization”; be careful in doing this!!
-- First normal form 
-    * Previous form: unstructured data
-    * Now clean: All unique rows/columns, 1 value/cell, values in column domain
-    * Still dirty: one or more columns are not fully dependent on the primary key (has partial dependency, or none)
-    * To do: move dependent columns out to their own table with foreign key
-- Second normal form
-    * Previous form: All unique rows/cols, 1 value/cell, values in column domain, but partial dependencies
-    * Now clean: all columns are fully dependent on the primary key (no more partial dependency)
-    * Still dirty: one or more columns can be guessed from another non-key column (has transitive dependency)
-    * To do: move the guess-able columns to their own table with foreign key
-- Third normal form
-    * Previous form: All unique rows/cols, 1 value/cell, values in column domain, no partial dependency, but transitive dependency
-    * Now clean: No columns guessable from other non-keys (no more transitive dependency)
-    * Still dirty: Part/all of the primary key is dependent on 1+ non-key column(s)
-    * To do: move the offending portion of the primary key (and copy the column(s) it depends on) out into new tables
-- Boyce Codd normal form
-    * Previous form: All unique rows/cols, 1 value/cell, values in column domain, no partial/transitive depend, but nonkey -> key
-    * Now clean: No portion of primary key is dependent on a non-key column
-    * Still dirty: multivalued dependence
-- Fourth normal form: removed multivalued dependence (two independent plural attributes) (rare)
-- Fifth normal form: removed join dependence (table-to-table dependency where one table has more columns) (rare)
+- Select: selects a subset of rows of a table
+- Project: eliminates one or more columns of a table
+- Product: lists all possible combinations of rows of two tables
+- Join: a product operation followed by a select operation
+- Union: combines two tables by selecting all rows of both tables
+- Intersect: combines two tables by selecting only rows common to both tables
+- Difference: combines two tables by selecting not-in-common rows
+- Query optimizers rely on relational algebra
+    * Convert query to rel. algebra expressions and create alternate expressions
+    * Compare processing times of all rel. algebra expressions, pick fastest
 
 [[Return to Top]](#table-of-contents)
 
@@ -526,60 +615,91 @@ XXVII.[Stakeholders                  ](#stakeholders)
 
 
 <!-- 
- ####  ##### ##### 
-#    #   #     #   
-#        #     #   
-#  ###   #     #   
-#    #   #     #   
- ####  #####   #   
+ #####  ### #######      ##    
+#     #  #     #        #  #   
+#        #     #         ##    
+#  ####  #     #        ###    
+#     #  #     #       #   # # 
+#     #  #     #       #    #  
+ #####  ###    #        ###  # 
+                               
+#######                                             
+   #    ###### #####  #    # # #    #   ##   #      
+   #    #      #    # ##  ## # ##   #  #  #  #      
+   #    #####  #    # # ## # # # #  # #    # #      
+   #    #      #####  #    # # #  # # ###### #      
+   #    #      #   #  #    # # #   ## #    # #      
+   #    ###### #    # #    # # #    # #    # ###### 
 -->
 
-# Command Line and git
+# git & Terminal
 
 <!-- Polished -->
 ## Terminal
-- `mkdir`, `rmdir`, `rm`, `cp`, `mv`, `cd`, `ls`, `pwd`, `cwd`
-- `curl -O url_address` ----- copy down a file from a URL (often used for raw Github files)
-- Log in to a SQL server: `-u username -p -h ip_address` ----- -p prompts for a password
-- Create a new file using VS Code: `code filename.filetype`
+- The glue of all software
+- Reliant on the system's PATH variable to bind commands to aliases
+    * EX: "sudo" is an alias for executing `/bin/sudo`
+- PATH contains the directories to load aliases from
+    * Add directory to PATH: `PATH=/sample/loc/here:$PATH` then `export PATH`
+- Check your PATH variable (and other environment variables): `export`
+- Flags: setting parameters related to the command
+    * EX1: `-u username_here -p -h ipaddress_here` (login; `-p` asks password)
+    * EX2: `curl -O url_address_here` (download file from web address)
+    * Common flags: `-u` (username), `-p` (password), `-h` (host_ip)
+- UNIX file system: `mkdir`, `rmdir`, `rm`, `cp`, `mv`, `cd`, `ls`, `pwd`, `cwd`
+### Typical Aliases
+- Python: `python script.py` or `python3 script.py` (run script.py)
+    * Installing Python / Anaconda adds "python" to PATH
+- Pip: `pip install pandas` (install the pandas library of Python)
+    * Installing Python / Anaconda adds "pip" to PATH
+- VS Code: `code cool_file.txt` (open new/existing file from current directory)
+    * Add "code" to PATH: open VS Code's command palette, type "path", install
 - Launch Jupyter Notebook server: `jupyter notebook`
-    * Need to have your PATH set up for this and have the software installed
+    * Installing Jupyter from "pip" puts this into the PATH
+### Tips
 - Multi-line cursor: Hold command, clickdrag
+- Tab forward: hold Option on Mac and use left/right arrow keys
 
 <!-- Polished -->
 ## git Basics
 - Excellent version control for files
+- Protect your passwords and other secrets: `code .gitignore`
+    * Add files as single lines for git to ignore, so they don't get pushed
+    * Commit/push your .gitignore to your Github repo to start ignoring files
+- Always start with creating a new Github repo, not a local one. 
+    * Starting locally is annoying, gotta do several more steps
+- Access and modify your `git config` file (called .gitconfig): 
+    * Navigate to home directory (`cd ~`) then type `code .gitconfig`
 ### git Setup
-- Get your git set up: 
-    1. Install Git on your computer: https://git-scm.com/downloads
-    2. Create Github account
-    3. Set your Github credentials on your computer
-        - In your Terminal or Command Prompt, run command: `git config --global user.name "github_username"`
-        - In your Terminal or Command Prompt, run command: `git config --global user.email "email_used_for_github_account"`
-    4. Generate an SSH key for connecting with Github
-        - In your Terminal or Command Prompt, run command: `ssh-keygen -t rsa -b 4096 -C "email_used_for_github_account"`
-        - Hit ENTER on keyboard when it asks where to save the key (ENTER uses default save location)
-    5. Add your SSH key to Github here: https://github.com/settings/ssh/new
-        - MacOS: Terminal or Windows: Git BASH, can simply run this command: `cat ~/.ssh/id_rsa.pub | pbcopy`
-        - Paste that into the link and give it a title, whatever you want for title is fine
-    6. Click "Add SSH Key", done
-    7. Check if it's working: 
-        - Create new repository on Github
-        - Click "Code" button dropdown
-        - Click SSH
-        - Copy that text
-        - Open Terminal or Git BASH or CMD or whatever you use
-        - Enter `git clone that_text_you_just_copied`
-            - EX: `git clone git@github.com:JacobPaxton/data_science_notes.git`
-            - Can also do HTTPS clone: `git clone https://github.com/JacobPaxton/data_science_notes.git`
-        - If it clones, great- it worked
-        - Add a random new file to the folder it created
-        - In Terminal or Git BASH or CMD or whatever, type `git add .` then `git commit -m 'my first commit'` then `git push`
-        - If the above line works, you are 100% ready to go
-- Protect your passwords and other secrets: `code .gitignore` -> add files as single lines for git to ignore, so they don't get pushed
-    - Commit and push your .gitignore to your Github repository to start ignoring your secrets
-- Always start with creating a new Github repo, not a local one. Starting locally is annoying, gotta do several more steps
-- Access and modify your `git config` file (called .gitconfig): Navigate to home directory (`cd ~`) then type `code .gitconfig`
+1. Install Git on your computer: https://git-scm.com/downloads
+2. Create Github account
+3. Set your Github credentials on your computer
+    - Run command: `git config --global user.name "github_username"`
+    - Run command: `git config --global user.email "github_email_address"`
+4. Generate an SSH key for connecting with Github
+    - Run command: `ssh-keygen -t rsa -b 4096 -C "github_email_address"`
+    - Hit ENTER on keyboard when it asks where to save the key (save to default)
+5. Add your SSH key to Github here: https://github.com/settings/ssh/new
+    - Run command (Mac/Linux or Git Bash): `cat ~/.ssh/id_rsa.pub | pbcopy`
+    - Paste that into the link and give it a title of your choice
+6. Click "Add SSH Key", done
+7. Check if it's working: 
+    - Create new repository on Github
+    - Click "Code" button dropdown
+    - Click SSH
+    - Copy that text
+    - Open Terminal or Git BASH or CMD or whatever you use
+    - Enter `git clone that_text_you_just_copied`
+        - EX: `git clone git@github.com:JacobPaxton/data_science_notes.git`
+        - EX2: `git clone https://github.com/JacobPaxton/data_science_notes.git`
+    - If it clones, great- it worked
+    - Add a random new file to the folder it created
+    - Run command: 
+        * `git add .`
+        * `git commit -m 'my first commit'`
+        * `git push`
+    - If the above lines work, you are 100% ready to go
+
 
 ## git for Solo Work
 - No one's committing/pushing except you, so pushes are safe
@@ -636,7 +756,7 @@ XXVII.[Stakeholders                  ](#stakeholders)
 # Regular Expressions (REGEX)
 
 <!-- Polished -->
-## REGEX
+## REGEX Basics
 - Language for parsing and slicing strings to capture substrings
 ### REGEX Metacharacters
 ```
@@ -646,18 +766,7 @@ XXVII.[Stakeholders                  ](#stakeholders)
 | Anchor front: ^            | Anchor back: $      | Word boundary: \b |
 | Capture group: ()  EX: (?P<colname>regex_exp)    |
 ```
-### REGEX Queries
-- Randomly search for match: `re.search(regexg, subject)`
-- Search from beginning for match: `re.match(regexp, subject)`
-- Put all matches in list (very useful): `re.findall(regexp, subject)`
-- Return match with subbed-in substring: `re.sub(regexp, sub_in, subject)`
-- Capture groups into dataframe columns: `df.colname.str.extract(regexp)`
-#### REGEX Query Options
-- Search while ignoring case: `re.IGNORECASE`
-- Run new query on each line: `re.MULTILINE`
-- Ignore whitespace: `re.VERBOSE`
-- Use `|` to add multiple flags, ex: `re.findall(regexp, subject, re.IGNORECASE | re.MULTILINE)`
-### REGEX examples
+### REGEX Usage
 - `r'a'` ----- r marks string as a raw string, all characters taken as-is
     - Can go without raw strings, just need to "except" characters, ex: `r'yes/no'` is `'yes\/no`, `r'hi...'` is `'hi\.\.\.'`
 - `r'\w\w'` ----- find two in-sequence alphanumeric chars
@@ -667,6 +776,17 @@ XXVII.[Stakeholders                  ](#stakeholders)
 - `r'\w{3,6}'` ----- only capture when 3 alphanumerics in sequence and as many as possible up to 6
 - `r'(\w)(\w)?'` ----- optional capture group
 - `r'[a1][b2][c3]'` ----- 'abc 123' returns `['abc','123']` and 'a2c 1b3' returns `['a2c', '1b3']`
+### REGEX Querying in Python
+- Randomly search for match: `re.search(regexg, subject)`
+- Search from beginning for match: `re.match(regexp, subject)`
+- Put all matches in list (very useful): `re.findall(regexp, subject)`
+- Return match with subbed-in substring: `re.sub(regexp, sub_in, subject)`
+- Capture groups into dataframe columns: `df.colname.str.extract(regexp)`
+#### REGEX in Python - Query Options
+- Search while ignoring case: `re.IGNORECASE`
+- Run new query on each line: `re.MULTILINE`
+- Ignore whitespace: `re.VERBOSE`
+- Use `|` to add multiple flags, ex: `re.findall(regexp, subject, re.IGNORECASE | re.MULTILINE)`
 
 [[Return to Top]](#table-of-contents)
 
@@ -719,6 +839,17 @@ XXVII.[Stakeholders                  ](#stakeholders)
 - `<h1 class='class_name'></h1>` is an element, class is attribute (defines what kind of element it is)
     * We often identify where to scrape by looking at this class section
 - `<div>` is another element with tags `<p></p>` and `<a></a>` and others
+### Saving Images to Local Drive
+```
+import shutil
+r = requests.get(image_url, stream = True)    # request the zipped image into cache as 'r' variable
+r.raw.decode_content = True   # set the 'decode_content' of file.raw as True to unzip file when storing
+with open('image.jpeg','wb') as f: 
+    shutil.copyfileobj(r.raw, f)   # save unzipped image data to 'image.jpeg'
+```
+
+<!-- Polished -->
+## Requests & Beautiful Soup
 ### HTTP Requests
 - `import requests`
 - `response = requests.get('https://web-scraping-demo.zgulde.net/news')`
@@ -748,6 +879,9 @@ XXVII.[Stakeholders                  ](#stakeholders)
 - `data_soup.find_all(attrs={"data-foo": "value"})` ----- return tags that match attribute and attr value
 - `[el.attrs['od'] for el in soup.select('*') if 'id' in el.attrs]` ----- 'od' attr values if tag has 'id' attr
 - `soup.select('p').attrs['href']` ----- return content of 'href' attr for 'p' tags
+
+<!-- Polished -->
+## Selenium
 ### Controlling Chrome using Selenium
 - `from selenium import webdriver`
 - `driver = webdriver.Chrome(PATH)` ----- PATH being the location of chromedriver.exe, this launches Chrome
@@ -764,14 +898,6 @@ XXVII.[Stakeholders                  ](#stakeholders)
     * `actions = ActionChains(driver)` ----- create new action chain for webdriver called 'actions'
     * `actions.move_to_element(driver.find_element_by_xpath('//*[@id="q_type"]/div[1]')).click().perform()` ----- chain actions to move to dropdown box at this XPATH, click box, perform
     * `actions.move_to_element(driver.find_element_by_xpath('//*[@id="q_type"]/div[3]/div[2]')).click().perform()` ----- continuing on previous chain, click the designated dropdown item
-### Saving Images to Local Drive
-```
-import shutil
-r = requests.get(image_url, stream = True)    # request the zipped image into cache as 'r' variable
-r.raw.decode_content = True   # set the 'decode_content' of file.raw as True to unzip file when storing
-with open('image.jpeg','wb') as f: 
-    shutil.copyfileobj(r.raw, f)   # save unzipped image data to 'image.jpeg'
-```
 
 [[Return to Top]](#table-of-contents)
 
@@ -799,6 +925,14 @@ with open('image.jpeg','wb') as f:
 - SQL databases are usually hosted on beefy systems, so doing processing in SQL can be a lot faster than doing it on a local machine using Python
 - Sequel ACE: Excellent GUI for SQL database reads and querying
 ### SQL Simple Records Query
+- `CONCAT(str_col1, str_col2, ...)`, `UPPER('hi')`, `LOWER("HI")`, `REPLACE("Hey", "e", "a")`, `SUBSTRING("Hello", index(from1), steps)`, `TRIM("  sup  ")`
+- `CURDATE()`, `CURTIME()`, `NOW()` (datetime)
+- `DATE("2011-01-01 01:01:01")`, `TIME("2011-01-01 01:01:01")`, `DAY`/`MONTH`/`YEAY`, `HOUR`/`MINUTE`/`SECOND`, `DATEDIFF(early, late)`, `TIMEDIFF(early, late)`
+- `SELECT * FROM Department LEFT JOIN right_table ON Department.id = right_table.id;` --- `SELECT * FROM Department RIGHT JOIN left_table ON Department.id = left_table.id;`
+- `SELECT * FROM a CROSS JOIN b;` -- all possible combinations of a and b
+- `SELECT Name, CountryCode FROM City AS C WHERE EXISTS (SELECT * FROM CountryLanguage WHERE  CountryCode = C.CountryCode AND Percentage > 97);` -- "EXISTS" says pass back all EXISTING rows
+    * Specifically for this query, pass back all country names/codes related to a country having at least one language >97% shared (subquery looks for country-atleastone-over97%: EXISTS?)
+    * Opposite is `NOT EXISTS` and only passes back rows that did not return True for the check
 ```
 show databases; use database_name; show tables; describe table_name;
 select distinct date_col, col1 as Col1, col2, col3, 
@@ -815,16 +949,21 @@ order by col2 asc, Col1 desc
 limit 100;
 ```
 ### SQL Aggregation Query
+- `COUNT`, `MIN`, `MAX`, `SUM`, `AVG`, `ABS`, `LOG`, `POW(x, y)`, `RAND`, `ROUND(n, d)`, `SQRT(n)` and more!!
 ```
 select SUM(x) + SUM(y) from table; -- sum each column, then sum totals; ignores NULL just fine
 select SUM(x + y);                 -- rowwise sum; **BE CAREFUL** because in this way, NULL + 100 = NULL
 select MAX(x);
 select col1, AVG(col2) as average from table group by col1 having average >= 100;
+SELECT type, MAX(price) FROM auto GROUP BY type ORDER BY MAX(price); -- notice that the ORDER BY references MAX(price); "price" was not selected
+SELECT a, b, MAX(c) FROM t GROUP BY a, b HAVING MAX(c) > 1000 ORDER BY a, MAX(c) -- HAVING comes **before** ORDER BY
+SELECT a, b, c FROM t AS f WHERE c > (SELECT AVG(c) FROM t WHERE b = f.b); -- higher than category's average (categories are in 'b')
 ```
 
 <!-- Polished -->
 ## SQL Intermediate
 ### SQL Subquery
+- Typically done with either an operator (`>`, `<`, `=`, etc) or with `IN`; consider these your two options for subqueries
 ```
 use employees;
 select concat(first_name, " ", last_name) as Name 
@@ -848,10 +987,11 @@ join departments using(dept_no);
 ## SQL Management
 - `CREATE DATABASE db_name;`
 - `CREATE TABLE Employee (ID INT, Name VARCHAR(60) NOT NULL, BirthDate DATE DEFAULT '2000-01-01', Salary DECIMAL(7,2), PRIMARY KEY (ID));`
-    * `IndexCol AUTO_INCREMENT` --- `Column VARCHAR(50) UNIQUE` --- `HireDate DATE CHECK (HireDate > BirthDate)`
+    * `IndexCol AUTO_INCREMENT` --- `Column VARCHAR(50) UNIQUE` --- `Colname VARCHAR(100) DEFAULT "default value here"` --- `HireDate DATE CHECK (HireDate > BirthDate)`
     * `UNIQUE (Col1, Col2)` --- `CHECK (cond1 AND cond2)` --- `CONSTRAINT UniqueNameHiredate UNIQUE (Name, HireDate)`
-    * `DROP TABLE Employee`
+    * `DROP TABLE Employee` (Note: you can't drop a table having a primary key that is referenced by another table's foreign key without dropping the other table first)
 - `ALTER TABLE Employee ADD ColumnName DataType;` --- `... CHANGE CurrentColumnName NewColumnName NewDataType;` --- `... DROP ColumnName;`
+    * Don't specify "ADD COLUMN ColName", just use "ADD ColName", because ALTER TABLE is specifically used for **column** add / change / drop
 - `CREATE VIEW viewtable AS SELECT ...` (new table from one or more base tables; avoid personal info, focus on relevant stuff, etc)
     * Don't use this for database changes
     * Can specify `WITH CHECK OPTION;` at end to restrict changes to a view table that don't fit the WHERE clause
@@ -864,7 +1004,7 @@ join departments using(dept_no);
 - `RESTRICT` (reject), `SET NULL`, `SET DEFAULT`, `CASCADE` (accept and also change related) for handling "referential integrity violations"
     * EX: `... FOREIGN KEY (ManagerID) REFERENCES Employee(ID) ON DELETE CASCADE ON UPDATE SET NULL;`
 ### SQL Data Types
-- SIGNED (positive or negative), UNSIGNED (positive only)
+- SIGNED (positive or negative), UNSIGNED (positive only), ex: `CREATE TABLE Product(ID INTEGER UNSIGNED, Name VARCHAR(40), ...);`
 - DATE (YYYY-MM-DD), TIME (hh:mm:ss), DATETIME (YYYY-MM-DD hh:mm:ss), TIMESTAMP (times)
 - TINYINT (255), SMALLINT (65_535), MEDIUMINT (16_777_215), INT/INTEGER (4_294_967_295), BIGINT (2e64 - 1)
 - DECIMAL(digits,decimalplaces), FLOAT (6.8e38), DOUBLE (1.8e308)
@@ -872,7 +1012,7 @@ join departments using(dept_no);
 - BLOB, BINARY, VARBINARY, IMAGE (0101011101)
 - POLYGON, POINT, GEOMETRY (coordinate-related; POINT is a tuple (x,y))
 - XML, JSON (documents)
-- NULL in any column (can enforce no-null in a column by setting it to NOT NULL)
+- NULL in any column (can enforce no-null in a column by setting it to NOT NULL, ex: `ColName INTEGER NOT NULL`)
 
 [[Return to Top]](#table-of-contents)
 
@@ -1291,7 +1431,7 @@ mean_x_given_g1_g2 = df.groupBy('g1').pivot('g2').agg(mean('x'))
 # Matplotlib & Seaborn
 
 <!-- Polished -->
-## Overall Notes for Python Vizualization
+## Overall Notes for Visualizations in Python
 - **Amazing charts for inspiration:** https://www.python-graph-gallery.com/all-charts/
 - LaTeX Notation: Wrap math in dollar signs like $a^2$
     * Character chart: https://www.caam.rice.edu/~heinken/latex/symbols.pdf
@@ -2931,15 +3071,13 @@ if __name__ == '__main__':
 - Start with overview in presentation, dissect the focus later (start with churn v not churned, then dive into churn data)
 - Relate the problem to the audience's interests and focus for maximum effect
 
-<!-- Needs work -->
-## Requirements
-### Systems Development Lifecycle (SDLC)
+## Systems Development Lifecycle (SDLC)
 - Framework for delivering software
 - Waterfall: takes it one step at a time, fully-complete each step then move on
     * All requirements defined ahead of time; inflexible for later requirements or issues, and may be restarted
 - AGILE: quickly builds from scratch to small, doing the full "spiral", then repeats from small to big, big to bigger, and onward
     * Flexible for requirement changes or issues; but who knows when to call things "finished"
-#### Steps of SDLC
+### Steps of SDLC
 - Analysis: choosing which requirements to build for
     * Software requirements specification (SRS) used to define all finalized requirements (includes UML diagrams)
 - Design: choosing the solutions to solve those requirements
@@ -2953,37 +3091,5 @@ if __name__ == '__main__':
     * Testing: Sequence diagram, ex: client-server communication sequence
 - Each diagram is not only prescribable to a single element of SDLC; they overlap somewhat
     * EX: can use the Use case diagram for multiple... but, you should use multiple/different diagrams
-### ER Diagram
-- Entity-Relationship Diagram
-- Shows entities (each a single thing), their attributes (ex: its cost), and their relationship to other entities (ex: customer-has-bill)
-- Typically used for expressing stakeholder databasing requirements on a chart (the documentation of the Discovery stage)
-- Usually tied with a Glossary (data dictionary / repository) that explains each entity and its synonyms
-    * GLOSSARY | [e/r/a] Name: [name] | Synonyms: [syn1], [syn2] | Description: A [name] is ... [name] includes... but excludes...
-#### Entity, Relationship, Attribute Specifics
-- Entity/Relationship/Attribute: Type is the definition; Instance is a specific instantiated element of the definition
-- Entity: The block, contains attributes
-    * Entity, but also can be supertype entity (entity and container of entities) and subtype entity (contained-entity)
-        * Supertype is usually for something like Car, containing ElectricCar and DieselCar and GasCar (categories, but also, entities)
-        * Super/sub relationship is called "IsA relationship" (Manager-IsAn-Employee)
-        * Subtype entity's primary key is identical to the supertype primary key *AND* is a foreign key referencing it
-        * Can be partitioned; supertype has partition attributes, each partition is tied to them and contains subtype entities
-        * In ER diagrams, supertype entity boxes contain the boxes for subtype entities
-    * Can be dependent (A only exists as part of B (master)) or independent (A can exist with/without B)
-        * Dependent entities usually have a composite key; combo the foreign key (refer master) and a column that makes the combo unique
-    * Dependence (remember: *entity only exists in relation to one or more entities*) is expressed as arrows instead of lines
-    * In entity-relationship model, it's called "existence dependence"; but in relational model, it's called "functional dependence"
-- Relationship: The line, links entities; the line has a word attached indicating what the relationship is (ex: Schedules, ArrivesAt, ...)
-    * Specifics of relationship type/aspects is called **Cardinality**
-    * Relationship maxima/minima: maxima is max-possible (only one, or many), minima is min-possible (can-be-zero, min one)
-    * Maxima/minima are set as M (many), 1 (one), or 0 (zero), and these one-chars are nested on the line against the entity it describes
-        * For style purposes, M - 1 - 0 is sometimes expressed differently (crow's foot (M) - bar across line (1) - circle (0))
-        * Primary key (0) means you can have nulls in foreign; (1) means you cannot (every value could be null, violating the minimum-1)
-        * One-Many or Many-One use foreign keys; Many-Many uses a new table with only a composite foreign key (use cascade/restrict rules)
-    * Maxima precedes minima; minima is encapsulated in parentheses. EX: maxima many and min zero is M(0)
-    * EX: [Flight] 1(1) --Includes-- M(0) [Booking]
-- Attribute: lines in the block; each attribute name is singular, but maxima/minima are placed to right of them
-    * Attribute maxima/minima: same as relationship maxima/minima (see above), but are entity-attribute descriptors
-    * Can also signal "required" (1) or "optional" (0) after maxima/minima to say "require at least one" or "optionally zero"
-    * EX: [Employee] FullName M-1(1), PassportNumber 1-M(0), SkillCode M-M(0)
 
 [[Return to Top]](#table-of-contents)
