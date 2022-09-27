@@ -50,6 +50,7 @@ V.    [git & Terminal                ](#git--terminal)
 ---
 VI.   [Regular Expressions (REGEX)   ](#regular-expressions-(regex))
 1.    [REGEX Basics                  ](#regex-basics)
+2.    [REGEX Examples                ](#regex-examples)
 ---
 VII.  [APIs & Scraping               ](#apis--scraping)
 1.    [APIs                          ](#apis)
@@ -376,6 +377,28 @@ XXVII.[Stakeholders                  ](#stakeholders)
 
 <!-- Polished -->
 ## Data Structures Basics
+### Array
+- Linear data structure
+### Stack
+- Linear data structure
+### Queue
+- Linear data structure
+### Linked List
+- Linear data structure
+- Many element+pointer combos where a combo's pointers reference prev/next combo
+- Excellent at handling problemsets involving sorting long arrays
+    * Just update two neighbor combos' pointers; no need to update entire array
+- Compiled languages ex: C++ incorporate pointers natively, easy linked list
+- Interpreted languages ex: Python don't incorporate pointers, avoid linked list
+- The element+pointer combo (one item in the linked list) is a "head"
+- The "head" is split into the data (a la payload) and the pointer(s)
+- A linked list's pointers can be simply-linked, doubly-linked, and/or circular
+    * Simple: link next, doubly: link next & prev, circular: last link to first
+- Because there's no structure, a linked list is usually deleted by a function
+### Graph
+- Non-linear data structure
+### Tree
+- Non-linear data structure
 ### Class
 - The blueprints of an object
 - Contains attributes (descriptors) and methods (functions)
@@ -400,17 +423,16 @@ XXVII.[Stakeholders                  ](#stakeholders)
 - Finding the value involves: hashing it -> going to the matching hash (bucket)
 - Buckets are implemented efficiently via ["linked lists"](#linked-list)
     * Each bucket contains a linked list; linked lists have speedy appends/sorts
-### Linked List
-- Many element+pointer combos where a combo's pointers reference prev/next combo
-- Excellent at handling problemsets involving sorting long arrays
-    * Just update two neighbor combos' pointers; no need to update entire array
-- Compiled languages ex: C++ incorporate pointers natively, easy linked list
-- Interpreted languages ex: Python don't incorporate pointers, avoid linked list
-- The element+pointer combo (one item in the linked list) is a "head"
-- The "head" is split into the data (a la payload) and the pointer(s)
-- A linked list's pointers can be simply-linked, doubly-linked, and/or circular
-    * Simple: link next, doubly: link next & prev, circular: last link to first
-- Because there's no structure, a linked list is usually deleted by a function
+#### Hash Functions
+- Hash key: the parameter passed to a hash function, determines bucket choice
+- Hash function: computes the bucket containing the row from the hash key
+- Dynamic hash function: hash function but doesn't let buckets get too deep
+- Modulo: 
+    1. Convert the hash key by interpreting the key's bits as an integer value.
+    2. Divide the integer by the number of buckets.
+    3. Interpret the division remainder as the bucket number.
+    4. Convert bucket number to physical address of the block that has the row.
+
 
 <!-- Needs work -->
 ## Data Structures Examples
@@ -567,6 +589,39 @@ XXVII.[Stakeholders                  ](#stakeholders)
 - "Non-equijoin": use conditional evaluation to join tables
 - "Self-join": join the same table onto a copy of itself
 - "Cross-join": all possible row combinations of two or more tables
+### Storage
+- Speed: measured as access time and transfer rate
+    * Access time: time to access the first byte in a read or write operation
+    * Transfer rate: read/write speed following initial access
+- Block: chunk of data in standardized size, ex: 2kb, for storage
+    * Standardized size is enforced; partial-fill is still sent as a full block
+    * Typical range for block size is 2kb to 64kb
+- Magnetic disk: disk drives, use "sectors", 512 bytes to 4 kb per sector
+- Flash memory: solid state, use "pages", 2 kb to 16 kb per page
+- Storage controller: converts data from main memory (RAM) to magnetic/flash
+- Table clusters: interleave rows of two or more tables in the same storage area
+    * Cluster key: common key from all tables, determines order
+#### Row-Oriented Storage
+- Row-oriented storage: packaging row-wise for storage on disks or flash memory
+- Most common storage form for relational databases
+- Iterates rows and reads all cells in the row (fast at row's attributes)
+- Great when individual cells have small data, not documents/images/etc
+- Heap table: unordered rows; track open space in blocks; linked list refill
+- Sorted table: ordered rows; pure linked list work to keep order in changes
+- Hash table: buckets of linked blocks; hash key is column(s); fast changes
+#### Column-Oriented Storage
+- Column-oriented storage: packaging column-wise for storage on disks/flash
+- Reads all cells in column (fast at a column's values)
+- Great for column-based work + compression, terrible at multi-column
+- Used by: PostgreSQL, Vertica, NoSQL
+### Index
+- I am so bored by database indices
+- They are copies of one or more columns from one or more tables
+- They are sorted
+- They don't have to be unique
+- They have pointers that point to the specific rows they refer to
+- You can use table scans (reading tables) or index scans (reading indices)
+    * Decision made from "hit ratio"; high hit ratio -> table scan, low -> index
 
 <!-- Polished -->
 ## Relational Databases
@@ -700,41 +755,76 @@ XXVII.[Stakeholders                  ](#stakeholders)
         * `git push`
     - If the above lines work, you are 100% ready to go
 
-
+<!-- Polished -->
 ## git for Solo Work
 - No one's committing/pushing except you, so pushes are safe
-- Create an empty repository on Git then clone it down with `git clone`
+- Create an empty repository on Github then clone it down with `git clone`
 - Make changes to files as you need
+    * Undo changes (permanent undo): `git restore file0`
 - Check files that are different from most recent commit: `git status`
-- Add files to be committed: `git add file1` or multiple at once `git add file2 file3 file4 foldername/file5` or all files `git add .`
-    - Remove file from being added: `git restore --staged file1`
+- Add files to be committed: `git add file1` 
+    * Add multiple files at once: `git add file2 file3 file4 foldername/file5` 
+    * Add all files in a directory: `git add .`
+    * Remove file from being added: `git restore --staged file1`
 - Check files have been added: `git status`
-- Commit file changes with a message: `git commit -m 'message goes here to state changes'`
-    - Always use a commit message and keep the commit message useful, it's extremely helpful
-- Check that the commit went through: `git status` (should no longer see the files you added and committed in status)
+- Commit file changes with a message: `git commit -m 'explain new changes'`
+    * Always use a commit message and keep the commit message useful
+- Check that the commit went through: `git status` 
+    * Should no longer see the files you added and committed in status
 - Push the commit to Github: `git push`
 
+<!-- Polished -->
 ## git for Team Dev Work
 - Team dev work is much more convoluted than solo dev work
-- Update your local files for changes made to the team repo using `git pull`
-    - This command updates files you're not working with, and does not update files you're working with
-    - Run this command often, and especially before committing your work
-- Create a new branch for your changes: `git branch -c new_branch_name`
-- Move to that branch: `git checkout new_branch_name`
-    - This command copies your current branch and work to the new branch, and moves you there
-- Run normal Add and Commit in the new branch like normal (`git add file1 file2 file42` `git commit -m 'add cool new feature'`)
-- Push to the new branch: `git push origin new_branch_name:new_branch_name`
+1. Update your local files for changes made to the team repo using `git pull`
+    * Run this command often; try to run it before making changes to local files
+        * If remote/local repos both have new commits, might have merge conflict
+    * This runs `git fetch` (which you can run by itself) plus a merge operation
+    * `fetch` updates your unedited local files while not advancing your commits
+        * Edited files are left alone
+    * Merge advances your commits to the current one
+2. Create a new branch for your changes: `git branch -c new_branch_name`
+3. Move to that branch: `git checkout new_branch_name`
+    - This copies your current branch's work to the new branch & moves you there
+4. Add/Commit: `git add file1 file2 file42`, `git commit -m 'add cool feature'`
+5. Push to the new branch: `git push origin new_branch_name:new_branch_name`
     - This command creates a new branch on Github called "new_branch_name" 
-    - It maps the local branch to the Github branch like this: `git push origin name_of_local_branch_to_send_up:name_of_GitHub_branch_to_receive`
-    - Creating a new branch is always very safe because it does not overwrite any work, it's separate
-- For the new branch, create a merge request (do this on Github)
+    - It maps a local branch to a remote branch: `local_branch:remote_branch`
+    - Creating a new branch is always very safe; it does not overwrite any work
+6. Create a merge request (do this on Github/Gitlab)
+### Safely Updating Your Local Repo
+1. Make changes to a branch in your local repository as normal
+2. When you're ready to consider the remote repository, run `git remote update`
+    * This is `git fetch`, but is fetching *all* branches in the remote repo
+    * This automatically pulls any remote repo branch that the local repo lacks
+        * Note: it will say "new branch" in the output if it pulls a new branch
+    * This does not modify any files in branches that the local repo has
+3. Run `git status` in the branch you're working on
+    * If branch is "up to date", then you're done! And you can push changes up.
+    * If it says "Your branch is behind...", then keep reading...
+4. Run `git diff @{u} --name-only` to show which files differ in local/remote
+    * If some files don't involve your work, you can `git merge` them safely
+    * If other files *do* involve your work, then keep reading...
+5. Run `git diff @{u}` to see each file *and* its differences in local/remote
+    * **This focuses on local files and what they have/don't have from remote**
+    * Remote branch has a line that local branch doesn't: shows as "removed"
+    * Remote branch doesn't have a line that local branch does: shows as "added"
+6. Decide what to do with the differences
+    * To destroy your changes & accept the remote repo, use `git restore file1`
+    * If you want to keep your changes... check out Resolving Merge Conflicts
 ### Resolving Merge Conflicts
-- If you make a mistake and have a "merge conflict", this is how to resolve the issue (my method):
+- If you have a "merge conflict", this is how to resolve the issue (my method):
 1. Pull the Github repo down to a new folder using `git clone`
-2. Copy the changed files manually to the new folder's repo that you just created and cloned
-3. Run your Terminal/BASH/CMD in that new folder and do the `git add filename` `git commit -m "message"` `git push` as normal
+2. Copy the changed files / changes manually to the clone
+3. Run `git add filename` `git commit -m "message"` `git push` as normal
 4. Delete the old folder after successfully pushing your work
 5. Move the new folder to where the old folder was- good as new!!
+### Handling Aftermath of Branch Merges
+- If a team mate merged a branch into main, you've come to the right place
+1. If you accept these changes run `git pull`, otherwise Safely Update Your Repo
+2. To delete the merged-in branch locally, run `git branch -d branch_name`
+3. To clean up the deletion you just performed, run `git fetch --prune`
+4. Done! Merged-in branch has now been deleted locally.
 
 [[Return to Top]](#table-of-contents)
 
@@ -758,35 +848,128 @@ XXVII.[Stakeholders                  ](#stakeholders)
 <!-- Polished -->
 ## REGEX Basics
 - Language for parsing and slicing strings to capture substrings
-### REGEX Metacharacters
+- Uses a mixture of string literals and metacharacters for multiple objectives
+- REGEX by programming language: https://www.regular-expressions.info/tools.html
+- Test your REGEX: https://regex101.com/
+- Go deep learning REGEX: http://www.rexegg.com/regex-disambiguation.html
+### REGEX Metacharacters Chart
 ```
-| Anything: .                | Alphanumeric: \w \W | Whitespace: \s \S | Digit: \d \D  |
-| Zero or more (optional): * | One or more: +      | Optional: ?       |
-| {5} Repeat exactly 5 times | {3,6} Min 3, Max 6  | {3,} At least 3 times             |
-| Anchor front: ^            | Anchor back: $      | Word boundary: \b |
-| Capture group: ()  EX: (?P<colname>regex_exp)    |
+| Zero or more (optional): *  | One or more: +        | Optional: ?            |
+| Any character: .            | Choices: [a12qx]      | Anything-but: [^a12qx] |
+| Alphanumeric: \w \W         | Whitespace: \s \S     | Digit: \d \D           |
+| {5} Repeat exactly 5 times  | {3,6} Min 3, Max 6    | {3,} At least 3 times  |
+| Anchor front: ^             | Anchor back: $        | Word boundary: \b      |
+| Capture group: So (cool)!   | Match group: (?:yooo) |
+| Case insensitive: (?i)(?-i) | Ignore spaces: (?x)   | Single line mode: (?s) |
 ```
-### REGEX Usage
-- `r'a'` ----- r marks string as a raw string, all characters taken as-is
-    - Can go without raw strings, just need to "except" characters, ex: `r'yes/no'` is `'yes\/no`, `r'hi...'` is `'hi\.\.\.'`
-- `r'\w\w'` ----- find two in-sequence alphanumeric chars
-    * 'abc 123' becomes `['ab','12']` because it consumes 'ab' and '12', so no 'bc' or '23'
-- `r'\w+'` ----- capture max combo of each alphanumeric
-- `r'.*'` ----- everything. only use asterisks with capture groups, and when you don't know if chars will be there
-- `r'\w{3,6}'` ----- only capture when 3 alphanumerics in sequence and as many as possible up to 6
-- `r'(\w)(\w)?'` ----- optional capture group
-- `r'[a1][b2][c3]'` ----- 'abc 123' returns `['abc','123']` and 'a2c 1b3' returns `['a2c', '1b3']`
+### REGEX Metacharacter Explanation
+- If these explanations are confusing, see: [REGEX Examples](#regex-examples)
+- `\.`: a period; the backslash escapes the metacharacter so it is just "."
+- `.+`: infinite amount of characters in sequence, but at least one: "?q9 -aAr!"
+- `.+?`: same as above, but not greedy; see: [REGEX Examples](#regex-examples)
+- `.*`: infinite amount of characters in sequence, can be none (optional): "?q9"
+- `.*?`: same as above, but not greedy; see: [REGEX Examples](#regex-examples)
+- `\w+`: infinite alphanumerical characters in sequence, but at least one: "hhh"
+- `\W\w`: a non-alphanumerical followed by an alphanumerical in sequence: "?q"
+- `\s\w`: a whitespace followed by an alphanumerical in sequence: " f"
+- `\S+`: infinite amount of non-whitespace in sequence, but at least one: "Hey"
+- `\d\d\d\d-\d\d-\d\d`: digits following YYYY-MM-DD format, ex: "2022-09-22"
+- `\d{4}-\d{2}-\d{2}`: digits following YYYY-MM-DD format, ex: "2022-09-22"
+- `\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}`: IP address format, ex: "10.3.127.5"
+- `\D+`: infinite amount of anything except digits in sequence, ex: "Hi there!!"
+- `\w(\w)\w`: capture the second alphanumerical character in a sequence of three
+- `[abc123]`: pick one, ex: `F[uiae]ll` matches "Full", "Fill", "Fall", "Fell"
+- `[a-z]+`: infinite amount of any lowercase letter in sequence, ex: "fnjd"
+- `[^a-z]+`: infinite amount of anything but lowercase letters in sequence: "A7"
+- `(?i)[a-z]+(?-i)`: case-insensitive version of above, ex: "fNjD"
+- `[a-zA-Z]+`: infinite amount of any lower/uppercase letter in sequence: "fNjD"
+- `(?i)HELLO(?-i)HELLO`: any-case "hello" followed by all-caps, ex: "hELLoHELLO"
+- `(?x) q r s t u v`: ignore whitespace; matches "qrstuv" but NOT "q r s t u v"
+- `^yo[a-z]*$`: entire line must match; matches "yo" and "yodawg", but NOT "yo!"
 ### REGEX Querying in Python
+- REGEX library: `import re`
 - Randomly search for match: `re.search(regexg, subject)`
 - Search from beginning for match: `re.match(regexp, subject)`
 - Put all matches in list (very useful): `re.findall(regexp, subject)`
 - Return match with subbed-in substring: `re.sub(regexp, sub_in, subject)`
-- Capture groups into dataframe columns: `df.colname.str.extract(regexp)`
+- Capture groups into pandas dataframe columns: `df.colname.str.extract(regexp)`
 #### REGEX in Python - Query Options
+- Raw string: `string = r"c:\user\p1\Desktop"` (neutralizes backslash-escaping)
+    * Only works in print statements and returns.....?
 - Search while ignoring case: `re.IGNORECASE`
 - Run new query on each line: `re.MULTILINE`
 - Ignore whitespace: `re.VERBOSE`
-- Use `|` to add multiple flags, ex: `re.findall(regexp, subject, re.IGNORECASE | re.MULTILINE)`
+- `|` for 2+ flags: `re.findall(regexp, subject, re.IGNORECASE | re.MULTILINE)`
+
+<!-- Needs work -->
+## REGEX Examples
+- REGEX is fairly complicated, but is best explained/learned through examples
+    * Try them on your own!!
+- The following examples are done in Python with `re.findall(regex, search_str)`
+    * `re.findall("\w\w", "A BB CCC DDDD")` ---> ["BB", "CC", "DD", "DD]
+    * `re.findall("\d+", "ABCD")` ---> [] (no matches)
+### Simple REGEX Examples
+- `.+` -- *Everything!*
+    * "Hello, Sam!" -------------> ["Hello, Sam!"] (one string for entire thing)
+- `Hello,\s(.+)!` -- *Everything between "Hello, " and final-found "!" (greedy)*
+    * "Hello,Sam!" --------------> []
+    * "Hello, Sam!" -------------> ["Sam"]
+    * "Hello, Sam!!!" -----------> ["Sam!!"] (notice in the REGEX: greedy "+")
+    * "Hello, Sam Witwicky!!!" --> ["Sam Witwicky!!"] (one string for full name)
+    * "Hello, saFBO43Ef$51bf!" --> ["saFBO43Ef$51bf"]
+- `Hello,\s(.+?)!` -- *Everything between "Hello, " and first-found "!"*
+    * "Hello, Sam!!!" -----------> ["Sam"] (".+?" makes it not greedy!)
+    * "Hello, Sam Witwicky!!!": -> ["Sam Witwicky"] (one string for full name)
+    * "Hello, saFBO43Ef$51bf!" --> ["saFBO43Ef$51bf"]
+- `Hello,\s(\w+)!` -- *Alphanumerics between "Hello, " and "!" (greedy)*
+    * "Hello, Sam!" -------------> ["Sam"]
+    * "Hello, Sam!!!" -----------> ["Sam"] ("\w" only captures alphanumerics)
+    * "Hello, 12345!" -----------> ["12345"]
+- `[a-zA-Z]+` -- *Alphabet characters in sequence*
+    * "Hello, Sam!" -------------> ["Hello", "Sam"]
+    * "Hello, Sam Witwicky!!!": -> ["Hello", "Sam", "Witwicky"]
+- `Hello,\s([a-zA-Z]+)!` *Alphabet characters between "Hello, " and "!"*
+    * "Hello, Sam!" -------------> ["Sam"]
+    * "Hello, Sam Witwicky!!!" --> []
+- `^.+(\S+)!$` *Line ends with non-whitespace and "!" in sequence (greedy)*
+    * "Hello, Sam!" -------------> ["m"]
+    * "Hello, Sam Witwicky!" ----> ["y"]
+- `^.+?(\S+)!$` *Line ends with earliest non-whitespace -> "!" in sequence*
+    * "Hello, Sam!" -------------> ["Sam"]
+    * "Hello, Sam Witwicky!!!" --> ["Witwicky"]
+    * "f7g?3.rb3%79h&2398dh!" ---> ["f7g?3.rb3%79h&2398dh"]
+- `([a-zA-Z]+)(?:\s([a-zA-Z]+))*!` *Two capture groups, second is optional*
+    * First capture group: ([a-zA-Z]+)
+        * A sequence of alphabet characters
+    * Second capture group: (?:\s([a-zA-Z]+))*
+        * Optional: capture group ends with asterisk
+        * Capture a sequence of alphabet chars that is preceded by a whitespace
+        * Basically: `(?:\s(capture_inside_here))*`
+    * "Hello, Sam!" -------------> [("Sam", "")] (two capture groups -> tuple)
+    * "Hello, Sam Witwicky!" ----> [("Sam", "Witwicky")]
+    * "Hello!" ------------------> [("Hello", "")]
+- `Hello,\s([a-zA-Z]+)(?:\s([a-zA-Z]+))*!` *Best solution of above*
+    * Same as above example but with "Hello,\s" at the beginning
+    * "Hello, Sam!" -------------> [("Sam", "")]
+    * "Hello, Sam Witwicky!" ----> [("Sam", "Witwicky")]
+    * "Hello!" ------------------> []
+- `name = "\s([a-zA-Z]+)"` -> `f"Hello,{name}(?:{name})*!"`
+    * Clearer writing of above example, but with exactly the same output
+### Complex REGEX Examples
+- `^(.{15})\s+(\S+)\s+([^\s\[:]+)(\[\d*\])*:\s+(.+)$`
+    * This captures: "timestamp hostname reporter[pid]: message"
+    * Entire line must match (because it uses `^` start and `$` end)
+    * Capture group #1: exactly 15 characters
+    * Capture group #2: at least one of anything that's not whitespace
+    * Capture group #3: at least one of anything but: whitespace, "[", and ":"
+    * Capture group #4: optional; looking for this: "[123]", "[59102]", etc
+    * Capture group #5: all remaining characters following the above
+- `f"{n1}\s+{n2}\s+{any}\s+{any}\s+{any}\s+{any}\s+{any}\s+{any}"`
+    * This captures: "[type] [pid] [pts] [user] [tty] [src] [dest] [timestamp]"
+    * **The following variables are capturing the *inside* of the brackets...**
+    * `n1 = "\[(\d)\]"`: capturing a single digit in brackets, ex: "[8]"
+    * `n2 = "\[(\d+)\]"`: capturing digits in brackets, ex: "[1234]" or "[56]"
+    * `any = "\[(\S+)*\s*\]"`: optional; captures "[Hello  ]", "[Hello]", "[  ]"
 
 [[Return to Top]](#table-of-contents)
 
@@ -796,13 +979,21 @@ XXVII.[Stakeholders                  ](#stakeholders)
 
 
 <!-- 
-   #    ######  ###             ##        #####                                              
-  # #   #     #  #   ####      #  #      #     #  ####  #####    ##   #####  # #    #  ####  
- #   #  #     #  #  #           ##       #       #    # #    #  #  #  #    # # ##   # #    # 
-#     # ######   #   ####      ###        #####  #      #    # #    # #    # # # #  # #      
-####### #        #       #    #   # #          # #      #####  ###### #####  # #  # # #  ### 
-#     # #        #  #    #    #    #     #     # #    # #   #  #    # #      # #   ## #    # 
-#     # #       ###  ####      ###  #     #####   ####  #    # #    # #      # #    #  ####  
+   #    ######  ###             ##    
+  # #   #     #  #   ####      #  #   
+ #   #  #     #  #  #           ##    
+#     # ######   #   ####      ###    
+####### #        #       #    #   # # 
+#     # #        #  #    #    #    #  
+#     # #       ###  ####      ###  # 
+                                      
+ #####                                              
+#     #  ####  #####    ##   #####  # #    #  ####  
+#       #    # #    #  #  #  #    # # ##   # #    # 
+ #####  #      #    # #    # #    # # # #  # #      
+      # #      #####  ###### #####  # #  # # #  ### 
+#     # #    # #   #  #    # #      # #   ## #    # 
+ #####   ####  #    # #    # #      # #    #  ####  
  -->
 
 # APIs & Scraping
@@ -920,19 +1111,44 @@ with open('image.jpeg','wb') as f:
 
 <!-- Polished -->
 ## SQL Basics
-- Structured Query Language used to query databases like MySQL for tabular data
-- Actually a composition of FIVE languages: Data Definition, Data Query, Data Manipulation, Data Control, and Data Transaction Languages
-- SQL databases are usually hosted on beefy systems, so doing processing in SQL can be a lot faster than doing it on a local machine using Python
+- Structured Query Language; used to query databases like MySQL for tabular data
+- Actually a composition of FIVE languages: 
+    * Data Definition Language (DDL): creating database objects (tables, users)
+    * Data Manipulation Language (DML): database contents work ("CUD" of CRUD)
+    * Data Query Language (DQL): "SELECT" statements (DML handles FROM/WHERE)
+    * Data Control Language (DCL): controls account accesses
+    * Data Transaction Language (DTL): governs transactions (multi-queries)
+- SQL databases are usually hosted on beefy systems; use SQL as much as possible
 - Sequel ACE: Excellent GUI for SQL database reads and querying
-### SQL Simple Records Query
-- `CONCAT(str_col1, str_col2, ...)`, `UPPER('hi')`, `LOWER("HI")`, `REPLACE("Hey", "e", "a")`, `SUBSTRING("Hello", index(from1), steps)`, `TRIM("  sup  ")`
-- `CURDATE()`, `CURTIME()`, `NOW()` (datetime)
-- `DATE("2011-01-01 01:01:01")`, `TIME("2011-01-01 01:01:01")`, `DAY`/`MONTH`/`YEAY`, `HOUR`/`MINUTE`/`SECOND`, `DATEDIFF(early, late)`, `TIMEDIFF(early, late)`
-- `SELECT * FROM Department LEFT JOIN right_table ON Department.id = right_table.id;` --- `SELECT * FROM Department RIGHT JOIN left_table ON Department.id = left_table.id;`
-- `SELECT * FROM a CROSS JOIN b;` -- all possible combinations of a and b
+### SQL Clauses
+- `SELECT`: Choose columns to return and perform operations on them
+- `FROM`: Choose base table(s)
+- `GROUP BY`: Used for aggregation queries; specify agg columns here
+    * `HAVING`: Filter rows using conditionals on aggregation results
+- `WHERE`: Filter rows using conditionals on pre-aggregation rows
+- `ORDER BY`: Order rows based on contents of columns (ascending/descending)
+- `LIMIT`: Specify max number of rows to return
+### SQL Column Operations
+- String cleaning: `UPPER('hi')`, `LOWER("HI")`, `TRIM("  sup  ")`
+- String replacement: `REPLACE("Hey", "e", "a")`, `SUBSTRING("Hello", 1, 3)`
+- Concatenate each col's string into one col: `CONCAT(str_col1, str_col2, ...)`
+- Get current datetime: `CURDATE()`, `CURTIME()`, `NOW()` (date, time, datetime) 
+- Date work: `DATE("2011-01-01 01:01:01")`, and `DAY()`, `MONTH()`, `YEAR()`
+- Time work: `TIME("2011-01-01 01:01:01")`, and `HOUR()`, `MINUTE()`, `SECOND()`
+- Difference in date / time: `DATEDIFF(early, late)`, `TIMEDIFF(early, late)`
+### SQL Table Operations
+- Left join: `SELECT * FROM left_t LEFT JOIN right_t ON left_t.id = right_t.id;`
+- Right: `SELECT * FROM right_t RIGHT JOIN left_t ON right_t.id = left_t.id;`
+- Cross: `SELECT * FROM a CROSS JOIN b;` (all possible combinations of a and b)
+- Non-equijoin: `SELECT * FROM a, b WHERE a.value > b.value;`
+
+
 - `SELECT Name, CountryCode FROM City AS C WHERE EXISTS (SELECT * FROM CountryLanguage WHERE  CountryCode = C.CountryCode AND Percentage > 97);` -- "EXISTS" says pass back all EXISTING rows
     * Specifically for this query, pass back all country names/codes related to a country having at least one language >97% shared (subquery looks for country-atleastone-over97%: EXISTS?)
     * Opposite is `NOT EXISTS` and only passes back rows that did not return True for the check
+
+## 
+### SQL Simple Records Query
 ```
 show databases; use database_name; show tables; describe table_name;
 select distinct date_col, col1 as Col1, col2, col3, 
@@ -963,7 +1179,8 @@ SELECT a, b, c FROM t AS f WHERE c > (SELECT AVG(c) FROM t WHERE b = f.b); -- hi
 <!-- Polished -->
 ## SQL Intermediate
 ### SQL Subquery
-- Typically done with either an operator (`>`, `<`, `=`, etc) or with `IN`; consider these your two options for subqueries
+- Typically done with either an operator (`>`, `<`, `=`, etc) or with `IN`
+    * Consider these your two options for subqueries
 ```
 use employees;
 select concat(first_name, " ", last_name) as Name 
