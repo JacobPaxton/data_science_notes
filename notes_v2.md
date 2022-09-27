@@ -1142,6 +1142,27 @@ with open('image.jpeg','wb') as f:
 - Cross: `SELECT * FROM a CROSS JOIN b;` (all possible combinations of a and b)
 - Non-equijoin: `SELECT * FROM a, b WHERE a.value > b.value;`
 
+## PostgreSQL
+### PostgreSQL Setup for M1 Mac
+1. Install Homebrew
+2. `brew install postgresql@14`
+3. `cd ../../..` to the highest level folder on your computer
+4. `cd /opt/homebrew/opt/postgresql@14/bin`
+5. `createuser -s postgres`
+6. `createdb -U postgres sqlda`
+7. `psql -U postgres`
+8. `\l` to see if sqlda was created
+9. `\q` to quit out of the database so you can add data
+10. Download the "data.dump" file from Datasets at this link:
+    * https://github.com/TrainingByPackt/SQL-for-Data-Analytics/tree/master/
+11. Move the file to the folder you're in: /opt/homebrew/opt/postgresql@14/bin
+    * Make sure you're still in this folder when running the next command
+12. `psql -U postgres -d sqlda -f data.dump`
+13. `psql -U postgres sqlda`
+14. `\dt` should show you a bunch of tables - DONE!
+15. `\q` to quit the server for now
+16. `psql -U postgres sqlda` for further logins
+
 
 - `SELECT Name, CountryCode FROM City AS C WHERE EXISTS (SELECT * FROM CountryLanguage WHERE  CountryCode = C.CountryCode AND Percentage > 97);` -- "EXISTS" says pass back all EXISTING rows
     * Specifically for this query, pass back all country names/codes related to a country having at least one language >97% shared (subquery looks for country-atleastone-over97%: EXISTS?)
