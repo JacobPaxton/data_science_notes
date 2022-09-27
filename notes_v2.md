@@ -60,8 +60,10 @@ VII.  [APIs & Scraping               ](#apis--scraping)
 ---
 VIII. [SQL                           ](#sql)
 1.    [SQL Basics                    ](#sql-basics)
-2.    [SQL Intermediate              ](#sql-intermediate)
-3.    [SQL Management                ](#sql-management)
+2.    [PostgreSQL                    ](#postgresql)
+3.    [SQL Typical                   ](#sql-typical)
+4.    [SQL Intermediate              ](#sql-intermediate)
+5.    [SQL Management                ](#sql-management)
 ---
 IX.   [Apache Spark                  ](#apache-spark)
 1.    [Spark Wrangling               ](#spark-wrangling)
@@ -1142,6 +1144,7 @@ with open('image.jpeg','wb') as f:
 - Cross: `SELECT * FROM a CROSS JOIN b;` (all possible combinations of a and b)
 - Non-equijoin: `SELECT * FROM a, b WHERE a.value > b.value;`
 
+<!-- Polished -->
 ## PostgreSQL
 ### PostgreSQL Setup for M1 Mac
 1. Install Homebrew
@@ -1168,7 +1171,8 @@ with open('image.jpeg','wb') as f:
     * Specifically for this query, pass back all country names/codes related to a country having at least one language >97% shared (subquery looks for country-atleastone-over97%: EXISTS?)
     * Opposite is `NOT EXISTS` and only passes back rows that did not return True for the check
 
-## 
+<!-- Needs work -->
+## SQL Typical
 ### SQL Simple Records Query
 ```
 show databases; use database_name; show tables; describe table_name;
