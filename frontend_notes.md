@@ -12,31 +12,88 @@
 
 # Table of Contents
 
-I.    [HTML                          ](#html)
+I.    [The Internet                  ](#the-internet)
+1.    [Internet Basics               ](#internet-basics)
+
+II.   [HTML                          ](#html)
 1.    [HTML Basics                   ](#html-basics)
 2.    [HTML Examples                 ](#html-examples)
 
-II.   [CSS                           ](#css)
+III.  [CSS                           ](#css)
 1.    [CSS Basics                    ](#css-basics)
 2.    [CSS Examples                  ](#css-examples)
 
-III.  [JavaScript                    ](#javascript)
+IV.   [XML                           ](#xml)
+1.    [XML Basics                    ](#xml-basics)
+
+V.    [JavaScript                    ](#javascript)
 1.    [JavaScript Basics             ](#javascript-basics)
 2.    [JavaScript Examples           ](#javascript-examples)
 
-IV.   [Bootstrap                     ](#bootstrap)
+VI.   [Bootstrap                     ](#bootstrap)
 1.    [Bootstrap 5 Basics            ](#bootstrap-5-basics)
 2.    [Bootstrap 5 Example           ](#bootstrap-5)
 
-V.    [jQuery                        ](#jquery)
+VII.  [jQuery                        ](#jquery)
 1.    [jQuery Basics                 ](#jquery-basics)
 
-VI.   [D3.js                         ](#d3.js)
+VIII. [D3.js                         ](#d3.js)
 1.    [D3 Basics                     ](#d3-basics)
+2.    [D3 Examples                   ](#d3-examples)
+
+IX.   [PHP                           ](#php)
+1.    [PHP Basics                    ](#php-basics)
+2.    [PHP Examples                  ](#php-examples)
 
 <br>
 
 <br>
+
+
+
+
+
+
+<!-- 
+#######                  ###                                                
+   #    #    # ######     #  #    # ##### ###### #####  #    # ###### ##### 
+   #    #    # #          #  ##   #   #   #      #    # ##   # #        #   
+   #    ###### #####      #  # #  #   #   #####  #    # # #  # #####    #   
+   #    #    # #          #  #  # #   #   #      #####  #  # # #        #   
+   #    #    # #          #  #   ##   #   #      #   #  #   ## #        #   
+   #    #    # ######    ### #    #   #   ###### #    # #    # ######   #   
+-->
+
+# The Internet
+
+## Internet Basics
+- Web development should be tested across all major browsers
+- Page types: HTML, ASPX
+### History of The Internet
+- Commercialization of UNIX -> Hypertext Markup Language / CSS -> Javascript
+- Browsers: Mosaic -> Netscape Navigator | Internet Explorer -> Modern ones
+- Internet Service Providers -> Web Hosting -> Websites -> Search | E-Commerce
+### Uniform Resource Locators (URLs)
+- URL structure: `https://www.w3.org/Consortium`
+    * `https:`: the protocol definition
+    * `//www.w3.org`: the resource name (host machine names preceded by `//`)
+        * `www`: subdomain (the folder containing the website)
+            * Server admin can create as many different subdomains as they want
+            * "www" is default and nowadays optional, ex: "bing.com" works fine
+        * `w3`: domain name (can be separated by periods, ex: my.webmail.com)
+        * `org`: top-level domain (web server searches this domain for "w3")
+        * Not case sensitive
+    * `/Consortium`: web page location as a filename and/or path
+        * Usually case sensitive
+- URL structure: `https://www.wgu.edu/online-it-degrees.html`
+    * `online-it-degrees.html`: web page location as a filename
+    * The main ones are just "index.htm" or "default.htm"
+- URL structure: `https://www.youtube.com/watch?v=coolvideo&t=1m51s`
+    * `watch`: web page location
+    * `?v=coolvideo&t=1m51s`: query string
+
+[[Return to Top]](#table-of-contents)
+
 
 
 
@@ -56,7 +113,7 @@ VI.   [D3.js                         ](#d3.js)
 
 <!-- Polished -->
 ## HTML Basics
-- Foundation of web pages
+- Hypertext Markup Language; the foundation of web design
 - Specifically elements, tags, and attributes
     - Element: start-tag + content + end-tag
     - Tags: the start and end of HTML elements
@@ -67,6 +124,10 @@ VI.   [D3.js                         ](#d3.js)
 - Attributes values are wrapped with double-quotes except when double-quotes are used inside the value
 - Wrapping an img tag like this `<a href="site"><img ...></a>` makes the image into a clickable link to site
 - Add small icon to browser tab: in head, `<link rel="icon" type="image/x-icon" href="filepath">`
+- Semantic HTML (the point of HTML): page structure, ex: headers, paragraphs
+    * Presentational HTML (font, bold, etc) should not be used; use CSS instead
+- Terminate a tag without a separate tag: `<a/>` instead of `<a></a>`
+- Consider using an HTML editor to help spot errors; HTML will display w/ errors
 ### HTML Block-Level Elements
 - Always starts on a new line + top-bottom margin; always extends fully left-right in view
 - Most common: p div h1-h6 li ul ol table dl dt form
@@ -251,6 +312,223 @@ th {
 tr:hover {background-color: #D6EEEE;}
 tr:nth-child(even) {background-color: #D6EEEE;}
 </style>
+```
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+<!-- 
+#     # #     # #       
+ #   #  ##   ## #       
+  # #   # # # # #       
+   #    #  #  # #       
+  # #   #     # #       
+ #   #  #     # #       
+#     # #     # #######
+-->
+
+# XML
+
+## XML Basics
+- eXtensible Markup Language
+- Used for storing structured data
+- Uses custom tags to define elements
+    * Check out XML Schema for standardization: http://www.w3.org/2001/XMLSchema
+    * Tags are case-sensitive
+- Textastic, Dreamweaver (XML editors), and text editors
+### XML Example
+```
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/css" href="cars.css"?>
+<!— A list of cars in inventory —>
+<cars>
+    <car_id> 10001
+        <make>Chevy</make>
+        <model>Corvette</model>
+        <package>
+            <trim>LS</trim>
+            <wheels>Stock</wheels>
+            <engine>V6</engine>
+        </package>
+    </car_id>
+    <car_id> 10002
+        <make>Chevy</make>
+        <model>Corvette</model>
+        <package>
+            <trim>Sport</trim>
+            <wheels>Performance</wheels>
+            <engine>V8</engine>
+        </package>
+    </car_id>
+</cars>
+```
+### XML CSS
+```
+@charset "utf-8"; 
+body { background-color:#FFDEAD; margin-top:10px; color: teal; } 
+#overview h1 { text-align:center; } 
+div.simage img { border:3px white solid; align:center; } 
+#mysite { margin:auto; width:980px; } 
+div.smallmat { width:300px; float: left; } 
+div.scaption { padding:5px; } 
+div.story { width:500px; float: left; } 
+div.storybook { width:850px; float:left; margin:20px; }
+```
+### XML Schema
+- Sets available elements/attributes and their order
+- Also in XML format, editable
+```
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"> 
+<xs:element name="californiapeople"> 
+    <xs:complexType> 
+        <xs:sequence> 
+            <xs:element name="person" maxOccurs="unbounded"> 
+                <xs:complexType> 
+                    <xs:sequence> 
+                        <xs:element type="xs:string" name="name"/> 
+                        <xs:element type="xs:string" name="first"/> 
+                        <xs:element type="xs:string" name="profession"/> 
+                        <xs:element type="xs:string" name="born"/> 
+                        <xs:element type="xs:string" name="photograph"/> 
+                    </xs:sequence> 
+                    <xs:attribute type="xs:byte" name="id" use="optional"/> 
+                </xs:complexType> 
+            </xs:element> 
+        </xs:sequence> 
+    </xs:complexType> 
+</xs:element>
+```
+### SimpleXML
+```
+<?php 
+    $xml = simplexml_load_string('<photocollection></photocollection>'); 
+    $xml->addChild("title", "June Lake"); 
+    $xml->addChild("overview", "The June Lake Loop begins just..."); 
+    $photo = $xml->addChild("photo"); 
+    $photo->addChild("scaption", "June Lake in the Fall"); 
+    $photo->addChild("caption", "June Lake and Carson Peak"); 
+    $photo->addChild("story", "Each time that unfortunate day ..."); 
+    $photo->addChild("smallimg", "imagessmall/junelakefall.jpg"); 
+    $photo->addChild("largeimg", "imagespng/junelakeinthefall.png"); 
+    $xml->asXML("xmlfiles/new.xml"); 
+?>
+```
+### jQuery Ajax for XML
+```
+<!doctype html> <html lang="en"> 
+<head> 
+    <meta charset="utf-8" /> 
+    <title>June Lake Gallery</title> 
+    <link href="styles/p1.css" rel="stylesheet" type="text/css" media="screen"/> 
+</head> 
+<script src="./js/jquery-1.10.1.js"></script> 
+<body> 
+    <div id="mysite"> </div> 
+</body> 
+</html> 
+
+$(document).ready (function () { 
+    $.get( "practical.xml", function( xml ) { 
+        var jQueryxml = $(xml); // Turn XML object into a jQuery object 
+        var html = '<div id="overview"><h1>' + jQueryxml.find('title').text() + '</h1>'; 
+        html += '<p>' + jQueryxml.find('overview').text() + '</p></div>'; 
+        html += '<div id="gallery">'; 
+        jQueryxml.find('photo').each(function(){ 
+            html += '<div class="storybook"><div class="smallmat"><div class="simage"><a href="'; 
+            var scaption = $(this).find('scaption').text(); 
+            var caption = $(this).find('caption').text(); 
+            var largeimg = $(this).find('largeimg').text(); 
+            var smallimg = $(this).find('smallimg').text(); 
+            var story = $(this).find('story').text(); 
+            html += largeimg; 
+            html += '"><img class="sphoto" src="'; 
+            html += smallimg; 
+            html += '" title="'; 
+            html += caption; 
+            html += '"></img></a></div><div class="scaption">'; 
+            html += scaption; 
+            html += '</div></div><div class="story">'; 
+            html += story; 
+            html += '</div></div>'; 
+        }); //close each() 
+        html += '</div>'; 
+        $('#mysite').html(html); 
+    }, "xml"); 
+});
+```
+### XSLT
+- eXtensible Stylesheet Language Transformation
+- Translate an XML file into another XML file using mapping file / programming
+```
+<?xml version="1.0"?> 
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"> 
+    <xsl:output method="html"/> 
+    <xsl:template match="/"> 
+        <div id="overview"> 
+            <xsl:apply-templates select="/photocollection"/> 
+        </div> 
+        <div id="gallery"> 
+            <xsl:apply-templates select="/photocollection/photo"/> 
+        </div> 
+    </xsl:template> 
+    <xsl:template match="photocollection"> 
+        <h1> <xsl:value-of select="title"/> </h1> 
+        <p> <xsl:value-of select="overview"/> </p> 
+    </xsl:template> 
+    <xsl:template match="photo"> 
+        <div class="storybook"> 
+            <div class="smallmat"> 
+                <div class="simage"> 
+                    <a> 
+                        <xsl:attribute name="href"> 
+                            <xsl:value-of select="largeimg"/> 
+                        </xsl:attribute>  
+                        <img class="sphoto"> 
+                            <xsl:attribute name="src"> 
+                                <xsl:value-of select="smallimg"/> 
+                            </xsl:attribute> 
+                            <xsl:attribute name="title"> 
+                                <xsl:value-of select="caption"/> 
+                            </xsl:attribute> 
+                        </img> 
+                    </a> 
+                </div> 
+                <div class="scaption"> 
+                    <xsl:value-of select="scaption"/> 
+                </div> 
+            </div> 
+            <div class="story"> <xsl:value-of select="story"/> </div> 
+        </div> 
+    </xsl:template> 
+</xsl:stylesheet>
+
+<!DOCTYPE html> <html> 
+<head> 
+    <meta charset="utf-8" /> 
+    <title>June Lake Gallery</title> 
+    <link href="styles/practical.css" rel="stylesheet" type="text/css" media="screen"/> 
+</head> 
+<body> 
+    <div id="mysite"> 
+        <?php 
+            $xslt = new XSLTProcessor; 
+            $xmlfile = "practical.xml"; 
+            $xslfile = "practical.xsl"; 
+            if (!file_exists($xmlfile)) { exit('Failed to open practical.xml.'); } 
+            $xml = new DOMdocument; 
+            $xml->load($xmlfile); 
+            $xsl = new DOMdocument; 
+            $xsl->load($xslfile); 
+            $xslt->importStyleSheet($xsl); 
+            printf("%s",$xslt->transformToXML($xml)); 
+        ?> 
+    </div> 
+</body> 
+</html>
 ```
 
 [[Return to Top]](#table-of-contents)
@@ -695,6 +973,100 @@ tr:nth-child(even) {background-color: #D6EEEE;}
 ## D3 Examples
 ```
 Examples here... eventually...
+```
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+<!--
+######  #     # ######  
+#     # #     # #     # 
+#     # #     # #     # 
+######  ####### ######  
+#       #     # #       
+#       #     # #       
+#       #     # #       
+-->
+
+# PHP
+
+## PHP Basics
+- Server-side programming language to perform actions on web browsers
+- Served via an "Application Server"; content is not static-printed like HTML
+    * Popular one is Apache
+- Starts with `<?php` and ends with `?>`
+- Statements are terminated with semicolon
+- Variables initialized with $var_name syntax, ex: `$first_word = "Hello";`
+- Print the value of a variable: `<?php  echo $helloheader; ?>`
+
+## PHP Examples
+```
+<?php 
+    $hello = "Hello World Example"; 
+    $helloheader = '<h1 class="green" id="hello">Hello, World</  h1>';  
+?> 
+<!DOCTYPE html> 
+<html lang="en"> 
+    <head> 
+        <meta charset="utf-8">  
+        <title><?php echo $hello; ?></title> 
+        <link href="hello.css" type="text/css" rel="stylesheet" ></link> 
+    </head> 
+    <body> 
+        <?php  echo $helloheader; ?> 
+    </body> 
+</html>
+```
+```
+<!DOCTYPE html> <html xmlns="http://www.w3.org/1999/xhtml"> 
+<head> 
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+    <title>June Lake Gallery</title> 
+    <link href="styles/p1.css" rel="stylesheet" type="text/css" media="screen"/> 
+</head> 
+<?php 
+    $xmlfile = "p1.xml"; 
+    if (!file_exists($xmlfile)) { exit('Failed to open p1.xml.'); } 
+    $xml = simplexml_load_file($xmlfile); ?> 
+<body>
+    <div id="mysite">
+        <div id="overview">
+            <h1> <?php echo $xml->title; ?> </h1>
+            <p> <?php echo $xml->overview; ?> </p>
+        </div>
+        <div id="gallery"> 
+            <?php 
+                $photos = $xml->xpath("//photo"); 
+                $photocount = count($photos); 
+                $count = 0; 
+                while ($count < $photocount) { 
+                    $htmlstring = ('
+                        <div class="storybook">
+                        <div class="smallmat">
+                        <div class="simage">
+                        <a href="
+                    '); 
+                    $htmlstring .= $photos[$count]->largeimg; 
+                    $htmlstring .= '"><img class="sphoto" src="'; 
+                    $htmlstring .= $photos[$count]->smallimg; 
+                    $htmlstring .= '" title="'; 
+                    $htmlstring .= $photos[$count]->caption; 
+                    $htmlstring .= '"></img></a></div><div class="scaption">'; 
+                    $htmlstring .= $photos[$count]->scaption; 
+                    $htmlstring .= '</div></div><div class="story">'; 
+                    $htmlstring .= $photos[$count]->story; 
+                    $htmlstring .= '</div></div>'; 
+                    echo $htmlstring; $count++; 
+                } 
+            ?> 
+        </div>
+    </div>
+</body>
+</html>
 ```
 
 [[Return to Top]](#table-of-contents)
