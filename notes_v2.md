@@ -882,9 +882,9 @@ XXVII.[Stakeholders                  ](#stakeholders)
 - `\w(\w)\w`: capture the second alphanumerical character in a sequence of three
 - `[abc123]`: pick one, ex: `F[uiae]ll` matches "Full", "Fill", "Fall", "Fell"
 - `[a-z]+`: infinite amount of any lowercase letter in sequence, ex: "fnjd"
-- `[^a-z]+`: infinite amount of anything but lowercase letters in sequence: "A7"
 - `(?i)[a-z]+(?-i)`: case-insensitive version of above, ex: "fNjD"
 - `[a-zA-Z]+`: infinite amount of any lower/uppercase letter in sequence: "fNjD"
+- `[^a-z]+`: infinite amount of anything but lowercase letters in sequence: "A7"
 - `(?i)HELLO(?-i)HELLO`: any-case "hello" followed by all-caps, ex: "hELLoHELLO"
 - `(?x) q r s t u v`: ignore whitespace; matches "qrstuv" but NOT "q r s t u v"
 - `^yo[a-z]*$`: entire line must match; matches "yo" and "yodawg", but NOT "yo!"
@@ -1143,9 +1143,183 @@ with open('image.jpeg','wb') as f:
 - Right: `SELECT * FROM right_t RIGHT JOIN left_t ON right_t.id = left_t.id;`
 - Cross: `SELECT * FROM a CROSS JOIN b;` (all possible combinations of a and b)
 - Non-equijoin: `SELECT * FROM a, b WHERE a.value > b.value;`
+- Union w/o duplicates: `SELECT x FROM t1 UNION SELECT x FROM t2`
+    * Great for "all people" queries ex: first/last name from 2+ tables
+- Union w/ duplicates: `SELECT x FROM t1 UNION ALL SELECT x FROM t2`
+### Specific Use Cases
+- `SELECT SUM(CASE WHEN col1 IS NULL THEN 1 ELSE 0 END)::FLOAT/COUNT(*) FROM t1`
+    * Determine % null in column
+- `SELECT COUNT(DISTINCT col1) FROM table;`
+    * nunique
+- `SELECT COUNT(DISTINCT col1) = COUNT(*) AS is_all_unique;`
+    * Return one value, True/False, if nunique = rowcount
+- `SELECT PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY col1) AS median;`
+    * Continuous values; also PERCENTILE_DISC (discrete values)
+    * This syntax is also used for MODE()
+- `SELECT c1, c2, COUNT(*) FROM t1 GROUP BY GROUPING SETS ((c1),(c2),(c1,c2));`
+    * Basically a UNION of the three columns
+### Extract, Transfer, Load
+#### Copy
+- `COPY (SELECT * FROM customers LIMIT 5) TO STDOUT WITH CSV HEADER;`
+- `COPY table1 TO...` (download), `COPY table1 FROM...` (upload)
+- `...TO STDOUT...`, `...TO 'filepath/file.csv'...`, `...FROM my_file.csv...`
+- `...WITH CSV...`, `...WITH BINARY...`, `...WITH FORMAT TEXT...`
+- `...WITH CSV DELIMITER ','...`, `...WITH CSV DELIMITER '|'...`
+- `...WITH CSV ... NULL 'is null'...`, `...WITH CSV ... NULL 'empty here'...`
+- `...QUOTE '"'...`, `...QUOTE '''...`
+- `...ESCAPE '\\'...`
+- `...ENCODING 'UTF8'...`
+- Try a CREATE VIEW then do `COPY view_table TO...`
+- More for COPY: https://www.postgresql.org/docs/current/sql-copy.html
+
+<!-- Needs work -->
+## SQL Typical
+### SQL Simple Records Query
+```
+show databases; 
+use database_name; 
+show tables; 
+describe table_name;
+select distinct                                    -- distinct: unique **rows**
+    date_col, 
+    col1 as Col1,                                  -- rename col1 to Col1
+    col2::INTEGER,                                 -- cast col2 as INTEGER col
+    col3::TEXT,                                    -- cast col3 as TEXT column
+IF(date_col > curdate(), True, False) as "Future"  -- new column with True/False
+case 
+    when year(date_col) like '19__' then '1900s'   -- if 19xx then "1900s"
+    when year(date_col) like '20%' then '2000s'    -- if 20... then "2000s"
+    else 'bad_input'                               -- otherwise "bad_input"
+    end as Century                                 -- end case, name column
+from table_name 
+join table_2 using(date_col)                       -- cleaner than ON sometimes
+where
+    (col2 between 10 and 20) and                   -- 10 <= x <= 20
+    (col2 not 15) and                              -- x != 15
+    (col3 in ('irene', 'layla')) and               -- y = "irene" or y = "layla"
+    (year(date_col) like binary '201_')            -- 2010, 201M, 201., 201#
+order by col2 asc, Col1 desc                       -- notice renamed Col1 here
+limit 100;                                         -- return max of 100 rows
+```
+```
+WITH d AS (SELECT * FROM t1 WHERE t1.a = 12)       -- create table "d" up front
+SELECT * 
+FROM t2 
+JOIN d.a = t2.a;
+```
+```
+SELECT
+    COALESCE(col1, "No Value!!!"),  -- Fill nulls with "No Value!!!"
+    NULLIF(col1, "wat"),            -- Null-out all "wat" values in col1
+    LEAST(100, col2),               -- Same as col2 <= 100
+    GREATEST(100, col2)             -- Same as col2 >= 100
+FROM t1;
+```
+### SQL Aggregation Query
+- `COUNT`, `MIN`, `MAX`, `RAND`
+- `SUM`, `AVG`, `ABS`, `LOG`, `POW(x, y)`, `ROUND(n, decimal_places)`, `SQRT(n)`
+```
+select SUM(x) + SUM(y) from table; -- sum x, sum y, then sum totals; nulls fine
+select SUM(x + y);                 -- rowwise sum; CAREFUL, NULL + 100 = NULL
+select MAX(x);
+select col1, AVG(col2) as average from table group by col1 having average > 100;
+SELECT x, MAX(y) FROM t GROUP BY x ORDER BY MAX(y); -- notice: ORDER BY MAX(y)
+SELECT a, b, MAX(c) FROM t GROUP BY a, b HAVING MAX(c) > 100 ORDER BY a, MAX(c);
+SELECT a, b, c FROM t AS f WHERE c > ( -- where c is higher than...
+    SELECT AVG(c) FROM t WHERE b = f.b -- ...average of c for each b category
+);
+```
+
+<!-- Polished -->
+## SQL Intermediate
+### SQL Subquery
+- Typically done with either an operator (`>`, `<`, `=`, etc), `IN`, or `EXISTS`
+    * Consider these your three options for subqueries
+```
+use employees;
+select concat(first_name, " ", last_name) as Name 
+from employees 
+where 
+    hire_date = (select hire_date from employees where emp_no = 101010) and
+	emp_no in (select emp_no from dept_emp where to_date > curdate()) and
+    last_name is not null;
+```
+```
+SELECT Name, CountryCode
+FROM City AS C
+WHERE EXISTS      -- Rows that match; use WHERE NOT EXISTS to find non-matches
+(
+    SELECT * 
+    FROM CountryLanguage
+    WHERE CountryCode = C.CountryCode   -- Outer table's cols available/selected
+        AND Percentage > 97
+);
+```
+### SQL Temp Table Creation
+```
+use employees;
+create temporary table germain_1457.employees_with_departments as
+select first_name, last_name, departments.dept_name
+from employees
+join dept_emp using(emp_no)
+join departments using(dept_no);
+```
+
+<!-- Needs work -->
+## SQL Management
+### SQL Data Types
+- DATE (YYYY-MM-DD), TIME (hh:mm:ss), DATETIME (YYYY-MM-DD hh:mm:ss), TIMESTAMP
+- TINYINT(255), SMALLINT(65_535), MEDIUMINT(16_777_215), 
+- INT/INTEGER(4_294_967_295), BIGINT(2e64 - 1)
+- DECIMAL(digits,decimalplaces), FLOAT (6.8e38), DOUBLE (1.8e308)
+- CHAR (255), VARCHAR (65_535)
+- BLOB, BINARY, VARBINARY, IMAGE (0101011101)
+- POLYGON, POINT, GEOMETRY (coordinate-related; POINT is a tuple (x,y))
+- XML, JSON (documents)
+- Any of the above column data types can have: NULL
+### Constraints
+- Either follows this syntax: `..., ColName INTEGER constraint_here, ...`
+- Or this syntax: `constraint_here (ColName)` / `constraint_here (C1, C2, ...)`
+- Or this syntax: `CONSTRAINT name_here AS constraint_here (ColName, ...)`
+- Primary key (unique, non-null): `PRIMARY KEY (c1)`
+    * See also: `c1 INTEGER PRIMARY KEY AUTO_INCREMENT` (ignore c1 on insert)
+- Foreign key (choose vals from pri key): `FOREIGN KEY (c1) REFERENCES t1 (c1)`
+- No duplicates: `UNIQUE (c1)`
+- Handle nulls: `c1 INTEGER NOT NULL` / `c1 INTEGER DEFAULT 42`
+- Positive/Negative: `SIGNED` (positive or negative), `UNSIGNED` (positive only)
+- Match condition: `CHECK (cond1)` / `CHECK (cond1, cond2)` / `CHECK (a > 100)`
+#### Referential Integrity Violation Constraints
+- Used for handling updates to a primary key being referenced by foreign key(s)
+    * EX: `... FOREIGN KEY c1 REFERENCES t1(c1) ON DELETE CASCADE` / `ON UPDATE`
+- Reject key changes: `RESTRICT` 
+- Allow key changes, set foreign keys' changed values to null: `SET NULL`
+- Allow key changes, set default for foreign keys' changed values: `SET DEFAULT`
+- Allow key changes, pass them on to foreign keys' changed values: `CASCADE`
+### Database Architecture Work
+- `CREATE DATABASE db_name;`
+- `CREATE TABLE Employee (ID INT, Name VARCHAR(60) NOT NULL, PRIMARY KEY (ID));`
+    * `DROP TABLE Employee` (if other table references Employee, this fails)
+- `ALTER TABLE Employee...` (specifically column-based changes)
+    * `... ADD ColumnName DataType;`
+    * `... CHANGE CurrentColumnName NewColumnName NewDataType;`
+    * `... DROP ColumnName;`
+- `CREATE INDEX index_name ON table (column)` / `... ON table (c1, c2, c3, ...)`
+- `CREATE VIEW viewtable AS SELECT ...`
+    * Views are convenient versions of raw tables and can protect sensitive info
+    * Restrict certain changes to view: `WITH CHECK OPTION (a > 0);`
+### Database Content Work
+- `INSERT INTO account VALUES (290, 'Ethan Carr', 5000);`
+- `INSERT INTO names VALUES (1, 'John'), (2, 'Joan'), ...;`
+- `UPDATE Account SET Balance = 4500 WHERE ID = 831;`
+- `DELETE FROM Account WHERE ID = 572;`
+- `TRUNCATE TABLE Account` (drop all rows and reset auto-increment)
+
 
 <!-- Polished -->
 ## PostgreSQL
+- A flavor of SQL
+- Often ran through pgAdmin (current version is pgAdmin 4)
+- Log in: `psql -h host_here -p password_here -d database_here -U username_here`
 ### PostgreSQL Setup for M1 Mac
 1. Install Homebrew
 2. `brew install postgresql@14`
@@ -1165,96 +1339,34 @@ with open('image.jpeg','wb') as f:
 14. `\dt` should show you a bunch of tables - DONE!
 15. `\q` to quit the server for now
 16. `psql -U postgres sqlda` for further logins
+### PostgreSQL via CMD
+- `\l` similar thing to "ls"
+- `\d` show tables in database
+- `\dt` similar thing to "\d"
+- `\q` quit out
+- `\copy` used with ETL copy instructions, ex: `\copy (SELECT * FROM table)...`
+- `pg_dump` to export a table from a database; `pg_dumpall` to export all tables
+    * Exports as SQL; not very useful...
+### PostgreSQL Things
+- `SELECT DISTINCT ON (col1) col1, col2, col3 FROM table ORDER BY col1;`
+- `SHOW`, `USE`, and `DESCRIBE` don't work
+- Call a stored procedure: `CALL procedure_name(10000, 429);`
+```
+CREATE OR REPLACE PROCEDURE procedure_name(IN val1 INT, IN val2 INT)
+    BEGIN
+        UPDATE col1
+        SET col1 = col1 + val1
+        WHERE col2 = val2;
 
+        INSERT INTO col3 VALUES (TRUE, val1, val2);
 
-- `SELECT Name, CountryCode FROM City AS C WHERE EXISTS (SELECT * FROM CountryLanguage WHERE  CountryCode = C.CountryCode AND Percentage > 97);` -- "EXISTS" says pass back all EXISTING rows
-    * Specifically for this query, pass back all country names/codes related to a country having at least one language >97% shared (subquery looks for country-atleastone-over97%: EXISTS?)
-    * Opposite is `NOT EXISTS` and only passes back rows that did not return True for the check
+        COMMIT;
 
-<!-- Needs work -->
-## SQL Typical
-### SQL Simple Records Query
+        EXCEPTION WHEN OTHERS THEN
+        ROLLBACK;
+    END;
+$ LANGUAGE plpgsql;
 ```
-show databases; use database_name; show tables; describe table_name;
-select distinct date_col, col1 as Col1, col2, col3, 
-IF(date_col > curdate(), True, False) as "Future"
-case 
-    when year(date_col) like '19__' then '1900s' 
-    when year(date_col) like '20%' then '2000s' 
-    else 'bad_input' 
-    end as Century
-from table_name 
-join table_2 using(date_col)
-where (col2 between 10 and 20) and (col2 not 15) and (col3 in ('irene', 'layla')) and (year(date_col) like binary '201_')
-order by col2 asc, Col1 desc
-limit 100;
-```
-### SQL Aggregation Query
-- `COUNT`, `MIN`, `MAX`, `SUM`, `AVG`, `ABS`, `LOG`, `POW(x, y)`, `RAND`, `ROUND(n, d)`, `SQRT(n)` and more!!
-```
-select SUM(x) + SUM(y) from table; -- sum each column, then sum totals; ignores NULL just fine
-select SUM(x + y);                 -- rowwise sum; **BE CAREFUL** because in this way, NULL + 100 = NULL
-select MAX(x);
-select col1, AVG(col2) as average from table group by col1 having average >= 100;
-SELECT type, MAX(price) FROM auto GROUP BY type ORDER BY MAX(price); -- notice that the ORDER BY references MAX(price); "price" was not selected
-SELECT a, b, MAX(c) FROM t GROUP BY a, b HAVING MAX(c) > 1000 ORDER BY a, MAX(c) -- HAVING comes **before** ORDER BY
-SELECT a, b, c FROM t AS f WHERE c > (SELECT AVG(c) FROM t WHERE b = f.b); -- higher than category's average (categories are in 'b')
-```
-
-<!-- Polished -->
-## SQL Intermediate
-### SQL Subquery
-- Typically done with either an operator (`>`, `<`, `=`, etc) or with `IN`
-    * Consider these your two options for subqueries
-```
-use employees;
-select concat(first_name, " ", last_name) as Name 
-from employees 
-where 
-    hire_date = (select hire_date from employees where emp_no = 101010) 
-	and
-	emp_no in (select emp_no from dept_emp where to_date > curdate())
-```
-### SQL Temp Table Creation
-```
-use employees;
-create temporary table germain_1457.employees_with_departments as
-select first_name, last_name, departments.dept_name
-from employees
-join dept_emp using(emp_no)
-join departments using(dept_no);
-```
-
-<!-- Needs work -->
-## SQL Management
-- `CREATE DATABASE db_name;`
-- `CREATE TABLE Employee (ID INT, Name VARCHAR(60) NOT NULL, BirthDate DATE DEFAULT '2000-01-01', Salary DECIMAL(7,2), PRIMARY KEY (ID));`
-    * `IndexCol AUTO_INCREMENT` --- `Column VARCHAR(50) UNIQUE` --- `Colname VARCHAR(100) DEFAULT "default value here"` --- `HireDate DATE CHECK (HireDate > BirthDate)`
-    * `UNIQUE (Col1, Col2)` --- `CHECK (cond1 AND cond2)` --- `CONSTRAINT UniqueNameHiredate UNIQUE (Name, HireDate)`
-    * `DROP TABLE Employee` (Note: you can't drop a table having a primary key that is referenced by another table's foreign key without dropping the other table first)
-- `ALTER TABLE Employee ADD ColumnName DataType;` --- `... CHANGE CurrentColumnName NewColumnName NewDataType;` --- `... DROP ColumnName;`
-    * Don't specify "ADD COLUMN ColName", just use "ADD ColName", because ALTER TABLE is specifically used for **column** add / change / drop
-- `CREATE VIEW viewtable AS SELECT ...` (new table from one or more base tables; avoid personal info, focus on relevant stuff, etc)
-    * Don't use this for database changes
-    * Can specify `WITH CHECK OPTION;` at end to restrict changes to a view table that don't fit the WHERE clause
-- `CREATE INDEX`
-- `INSERT INTO account VALUES (290, 'Ethan Carr', 5000);`
-    * `INSERT INTO movie VALUES (1, 'Rogue One: A Star Wars Story', '2016-12-10'), (2, 'Hidden Figures', '2017-01-06'), ...;`
-- `UPDATE Account SET Balance = 4500 WHERE ID = 831;`
-- `DELETE FROM Account WHERE ID = 572;` --- `TRUNCATE TABLE Account` (drop all rows and reset auto-increment)
-- `SELECT Name FROM Compensation WHERE BirthDate IS NULL;` (don't use `BirthDate = NULL`, won't work)
-- `RESTRICT` (reject), `SET NULL`, `SET DEFAULT`, `CASCADE` (accept and also change related) for handling "referential integrity violations"
-    * EX: `... FOREIGN KEY (ManagerID) REFERENCES Employee(ID) ON DELETE CASCADE ON UPDATE SET NULL;`
-### SQL Data Types
-- SIGNED (positive or negative), UNSIGNED (positive only), ex: `CREATE TABLE Product(ID INTEGER UNSIGNED, Name VARCHAR(40), ...);`
-- DATE (YYYY-MM-DD), TIME (hh:mm:ss), DATETIME (YYYY-MM-DD hh:mm:ss), TIMESTAMP (times)
-- TINYINT (255), SMALLINT (65_535), MEDIUMINT (16_777_215), INT/INTEGER (4_294_967_295), BIGINT (2e64 - 1)
-- DECIMAL(digits,decimalplaces), FLOAT (6.8e38), DOUBLE (1.8e308)
-- CHAR (255), VARCHAR (65_535)
-- BLOB, BINARY, VARBINARY, IMAGE (0101011101)
-- POLYGON, POINT, GEOMETRY (coordinate-related; POINT is a tuple (x,y))
-- XML, JSON (documents)
-- NULL in any column (can enforce no-null in a column by setting it to NOT NULL, ex: `ColName INTEGER NOT NULL`)
 
 [[Return to Top]](#table-of-contents)
 
