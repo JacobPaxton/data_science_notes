@@ -42,111 +42,115 @@ IV.   [Databases                     ](#databases)
 3.    [Database Operations           ](#database-operations)
 4.    [Relational Databases          ](#relational-databases)
 ---
-V.    [git & Terminal                ](#git--terminal)
+V.    [Environment Management        ](#environment-management)
+1.    [Package Managers              ](#package-managers)
+2.    [Full Environment Setup        ](#full-environment-setup)
+---
+VI.   [git & Terminal                ](#git--terminal)
 1.    [Terminal                      ](#terminal)
 2.    [git Basics                    ](#git-basics)
 3.    [git for Solo Dev Work         ](#git-for-solo-work)
 4.    [git for Tean Dev Work         ](#git-for-team-dev-work)
 ---
-VI.   [Regular Expressions (REGEX)   ](#regular-expressions-(regex))
+VII.  [Regular Expressions (REGEX)   ](#regular-expressions-(regex))
 1.    [REGEX Basics                  ](#regex-basics)
 2.    [REGEX Examples                ](#regex-examples)
 ---
-VII.  [APIs & Scraping               ](#apis--scraping)
+VIII. [APIs & Scraping               ](#apis--scraping)
 1.    [APIs                          ](#apis)
 2.    [Web Scraping                  ](#web-scraping)
 3.    [Requests & Beautiful Soup     ](#requests--beautiful-soup)
 4.    [Selenium                      ](#selenium)
 ---
-VIII. [SQL                           ](#sql)
+IX.   [SQL                           ](#sql)
 1.    [SQL Basics                    ](#sql-basics)
 2.    [PostgreSQL                    ](#postgresql)
 3.    [SQL Typical                   ](#sql-typical)
 4.    [SQL Intermediate              ](#sql-intermediate)
 5.    [SQL Management                ](#sql-management)
 ---
-IX.   [Apache Spark                  ](#apache-spark)
+X.    [Apache Spark                  ](#apache-spark)
 1.    [Spark Wrangling               ](#spark-wrangling)
 2.    [Spark Machine Learning        ](#spark-machine-learning)
 ---
-X.    [Python                        ](#python)
+XI.   [Python                        ](#python)
 1.    [Python Basics                 ](#python-basics)
 2.    [Python Specifics              ](#python-specifics)
 ---
-XI.   [NumPy and Pandas              ](#numpy-pandas)
+XII.  [NumPy and Pandas              ](#numpy-pandas)
 1.    [NumPy                         ](#numpy)
 2.    [Pandas                        ](#pandas)
 ---
-XII.  [Matplotlib & Seaborn          ](#matplotlib-&-seaborn)
+XIII. [Matplotlib & Seaborn          ](#matplotlib-&-seaborn)
 1.    [Visualization in Python       ](#overall-notes-for-python-vizualization)
 2.    [Matplotlib                    ](#matplotlib)
 3.    [Seaborn                       ](#seaborn)
 ---
-XIII. [Exploration                   ](#exploration)
+XIV.  [Exploration                   ](#exploration)
 1.    [Exploration Prep              ](#exploration-prep)
 2.    [Exploration Visualization     ](#exploration-visualization)
 3.    [Feature Engineering           ](#feature-engineering)
 4.    [Feature Selection             ](#performance-based-feature-selection)
 ---
-XIV.  [Algorithmic Clustering        ](#algorithmic-clustering)
+XV.   [Algorithmic Clustering        ](#algorithmic-clustering)
 1.    [Cluster Assignment            ](#cluster-assignment)
 2.    [K-Means Clustering            ](#k-means-clustering)
 3.    [Hierarchical Clustering       ](#hierarchical-clustering)
 4.    [DBSCAN                        ](#dbscan)
 ---
-XV.   [Statistics                    ](#statistics)
+XVI.  [Statistics                    ](#statistics)
 1.    [Metrics                       ](#metrics)
 2.    [Hypothesis Testing            ](#hypothesis-testing)
 3.    [Probability                   ](#probability)
 ---
-XVI.  [Analytic Software             ](#analytic-software)
+XVII. [Analytic Software             ](#analytic-software)
 1.    [Jupyter Notebook              ](#jupyter-notebook)
 2.    [Excel & Google Sheets         ](#excel-&-google-sheets)
 3.    [Power BI                      ](#power-bi)
 4.    [Visual Studio Code            ](#vs-code)
 5.    [Tableau Public                ](#tableau-public)
 ---
-XVII. [Model Preparation             ](#model-preparation)
+XVIII. [Model Preparation            ](#model-preparation)
 1.    [Encoding                      ](#encoding)
 2.    [Scaling                       ](#scaling)
 3.    [Resampling                    ](#resampling)
 ---
-XVIII.[Classification                ](#classification)
+XIX.  [Classification                ](#classification)
 1.    [Classification Overview       ](#classification-overview)
 2.    [Classification Example        ](#classification-example)
 ---
-XIX.  [Regression                    ](#regression)
+XX.   [Regression                    ](#regression)
 1.    [Regression Overview           ](#regression-overview)
 2.    [Regression Example            ](#regression-example)
 ---
-XX.   [Time-Series                   ](#time-series)
+XXI.  [Time-Series                   ](#time-series)
 1.    [Time-Series Overview          ](#time-series-overview)
 2.    [Time-Series Example           ](#time-series-example)
 ---
-XXI.  [Natural Language Processing   ](#natural-language-processing-(NLP))
+XXII. [Natural Language Processing   ](#natural-language-processing-(NLP))
 1.    [NLP Overview                  ](#nlp-overview)
 2.    [NLP Example                   ](#nlp-example)
 ---
-XXII. [Anomaly Detection             ](#anomaly-detection)
+XXIII. [Anomaly Detection            ](#anomaly-detection)
 1.    [Anomaly Detection Strategy    ](#anomaly-detection-strategy)
 2.    [Anomaly Detection Syntax      ](#anomaly-detection-syntax)
 3.    [Anomaly Detection Examples    ](#anomaly-detection-examples)
 ---
-XXIII.[Deep Learning                 ](#deep-learning)
+XXIV. [Deep Learning                 ](#deep-learning)
 1.    [Deep Learning Basics          ](#deep-learning-basics)
 ---
-XXIV. [Computer Vision               ](#computer-vision)
+XXV.  [Computer Vision               ](#computer-vision)
 1.    [Computer Vision Basics        ](#computer-vision-basics)
 ---
-XXV.  [Cross-Validation              ](#cross-validation)
+XXVI. [Cross-Validation              ](#cross-validation)
 1.    [Cross-Validation Basics       ](#cross-validation-basics)
 ---
-XXVI. [Deployment                    ](#deployment)
+XXVII. [Deployment                   ](#deployment)
 1.    [Docker                        ](#docker)
 2.    [Flask                         ](#flask)
 3.    [Apache Kafka                  ](#apache-kafka)
 ---
-XXVII.[Stakeholders                  ](#stakeholders)
+XXVIII. [Stakeholders                ](#stakeholders)
 1.    [Storytelling                  ](#storytelling)
 2.    [Systems Development Lifecycle ](#systems-development-lifecycle-sdlc)
 
@@ -665,6 +669,123 @@ XXVII.[Stakeholders                  ](#stakeholders)
 
 [[Return to Top]](#table-of-contents)
 
+
+
+
+
+
+<!-- 
+#######                                                                 
+#       #    # #    # # #####   ####  #    # #    # ###### #    # ##### 
+#       ##   # #    # # #    # #    # ##   # ##  ## #      ##   #   #   
+#####   # #  # #    # # #    # #    # # #  # # ## # #####  # #  #   #   
+#       #  # # #    # # #####  #    # #  # # #    # #      #  # #   #   
+#       #   ##  #  #  # #   #  #    # #   ## #    # #      #   ##   #   
+####### #    #   ##   # #    #  ####  #    # #    # ###### #    #   #   
+                                                                        
+#     #                                                               
+##   ##   ##   #    #   ##    ####  ###### #    # ###### #    # ##### 
+# # # #  #  #  ##   #  #  #  #    # #      ##  ## #      ##   #   #   
+#  #  # #    # # #  # #    # #      #####  # ## # #####  # #  #   #   
+#     # ###### #  # # ###### #  ### #      #    # #      #  # #   #   
+#     # #    # #   ## #    # #    # #      #    # #      #   ##   #   
+#     # #    # #    # #    #  ####  ###### #    # ###### #    #   #   
+-->
+
+# Environment Management
+
+## Package Managers
+- Package managers are vital for maintaining multiple projects' packages
+- Solves the problem where a project requires a different package version
+- Many flavors, but all boil down to creating a new environment for a project
+### Pip
+- Python's main package manager
+- Installs when you install Python
+- (Just about) all Python libraries can be installed using pip
+### Anaconda
+- The premier Data Science package manager
+- Nearly all data science libraries are available via the conda-forge channel
+- I personally prefer Anaconda; see below for how I set up on Windows
+
+## Full Environment Setup
+1. Download and install Anaconda: https://www.anaconda.com/products/distribution
+    * Defaults are fine
+1. Add Anaconda to Path variable
+    * Control Panel > System and Security > System > Advanced system settings 
+    * Environment Variables > Path > Edit
+    * Add: C:\Users\Jake\Anaconda3\Scripts
+    * Add: C:\Users\Jake\Anaconda3
+    * Add: C:\Users\Jake\Anaconda3\Library\bin
+1. Undo Window's stupid default aliasing
+    * Start > Manage App Execution Aliases > Uncheck python.exe and python3.exe
+1. Open CMD (we will be setting up using Windows' default terminal)
+1. Enter: `conda config --append channels conda-forge` (add main package source)
+1. Create your Conda environment and install basic data science packages into it
+    * Basic: `conda create -n env1 numpy pandas matplotlib seaborn scikit-learn`
+    * `conda install --name env1 statsmodels scipy imbalanced-learn jupyter`
+1. Enable Windows CMD as a front for Conda: `conda init cmd.exe`
+1. Activate your environment: `conda activate env1`
+1. Now that your env is active, choose the additional packages you need
+    * Webscraping: `conda install bs4 selenium`
+    * Interactivity: `conda install dataclasses plotly dash flask`
+    * Big data: `conda install dask pyspark`
+    * Natural Language Processing: `conda install nltk`
+    * Network data: `conda install ipcalc nfstream dash dash_cytoscape`
+1. Install PyTorch if you want
+    * `conda install pytorch torchvision torchaudio cudatoolkit=11.3 -c pytorch`
+    * `conda install astunparse numpy ninja pyyaml setuptools cmake cffi`
+    * `conda install typing_extensions future six requests dataclasses`
+1. Install Keras and Tensorflow if you want
+    * `conda install -c conda-forge keras`
+    * `conda install -c conda-forge tensorflow`
+1. Test package installation
+    * Open CMD and enter `jupyter notebook`
+    * Start up a new Python3 notebook
+    * Try to import the packages you've installed and test them
+1. Install VS Code (my preferred code editor beside Jupyter)
+    * Defaults are fine; I recommend also "Open with Code" for context menus
+    * Open a terminal anywhere and type: `code test.md`
+        * This should open VS Code; try a second time if first didn't work
+        * If it worked, great! This is my preferred way to create files
+    * Install Python extension to VS Code (HIGHLY recommended)
+    * 80/120 char width code lines: Settings -> editor.rulers -> set to [80,120]
+1. Install Git (I do defaults except the following, my preferred settings)
+    * I actually edit the registry to launch CMD on shift+rightclick context...
+        * If you agree, disable Git Bash and Git GUI in context menus...
+        * If you don't like registry editing, keep Git Bash (remove Git GUI)
+    * Add Git Bash profile to Windows Terminal (for CMD!...)
+    * Register VS Code as Git's default editor
+1. Launch CMD (or Git Bash) and set your Git settings
+    * Add your name: `git config --global user.name "Joe Schmoe"`
+    * Add your email: `git config --global user.email "joeschmoe@gmail.com`
+1. Done!!! For now...
+### Registry CMD Launch
+Windows + R > regedit > Computer\HKEY_CLASSES_ROOT\Directory\shell\cmd > Right click on `Directory\Background\shell\cmd` folder on left nav pane > Permissions > Advanced
+- > Owner Change > Type username (Jake) > Check Names > Ok > Replace owner on subcontainers and objects > Apply 
+- > Add > Select a principal > Type username (Jake) > Check Names > Ok > Check "Full Control" > Ok > Replace all child.. > Ok > Yes > Ok
+- > Right click on HideBasedOnVelocityId (changing reg values now) > Rename > rename to ShowBasedOnVelocityId
+- > Task Manager (ctrl+shift+escape) > More Details > select Windows Explorer > Restart
+- > Open any folder > Shift + right click > If "open Powershell window here" displays, then success!
+- > Right click on `Directory\Background\shell\cmd` folder on left nav pane again > Permissions > Advanced > Select user in window (Jake) > Check "Replace all child"... > Apply
+- > Owner Change > type trusted installer service NT SERVICE\TrustedInstaller > Check Names > Ok > check "Replace owner on subcontainers..." > Ok > Ok > Close Regedit
+### Package Manager Work
+- Using Anaconda as the package manager... any terminal is fine generally
+- See list of available environments: `conda env list`
+- Create new environment: `conda create -n env_name`
+- Activate environment: `conda activate env_name`
+- Deactivate an active environment: `conda deactivate`
+- Delete an environment: `conda env remove -n env_name`
+- Check currently-installed packages: `conda list`
+- Search for available versions of a package: `conda search package_name`
+- Install a package with active environment: `conda install package_name`
+    * Specify a package's version on install: `conda install package_name=1.0.0`
+- Install package to inactive env: `conda install --name env_name package_name`
+- Update a package: `conda update package_name`
+- Remove a package: `conda remove package_name`
+- Install an env-contained pip instance: `conda install pip` -> `pip install ..`
+
+
+[[Return to Top]](#table-of-contents)
 
 
 
