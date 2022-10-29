@@ -1,23 +1,32 @@
 # Front-End Notes
 
 <!-- 
-#######                                                  #####                                                 
-   #      ##   #####  #      ######     ####  ######    #     #  ####  #    # ##### ###### #    # #####  ####  
-   #     #  #  #    # #      #         #    # #         #       #    # ##   #   #   #      ##   #   #   #      
-   #    #    # #####  #      #####     #    # #####     #       #    # # #  #   #   #####  # #  #   #    ####  
-   #    ###### #    # #      #         #    # #         #       #    # #  # #   #   #      #  # #   #        # 
-   #    #    # #    # #      #         #    # #         #     # #    # #   ##   #   #      #   ##   #   #    # 
-   #    #    # #####  ###### ######     ####  #          #####   ####  #    #   #   ###### #    #   #    ####  
+#######                                              
+   #      ##   #####  #      ######     ####  ###### 
+   #     #  #  #    # #      #         #    # #      
+   #    #    # #####  #      #####     #    # #####  
+   #    ###### #    # #      #         #    # #      
+   #    #    # #    # #      #         #    # #      
+   #    #    # #####  ###### ######     ####  #      
+                                                     
+ #####                                                 
+#     #  ####  #    # ##### ###### #    # #####  ####  
+#       #    # ##   #   #   #      ##   #   #   #      
+#       #    # # #  #   #   #####  # #  #   #    ####  
+#       #    # #  # #   #   #      #  # #   #        # 
+#     # #    # #   ##   #   #      #   ##   #   #    # 
+ #####   ####  #    #   #   ###### #    #   #    ####  
 -->
 
 # Table of Contents
 
 I.    [The Internet                  ](#the-internet)
-1.    [Internet Basics               ](#internet-basics)
+1.    [History of The Internet       ](#history-of-the-internet)
 
 II.   [HTML                          ](#html)
 1.    [HTML Basics                   ](#html-basics)
-2.    [HTML Examples                 ](#html-examples)
+2.    [HTML Specifics                ](#html-specifics)
+3.    [HTML Examples                 ](#html-examples)
 
 III.  [CSS                           ](#css)
 1.    [CSS Basics                    ](#css-basics)
@@ -26,24 +35,22 @@ III.  [CSS                           ](#css)
 IV.   [XML                           ](#xml)
 1.    [XML Basics                    ](#xml-basics)
 
-V.    [JavaScript                    ](#javascript)
+IV.   [JavaScript                    ](#javascript)
 1.    [JavaScript Basics             ](#javascript-basics)
 2.    [JavaScript Examples           ](#javascript-examples)
 
-VI.   [Bootstrap                     ](#bootstrap)
+V.    [Bootstrap                     ](#bootstrap)
 1.    [Bootstrap 5 Basics            ](#bootstrap-5-basics)
 2.    [Bootstrap 5 Example           ](#bootstrap-5)
 
-VII.  [jQuery                        ](#jquery)
+VI.   [jQuery                        ](#jquery)
 1.    [jQuery Basics                 ](#jquery-basics)
 
-VIII. [D3.js                         ](#d3.js)
+VII.  [D3.js                         ](#d3.js)
 1.    [D3 Basics                     ](#d3-basics)
-2.    [D3 Examples                   ](#d3-examples)
 
-IX.   [PHP                           ](#php)
+VIII. [PHP                           ](#php)
 1.    [PHP Basics                    ](#php-basics)
-2.    [PHP Examples                  ](#php-examples)
 
 <br>
 
@@ -92,6 +99,7 @@ IX.   [PHP                           ](#php)
     * `watch`: web page location
     * `?v=coolvideo&t=1m51s`: query string
 
+
 [[Return to Top]](#table-of-contents)
 
 
@@ -114,80 +122,171 @@ IX.   [PHP                           ](#php)
 <!-- Polished -->
 ## HTML Basics
 - Hypertext Markup Language; the foundation of web design
-- Specifically elements, tags, and attributes
-    - Element: start-tag + content + end-tag
-    - Tags: the start and end of HTML elements
-    - Attributes: additional information about element, located in start-tag
-- `<head> </head>` element contains these options: title style meta link script base
-    - meta: `charset`, `name="keywords" content="..."`, `name="description", author, viewport`, `http-equiv="refresh" content="30"`
-- When there's no end-tag, it's considered an empty element (ex: line break)
-- Attributes values are wrapped with double-quotes except when double-quotes are used inside the value
-- Wrapping an img tag like this `<a href="site"><img ...></a>` makes the image into a clickable link to site
-- Add small icon to browser tab: in head, `<link rel="icon" type="image/x-icon" href="filepath">`
+- The structure of web pages; specifically elements, tags, and attributes
+    * Element: start-tag + content + end-tag
+    * Tags: the start and end of HTML elements
+    * Attributes: additional information about element, located in start-tag
+- The HTML "tree" of tags is called the Document Object Model
+- Use CSS to stylize the structure and Javascript to animate it
 - Semantic HTML (the point of HTML): page structure, ex: headers, paragraphs
     * Presentational HTML (font, bold, etc) should not be used; use CSS instead
+- Excellent HTML/CSS debugger: **Firebug** (Firefox extension)
+### General HTML Usage
 - Terminate a tag without a separate tag: `<a/>` instead of `<a></a>`
 - Consider using an HTML editor to help spot errors; HTML will display w/ errors
+- All tags should have termination, ex: `<title>Cool Page</title>`, `<meta />`
+- Tags can have attributes, ex: `<div class="c1">`, `<div class="c1 c2 c3">`
+- Comments: `<!-- Comment here, this won't displayed but user can still see -->`
+- Special characters: for `<`, use this instead if you need to show `<`: `&lt;`
+    * Other special characters: `>`:`&gt;` || `&`:`&amp;` || ` `:`&nbsp;`
+    * More: `euro`:`&eur;` || `copyright`:`&copy;` || `trademark`:`&reg;`
+    * More: `&eacute;`, `&egrave;`, `&ecirc;` (accented "e")
 ### HTML Block-Level Elements
-- Always starts on a new line + top-bottom margin; always extends fully left-right in view
-- Most common: p div h1-h6 li ul ol table dl dt form
-- Others: address article aside blockquote canvas dd fieldset figcaption figure footer header hr main nav noscript pre section tfoot video
-- div: used to contain other HTML elements and style them, often takes: style, class, id
+- Always starts on a new line + top-bottom margin
+- Always extends fully left-right in view
+- Most common: `p` `div` `h1`-`h6` `li` `ul` `ol` `table` `dl` `dt` `form`
+- Others: `address` `article` `aside` `blockquote` `canvas` `dd` `fieldset`
+- More: `figcaption` `figure` `footer` `header` `hr` `main` `nav` `noscript`
+- Even more: `pre` `section` `tfoot` `video`
 ### HTML Inline Elements
-- Does not start on a new line; takes up the minimum amount of room
-- *Cannot contain a block-level element*
-- Most common: a br button code img input label script select span textarea
-- Others: abbr acronym b bdo big cite dfn em i iframe kbd map object output q samp small strong sub sup time tt var
-- span: used to style portions of text. often takes: style, class, id
-- select: dropdown menu, can use `size="3"` to show 3 options, can choose multiple with `<select ... multiple>`
-    - All selection things use: `<option value="thing_to_select">` with no closing tag
-    - To select multiple options in pure HTML, hold down Ctrl or Command
-- datalist: attached to the value in: `<input list ...>`, write in box to filter options down
-- output: calculations from inputs, use: `<output name="outputthing" for="a b"></output>` to run `id="a"` `id="b"`
-- iframe: embed a webpage inside a webpage, ex: `<iframe src="url" title="sub_page_title"></iframe>`
-#### Input Element
-- Options: button checkbox color date datetime-local email file hidden image month number 
-- More: password radio range reset search submit tel text time url week
-- time or date or month or week: nice selection box for time or date, can set attributes for min and max
-- file: select file for upload, can use `multiple` in element to allow multi-file upload
-- hidden: pass information to `<submit>` that isn't visible to user, ex: customer ID
-- number: same as `<text>` but only numbers are allowed
-- range: slide bar that doesn't show value, ex: volume slider
-    - use `<input type="range" step="10">` to add 10 ticks to range bar (default range is 0-100), slider can only tick onto the steps
-- tel: telephone numbers, must set pattern ex: `pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}"`
-- `<input list="name_of_list_1234"><datalist id="name_of_list_1234">`
-    - `<datalist> </datalist>` contains option elements like: `<option value="the_option">`
-### HTML Attributes
-- class: group together *any* HTML elements for common styling/javascript, ex: `class="city"` or `<span class="note city">`
-    - `.city { CSS_here }` --- `.note { CSS_here }`
-    - Javascript: `var x = document.getElementsByClassName("city");`
-- id: unique value that is not shared anywhere else, uses `#` instead of `.` in styling, Javascript uses HTML id often
-    - ex: `#specificElement { CSS_here }` then in Javascript: `document.getElementById("specificElement");`
-    - can jump to specific element, ex: `<a href="#specificElement">` or `<href="page.html#specificElement">`
-- text size: set box width for an input using text, ex: `<input type="text" size="50">` (default is 20)
-    - `maxlength` specifies max number of enter-able characters
-    - `pattern` uses REGEX to limit input, ex: `pattern="[A-Za-z]{3}"`
-    - `placeholder` is background hint on what to input in field, ex: `placeholder="123-45-678"`
-    - 'required' attribute prevents submission until field is filled
-    - 'autofocus' attribute puts cursor in the input field when HTML is loaded
-- img src: file path, includes the file name, ex: `<img src="/static/imgs/image.jpg">`
-- img alt: text to display if `src` doesn't resolve
-- (tag) style: add style to element like color, font, size, and more
-    - `<h1 style="font-size:60px;">`
-    - the above style value is CSS, always "property:value" format
-- (tag) title: display the value of title as a tooltip when hovering over element with mouse
-- a href: hyperlinks, use `target="_blank"` for new-tab open, `"_parent"` to move up in directory, `"_top"` for focus
-    - Click to open email client: `<a href="mailto:email@site.com">text</a>`
-    - Add `title="link title goes here"` to give tooltip text on link hover
-    - Use `href="#uniqueidthing"` to jump to a specific id attribute on the page, to jump to other page: `page.html#id`
-### Empty HTML Tags
-- `<br>`: line break
-- `<hr>`: horizontal line
+- Does not start on a new line
+- Takes up the minimum amount of room
+- *Cannot contain a block-level element* (but can contain other inline elements)
+- Most common: `a` `br` `button` `code` `img` `input` `label` `script` `select`
+- More: `span` `textarea` `abbr` `acronym` `b` `bdo` `big` `cite` `dfn` `em` `i` 
+- Even more: `iframe` `kbd` `map` `object` `output` `q` `samp` `small` `strong`
+- Even more: `sub` `sup` `time` `tt` `var`
+### HTML Form Elements
+- Surrounded by `<form>` (block-level element)
+- Most common: `button` `checkbox` `color` `date` `datetime-local` `email` 
+- More: `file` `hidden` `image` `month` `number` `password` `radio` `range` 
+- More: `reset` `search` `submit` `tel` `text` `time` `url` `week`
 ### Jinja
 - `{% block page_content %}` and more of these python-work-in-HTML is from Jinja
 
 <!-- Polished -->
+## HTML Specifics
+- `<!DOCTYPE html>`: Document type declaration, required; "html" indicates HTML5
+- `<html>`: The element that encompases the whole document (DOCTYPE precedes it)
+    * Attribute: `lang="en"`
+### General Attributes
+- `id`: Tag ID; unique, important for many things including Javascript and CSS
+    - Reference it in CSS: `#specificElement { CSS_here }` 
+    * Reference it in Javascript: `document.getElementById("specificElement");`
+    * Jump page to it: `<a href="#specificElement">`
+    * Jump page to it (another way): `<href="page.html#specificElement">`
+- `name`: Tag name; important for many things, especially Javascript and CSS
+- `class`: Tag class; important for many things, especially Javascript and CSS
+    * Reference it: "city": `.city { CSS_here }` || "note" `.note { CSS_here }`
+    * Reference it in JS: `var x = document.getElementsByClassName("city");`
+- `href`: Link; can link to URL, site files, or other tags via "name" attribute
+    * URL: `href="google.com"`, site files: `href="coolpages/index.html"`
+    * Tag reference ex: `<a name="top"/>` -> `<a href="#top">Back to top</a>`
+- `target`: Perform a movement action, ex: open a new tab
+    * Use: `"_blank"` (new tab), `"_self"`, `"_top"`, `"_parent"` (up in dir)
+- `src`: Location of the file (similar to href), ex: `src="images/mountain.jpg"`
+- `style`: Add CSS inline for an element, ex: `style="font-size:60px;"`
+    * Always use "property:value" format
+### Head
+- `<head>`: Page header information (as opposed to body); not displayed to user
+    * Tags: title style meta link script base
+- `<title>`: Page title; browsers use these to name browser tabs
+- `<style>`: Raw CSS to apply to the page (internal)
+    * CSS file import: `<link rel="stylesheet" href="filepath_here/styles.css">`
+- `<meta>`: Page metadata
+    * Attribute: `charset="utf-8"`
+    * `name="keywords" content="..."`
+    * `name="description", author, viewport`
+    * `http-equiv="refresh" content="30"`
+- `<link>`: Link to something
+    * Add company logo: `<link rel="icon" type="image/x-icon" href="filepath">`
+- `<script>`: Javascript
+- `<base>`: Not sure...
+### Body
+- `<body>`: Page content (as opposed to head); this is what the user sees
+- `<div>`: Block; rectangular section, probably the most important element
+    * Used for containing other elements
+- `<h1>`: Page headers; there are 6 options (h1, h2, h3, h4, h5, h6)
+- `<p>`: Paragraphs; holds text blocks (browsers add top/bottom margins for it)
+- `<pre>`: Exastly as-is block; nice for code block formatting (think: indents)
+- `<code>`: Code block; this sits inside another element like `<p>`
+- `<a>`: Anchor tag; used for links, ex: `<a>Click here!</a>`
+    * FTP, mailto, local files, page anchors, web links
+    * Add `title` attribute to display something when link is hovered-over
+- `<img>`: Image; use CSS to set height/width of image (default is full size)
+    * Always ended by shorthand `<img src="bg.jpg" alt="bg" />`
+    * Make it into a clickable link by surrounding it with `<a>`
+    * Attribute: `alt="image didn't load :("`, text to display as placeholder
+- `<iframe>`: embed a webpage inside a webpage
+    * EX: `<iframe src="url" title="sub_page_title"></iframe>`
+- `<dl>`: Data list; contains `<dt>` (data term) and `<dd>` (data definition)
+    * `<dl> <dt>1</dt><dd>First Item</dd> <dt>2</dt><dd>Second Item</dd> </dl>`
+- `<ul>`: Unordered list; usually bulletpoints
+- `<ol>`: Ordered list; usually numbered points (like instructions)
+- `<li>`: List element; contains the text, is surrounded by `<ul>`,`<ol>`
+- `<span>`: Surround text to allow styling (has no other effect)
+- `<br>`: Line break; HTML ignores non-specific whitespace
+- `<hr>`: Horizontal line
+- `<strong>`: Emphasize a portion of text; usually means making text bold
+- `<button>`: Perform actions, ex: `<button type="button" onclick=[javascript]>`
+### Forms
+- `<form>`: Submission form; wraps submission fields
+    * Attribute: `action` specifies the script file to process the form
+    * Attribute: `method` specifies "get" or "post" for what you'd expect
+        * "get" adjusts the URL: `<input...name="v1">` -> `script.php?v1="hi"`
+        * "post" sends data securely; use "get" for bookmark-able inputs
+    * Should always have an `<input>` tag with "submit" type
+    * Can have an `<input>` tag with "reset" type
+- `<label>`: Input labels; surrounds an input area or refers to it using `for`
+    * `<label for="title">Title</label>` -> `<input type="text" id="title" />`
+- `<input>`: Input section; use `type="text"` to use a text box
+    * Types: text, hidden, radio, checkbox, password, button, submit, file
+    * Assign a name attribute! This name will be the variable used by backend
+    * Use `value` attribute to set a default input; checkboxes use `checked`
+    * Gray-out options using the `readonly` attribute
+- `<textarea>`: Larger text box than "text", set dimensions using `row`, `cols`
+- `<select>`: Dropdown list, used with `<option value="c1">Pickme!</option>`
+    * Pseudocode: SELECT OPTION1 OPTION2 OPTION3 /SELECT
+    * Can specify `disabled` attribute for options that the user can't select
+    * Can specify `selected` attribute to preselect a default option
+    * Can specify `multiple` attribute to allow multi-choice selecton
+        * In pure HTML, need to hold Shift or Ctrl to select multiple; USE CSS!
+- `<datalist> </datalist>` contains options like: `<option value="the_option">`
+#### Form Selection/Input Options
+- "text": Text box; use `size` attribute to set box size
+    * `maxlength`: Specifies max number of enter-able characters
+    * `pattern`: Uses REGEX to limit input, ex: `pattern="[A-Za-z]{3}"`
+    * `placeholder`: Background hint on what to input in field
+        * EX: `placeholder="123-45-678"`
+    * `required`: Prevents submission until field is filled
+    * `autofocus`: Puts cursor in the input field when HTML is loaded
+- "time" or "date" or "month" or "week": nice selection box for time or date
+    * Can set attributes for min and max
+- "file": select file for upload; multi-file upload uses `multiple` attribute
+- "hidden": pass info to `<submit>` that isn't visible to user, ex: customer ID
+- "number": same as `<text>` but only numbers are allowed
+- "range": slide bar that doesn't show value, ex: volume slider
+    * use `<input type="range" step="10">` to add 10 ticks to range bar 
+    * Default range is 0-100; slider can only tick onto the steps
+- "tel": telephone numbers; use ex: `pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}"`
+- List: `<input list="name_of_list_1234"><datalist id="name_of_list_1234">`
+### Tables
+- `<table>`: Table; wraps table fields
+- `<thead>`: Table headers; uses `<th>` for these
+- `<tbody>`: Table content; uses `<tr>` (rows) to wrap `<td>` (cells)
+- `<tr>`: Table row; holds one row of `<td>`
+- `<td>`: Table cell; holds one datapoint, try `colspan`/`rowspan` attributes
+### New to HTML5
+- `<header>`: Headline; typically company logo and nav elements
+- `<footer>`: Footer; links, "contact us", etc that you'd see at the page bottom
+- `<nav>`: Navigation container; main navigation portion for the site
+- `<aside>`: Place element to the left of other elements
+- `<article>` and `<section>` are used for page organization
+
+
+<!-- Polished -->
 ## HTML Examples
+### HTML Basic Page
 ```
 <!DOCTYPE html> 
 <html lang="en">
@@ -209,11 +308,11 @@ IX.   [PHP                           ](#php)
         </code>
     </pre>
     <a href="url_here">Link</a>
-    <img src="filepath" alt="text_if_cant_open_img" style="width:300px;height:300px;">
+    <img src="filepath" alt="image" style="width:300px;height:300px;">
   </body>
 </html>
 ```
-### HTML Table Example
+### HTML Table #1
 ```
 <table style="width:100%">
     <caption>Table Caption Here</caption>
@@ -232,6 +331,20 @@ IX.   [PHP                           ](#php)
         <td>person2 firstname</td>
         <td>person2 lastname</td>
     </tr>
+</table>
+```
+### HTML Table #2
+```
+<table> 
+<thead> 
+    <tr> <th>First</th> <th>Last</th> <th>Organization</th> <th>Type</th> </tr>
+</thead>
+<tbody> 
+    <tr> <td>John</td> <td>Muir</td>  <td>Yosemite</td>     <td></td>      </tr> 
+    <tr> <td colspan="2">Bob T. Till</td><td>KC Jazz</td>   <td>4</td>     </tr>
+    <tr> <td>J</td><td>K</td><td rowspan="2">NJ</td><td rowspan="2">7</td> </tr> 
+    <tr> <td>Bill</td> <td>Lueth</td>                                      </tr> 
+</tbody>
 </table>
 ```
 
@@ -254,43 +367,83 @@ IX.   [PHP                           ](#php)
 
 # CSS
 
-<!-- Polished -->
 ## CSS Basics
-- Customization for HTML - "Cascading Style Sheets"
-- Most common is linking external CSS files into HTML using the "link" tag, used to style many HTML pages
-- Can be specified in its own element with tag "style" (internal), used to style entire HTML page from head
-- Can be given inside HTML elements (inline) with `style="property:value"`
-- External: `<link rel="stylesheet" href="filepath/file.css">` where file.css is formatted like Internal CSS
-- Internal: `<style body {property:value; property:value; ...} h1 {property:value;} p {property:value;}></style>`
-    - Can set style for multiple elements at once: `body {property:value} h1 a p {property:value}`
-- Inline: `<p style="property:value;">`
+- Cascading Style Sheets; customizing HTML elements to look better
+- Follows HTML load to adjust elements based on class, ID, name, etc definition
+- CSS inside tags (inline), inside `<head>` (internal), or via file (external)
+    * External CSS is most common; much more maintainable by simply editing file
+### General CSS Usage
+- **Consider using Inline CSS colors to troubleshoot HTML!**
+- Internal/External CSS use a different format from Inline CSS
+- Precedence: External overwritten by Internal overwritten by Inline
+- Internal/External ordering: later styles overwrite earlier styles
+- Ultimate style choice (from overlaps) is determined mathematically... not fun
+- Comments: `/* Comment here, this won't displayed but user can still see */`
+
+## CSS Specifics
+- External CSS: `<link rel="stylesheet" type="text/css" href="style.css">`
+- Internal CSS: `<style type="text/css"> body {property:value;} </style>`
+    * `body {property:value; property:value; ...} p {property:value;}` 
+    * Nested elements: `p.cool .big {property:value;} p#car48 {property:value;}`
+    * More nested: `a > img.mountain {property:value;} h2 + p {margin-top:0px;}`
+- Inline CSS: `<p style="property:value;">`
 ### CSS Elements
-- Formatting elements: b strong i em mark small del ins sub sup
-- Citation elements: 
-    - blockquote (with attribute `cite="website"`) 
-    - q (normal quote) 
-    - abbr (with attribute `title="full name of abbreviation"`) 
-    - address (contents are contact information) 
-    - cite (contents are the title of a reference)
-    - bdo (used like this: `<bdo dir="rtl">` to see contents reversed)
-- `img`, `map` (clickable spots), `area` (define click area), and `picture` (flexibility) are all useful things for pictures
-### CSS Stylings
-- Color formats: color name - rgb(255, 99, 71) - #ff6347 - hsl(9, 100%, 64%) - rgba(1, 2, 3, alpha) - hsla(., ., ., alpha)
-    - Fun fact: HEX colors (#ff6347) are in #RRGGBB format where RR GG BB are hex value for each color
-    - Another fun fact: setting RR GG BB as equal makes gray colors
-    - HSL is hue - saturation - lightness where hue=0 is red, hue=120 is green, hue=240 is blue
-- Link colors: in Internal CSS, unclicked is `a:link { property:value; }`, clicked is `a:visited`, hover is `a:hover`
-- `"background-color:powderblue;"` `"color:red"` `"font-size:60px;"` `"font-family:verdana;"` `"text-align:center;"`
-- `"border:2px solid Violet;"` `"padding:30px;"` (between content and element) `"margin:50px"` (buffer outside element)
+- Format elements: `b` `strong` `i` `em` `mark` `small` `del` `ins` `sub` `sup`
+- Cite elements: 
+    * `blockquote` (with attribute `cite="website"`) 
+    * `q` (normal quote) 
+    * `abbr` (with attribute `title="full name of abbreviation"`) 
+    * `address` (contents are contact information) 
+    * `cite` (contents are the title of a reference)
+    * `bdo` (used like this: `<bdo dir="rtl">` to see contents reversed)
+- Picture elements: 
+    * `img`, `map` (clickable spots)
+    * `area` (define click area)
+    * `picture` (flexibility)
+### CSS Coloration
+- RGB set: `rgb(255, 99, 71)`
+- Hex: `#ff6347` (note: this is `#RRGGBB`, each portion is hex)
+    * Setting all three hex values equal will make gray
+- Hue-Saturation-Lightness: `hsl(9, 100%, 64%)`
+    * Hue: 0 is red, 120 is green, 240 is blue, goes to 359
+- RGB + Alpha: `rgba(1, 2, 3, alpha)`
+- Hue-Saturation-Lightness + Alpha: `hsla(., ., ., alpha)`
+- Adjust CSS of unvisited link: `a:link {color: blue;}`
+- Adjust CSS of visited link: `a:visited {color: pink;}`
+- Adjust CSS of hovering-over link: `a:hover {color: orange;}`
+- Adjust CSS of active link (link was just clicked): `a:active {color: red;}`
+### CSS Random
+- Background color: `"background-color:powderblue;"`
+- Background image for entire page: `body { background-image...; }`
+- Background image for non-image element: `"background-image: url('url_here');"`
+    * Default is repeat-fill; use this: `background-repeat:no-repeat;`
+    * P1 Try: `background-attachment:fixed;` 
+    * P2 Try: `background-size:cover;` `background-size: 100% 100%;`
+- Font: `"font-family:baskerville, cambria, serif;"` 
+- Font size: `"font-size:60px;"`
+- Font style: `"font-style: italic;"`
+- Text alignment: `"text-align:center;"`
+- Element border: `"border:2px solid Violet;"`
+    * Also try: `border-width`, `border-style`, `border-color`
+    * Border style can be: "none", "solid", or "double"
+- Padding between content and element: `"padding:30px;"`
+    * Also try: `padding-top`, `padding-right`, `padding-left`, `padding-bottom`
+- Padding outside element: `"margin:50px"`
+    * Also try: `margin-top`, `margin-right`, `margin-left`, `margin-bottom`
+    * Auto-set margins: `margin: 40px auto;` (auto sets the margins if needed)
+    * Margins don't add when they touch (70 + 40); larger margin wins (70 + 0)
+- Set max width of an element: `max-width:980px;`
 - Float image on hover: `<p><img ... style="float:left;">text_here</p>`
-- Background image to non-image element: `"background-image: url('image_url_here');"`
-    - Can also set background image for entire page by setting in Internal CSS: `body { background-image...; }`
-    - This defaults to repeating-fill, so set this: `background-repeat:no-repeat;`
-    - Covering an element: `background-attachment:fixed;` `background-size:cover;` `background-size: 100% 100%;`
+- Edge against an element: `float:left;` or `float:right;`
+- Move from current location: `position:relative;` with whatever `left:5px;` etc
+- Reset to window location and move: `position:absolute` with `right:100px;` etc
+- Change list style: `list-style-type` (none, square, circle, or disc), 
+    * `list-style-image`: use your own image for the bullet
+    * `list-style-position`: bullets "outside" or "inside" (far-left, near-left)
 
 <!-- Polished -->
 ## CSS Examples
-### HTML Table Example - CSS
+### HTML Table Example
 ```
 <style>
 table, th, td {
@@ -434,11 +587,11 @@ div.storybook { width:850px; float:left; margin:20px; }
 $(document).ready (function () { 
     $.get( "practical.xml", function( xml ) { 
         var jQueryxml = $(xml); // Turn XML object into a jQuery object 
-        var html = '<div id="overview"><h1>' + jQueryxml.find('title').text() + '</h1>'; 
-        html += '<p>' + jQueryxml.find('overview').text() + '</p></div>'; 
+        var html = '<div id="ov"><h1>' + jQueryxml.find('ttl').text() + '</h1>'; 
+        html += '<p>' + jQueryxml.find('ov').text() + '</p></div>'; 
         html += '<div id="gallery">'; 
         jQueryxml.find('photo').each(function(){ 
-            html += '<div class="storybook"><div class="smallmat"><div class="simage"><a href="'; 
+            html += '<div class="bk"><div class="sm"><div class="si"><a href="'; 
             var scaption = $(this).find('scaption').text(); 
             var caption = $(this).find('caption').text(); 
             var largeimg = $(this).find('largeimg').text(); 
@@ -510,15 +663,15 @@ $(document).ready (function () {
 <head> 
     <meta charset="utf-8" /> 
     <title>June Lake Gallery</title> 
-    <link href="styles/practical.css" rel="stylesheet" type="text/css" media="screen"/> 
+    <link href="styles/p1.css" rel="stylesheet" type="text/css" media="screen"/> 
 </head> 
 <body> 
     <div id="mysite"> 
         <?php 
             $xslt = new XSLTProcessor; 
-            $xmlfile = "practical.xml"; 
-            $xslfile = "practical.xsl"; 
-            if (!file_exists($xmlfile)) { exit('Failed to open practical.xml.'); } 
+            $xmlfile = "p1.xml"; 
+            $xslfile = "p1.xsl"; 
+            if (!file_exists($xmlfile)) { exit('Failed to open p1.xml.'); } 
             $xml = new DOMdocument; 
             $xml->load($xmlfile); 
             $xsl = new DOMdocument; 
@@ -561,6 +714,7 @@ $(document).ready (function () {
 - Display script-disabled content: `<noscript>text_here</noscript>` (common use: "Please enable Javascript")
 - Javascript actions are always followed by semicolon (few exceptions, just use semicolon every time)
 - Functions work just like in other languages but with this syntax (definition): `function nameHere() { action; }`
+    * Curly brackets are called "statement blocks"; these should be used almost always!
     - Can simplify functions like this: `newfunc = () => { statements_here; }` or even simpler: `newfunc = () => returned_thing`
 ### Javascript Specifics
 - Javascript restricted keywords: var let const if switch for function return try
@@ -583,7 +737,7 @@ $(document).ready (function () {
     - `Math.random();` generates a random number between 0 (include) and 1 (exclude), multiply/floor the random gen to get moar numbers
 - Useful comparison operator in addition to usual ones: with x = 5, `x === "5";` returns false, `x !== "5"` returns true (value *and* type)
 - If/Else: `if (condition) {run_statements} else if (condition) {run_statements} else {run_statements}`, no semicolon ending needed
-    - Another version: `switch (input_me) { case first_match_input_try: statement; statement; case second_match_input_try: statement; ... }`
+- Cases: `switch (cond) { case v1: code break; case v2: code break; ... }`
 - Try/Catch: works as usual with `try { statements_here; } catch(err) { document.getElementById("demo").innerHTML = err.message; }`
     - Add on code to execute regardless of error or no-error: `try ... catch (err) ... finally { statements_here }`
 - Send out your own error, pretty much anywhere: `throw "error";`, not limited to strings for output
@@ -673,6 +827,8 @@ $(document).ready (function () {
     - Outputting after a document loads (ex: load page, await user) will overwrite all HTML
 - Alert in window: `<script>window.alert(5 + 6)</script>`
     - "window" is optional, can just do `<script>alert(5 + 6)</script>`
+- User input: `var response = prompt ("Enter your first name:");`
+- User confirmation: `var response = confirm ("Do you confirm?");`
 - Display data for debugging: `<script>console.log(5 + 6)</script>`
 - Print page (like print to PDF): `<button onclick="window.print()">Print this page</button>`
     - The `onclick` attribute is an HTML "event", and is very common
@@ -687,6 +843,19 @@ $(document).ready (function () {
     - Can also be called like this (self-invoked): `(function () { statement1; statement2; })();`
     - Portions of functions can be called like this: `person.fullName.call(person3);`
     - apply() instead of call() does an array instead of separate function arguments
+### Ajax
+- Asynchronous JAvascript XML
+- USed for async retrieval of data from the server
+- Relies on the XMLHttpRequest (XHR) object in Javascript
+- Commonly combined with jQuery
+- Drawback: page changed but no new one (back button skips changes to last page)
+- Load HTML from file: `$('element_here').load(file_to_overwrite_element_here)`
+- Run serverside work: `$.post("./filepath.php", { nav: nav}, func(data){code})`
+    * PHP file in above would need to correctly-receive output of `func`
+- Do any Ajax: `$.ajax({name:value, name:value, ...})`
+    * Try names: `data`, `dataType`, `url`, `type`
+    * Also try: `error(xhr, status, error)`, `success(result, status, xhr)`
+    * EX: `$.ajax({type:"POST", url:"./file", success:function(data){code}})`
 
 <!-- Needs work -->
 ## Javascript Examples
@@ -1068,5 +1237,3 @@ Examples here... eventually...
 </body>
 </html>
 ```
-
-[[Return to Top]](#table-of-contents)
