@@ -12,6 +12,72 @@
 - Indexing Options in control panel is also useful for search
 - System Settings: I/O devices, power, remote desktop, notifications, clipboard
 
+## OS Considerations
+- Check hardware limitations
+    * CPU, chipset, and RAM must be able to run the OS. (ex: 64bit CPU, 4gb RAM)
+- Check application and driver support/backward compatibility
+- Backup files and user preferences
+- Obtain third-party drivers
+    * The OS setup media might not contain drivers for certain hardware devices. 
+    * This is typically only an issue where the computer uses a RAID controller.
+
+## Boot Styles
+## Master Boot Record (MBR)-Style Partitioning
+- MBR stores a partition table in the first 512-byte sector on the disk
+    * This keeps track of partitions
+- A given physical disk can contain up to four primary partitions
+    * Any one of the four can be marked as active, and therefore made bootable
+- Each partition can host an OS, files, or more
+    * A partition can be separated into infinite logical (non-boot) drives, too
+- The start of primary partitions have boot sector / partition boot record (PBR)
+- Active partition: its boot sector gets a record pointing to the OS boot loader
+    * In Windows, the active partition is "system partition" / "system reserved"
+- Boot partition: The drive containing the Windows operating system files
+    * Usually just the active partition, but can be in an extended partition
+- With MBR, the system firmware must be set to use the legacy BIOS boot method
+    * If the boot method is set to UEFI, the disk will not be recognized as boot
+## GPT-Style Bootboot
+- Globally unique identifier (GUID) partition table (GPT) style 
+- Provides a more up-to-date scheme to address some of the limitations of MBR
+- Supports more than four primary partitions (Windows allows up to 128)
+* GPT also supports larger partitions (2 TB+) + backup copies of primary ones
+* A GPT-style disk includes a protective MBR for compatibility with old systems
+- GPT requires UEFI setting; if set to BIOS, disk will not be recognized as boot
+
+
+
+<!-- 
+#     #                                   
+#     # #####  #    # #    # ##### #    # 
+#     # #    # #    # ##   #   #   #    # 
+#     # #####  #    # # #  #   #   #    # 
+#     # #    # #    # #  # #   #   #    # 
+#     # #    # #    # #   ##   #   #    # 
+ #####  #####   ####  #    #   #    ####   
+ -->
+
+# Ubuntu
+
+## Ubuntu Installation
+- Install using the UI
+- Open terminal
+- `sudo apt update`
+- `sudo apt install -y openssh-server`
+
+
+
+<!-- 
+#     #                                      
+#  #  # # #    # #####   ####  #    #  ####  
+#  #  # # ##   # #    # #    # #    # #      
+#  #  # # # #  # #    # #    # #    #  ####  
+#  #  # # #  # # #    # #    # # ## #      # 
+#  #  # # #   ## #    # #    # ##  ## #    # 
+ ## ##  # #    # #####   ####  #    #  ####   
+-->
+
+# Windows
+
 ## System Objects
 - Access to data files is typically mediated by system objects
 - These are shown in the left-hand navigation pane in File Explorer
@@ -201,6 +267,7 @@
 - Help: `help`
 - Help for a command: `command_here /?`
 - List files in a location: `dir`
+    * Specify files to list using wildcards, ex: `dir *.exe` (add flags after)
     * Use `/o:n` to order files by name (`n`); `s` size; `e` extension; `d` date
     * Use `/t:c` to order files by create date; `a` last access; `w` modified
     * Use `/a:r` to show read-only files; `h` hidden; `s` system; `a` archive
@@ -212,6 +279,7 @@
     * Microsoft recommends `robocopy` (robust copy) instead of xcopy
 - Make new directory: `md`
 - Remove directory: `rmdir` (use `/q` to suppress confirmation messages)
+    * Force removal of directory: `/s` (just like `rm -rf`)
 - Disk partition: `diskpart` -> `select disk 0` -> `detail disk`
     * Also can `select partiton 0`, `select volume 0` (and detail)
     * Also can `assign` (change drive letter), `delete`, `extend`
@@ -220,9 +288,12 @@
 - Check disk: `chkdsk X:` with optional flags `/f` (fix), `/r` (recover)
     * These take awhile; be careful!
 - Shut down computer: `shutdown /s`, `/t 60` (60sec delay), `/r` (restart)
+    * Shut down immediately: `shutdown /s /t 00`
 - System file checker: `sfc` 
     * `/scannow`, `/scanonce` (after restart), `/scanboot` (after each boot)
 - Check Windows version" `winver`
+#### Windows Aliases
+- `%userprofile%` goes to C:\Users\username_here
 
 ## Operating Systems
 - Business client: OS in a centrally-managed business domain network
