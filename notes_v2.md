@@ -935,6 +935,42 @@ Windows + R > regedit > Computer\HKEY_CLASSES_ROOT\Directory\shell\cmd > Right c
 6. Decide what to do with the differences
     * To destroy your changes & accept the remote repo, use `git restore file1`
     * If you want to keep your changes... check out Resolving Merge Conflicts
+### Branch Work
+- `git log --oneline -5` to see last 5 commits (including current [HEAD])
+    * `git log --oneline -5 branch_name` see last 5 commits of specified branch
+    * `git log --graph --all --oneline --decorate` see branch tree
+- `reset` says "make my project look like it did before" (staged + commit + etc)
+- `git reset --soft <tree-ish>`: Only move HEAD, leave staged/workdir alone
+    * Used for undoing a `git commit` mainly; can also reset FORWARD
+- `git reset --mixed <tree-ish>`: Adopt old staged file status + move HEAD
+    * Used for undoing `git add` and `git commit`
+- `git reset --hard <tree-ish>`: Adopt old workdir + all staged + move HEAD
+    * Used for moving to a clean-repo for a commit; helps with branching work
+    * `git reset --hard HEAD^` to parent, `git reset --hard HEAD^^` to grandpa
+- `git merge new_code_branch` to merge code into current branch
+    * "Fast forward: (branch exists 100% ahead) vs "true" (overlapping commits)
+    * `git diff receiver..giver`: compare branches before merging
+        * `git diff --color-words rcvr..gvr f1.txt` focus f1.txt, compare words
+    * `git branch --merged`: see what branches are fully integrated into HEAD
+        * If you're done with the listed branches, delete them!
+    * Generally you should only merge with a clean repo
+- Merge conflicts: just manually fix it...
+    * `git show --color-words` during merge conflict to see what's conflicting
+- Tags: typically "v1.0", "v1.1", "hyperviz1.0" etc (you're naming commits)
+    * Tags are NOT implicitly sent to remote with `git push`
+        * `git push remote v1.0` add to remote
+        * `git push remote :v1.0` delete from remote; `git tag -d v1.0` local rm
+    * `git tag -a v1.0 -m "Version 1.0" commit_hash` v1.0 tag with an annotation
+        * Without commit_hash, HEAD is assumed
+    * `git tag issue213 commit_hash` No annotation, just the tag
+    * `git tag -d v1.0` delete tag v1.0
+    * List tags: `git tag -l`, `git tag -l "v1.*"` (wildcard)
+    * `git diff v1.0..v1.1` to see differences between tags!
+- Stashing: `git stash save "add essay"`, `git stash list` (note: not flags)
+    * `git stash pop` to add (and remove from stash) most recent stash back in
+        * Specify a stash to add: `git stash list` -> `git stash pop stash@{3}`
+    * `git stash apply` to **copy** the stash over (do not remove it)
+    * `git stash drop stash@{1}` drop stash; `git stash clear` clear all stashes
 ### Resolving Merge Conflicts
 - If you have a "merge conflict", this is how to resolve the issue (my method):
 1. Pull the Github repo down to a new folder using `git clone`
@@ -1593,6 +1629,210 @@ mean_x_given_g1_g2 = df.groupBy('g1').pivot('g2').agg(mean('x'))
 - Many functions in this library are experimental, use with caution
 ### Spark Machine Learning Example
 ```
+```
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+<!-- 
+ #####              
+#     #    #      #   
+#          #      #   
+#        #####  ##### 
+#          #      #   
+#     #    #      #   
+ #####              
+ -->
+
+# C++
+
+## C++ Overview
+- Compiler converts statements one-by-one to machine code, once finished, runs
+    * Comments do not get converted to machine code
+    * Compiler skips spaces (except in string literals) and empty lines
+- Fix errors: look at first-reported error by the compiler (compile-time error)
+    * Correct the first error then recompile; don't check further errors
+    * Errors may be reported later than they actually occur (think: block-quote)
+    * If "erroneous" statement has no error, look prior to it
+- Use namespaces in custom imports to prevent collisions, ex: seat in plane/bus
+- Single line comment: `//`, multi-line comment: `/* */`
+- Starts in `main()`, executes statements in `{ }` one at a time
+- Each statement inside main() is terminated with semicolon
+- Functions: `int CoolFunc (int x) { int y; ...statements... return y; }`
+    * Can set defaults for parameters as expected: `int CoolFunc (int x = 0) ..`
+    * Return nothing with `void` type functions
+        * Functions for modifying an input should use `void` + pass by reference
+    * Pass by reference: global scope in functions, `... (int& x) ...`
+        * This refers to the global `x` variable, allows modification of it
+- Each variable is declared with a type, ex: `int myVariable;`
+    * int, float, double, char, short, long long, auto, bool, int[2][3], char[8]
+        * char is only character literals, ex: 'a' (not "a")
+        * Can put "unsigned" in front for what you expect
+        * Booleans: `true`, `false`
+        * Arrays: `int[numRows][numCols]`, `char[numChars + nullChar]`
+    * Declaring variables allocates type-specific space in memory for it
+    * Can just initialize the variable; `int myVariable = 20;`
+    * Note: reading declared but un-initialized variables is BAD of course
+- Can initialize constants, ex: `const int SECONDS_PER_HOUR = 3600;`
+    * Constants are typically all-uppercase for readability purposes
+    * Modifying a constant results in compiler errors (safety)
+- For option-selection, use the enumeration type; this method is safe
+    * `enum LightState {LS_RED, LS_GREEN, LS_YELLOW, LS_DONE};`
+    * `LightState lightVal;` -> `lightVal = LS_RED` -> `lightVal == LS_RED`
+- Can change type on the fly: `static_cast<double>(10)` -> 10.0
+    * Great solution for fixing integer division issues
+- `cin` statements take inputs, ex: `cin >> myVariable;`
+- `cout` statements print things, ex: `cout << "Hello World!";`
+    * Repeat `cout` will print to same line; use `cout << endl;` for "\n"
+    * Can do: `cout << "Hello" << " " << "world!" << endl;`
+    * `cout << fixed << setprecision(2) << myFloat;` (include iomanip)
+- Comparison: `>`, `<`, `==`, `!=`, etc, `&&` (AND), `!` (NOT), `||` (OR)
+    * Float equality: compare for "close enough", ex: `(x - y) < 0.001`
+        * 0.001 here is called "epsilon" (difference threshold)
+    * `coolWord = (x > 1) ? "cool" : "uncool"` (ternary operators)
+        * Format: `x = (condition) ? result_if_true : result_if_false`
+    * `if (x > 1) {statements} else if (x == 1) {statements} else {statements};`
+    * `switch (x) {case 42: statements break; ... default: statements break;}`
+        * `default` is executed when no cases are matched
+        * Can omit `break` to allow "falling through" to next/further cases
+    * `while (condition) {statements}`
+    * `for (int i = 0; i < 5; ++i) {statements}`
+        * `++i` here sends 1 as first input??; `i++` would send 0 as first input
+        * Last statement is ran at start of loop, so ex: `i = i + 5` works too
+- End the program with `return 0;` ("return without error")
+## Pointers
+- A pointer is a variable that contains a memory address
+- Typically declared with a data type, ex: `int* maxItemPointer;`
+    * `maxItemPointer` has an unknown memory address at this stage; dangerous!
+    * Safe method is initializing with null: `int* maxItemPointer = nullptr;`
+- Typically initialized by assigning a pass-by-reference to a variable
+    * EX: `intPointer = &myInteger;`, the `&` character refers a memory address
+    * Print the contents of a stored address with: `PrintValue(myPointer);`
+- The memory itself can be shown just by outputting the pointer's value
+- The object at the pointer's value can be output with: `cout << *myPointer;`
+    * **DANGER: this can break your program if `myPointer` isn't initialized!**
+    * This is called "dereferencing"; ignore reference, access the stored value
+- You can change the value stored at the pointer's location: `*myPointer = 10;`
+- `new` is used for: `MyClass* test = new MyClass;`, `test` stores a pointer
+    * This is mainly done for speed! Just dereference `test` as needed
+        * Dereferencing an instantiated class: `(*test).MyMethod();`
+        * Alternate method: `test->MyMethod();`
+    * Can also pass arguments: `MyClass* test2 = new MyClass(4, 3);`
+    * Can also create an array: `MyClass* test3 = new MyClass[6];`
+        * A single, contiguous chunk of memory is allocated for the array, then 
+        * ... the default constructor is called for each object in the array.
+- Delete *what is stored* at a memory address: `delete myPointer;`
+    * The pointer itself is unchanged!! `cout << myPointer;` is same before/aft
+    * "Freeing" an array ex: `new MyClass[6]` is done with `delete[] test3;`
+## C++ Libraries
+- `#include "myFile.h"` - import your own file from the current directory
+    * The .h is traditional for C++; quotes tell the compiler to look in CWD
+    * myFile.h actually calls functions in myFile.cpp... that's the intention
+- `#include <cassert>` - assertions / unit testing
+    * `assert(HrMinToMin(0, 99) == 99);`, `assert(HrMinToMin(2, 30) == 150);`
+    * Easily create a test harness / testbench this way (assert = test vector)
+- `#include <cctype>` - character types; 
+    * `isalpha('x')`, `isdigit`, `isalnum`, `isspace`, `islower`, `isupper`
+    * More: `isblank`, `isxdigit(hex)`, `ispunct`, `isprint`, `iscntrl`
+    * More: `toupper('e')`, `tolower('E')`, `
+- `#include <cmath>` - math operations, ex: `cout << sqrt(16) << endl;`
+    * log, log2, log10, exp, pow, ceil, floor, sin, cos, tan, etc
+- `#include <cstdlib>` - `rand()` (random integer from 0 to "max"), `srand(42)`
+    * Use modulo to set boundaries; `rand() % 10` (0-9), `rand() % 100` (0-99)
+- `#include <cstring>` - C strings, these can be unstable
+    * `strcpy(outStr, inStr)`, `strncpy(outStr, inStr, n)` copy string
+    * `strcat(myStr, addStr)`, `strncat(myStr, addStr, n)` concat string
+    * `strchr(myStr, findChar)`, `strlen(myStr)`, `strcmp(str1, str2)` (compare)
+- `#include <ctime>` - `time(0)` is current number of seconds since Jan 1st 1970
+- `#include <iostream>` - `cout`, `endl`, getting keyboard inputs, more
+- `#include <iomanip>` - rounding numbers
+- `#include <string>` - allow use of `string greeting = "Hello";`
+    * `.at(5)`, `.length()`,`.append("hi")`,`str1 + str2`,`.find("me")`
+        * In-place string modification works: `myString.at(5) = 'Q'`
+        * One-character append: `.push_back('?')`
+    * `.substr(i, steps)`,`.insert(i, "hi")`,`replace(i, stepsOverwrite, "hi")`
+    * string is odd; `cin` with "Hi there!" sends only "Hi" (whitespace delim)
+        * You must specify `getline(cin, storeHere);` to get a whole line...
+- `#include <vector>` - array w/ preserved order; all items are of a given type
+    * 1-D Vectors beat 1-D arrays; array: `int myArray[10];` (10 elements)
+        * Vectors have `.size()`, `.at()`, and safety
+    * `vector<int> gameScores(4);` declares a vector with 4 int elements
+    * `vector<int> gameScores(4, 0);` initializes vector w/ 4 elements (each 0)
+    * `vector<int> gameScores = {0, 14, 3};` looks like a set, but isn't
+    * `.size()`, `.resize(42)`, `.push_back(element)`
+    * `.back()` (return last element), `.pop_back()` (pop last element)
+    * `newVector = origVector;` (copy), `v1 == v2` (comparison)
+## Examples
+```
+#include <iostream>
+#include <string>
+#include "roster.h"
+
+using namespace std;
+
+int main() {
+	// print course title, programming language, your WGU student ID, and your name
+	cout << "C867-Scripting & Programming: Applications" << endl << "Language: C++" << endl;
+	cout << "Student ID: 10588242" << endl << "Name: Jacob Paxton" << endl << endl;
+
+	// instantiate classRoster object
+	Roster classRoster;
+
+	// initialize student data
+	const string studentData[5] = {
+		"A1,John,Smith,John1989@gm ail.com,20,30,35,40,SECURITY",
+		"A2,Suzan,Erickson,Erickson_1990@gmailcom,19,50,30,40,NETWORK",
+		"A3,Jack,Napoli,The_lawyer99yahoo.com,19,20,40,33,SOFTWARE",
+		"A4,Erin,Black,Erin.black@comcast.net,22,50,58,40,SECURITY",
+		"A5,Fname,Lname,email@site.com,42,10,11,12,SOFTWARE" };
+	
+	// add students
+	for (int iter = 0; iter < 5; iter++) { classRoster.parse(studentData[iter]); }
+
+	// print all students
+	cout << "Displaying all students:" << endl;
+	classRoster.printAll();
+	cout << endl;
+
+	// show any invalid emails
+	cout << "Invalid Emails:" << endl;
+	classRoster.printInvalidEmails();
+	cout << endl;
+
+	// calculate each student's average count of days per course
+	cout << "Average Days Per Course:" << endl;
+	for (int iter = 0; iter < 5; iter++) {
+		classRoster.printAverageDaysInCourse(classRoster.classRosterArray[iter]->GetStudentID());
+	}
+	cout << endl;
+
+	// print only software students
+	cout << "Showing students in degree program: SOFTWARE" << endl;
+	classRoster.printByDegreeProgram(SOFTWARE);
+	cout << endl;
+
+	// remove student A3
+	cout << "Removing student A3..." << endl;
+	classRoster.remove("A3");
+	cout << endl;
+
+	// print all students
+	cout << "Displaying all students:" << endl;
+	classRoster.printAll();
+	cout << endl;
+
+	// try to remove student A3 again; should indicate A3 not found
+	cout << "Removing student A3 again..." << endl;
+	classRoster.remove("A3");
+	cout << endl;
+
+	// ~Roster() destructor called
+	return 0;
+}
 ```
 
 [[Return to Top]](#table-of-contents)
