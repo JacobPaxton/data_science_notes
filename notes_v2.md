@@ -24,17 +24,15 @@ I.    [Approaching Data              ](#approaching-data)
 2.    [Data Overview                 ](#data-overview)
 3.    [Datasets                      ](#datasets)
 ---
-II.   [Algorithms and Tricks         ](#algorithms-and-tricks)
+II.   [Data Structures               ](#data-structures)
+1.    [Data Structures: Linear       ](#data-structures-linear)
+2.    [Data Structures: Non-Linear   ](#data-structures-non-linear)
+---
+III.  [Algorithms and Tricks         ](#algorithms-and-tricks)
 1.    [Algorithm Basics              ](#algorithm-basics)
 2.    [Speed Tricks                  ](#speed-tricks)
 3.    [Sort Algorithms               ](#sort-algorithms)
 4.    [Search Algorithms             ](#search-algorithms)
-5.    [Heuristic Algorithms          ](#heuristic-algorithms)
-6.    [Other Algorithms              ](#other-algorithms)
----
-III.  [Data Structures               ](#data-structures)
-1.    [Data Structures Basics        ](#data-structures-basics)
-2.    [Data Structures Examples      ](#data-structures-examples)
 ---
 IV.   [Databases                     ](#databases)
 1.    [Database Basics               ](#database-basics)
@@ -235,6 +233,166 @@ XXVIII. [Stakeholders                ](#stakeholders)
 
 
 
+
+<!-- 
+######                      
+#     #   ##   #####   ##   
+#     #  #  #    #    #  #  
+#     # #    #   #   #    # 
+#     # ######   #   ###### 
+#     # #    #   #   #    # 
+######  #    #   #   #    # 
+                            
+ #####                                                               
+#     # ##### #####  #    #  ####  ##### #    # #####  ######  ####  
+#         #   #    # #    # #    #   #   #    # #    # #      #      
+ #####    #   #    # #    # #        #   #    # #    # #####   ####  
+      #   #   #####  #    # #        #   #    # #####  #           # 
+#     #   #   #   #  #    # #    #   #   #    # #   #  #      #    # 
+ #####    #   #    #  ####   ####    #    ####  #    # ######  ####  
+-->
+
+# Data Structures
+
+<!-- Polished -->
+## Data Structures: Linear
+- Linear data structures: Array, Stack, Queue, Linked list, Hash table
+### Linked List
+- Linear data structure
+- Many element+pointer combos where a combo's pointers reference prev/next combo
+- Excellent at handling problemsets involving sorting long arrays
+    * Just update two neighbor combos' pointers; no need to update entire array
+- Compiled languages ex: C++ incorporate pointers natively, easy linked list
+- Interpreted languages ex: Python don't incorporate pointers, avoid linked list
+- The element+pointer combo (one item in the linked list) is a "head"
+- The "head" is split into the data (a la payload) and the pointer(s)
+- A linked list's pointers can be simply-linked, doubly-linked, and/or circular
+    * Singly: link next, doubly: link next & prev, circular: last link to first
+- Because there's no structure, a linked list is usually deleted by a function
+### Hash Table
+- A mapping of keys (hashes) to values
+- Uses hashing function(s) to create the key for the value, ex: modulo
+- Hashing functions range from very simple/DIY to highly complex/academic
+- The key (the hashed value) is used as the index for the value
+    * No collisions: "perfect hash function" (not really useful)
+    * Two different values with same hashed key: a "collision"
+- Collision resolution approach: store many values in one bucket, in array
+    * This is one approach to handling collisions; it's called "chaining"
+- Another approach: "Open addressing"/"Linear probing"; use next open bucket
+    * These buckets use "empty since start" and "empty after removal" flags
+    * Reason-why-empty flags are important for how the algorithm "walks" buckets
+    * Finding an empty-since-start flag during a removal walk: done
+    * Finding an empty-after-removal flag during a removal walk: keep going
+- Another approach: "Quadratic probing"; if collision, use function to find spot
+    * Function: `(hash_value + (c1 * i) + (c2 * i^2)) % table_size`
+        * "Double hashing": `(hash1 + (hash2 * i)) % table_size`, two hashes!!
+    * `i` is increased by 1 after each attempt; increasing/trying `i`: "probing"
+    * Uses same empty-since-start and empty-after-removal flags as before
+    * Table size of 16: hash value is `16 % 16 = 0`, try to place value at 0
+    * Collision at 0: `(0 + (1 * 1) + (1 * 1)) % 16 = 2`, try placing at 2
+    * Collision at 2: `(0 + (1 * 2) + (1 * 4)) % 16 = 6`, try placing at 6
+    * Collision at 6: `(0 + (1 * 3) + (1 * 9)) % 16 = 12`, try placing at 12
+    * Collision at 12: `(0 + (1 * 4) + (1 * 16)) % 16 = 4`, try placing at 4
+    * Collision at 4: `(0 + (1 * 5) + (1 * 25)) % 16 = 14`, try placing at 14
+- Buckets are fast!! Much faster to find values this way
+    * No buckets: find the 3/8" wrench in a *pile* of wrenches, hammers, drills
+    * Buckets: find the 3/8" wrench in the wrench bucket, ignoring other buckets
+- Finding the value involves: hashing it -> going to the matching hash (bucket)
+- Buckets are implemented efficiently via ["linked lists"](#linked-list)
+    * Each bucket contains a linked list; linked lists have speedy appends/sorts
+    * Create a linked list for each bucket, then append nodes to it (can sort!!)
+#### Hash Functions
+- Hash key: the parameter passed to a hash function, determines bucket choice
+- Hash function: computes the bucket containing the row from the hash key
+- Dynamic hash function: hash function but doesn't let buckets get too deep
+- Modulo: 
+    1. Convert the hash key by interpreting the key's bits as an integer value.
+    2. Divide the integer by the number of buckets.
+    3. Interpret the division remainder as the bucket number.
+    4. Convert bucket number to physical address of the block that has the row.
+- Mid-square hash:
+    1. Square the (numeric) key
+    2. Extracts R digits from the result's middle (R=2 for 205936: 59)
+        * This is done using substrings when the key is variable-size
+    3. Calculate `extracted_digits % table_size`
+    * Note: For N buckets, this must be true: `R >= log(N)` to index all buckets
+    * Note: "Mid-square hash base-2" uses `R >= log-base-2(N)` instead
+        * Base-2 only requires a few shift and bitwise AND operations (faster!!)
+- Multiplicative string hash:
+    1. Start with initial value (academic value used is 5381)
+    2. Loop each character in str: 
+        * `new_value = (previous_value * multiplier) + ascii_of_current_char`
+        * Academic multiplier value is 33 (performant??........)
+    3. Calculate `final_value % 1000`
+
+<!-- Polished -->
+## Data Structures: Non-Linear
+- Non-linear data structures: Class, Graph, Tree, Heap
+### Class
+- The blueprints of an object
+- Contains attributes (descriptors) and methods (functions)
+- Blueprint is outlined in a class definition; classes are typically capitalized
+- Is only a blueprint until the program "instantiates" it (creates an object)
+- Instantiation creates the object and sets the default attributes and methods
+- Defaults are set by the class's "constructor" on instantiation
+- After creation, the object is modified using "attribute reference operators"
+    * In Python, object modification looks like this: `book1.title = "Walden"`
+- An object is highly flexible and its methods can instantiate other objects
+- An object can also inherit attributes from another class
+- A "derived class" inherits attributes from a "base class"
+### Binary Tree
+- Similar to linked list, but one node can point to TWO nodes (binary)
+- "Parent" and "child" nodes here, with "root" node as topmost node in tree
+    * Left child is less than parent; right child is greater than parent
+    * Left child itself and its children are less than its parent
+    * Right child itself and its children are greater than its parent
+- Leaf: node with no children
+- Internal node: node with one child
+- Edge: Link between parent and child
+- Depth: Edge count to root
+- Level: Grouping of nodes all at a certain depth
+- Height: Largest depth in tree
+- Full tree: All nodes have zero or two children
+- Complete tree: All levels "full" except maybe the last level
+    * Last level must at least be fully-shifted left
+- Perfect tree: All internal nodes have two children, all leaf nodes same level
+- Printing a binary tree: descend left to end, print from end in left-cur-right
+- Adding to a binary tree: navigate to right spot, do linked list things
+- Deleting nodes: find next-highest node, replace node to be deleted, delete
+### Heap
+- Like a binary tree BUT parent node has larger or smaller value than its childs
+    * It can be *any* tree, but it is typically a "complete" binary tree
+    * Parent larger than childs: "max heap"; smaller: "min-heap"
+- Typically stored using arrays (not pointers like a binary tree
+    * [root, left, right, leftleft, leftright, rightleft, ...]
+    * Percolate: append to array, swap index with parent if needed
+    * Find parent's index for percolation: `parent_i = floor((i - 1) / 2)`
+    * Child's index for percolation: `i = 2 * i + 1` or `i = 2 * i + 2`
+- Turn array into a heap: "heapify"
+    * Start with "internal node" having largest index (last internal node)
+        * Largest node's index: `i = floor(len(array) / 2) - 1`
+    * Swap with largest child if a child is larger
+        * After, if child node is an internal node, repeat evaluation on it
+    * Move to next internal node (the one having next-largest index)
+    * Follow same swap procedure; swap with largest child if a child is larger
+    * Continue evaluating internal nodes in this way
+    * Finally, evaluate the root in this way; done!
+#### Max Heap
+- Insertion: maintain "complete" tree, add node at bottom, "percolate" upward
+    * EX: value of 99 added to last layer, swap with parent having key of 21, ..
+- Removal: heaps work with the largest value, so ROOT is the only node removed
+    * Replace root with the last node in last layer (maintain complete tree)
+    * Swap the rulebreaking root with its greatest child until rules met
+#### Min Heap
+- Same exact thing as max heap but parent is smaller than children
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
 <!-- 
    #                                                                  ##    
   # #   #       ####   ####  #####  # ##### #    # #    #  ####      #  #   
@@ -261,6 +419,19 @@ XXVIII. [Stakeholders                ](#stakeholders)
 - Simple changes to slow code can speed it up immensely
 - Knowing where algorithms are great / are useless informs excellent code design
 - Knowing where to be perfect / where to cut corners can secure victory
+- Runtime complexity and space complexity help distinguish algorithm performance
+    * Runtime (in seconds) is different from runtime complexity (Big O)
+### Runtime Complexity
+- Runtime complexity: where input values change, how does program change?
+    * Uses "Big O Notation", ex: `O(n)`, `O(1)`, `O(n^2)`
+- Computation count is constant regardless of input values: `O(1)`
+- Each computation divides & conquers the input values: `O(logn)`
+    * "Time increases linearly while n increases exponentially"
+    * EX: 1min does 10 values, 2min does 20 values, 3min does 40 values, ...
+- Each new value requires a new calculation: `O(n)`
+- Each new value requires a new calculation *and* divide & conquer: `O(n*logn)`
+- Each new value requires a new calculation on *all other values*: `(n^2)`
+- The number of total values is used for the loop count on all values: `O(n^n)`
 ### Specific Algorithmic Goals
 - Goal of decreasing "computational complexity": lowering runtime + memory use
 - Goal of decreasing "space complexity": lowering memory use by itself
@@ -275,6 +446,7 @@ XXVIII. [Stakeholders                ](#stakeholders)
     * EX: Numpy array of zeroes via `np.zeroes(len(chosen_array_length))`
 ### Recursion
 - Function calling itself until goal achieved / no more work remains
+    * Special term: "Base case", what is executed to end recursion
 - Especially good at all-possible-outcomes problems
     * EX: Scramble words using string indexing/splits recursively
 ### Hash Tables and Linked Lists
@@ -289,42 +461,127 @@ XXVIII. [Stakeholders                ](#stakeholders)
     * "Cliques", finding any subset of vertices where each is connected to every
 - Knowing NP-complete problems saves mental cycles trying to find a solution
 - Use heuristic algorithms for best-possible solution at speed to "solve"!
+### Heuristic Algorithms
+- Heuristic algorithms don't perfectly solve problems but are FAST
+- Being perfect and slow is sometimes necessary (sorting)
+- Being imperfect and speedy is sometimes preferred (solving problems)
+- Being imperfect and speedy is sometimes necessary (rounding decimals)
+- Accuracy requirements steer heuristic choices
+#### Knapsack Problem
+- Knapsack problem: fit max amount of defined-size objects into bag
+- Perfect method tries all possible combinations to get max (very slow, perfect)
+- Heuristic method repeatedly chooses largest that fits (extremely fast, decent)
+### Other Algorithms
+- Longest common substring
+- Dijkstra's shortest path
 
 <!-- Polished -->
 ## Sort Algorithms
 - Sorting is crucial for all storytelling; max/min values, large/small, etc
 - Speeding up sorts is not only possible but necessary in many cases
-### Selection sort - O(n^2)
-- Search the *entire* array for the smallest value and move it to the start
-- The "start" moves forward as the smallest values are moved to the beginning
-- Perfect sort, paid for by slow speed
-### Insertion sort - O(n^2)
-- Compare two values, swap them if second value is larger than first
-- On a swap, comparison moves backward; second value compared to before-first
-- On no swap (or index 0 reached when moving backward), comparison moves forward
-- Perfect sort, paid for by slow speed
-### Quicksort - O(n^2)
-- Check midpoint and swap with lowest/highest index after comparison
-- Array becomes partitioned into low partition and high partition over time
-- Perfect sort, paid for by slow speed
-### Merge sort - O(n * log n)
-- Halve array repeatedly, then recombine halves iteratively while sorting
-- Each sort appends the lowest of either half to a combined array
+### Selection sort - Average speed of O(n^2)
+- 1. Search the *entire* array for the smallest value and move it to the start
+    * [4,2,9,7,6,3,1,8,5,0,10] -> [1,4,2,9,7,6,3,8,5,0,10]
+- 2. The "start" moves forward as the smallest values are moved to the beginning
+    * [1,4,2,9,7,6,3,8,5,0,10] -> [1,2,4,9,7,6,3,8,5,0,10]
+- 3. Repeat until 100% sorted; this is easy to implement in code!
+- Perfect sort, always O(n^2) (read all for each value)
+### Insertion sort - Average speed of O(n^2)
+- 1. Compare two values, swap them if second value is larger than first
+    * [1,5,4,6,2,3] -> [1,4,5,6,2,3] (5 > 4, so swap occurs)
+- 2. On a swap, comparison moves backward; second value compared to before-first
+    * [1,4,5,6,2,3] (1 < 4, so no swap occurs)
+- 3. On no swap (or index 0 reached when moving backward), compare moves forward
+    * [1,4,5,6,2,3] -> [1,4,5,2,6,3] (move forward until find 6 > 2, swap)
+- 4. Repeat insertion sorting until array is 100% sorted
+    * [1,4,2,5,6,3] -> [1,2,4,6,5,3] (move backwards, swapping until find 1 < 2)
+    * [1,2,4,6,5,3] -> [1,2,4,5,6,3] -> [1,2,4,5,3,6] -> 4,3,5 -> [1,2,3,4,5,6]
+- Perfect sort, nearly-sorted list improve speed to `O(n)` (just reads each val)
+### Shell sort - Average speed of O(n^1.5)
+- Interleaved insertion sorts with a final regular insertion sort
+- 1. Choose gap values for your array, ex: array with 15 values, use [5,3,1]
+    * Gap value chooses based on index; 0-10 is [0,5,10],[1,6],[2,7],[3,8],[4,9]
+- 2. Iterate gap values; for each value, use the value to split/sort the array
+    * Gap value 5: [4,2,9,7,6,3,1,8,5,0,10] -> [4,3,10],[2,1],[9,8],[7,5],[6,0]
+    * Insertion-sort each "interleaved list"; ex: [4,3,10] -> [3,4,10]
+        * Insertion sort uses `i + gap_value` instead of `i + 1`, sort in-place
+    * After gap value 5 shell sort: [3,1,8,5,0,4,2,9,7,6,10]
+    * Gap value 3: [3,1,8,5,0,4,2,9,7,6,10] -> [3,5,2,6],[1,0,9,10],[8,4,7]
+    * Insertion-sort each "interleaved list"; ex: [3,5,2,6] -> [2,3,5,6]
+    * After gap value 3 shell sort: [2,0,4,3,1,7,5,9,7,6,10]
+    * Gap value 1: just insertion sort here, but it's much faster now!!
+        * Insertion sort works backwards; gapvalue 3 sort means only move back 3
+    * After gap value 1 shell sort: [0,1,2,3,4,5,6,7,8,9,10]
+- **Note: must use a gap value of 1 at some point to clean up the other sorts!**
+- Worst-case is `O(n^(3/2))` (better than `O(n^2)`)
+### Quicksort - Average speed of O(n*logn)
+- From a midpoint index, split array in two, sort across the two parts
+- 1. Select midpoint: [4,2,9,7,6,3,1,8,5,0,10] -> [3]
+- 2. Move midpoint value to end of array temporarily: [4,2,9,7,6,1,8,5,0,10,3]
+- 2. From left, find a value larger than the midpoint value: [4]
+- 3. From right, find a value smaller than the midpoint value: [0]
+- 4. Swap these two: [4,2,9,7,6,1,8,5,0,10,3] -> [0,2,9,7,6,1,8,5,4,10,3]
+- 5. Repeat until fromleft has higher index than fromright
+    * [0,2,9,7,6,1,8,5,4,10,3] -> [9],[1] -> [0,2,1,7,6,9,8,5,4,10,3]
+    * [0,2,1,7,6,9,8,5,4,10,3] -> fromleft[7] is higher index than fromright[1]
+    * Place midpoint between fromright and fromleft: [0,2,1,3,7,6,9,8,5,4,10]
+- 6. First partitioning is done, midpoint is in correct spot now
+    * Low partition: [0,2,1], high partition: [7,6,9,8,5,4,10]
+- 7. Pick one partition, then repeat the process until that partition is sorted
+    * [0,2,1] midpoint is [2], -> [0,1,2], no values higher than midpoint, done
+- 8. Go to the other partition and start the partitioning process on that one
+    * [7,6,9,8,5,4,10] midpoint is [8], -> [7,6,9,5,4,10,8]
+    * [7,6,9,5,4,10,8] -> [9],[4] -> [7,6,4,5,9,10,8]
+    * [7,6,4,5,9,10,8] -> fromleft[9] is higher index than fromright[5]
+    * Place midpoint between fromright and fromleft: [7,6,4,5,8,9,10]
+    * Second partitioning is done, midpoint is in correct spot
+    * New partitions: [7,6,4],[8,9,10]; repeat the sorts on these
+- Re-combine all sorted pieces; final array is [0,1,2,3,4,5,6,7,8,9,10]
+- Perfect sort, worst case is O(n^2) but this is rare
+### Merge sort - Average speed of O(n*logn)
+- 1. Halve array repeatedly until all values are isolated
+    * 1. [4,2,9,7,6,3,1,8,5,0,10]
+    * 2. [4,2,9,7,6,3]                      ||| [1,8,5,0,10]
+    * 3. [4,2,9]       || [7,6,3]           ||| [1,8,5]         || [0,10]
+    * 4. [4,2]   | [9] || [7,6]   | [3]     ||| [1,8]   | [5]   || [0] | [10]
+    * 5. [4],[2] | [9] || [7],[6] | [3]     ||| [1],[8] | [5]   || [0] | [10]
+- 2. Work backwards in same order, sorting as you combine things back together
+    * 5. [4],[2] | [9] || [7],[6] | [3]     ||| [1],[8] | [5]   || [0] | [10]
+    * 4. [2,4]   | [9] || [6,7]   | [3]     ||| [1,8]   | [5]   || [0] | [10]
+    * 3. [2,4,9]       || [3,6,7]           ||| [1,5,8]         || [0,10]
+    * 2. [2,3,4,6,7,9]                      ||| [0,1,5,8,10]
+    * 1. [0,1,2,3,4,5,6,7,8,9,10]
+- Each recombine operation compares leftmost indices; append lower value to list
+    * EX: [1,8],[5] -> (1 < 5) -> append [1] -> (5 < 8) -> append 5 -> append 8
 - After halves sorted, take combined array and compare to another combined one
+    * EX: recombine-sort [1,8],[5] ----> recombine-sort [1,5,8],[0,10]
 - Perfect sort, slightly faster than the above sorts
 ### Bucket sort - DEPENDS!
 - Intelligent split of array into buckets, sort each bucket, then recombine
+    * Integer bucket sorting is called "radix sort"; sort 1s, then 10s, then ...
+    * Signed radix sorting sorts as usual, then splits out negatives/reverses
+    * Radix sort has average speed of O(n)!!!!!
 - Many approaches for bucket choices; the choice makes/breaks the sort speed
     * Values between zero and one: 10 buckets (0.1xx, 0.2xx, 0.3xx, ...)
     * Alphabetical: 26 buckets (Axx, Bxx, Cxx, ...)
 - Too many buckets is too slow; too few buckets is also too slow (careful!)
     * Elbow method to determine best combo?...
 - Best choice for bucket internals is the [linked list](#linked-list)
+### Heapsort
+- Sorting an array, ASC; heapify array into max heap, then "remove" root node
+- Remember, removing a root node involves putting the last node as root
+- "Removing" the root here actually means setting last index of array as root
+    * Last index is no longer considered available to the sort when "removed"
+- When last node is moved to root, it is percolated down as necessary
+    * Max-Heap rules are still in place
+- Keep going until entire array sorted
 
 <!-- Polished -->
 ## Search Algorithms
 - Speedy searches can make a world of difference in processing
 - You can be very smart about the way you search
+### Quickselect - Average speed of O(n^1.5)
+- Find the kth-smallest number using a modified Quicksort
 ### Linear Search - O(n)
 - From the first value, iterate forward until the value is found
 - No requirements except for data to be iterable in some way
@@ -334,115 +591,6 @@ XXVIII. [Stakeholders                ](#stakeholders)
 - Requires data to already be sorted
 ### Hash Table - O(n)
 - Look for values using its hash
-
-<!-- Polished -->
-## Heuristic Algorithms
-- Heuristic algorithms don't perfectly solve problems but are FAST
-### Background of Heuristics
-- Being perfect and slow is sometimes necessary (sorting)
-- Being imperfect and speedy is sometimes preferred (solving problems)
-- Being imperfect and speedy is sometimes necessary (rounding decimals)
-- Accuracy requirements steer heuristic choices
-### Knapsack Problem
-- Knapsack problem: fit max amount of defined-size objects into bag
-- Perfect method tries all possible combinations to get max (very slow, perfect)
-- Heuristic method repeatedly chooses largest that fits (extremely fast, decent)
-
-<!-- Polished -->
-## Other Algorithms
-- Longest common substring
-- Dijkstra's shortest path
-
-[[Return to Top]](#table-of-contents)
-
-
-
-
-
-
-
-<!-- 
-######                      
-#     #   ##   #####   ##   
-#     #  #  #    #    #  #  
-#     # #    #   #   #    # 
-#     # ######   #   ###### 
-#     # #    #   #   #    # 
-######  #    #   #   #    # 
-                            
- #####                                                               
-#     # ##### #####  #    #  ####  ##### #    # #####  ######  ####  
-#         #   #    # #    # #    #   #   #    # #    # #      #      
- #####    #   #    # #    # #        #   #    # #    # #####   ####  
-      #   #   #####  #    # #        #   #    # #####  #           # 
-#     #   #   #   #  #    # #    #   #   #    # #   #  #      #    # 
- #####    #   #    #  ####   ####    #    ####  #    # ######  ####  
--->
-
-# Data Structures
-
-<!-- Polished -->
-## Data Structures Basics
-### Array
-- Linear data structure
-### Stack
-- Linear data structure
-### Queue
-- Linear data structure
-### Linked List
-- Linear data structure
-- Many element+pointer combos where a combo's pointers reference prev/next combo
-- Excellent at handling problemsets involving sorting long arrays
-    * Just update two neighbor combos' pointers; no need to update entire array
-- Compiled languages ex: C++ incorporate pointers natively, easy linked list
-- Interpreted languages ex: Python don't incorporate pointers, avoid linked list
-- The element+pointer combo (one item in the linked list) is a "head"
-- The "head" is split into the data (a la payload) and the pointer(s)
-- A linked list's pointers can be simply-linked, doubly-linked, and/or circular
-    * Simple: link next, doubly: link next & prev, circular: last link to first
-- Because there's no structure, a linked list is usually deleted by a function
-### Graph
-- Non-linear data structure
-### Tree
-- Non-linear data structure
-### Class
-- The blueprints of an object
-- Contains attributes (descriptors) and methods (functions)
-- Blueprint is outlined in a class definition; classes are typically capitalized
-- Is only a blueprint until the program "instantiates" it (creates an object)
-- Instantiation creates the object and sets the default attributes and methods
-- Defaults are set by the class's "constructor" on instantiation
-- After creation, the object is modified using "attribute reference operators"
-    * In Python, object modification looks like this: `book1.title = "Walden"`
-- An object is highly flexible and its methods can instantiate other objects
-- An object can also inherit attributes from another class
-- A "derived class" inherits attributes from a "base class"
-### Hash Table
-- A mapping of keys (hashes) to values
-- Uses hashing function(s) to create the key for the value
-- Hashing functions range from very simple/DIY to highly complex/academic
-- The key (the hashed value) is used as the index for the value
-- A hash table key is often a "bucket" of values (thirty values in one bucket)
-- Buckets are fast!! Much faster to find values this way
-    * No buckets: find the 3/8" wrench in a *pile* of wrenches, hammers, drills
-    * Buckets: find the 3/8" wrench in the wrench bucket, ignoring other buckets
-- Finding the value involves: hashing it -> going to the matching hash (bucket)
-- Buckets are implemented efficiently via ["linked lists"](#linked-list)
-    * Each bucket contains a linked list; linked lists have speedy appends/sorts
-#### Hash Functions
-- Hash key: the parameter passed to a hash function, determines bucket choice
-- Hash function: computes the bucket containing the row from the hash key
-- Dynamic hash function: hash function but doesn't let buckets get too deep
-- Modulo: 
-    1. Convert the hash key by interpreting the key's bits as an integer value.
-    2. Divide the integer by the number of buckets.
-    3. Interpret the division remainder as the bucket number.
-    4. Convert bucket number to physical address of the block that has the row.
-
-
-<!-- Needs work -->
-## Data Structures Examples
-- 
 
 [[Return to Top]](#table-of-contents)
 
@@ -1940,7 +2088,7 @@ int main() {
 - Also check: `x.append(29)` -- `x.extend([40,41])` -- `52 + x.pop(0)` -- `x.remove(6)` -- `x.sort()` -- `x.reverse()` -- `x.insert(1, 79)`
     * These are permanent changes to `x`; *do not assign any of these to `x`* as in `x = x.append(...)`, it doesn't work
     * Specify sort method: `food_list.sort(key=lambda x: len(x) * -1)` ----- sort food_list by descending string lengths
-        * Generally you'll want to use `sorted(list_here, key=str.lower)`
+        * Generally you'll want to use `sorted(list_here, key=str.lower)`; notice `str.lower`, this is assigning the function as the key!
 - Also check: `x.sort()` -- `sorted(x)` -- `x.reverse()` -- `reversed(x)` -- `sorted(x, key=str.lower, reverse=True)` (key=max, ...)
 - Also check: `[d for d in x]` -- `[d for d in x if d > 3]` (returns [6,8]) -- `[d * 21 for d in x if d < 8]` (returns [126,42])
     * These are list comprehensions; they return lists and perform element-wise changes and even filter using if/else
