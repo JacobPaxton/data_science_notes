@@ -2203,6 +2203,9 @@ int main() {
 ## Pandas
 - Series and Dataframes!
 - Excellent library for tabular data (2 dimensions), especially non-numerical data with labeled axes
+- Check out the `tqdm` library, might be able to do pandas progress bars
+    * `def func(row):`->`return row + 42`
+    * `from tqdm import tqdm`->`tqdm.pandas()`->`df["a"].progress_apply(func)`
 ### Pandas Series
 - `pd.Series([1,2,3], name='numbers', index=['a','b','c'], dtype='object')`
 - `s[11] = 12`; `s.drop(11, inplace=True)`; `s.fillna('no_value')`; `s.dropna()`; 
