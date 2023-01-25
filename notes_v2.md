@@ -71,84 +71,94 @@ X.    [Apache Spark                  ](#apache-spark)
 1.    [Spark Wrangling               ](#spark-wrangling)
 2.    [Spark Machine Learning        ](#spark-machine-learning)
 ---
-XI.   [Python                        ](#python)
+XI.   [C++                           ](#c++)
+1.    [C++ Basics                    ](#c++-basics)
+2.    [C++ Pointers                  ](#c++-pointers)
+3.    [C++ Libraries                 ](#c++-libraries)
+4.    [C++ Examples                  ](#c++-examples)
+---
+XII.  [R                             ](#r)
+1.    [R Basics                      ](#r-basics)
+2.    [(R)andom Code Blocks          ](#(r)andom-code-blocks)
+---
+XIII. [Python                        ](#python)
 1.    [Python Basics                 ](#python-basics)
 2.    [Python Specifics              ](#python-specifics)
 ---
-XII.  [NumPy and Pandas              ](#numpy-pandas)
+XIV.  [NumPy and Pandas              ](#numpy-pandas)
 1.    [NumPy                         ](#numpy)
 2.    [Pandas                        ](#pandas)
 ---
-XIII. [Matplotlib & Seaborn          ](#matplotlib-&-seaborn)
+XV.   [Matplotlib & Seaborn          ](#matplotlib-&-seaborn)
 1.    [Visualization in Python       ](#overall-notes-for-python-vizualization)
 2.    [Matplotlib                    ](#matplotlib)
 3.    [Seaborn                       ](#seaborn)
 ---
-XIV.  [Exploration                   ](#exploration)
+XVI.  [Exploration                   ](#exploration)
 1.    [Exploration Prep              ](#exploration-prep)
 2.    [Exploration Visualization     ](#exploration-visualization)
 3.    [Feature Engineering           ](#feature-engineering)
 4.    [Feature Selection             ](#performance-based-feature-selection)
 ---
-XV.   [Algorithmic Clustering        ](#algorithmic-clustering)
+XVII. [Algorithmic Clustering        ](#algorithmic-clustering)
 1.    [Cluster Assignment            ](#cluster-assignment)
 2.    [K-Means Clustering            ](#k-means-clustering)
 3.    [Hierarchical Clustering       ](#hierarchical-clustering)
 4.    [DBSCAN                        ](#dbscan)
 ---
-XVI.  [Statistics                    ](#statistics)
+XVIII. [Statistics                    ](#statistics)
 1.    [Metrics                       ](#metrics)
 2.    [Hypothesis Testing            ](#hypothesis-testing)
 3.    [Probability                   ](#probability)
 ---
-XVII. [Analytic Software             ](#analytic-software)
+XIX.  [Analytic Software             ](#analytic-software)
 1.    [Jupyter Notebook              ](#jupyter-notebook)
 2.    [Excel & Google Sheets         ](#excel-&-google-sheets)
 3.    [Power BI                      ](#power-bi)
 4.    [Visual Studio Code            ](#vs-code)
 5.    [Tableau Public                ](#tableau-public)
 ---
-XVIII. [Model Preparation            ](#model-preparation)
+XX.   [Model Preparation             ](#model-preparation)
 1.    [Encoding                      ](#encoding)
 2.    [Scaling                       ](#scaling)
 3.    [Resampling                    ](#resampling)
 ---
-XIX.  [Classification                ](#classification)
+XXI.  [Classification                ](#classification)
 1.    [Classification Overview       ](#classification-overview)
 2.    [Classification Example        ](#classification-example)
 ---
-XX.   [Regression                    ](#regression)
+XXII. [Regression                    ](#regression)
 1.    [Regression Overview           ](#regression-overview)
 2.    [Regression Example            ](#regression-example)
 ---
-XXI.  [Time-Series                   ](#time-series)
+XXIII. [Time-Series                  ](#time-series)
 1.    [Time-Series Overview          ](#time-series-overview)
 2.    [Time-Series Example           ](#time-series-example)
 ---
-XXII. [Natural Language Processing   ](#natural-language-processing-(NLP))
+XXIV. [Natural Language Processing   ](#natural-language-processing-(NLP))
 1.    [NLP Overview                  ](#nlp-overview)
 2.    [NLP Example                   ](#nlp-example)
 ---
-XXIII. [Anomaly Detection            ](#anomaly-detection)
+XXV.  [Anomaly Detection             ](#anomaly-detection)
 1.    [Anomaly Detection Strategy    ](#anomaly-detection-strategy)
 2.    [Anomaly Detection Syntax      ](#anomaly-detection-syntax)
 3.    [Anomaly Detection Examples    ](#anomaly-detection-examples)
 ---
-XXIV. [Deep Learning                 ](#deep-learning)
+XXVI. [Deep Learning                 ](#deep-learning)
 1.    [Deep Learning Basics          ](#deep-learning-basics)
 ---
-XXV.  [Computer Vision               ](#computer-vision)
+XXVII. [Computer Vision              ](#computer-vision)
 1.    [Computer Vision Basics        ](#computer-vision-basics)
 ---
-XXVI. [Cross-Validation              ](#cross-validation)
+XXVIII. [Cross-Validation            ](#cross-validation)
 1.    [Cross-Validation Basics       ](#cross-validation-basics)
 ---
-XXVII. [Deployment                   ](#deployment)
+XXIX. [Deployment                    ](#deployment)
 1.    [Docker                        ](#docker)
 2.    [Flask                         ](#flask)
 3.    [Apache Kafka                  ](#apache-kafka)
 ---
-XXVIII. [Stakeholders                ](#stakeholders)
+XXX.  [Stakeholders                  ](#stakeholders)
 1.    [Storytelling                  ](#storytelling)
 2.    [Systems Development Lifecycle ](#systems-development-lifecycle-sdlc)
 
@@ -1798,7 +1808,7 @@ mean_x_given_g1_g2 = df.groupBy('g1').pivot('g2').agg(mean('x'))
 
 # C++
 
-## C++ Overview
+## C++ Basics
 - Compiler converts statements one-by-one to machine code, once finished, runs
     * Comments do not get converted to machine code
     * Compiler skips spaces (except in string literals) and empty lines
@@ -1852,7 +1862,8 @@ mean_x_given_g1_g2 = df.groupBy('g1').pivot('g2').agg(mean('x'))
         * `++i` here sends 1 as first input??; `i++` would send 0 as first input
         * Last statement is ran at start of loop, so ex: `i = i + 5` works too
 - End the program with `return 0;` ("return without error")
-## Pointers
+
+## C++ Pointers
 - A pointer is a variable that contains a memory address
 - Typically declared with a data type, ex: `int* maxItemPointer;`
     * `maxItemPointer` has an unknown memory address at this stage; dangerous!
@@ -1876,6 +1887,7 @@ mean_x_given_g1_g2 = df.groupBy('g1').pivot('g2').agg(mean('x'))
 - Delete *what is stored* at a memory address: `delete myPointer;`
     * The pointer itself is unchanged!! `cout << myPointer;` is same before/aft
     * "Freeing" an array ex: `new MyClass[6]` is done with `delete[] test3;`
+
 ## C++ Libraries
 - `#include "myFile.h"` - import your own file from the current directory
     * The .h is traditional for C++; quotes tell the compiler to look in CWD
@@ -1914,7 +1926,8 @@ mean_x_given_g1_g2 = df.groupBy('g1').pivot('g2').agg(mean('x'))
     * `.size()`, `.resize(42)`, `.push_back(element)`
     * `.back()` (return last element), `.pop_back()` (pop last element)
     * `newVector = origVector;` (copy), `v1 == v2` (comparison)
-## Examples
+
+## C++ Examples
 ```
 #include <iostream>
 #include <string>
@@ -1923,9 +1936,11 @@ mean_x_given_g1_g2 = df.groupBy('g1').pivot('g2').agg(mean('x'))
 using namespace std;
 
 int main() {
-	// print course title, programming language, your WGU student ID, and your name
-	cout << "C867-Scripting & Programming: Applications" << endl << "Language: C++" << endl;
-	cout << "Student ID: 10588242" << endl << "Name: Jacob Paxton" << endl << endl;
+	// print course title, programming language, WGU student ID, and your name
+	cout << "C867-Scripting & Programming: Applications" << endl;
+    cout << "Language: C++" << endl;
+	cout << "Student ID: 10588242" << endl;
+    cout << "Name: Jacob Paxton" << endl << endl;
 
 	// instantiate classRoster object
 	Roster classRoster;
@@ -1939,7 +1954,7 @@ int main() {
 		"A5,Fname,Lname,email@site.com,42,10,11,12,SOFTWARE" };
 	
 	// add students
-	for (int iter = 0; iter < 5; iter++) { classRoster.parse(studentData[iter]); }
+	for (int iter = 0; iter < 5; iter++) {classRoster.parse(studentData[iter]);}
 
 	// print all students
 	cout << "Displaying all students:" << endl;
@@ -1954,7 +1969,9 @@ int main() {
 	// calculate each student's average count of days per course
 	cout << "Average Days Per Course:" << endl;
 	for (int iter = 0; iter < 5; iter++) {
-		classRoster.printAverageDaysInCourse(classRoster.classRosterArray[iter]->GetStudentID());
+		classRoster.printAverageDaysInCourse(
+            classRoster.classRosterArray[iter]->GetStudentID()
+        );
 	}
 	cout << endl;
 
@@ -2002,10 +2019,10 @@ int main() {
 
 # R
 
-## R Overview
+## R Basics
 - Popular alternative to Python's data science libraries
 - Used extensively in academia; the language is not general-purpose like Python
-### Libraries
+### R Libraries
 - `install.packages('lubridate')`, `install.packages('ggplot2')`, etc
 - `library(lubridate)` date functions, ex: `ymd_hms` (read a ymd_hms column)
     * `some_date <- ymd_hms(chi[["datetime"]])` -> `month(some_date)`
@@ -2031,7 +2048,7 @@ int main() {
     * `hi.my.name.is.bob = 42` is a valid variable assignment
     * `15 %% 3 == 0`
 - `TRUE`, `FALSE`, `as.integer(TRUE)`, `class(TRUE)` (output: "logical")
-### Vector Work
+### R Vector Work
 - NOTE: Any reference to `c(val, val, ...)` will print as `val val ...`
 - `c(1,2,3,2,1)` same as `pd.Series([1,2,3,2,1])`
     * `c(1, "hi", 3)` yields `c("1", "hi", "3")` (as expected)
@@ -2056,7 +2073,7 @@ int main() {
     * `rbind(x, y)` will also yield dataframe with **rows** x, y
     * `df[1, ]` prints first row, `df[ ,1]` prints first column
     * Can assign list-likes to rows or to columns using above syntax
-### Dataframe Work
+### R Dataframe Work
 - `data.frame` is same as `pd.DataFrame`, `names(df)` is just `df.columns`
 - `df = read.csv('mycool.csv')` -> `head(df, num_rows)`
 - `head(df, 3)`, `tail(df, 7)`, `dim(df)` (shape), `summary(df)`
@@ -2067,7 +2084,8 @@ int main() {
     * `subset(df, !is.na(colname))` filter out nulls
 - `by(df$col1, df$col2, func)` apply func on col1 by unique value in col2
     * EX: `by(df$friend_count, df$gender, summary)` friend_count stats by gender
-### (R)andom Code Blocks
+
+## (R)andom Code Blocks
 ``` 
 # Take Gapminder then select cols then filter for Kenya
 gapminder %>%
