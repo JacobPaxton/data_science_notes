@@ -1301,7 +1301,7 @@ Windows + R > regedit > Computer\HKEY_CLASSES_ROOT\Directory\shell\cmd > Right c
       # #      #####  ###### #####  # #  # # #  ### 
 #     # #    # #   #  #    # #      # #   ## #    # 
  #####   ####  #    # #    # #      # #    #  ####  
- -->
+-->
 
 # APIs & Scraping
 
@@ -1794,7 +1794,7 @@ mean_x_given_g1_g2 = df.groupBy('g1').pivot('g2').agg(mean('x'))
 #          #      #   
 #     #    #      #   
  #####              
- -->
+-->
 
 # C++
 
@@ -1991,6 +1991,126 @@ int main() {
 
 
 <!-- 
+######      #####                               
+#     #    #     # ##### #    # #####  #  ####  
+#     #    #         #   #    # #    # # #    # 
+######      #####    #   #    # #    # # #    # 
+#   #            #   #   #    # #    # # #    # 
+#    #     #     #   #   #    # #    # # #    # 
+#     #     #####    #    ####  #####  #  ####  
+-->
+
+# R
+
+## R Overview
+- Popular alternative to Python's data science libraries
+- Used extensively in academia; the language is not general-purpose like Python
+### Libraries
+- `install.packages('lubridate')`, `install.packages('ggplot2')`, etc
+- `library(lubridate)` date functions, ex: `ymd_hms` (read a ymd_hms column)
+    * `some_date <- ymd_hms(chi[["datetime"]])` -> `month(some_date)`
+    * `month(as.POSIXlt(date_col, format="%d/%m/%Y"))`
+- `library(ggplot2)` visualizations
+    * `qplot(x=categ_col, data=df, binwidth=10, xlab="hi")` to do histogram
+        * `x=cats, y=conts, geom='boxplot'` boxplot, `x=conts, y=conts` scatter
+        * `color=I('black')`, `fill=I('#F79420')`
+    * `qplot(...) + scale_x_discrete(breaks=start:end)` set xticks, ex: 1:31
+        * `qplot(...) + scale_x_continuous(limits=c(start, end))` set xlims
+        * `qplot(...) + coord_cartesian(ylim = c(0, 1000))` set **VIEW** ylims
+        * `qplot(...) + scale_x_continuous(..., breaks=seq(start,end,step))`
+    * `qplot(...) + scale_x_discrete(...) + facet_wrap(~col2, ncol=3)` multiplot
+        * Three columns of histograms; # of rows decided by unique vals in col2
+        * Basically a `hue` but with separate plots; these share same y axis
+    * `ggplot(aes(x=col1, y=col2), data=pf) + geom_points()` scatter as well
+        * `ggplot(...) + geom_points(alpha=1/20)` set point alphas for scatter
+            * `geom_jitter(alpha=1/20)` blends cont. col (ex: blend age_years)
+        * `ggplot(...) + xlim(start, end)` visual cutoff; not data cutoff
+### (R)andom Syntax
+- `getwd()` is `pwd`, `list.files()` is `dir`
+- `x = 5 + 3` (local scope) OR `x <- 5 + 3` (global scope)
+    * `hi.my.name.is.bob = 42` is a valid variable assignment
+    * `15 %% 3 == 0`
+- `TRUE`, `FALSE`, `as.integer(TRUE)`, `class(TRUE)` (output: "logical")
+### Vector Work
+- NOTE: Any reference to `c(val, val, ...)` will print as `val val ...`
+- `c(1,2,3,2,1)` same as `pd.Series([1,2,3,2,1])`
+    * `c(1, "hi", 3)` yields `c("1", "hi", "3")` (as expected)
+    * `paste(1,2,3,4,5, sep="hi")` yields `1hi2hi3hi4hi5`
+    * `paste(c(1,2,3,4,5), collapse="hi")` also yields `1hi2hi3hi4hi5`
+    * `paste0('hi',1:5)` yields `"hi1" "hi2" "hi3" "hi4" "hi5"`
+- `c(1,2,3,4,5) > 3` yields `c(FALSE,FALSE,FALSE,TRUE,TRUE)`
+    * `any(c(...) > 3)`, `all(c(...) > 3)` returns TRUE or FALSE
+    * `which(c(...) > 3)` returns indices where the value > 3
+    * `subset(col_to_mask, c(...) > 3)` applies a mask to `col_to_mask`
+- `column <- c("a","a","a","b","c","c"))` -> `table(column)` for value counts
+    * `length(column)` to get length
+- `c(rep(4, times=3), rep(2, times=5))` is same as `c(4,4,4,2,2,2,2,2)`
+- `seq(1, 10, by=2)` yields `c(1,3,5,7,9`); `by=length.out` does equal spacing
+- `vector(mode='numeric', length=5)` yields `c(0,0,0,0,0)` (zero is default val)
+    * 'numeric' is 0s, 'logical' is FALSEs, 'character' is empty strings
+- `my.array = array(seq(1,4,1), dim=c(2,2))` yields `[[1,3],[2,4]]`
+    * `my.array + 10` yields `[[11,13],[12,14]]`
+    * `t(my.array)` transposes to `[[1,2],[3,4]]`
+    * `my.array %*% my.array` does matrix multiplication
+- `x <- 1:3` -> `y <- 10:12` -> `cbind(x, y)` yields dataframe! with cols x, y
+    * `rbind(x, y)` will also yield dataframe with **rows** x, y
+    * `df[1, ]` prints first row, `df[ ,1]` prints first column
+    * Can assign list-likes to rows or to columns using above syntax
+### Dataframe Work
+- `data.frame` is same as `pd.DataFrame`, `names(df)` is just `df.columns`
+- `df = read.csv('mycool.csv')` -> `head(df, num_rows)`
+- `head(df, 3)`, `tail(df, 7)`, `dim(df)` (shape), `summary(df)`
+- `df$colname` returns colname, `min(df$colname)` returns min value of colname
+    * `df$colname[1:42]` pull first 42 values of colname
+    * `min`, `max`, `mean`, `median`, `sd`
+- `subset(df, col1=='coolvalue' & col2 > 5)` applies the mask to df
+    * `subset(df, !is.na(colname))` filter out nulls
+- `by(df$col1, df$col2, func)` apply func on col1 by unique value in col2
+    * EX: `by(df$friend_count, df$gender, summary)` friend_count stats by gender
+### (R)andom Code Blocks
+``` 
+# Take Gapminder then select cols then filter for Kenya
+gapminder %>%
+    select(country, lifeExp, gdpPercap) %>%
+    filter(country=="Kenya")
+```
+```
+`if (val == 123) {
+    for (i in 1:10) {print("hi")}
+} else if (val == 321) {
+    print("yo")
+} else {
+    print("no")
+}
+```
+```
+coolfunc = function(x=10, y=4) {
+    cool = x * y
+    return(cool)
+}
+```
+```
+ggplot(aes(x=age, y=friend_count), data=pf) +
+    xlim(13, 90) +
+    geom_point(alpha=0.05,
+               position=position_jitter(h=0),
+               color='orange') +
+    coord_trans(y='sqrt') +
+    geom_line(stat='summary', fun.y=mean) +
+    geom_line(stat='summary', fun.y=quantile, probs=.1, linetype=2, 
+              color='red') +
+    geom_line(stat='summary', fun.y=quantile, probs=.5, color='red') +
+    geom_line(stat='summary', fun.y=quantile, probs=.9, linetype=2, color='red')
+```
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+<!-- 
 ######                                   
 #     # #   # ##### #    #  ####  #    # 
 #     #  # #    #   #    # #    # ##   # 
@@ -1998,7 +2118,7 @@ int main() {
 #         #     #   #    # #    # #  # # 
 #         #     #   #    # #    # #   ## 
 #         #     #   #    #  ####  #    # 
- -->
+-->
 
 # Python
 
@@ -2175,7 +2295,7 @@ int main() {
 #   # # #    # #    # #         #               #       ###### #  # # #    # ######      # 
 #    ## #    # #    # #         #               #       #    # #   ## #    # #    # #    # 
 #     #  ####  #    # #         #               #       #    # #    # #####  #    #  ####  
- -->
+-->
 
 # NumPy Pandas
 
@@ -2292,7 +2412,7 @@ int main() {
       # #      ###### #    # #    # #####  #  # # 
 #     # #      #    # #    # #    # #   #  #   ## 
  #####  ###### #    # #####   ####  #    # #    # 
- -->
+-->
 
 # Matplotlib & Seaborn
 
