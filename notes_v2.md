@@ -2062,7 +2062,7 @@ int main() {
 - `column <- c("a","a","a","b","c","c"))` -> `table(column)` for value counts
     * `length(column)` to get length
 - `c(rep(4, times=3), rep(2, times=5))` is same as `c(4,4,4,2,2,2,2,2)`
-- `seq(1, 10, by=2)` yields `c(1,3,5,7,9`); `by=length.out` does equal spacing
+- `seq(1, 10, by=2)` yields `c(1,3,5,7,9)`; `by=length.out` does equal spacing
 - `vector(mode='numeric', length=5)` yields `c(0,0,0,0,0)` (zero is default val)
     * 'numeric' is 0s, 'logical' is FALSEs, 'character' is empty strings
 - `my.array = array(seq(1,4,1), dim=c(2,2))` yields `[[1,3],[2,4]]`
