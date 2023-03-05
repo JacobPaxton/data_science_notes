@@ -918,14 +918,25 @@ XXX.  [Stakeholders                  ](#stakeholders)
     * Add your email: `git config --global user.email "joeschmoe@gmail.com`
 1. Done!!! For now...
 ### Registry CMD Launch
-Windows + R > regedit > Computer\HKEY_CLASSES_ROOT\Directory\shell\cmd > Right click on `Directory\Background\shell\cmd` folder on left nav pane > Permissions > Advanced
-- > Owner Change > Type username (Jake) > Check Names > Ok > Replace owner on subcontainers and objects > Apply 
-- > Add > Select a principal > Type username (Jake) > Check Names > Ok > Check "Full Control" > Ok > Replace all child.. > Ok > Yes > Ok
-- > Right click on HideBasedOnVelocityId (changing reg values now) > Rename > rename to ShowBasedOnVelocityId
-- > Task Manager (ctrl+shift+escape) > More Details > select Windows Explorer > Restart
-- > Open any folder > Shift + right click > If "open Powershell window here" displays, then success!
-- > Right click on `Directory\Background\shell\cmd` folder on left nav pane again > Permissions > Advanced > Select user in window (Jake) > Check "Replace all child"... > Apply
-- > Owner Change > type trusted installer service NT SERVICE\TrustedInstaller > Check Names > Ok > check "Replace owner on subcontainers..." > Ok > Ok > Close Regedit
+Windows + R > regedit > Computer\HKEY_CLASSES_ROOT\Directory\shell\cmd
+- > Right click on `Directory\Background\shell\cmd` folder on left nav pane
+    * > Permissions > Advanced
+- > Owner Change > Type username (Jake) > Check Names > Ok
+    * > Replace owner on subcontainers and objects > Apply 
+- > Add > Select a principal > Type username (Jake) > Check Names > Ok 
+    * > Check "Full Control" > Ok > Replace all child.. > Ok > Yes > Ok
+- > Right click on HideBasedOnVelocityId (changing reg values now) 
+    * > Rename > rename to ShowBasedOnVelocityId
+- > Task Manager (ctrl+shift+escape) > More Details 
+    * > select Windows Explorer > Restart
+- > Open any folder > Shift + right click 
+    * > If "open Powershell window here" displays, then success!
+- > Right click on `Directory\Background\shell\cmd` folder on left nav pane
+    * > Permissions > Advanced > Select user in window (Jake) 
+    * > Check "Replace all child"... > Apply
+- > Owner Change > type trusted installer service NT SERVICE\TrustedInstaller 
+    * > Check Names > Ok 
+    * > check "Replace owner on subcontainers..." > Ok > Ok > Close Regedit
 ### Package Manager Work
 - Using Anaconda as the package manager... any terminal is fine generally
 - See list of available environments: `conda env list`
