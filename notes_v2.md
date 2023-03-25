@@ -864,6 +864,21 @@ XXX.  [Stakeholders                  ](#stakeholders)
 - The premier Data Science package manager
 - Nearly all data science libraries are available via the conda-forge channel
 - I personally prefer Anaconda; see below for how I set up on Windows
+### Package Manager Work
+- Using Anaconda as the package manager... any terminal is fine generally
+- See list of available environments: `conda env list`
+- Create new environment: `conda create -n env_name`
+- Activate environment: `conda activate env_name`
+- Deactivate an active environment: `conda deactivate`
+- Delete an environment: `conda env remove -n env_name`
+- Check currently-installed packages: `conda list`
+- Search for available versions of a package: `conda search package_name`
+- Install a package with active environment: `conda install package_name`
+    * Specify a package's version on install: `conda install package_name=1.0.0`
+- Install package to inactive env: `conda install --name env_name package_name`
+- Update a package: `conda update package_name`
+- Remove a package: `conda remove package_name`
+- Install an env-contained pip instance: `conda install pip` -> `pip install ..`
 
 ## Full Environment Setup
 1. Download and install Anaconda: https://www.anaconda.com/products/distribution
@@ -883,12 +898,16 @@ XXX.  [Stakeholders                  ](#stakeholders)
     * `conda install --name env1 statsmodels scipy imbalanced-learn jupyter`
 1. Enable Windows CMD as a front for Conda: `conda init cmd.exe`
 1. Activate your environment: `conda activate env1`
+1. Install pip into your environment: `conda install pip`
 1. Now that your env is active, choose the additional packages you need
     * Webscraping: `conda install bs4 selenium`
-    * Interactivity: `conda install dataclasses plotly dash flask`
-    * Big data: `conda install dask pyspark`
+    * Interactivity: `conda install dataclasses plotly dash flask django`
+    * Big data: `conda install dask pyspark vaex scikit-learn-intelex`
     * Natural Language Processing: `conda install nltk`
-    * Network data: `conda install ipcalc nfstream dash dash_cytoscape`
+    * Network data: `pip install ipcalc nfstream dash dash_cytoscape`
+        * NFStream install: https://nfstream.org/docs/#installation-guide
+    * Elasticsearch: `pip install elasticsearch elasticsearch-dsl`
+    * Handling YAML: `pip install pyyaml ruamel.yaml`
 1. Install PyTorch if you want
     * `conda install pytorch torchvision torchaudio cudatoolkit=11.3 -c pytorch`
     * `conda install astunparse numpy ninja pyyaml setuptools cmake cffi`
@@ -932,26 +951,19 @@ Windows + R > regedit > Computer\HKEY_CLASSES_ROOT\Directory\shell\cmd
 - > Open any folder > Shift + right click 
     * > If "open Powershell window here" displays, then success!
 - > Right click on `Directory\Background\shell\cmd` folder on left nav pane
-    * > Permissions > Advanced > Select user in window (Jake) 
-    * > Check "Replace all child"... > Apply
+    * > Permissions > Advanced > Select user in window (Jake) > Remove 
+    * > Check "Replace all child"... > Apply > Yes
 - > Owner Change > type trusted installer service NT SERVICE\TrustedInstaller 
     * > Check Names > Ok 
     * > check "Replace owner on subcontainers..." > Ok > Ok > Close Regedit
-### Package Manager Work
-- Using Anaconda as the package manager... any terminal is fine generally
-- See list of available environments: `conda env list`
-- Create new environment: `conda create -n env_name`
-- Activate environment: `conda activate env_name`
-- Deactivate an active environment: `conda deactivate`
-- Delete an environment: `conda env remove -n env_name`
-- Check currently-installed packages: `conda list`
-- Search for available versions of a package: `conda search package_name`
-- Install a package with active environment: `conda install package_name`
-    * Specify a package's version on install: `conda install package_name=1.0.0`
-- Install package to inactive env: `conda install --name env_name package_name`
-- Update a package: `conda update package_name`
-- Remove a package: `conda remove package_name`
-- Install an env-contained pip instance: `conda install pip` -> `pip install ..`
+### Env Launch Script
+```
+cd C:\Users\Jake\Zen
+call activate mighty
+%SystemRoot%\explorer.exe "C:\Users\Jake\zen"
+code "" "C:\Users\Jake\zen" | exit
+jupyter notebook
+```
 
 
 [[Return to Top]](#table-of-contents)
@@ -1270,7 +1282,7 @@ Windows + R > regedit > Computer\HKEY_CLASSES_ROOT\Directory\shell\cmd
     * First capture group: ([a-zA-Z]+)
         * A sequence of alphabet characters
     * Second capture group: (?:\s([a-zA-Z]+))*
-        * Optional: capture group ends with asterisk
+        * Optional (capture group ends with asterisk)
         * Capture a sequence of alphabet chars that is preceded by a whitespace
         * Basically: `(?:\s(capture_inside_here))*`
     * "Hello, Sam!" -------------> [("Sam", "")] (two capture groups -> tuple)
@@ -2663,16 +2675,19 @@ fig.show()
 - Data prep parameters are calculated from *train*, this excludes unseen data, so don't calculate on whole dataset
 #### Syntax for Splitting Data
 ```
+from sklearnex import patch_sklearn
+patch_sklearn()
 from sklearn.model_selection import train_test_split
 train_validate, test = train_test_split(df, test_size=0.3, random_state=123, stratify=df.colname)
 train, validate = train_test_split(train_validate, test_size=.325, random_state=123, stratify=df.colname)
 ```
 ### Null Imputation
 - An imputer is **mainly** used for *algorithmic* null imputation
-- from sklearn.impute import SimpleImputer
-- `imputer = SimpleImputer(strategy='most_frequent')`
-    * Use a different strategy as necessary
 ```
+from sklearnex import patch_sklearn
+patch_sklearn()
+from sklearn.impute import SimpleImputer
+imputer = SimpleImputer(strategy='most_frequent')
 train[['embark_town']] = imputer.fit_transform(train[['embark_town']])
 validate[['embark_town']] = imputer.transform(validate[['embark_town']])
 test[['embark_town']] = imputer.transform(test[['embark_town']])
@@ -2735,20 +2750,26 @@ test[['embark_town']] = imputer.transform(test[['embark_town']])
     * **These are great for determining features to investigate further**
 - K-Best and RFE do not need to take in scaled data, just encoded data
 #### Select K Best
-- `from sklearn.feature_selection import SelectKBest`
-- Choose model algorithm, evaluate each feature's strength using algorithm, return best 'n' features
-- `kbest = SelectKBest(f_regression, k=3)` ----- returns top 3 'best' features using f regression
-- `kbest.fit(X_train, y_train)`
-- `kbest.pvalues_`
-- `kbest.get_support()` ----- array showing which columns were chosen (True, False, True...)
-- `X_train.columns[kbest.get_support()]` ----- shows column names
-- `X_kbest = kbest.transform(X_train_scaled)` ----- if k=3, return top-3 columns
+- Identify each feature's strength alone, return best 'n' features
+```
+from sklearnex import patch_sklearn
+patch_sklearn()
+from sklearn.feature_selection import SelectKBest
+kbest = SelectKBest(f_regression, k=3) # top-3 best features using F regression
+kbest.fit(X_train, y_train)
+kbest.pvalues_
+kbest.get_support() # array showing which columns were chosen (True, False, ...)
+X_train.columns[kbest.get_support()] # show column names
+X_kbest = kbest.transform(X_train_scaled) # if k=3, return top three columns
+```
 #### Recursive Feature Elimination (RFE)
-- `from sklearn.feature_selection import RFE`
 - Choose model algorithm, evaluate each combination of 'n' features using algorithm, return best combination
     * More computationally-expensive than `SelectKBest`, but much better at feature selection
     * Mitigate computational expense by selecting a high-efficiency algorithm
 ```
+from sklearnex import patch_sklearn
+patch_sklearn()
+from sklearn.feature_selection import RFE
 rfe = RFE(estimator=LinearRegression(), n_features_to_select=3)
 rfe.fit(X_train, y_train)
 rfe.get_support()
