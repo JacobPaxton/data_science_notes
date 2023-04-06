@@ -29,3 +29,114 @@ Restructure the notes to facilitate additions, not restrict them.
 
 To be successful, I need to make sure my goals and challenges are well-selected.
 ```
+
+## Brainstorming
+### Structure based on pipeline phases, all within ML topics
+- PRO: Step-by-step within the overall goal
+- CON: Duplication of effort between goals
+- EX: Classification: wrangling, exploration, feature engineering, etc
+- EX: Regression: wrangling, exploration, feature engineering, etc
+### Mutual instructions in joiner; Structure based on pipeline phases, within ML topics
+- PRO: Step-by-step within the overall goal
+- PRO: Reduce duplication of effort
+- CON: Complicated; reference links can be annoying to structure and also to follow
+- EX: Wrangling: acquisition, cleaning columns
+- EX: Exploration: univariate, cat v cat, etc
+- EX: Classification: wrangling/exploration/modeling for classification specifically
+### "Step purity"; wrangle up to split point, explore up to split point... then pipeline
+- PRO: Clear structuring and topic separation
+- PRO: Step-by-step within the overall goal
+- PRO: Reduce duplication of effort
+- CON: None?
+- EX: Wrangling: ML-agnostic acquisition/preparation
+- EX: Classification-Wrangling: ML-specific acquisition/preparation steps
+
+## Step-Purity Strategy
+- Sections are structured on goals, ex: statistics for classification
+- Sections are NOT structured for library reference; pandas/etc will be seen everywhere
+### Sections
+- Environment Meta-Work
+    * Strategy/Advice
+    * Anaconda
+    * Git
+- Dataset Reference
+    * Downloadables (Website links)
+    * APIs
+- Advanced Web Scraping
+    * REGEX in web-scraping
+    * Page requests
+    * Webdriver (Selenium)
+- Building a DB (DML, DDL, DCL, TCL)
+    * Good DB design
+    * SQLite
+    * PostgreSQL
+- DB Usage Mastery (DQL)
+    * SQLite
+    * MySQL
+    * Elasticsearch
+    * Spark
+- Feature Transformation
+    * REGEX, slicing
+    * Apply, applymap
+    * Find/replace (optimized search), sort (optimized)
+    * Melting, one-hot encoding
+    * Merge, join, concat
+    * Amplification (external data structures)
+    * Scaling
+    * NLP tokenization/lemmatization/etc
+- Algorithmic Clustering
+    * Feature Evaluation: Clustering
+    * Algorithm Selection
+    * Cluster analysis
+    * See: Clustering work for WGU
+- Classification
+    * Feature Evaluation: Classification
+        * Statistics
+        * SelectKBest
+        * Recursive Feature Engineering
+    * Model Training
+        * Algorithm Selection
+        * Resampling (training)
+    * Model Evaluation
+        * Metrics
+        * Cross-Validation
+- Regression
+    * Feature Evaluation: Regression
+        * Statistics
+    * Model Training
+        * Algorithm Selection
+    * Model Evaluation
+        * Metrics
+        * Cross-Validation
+- Time Series
+    * Feature Evaluation: Time Series
+    * Algorithm Selection
+    * Model Evaluation
+- Anomaly Detection
+    * Feature Evaluation: Anomaly Detection
+    * Algorithm Selection
+    * Result Evaluation
+- Deep Learning
+    * Deep Learning Design
+        * Vision/Video
+    * Outcome Evaluation
+- Insight Delivery
+    * Statistical Analysis
+        * Metrics, Probability, Hypotheses
+    * Jupyter Notebooks
+        * Matplotlib/Seaborn/Plotly
+    * Excel/Google Sheets
+    * PowerBI
+    * Tableau
+- Model Deployment
+    * Building a Flask app
+    * Deploying to Docker
+    * Deploying to Kubernetes
+    * Deploying to Apache Kafka
+- Project Management
+    * Stakeholder Interaction
+    * Storytelling
+    * Project Management/SDLC
+### Intentionally-Ignored
+- C++
+- R
