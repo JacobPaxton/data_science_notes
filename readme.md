@@ -4,22 +4,22 @@ This repository contains most of my working knowledge in multiple domains, inclu
 ## History
 The repo started with Codeup's data science program; as the program progressed, I rapidly pressed my takeaways into the now-defunct `ds_notes.md`, which I stopped editing on the last day of the Codeup program.
 
-After Codeup, I moved to `notes_v2.md`, where I cleaned up `ds_notes.md` for organization and for revisiting topics I didn't cover clearly in the first go.
+After Codeup, I moved to `notes_v2.md`, where I rewrote `ds_notes.md` to be cleaner and richer.
 
 When I joined Booz Allen, I was tasked with assisting in a priority frontend development project. I basically self-taught front end development and shoved what I learned into `frontend_notes.md`. Some of those lessons got shoved into `notes_v2.md`, too.
 
-During that development, I also tried to get ahead of my team's cyber domain support by creating `cyber_notes.md` and self-teaching cybersecurity. That effort didn't go far, I was way too busy for that low-priority effort.
+After that priority project was complete, I started my bachelor's degree in data with WGU. I finished my degree in one term (6 months!!) and I put the notes from that sprint into `notes_v2.md` and other files in the `sides` folder. 
 
-After that priority project was complete, I found the time to enroll in Western Governor's University to pursue a bachelor's degree in Data Management/Data Analytics (funded by Booz Allen's tuition repayment program, FlexEd). Through WGU, I've learned a lot more theory than implementation; of note, I've added substantially to `notes_v2.md`, which now also contains data structures, advanced SQL, and C++ knowledge. I will revisit those sections now that I've graduated from WGU, in the same spirit of revisiting `ds_notes.md` after I graduated from Codeup.
+Now that I've finished my bachelor's degree, I've started writing `notes_v3.md`. I have the same requirements that I had after completing the Codeup DS program; `notes_v2.md` is a mess, and there's a lot to gain from reworking it and adding to it.
 
-## Future
-I just finished my degree with WGU. I did not keep clean notes for the classes I took, instead, I crammed everything and shoved the mess into the `sides` folder in this repo.
+## notes_v3.md
+I noticed some serious flaws in `notes_v2.md` after I basically stopped using it. The original intention was to build an excellent and simple reference sheet for code. This ballooned with theory (taught by WGU), and the golden reference material was buried in over-explanation and already-memorized code. The reference approach fundamentally invites this kind of stagnation (just keep adding!!), and it's time to change the approach with `notes_v3.md`.
 
-Now that I've graduated, I'll take time to rewrite a lot of the notes I've written so far. I've already begun trying to fit my notes into the 80-character-width rule, and my goal is to take everything I've written and fit it in that format. I also want to revisit a lot of concepts that I was forced to learn in an arbitrary way (rather than a useful way).
+`notes_v3.md` focuses on achieving goals rather than serving as a reference tool.
 
-That rewrite may be fairly slow. I do have a personal life that I need to attend to after nearly a decade of neglect. But I really can't help myself, I love learning and I love taking notes. I feel like I'm stealing information from the world, making it into something much more clear and concise than the original, and storing it away permanently. I don't know how to explain it, but I love writing notes to this repo.
+If I need to accomplish a data goal, I should be able to pull a working, full sample from `notes_v3.md` and make small edits to achieve the goal. This approach allows extremely fast implementation and limits duplicate effort. Additionally, I can use the opportunity from implementation to update the sample; I can fix incompatibility or improve the sample's functionality or coverage. 
 
-Eventually I intend on pursuing a master's degree in this field. I could start my master's program this spring/summer. I might take time off from study or I might dive straight into the master's program- really not sure at this point. Master's study will mean I'll have plenty more to shove into this repo; I don't see any other method of learning that matches the effectiveness and availability of sharpening course material manually. These notes files have also proven extremely valuable on the job; I reference them nearly every day (less as I go on).
+I need to be super careful that I don't start spamming code snippets back into this file. That will be the death of this file just like it killed `notes_v2.md`; being organized and specific is the key to making a great notes file.
 
 ## Conclusion
 Feel free to "steal" from this repo, just as I've "stolen" from sources all over the Internet and from mentors in my personal/professional life over the past two years. I know I'll stop adding to it someday, but that day is not today...
