@@ -1325,7 +1325,30 @@ Jupyter notebooks are optimal for report delivery and should be mastered.
 --------------------------------------------------------------------------------
 <!-- Needs work -->
 ## Visualizations
-- 
+### Dataframe Styling
+```
+print(df.to_markdown(tablefmt="grid"))
+print(df.style.to_latex())
+latex = df.style.set_table_styles([
+    {"selector": "toprule", "props":":hline;"},
+    {"selector": "midrule", "props":":hline;"},
+    {"selector": "bottomrule", "props":":hline;"}]
+).to_latex(column_format="|l|l|l|")
+print(latex)
+```
+- `df.style.format({"col1": str.lower, "col2": "${:.1f}"}), na_rep="MISSING")`
+- `df.style.background_gradient()` applies a default, can choose cmaps
+```
+def highlight_number(row):
+    return [
+        "background-color: red; color: white"
+        if cell <= 0
+        else "background-color: green; color: white"
+        for cell in row
+    ]
+    styl
+df.style.apply(highlight_number)
+```
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
