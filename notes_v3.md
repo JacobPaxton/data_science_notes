@@ -1267,21 +1267,135 @@ This is largely pipelined via tokenization and stem/lemmatization.
 The results of NLP can be used to identify keywords and sentiment.
 NLP's "bag of words" works nicely in conjunction with classification.
 ```
+- NEED: Bring in notes from https://github.com/lets-talk-codeup/github-guesser
+- NLTK: https://www.nltk.org/index.html
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
 ## Normalizing String Features
-- 
+### Normalizing for Keyword Analysis
+- NEED: Vectorized method for performing this cleaning work
+    * NOTE: Add ngram compilation to this
+```
+import nltk
+nltk.download('stopwords')
+nltk.download('vader_lexicon')
+nltk.download('punkt')
+word_tokenizer = nltk.tokenize.toktok.ToktokTokenizer()
+ps = nltk.porter.PorterStemmer()
+wnl = nltk.stem.WordNetLemmatizer()
+stopword_list = nltk.corpus.stopwords.words("english")
+# stopword_list.append('word')
+# stopword_list.remove('word')
+import unicodedata
+import re
+
+# t = df["text"].str.cat(sep=' ')
+t = "Hey there! How's it going?"
+t = t.lower()
+t = unicodedata.normalize('NFKD', t).encode('ascii', 'ignore').decode('utf-8')
+t = re.sub(r"[^a-z0-9'\s]", "", t)                       # rm special chars
+words = tokenizer.tokenize(t, return_str = True)         # word tokenization
+
+stem_instead = False
+if stem_instead:
+    # stems of words; cheap on computations
+    words = [ps.stem(word) for word in t.split()]
+else:
+    # lemmatized words; expensive but accurate
+    words = [wnl.lemmatize(word) for word in t.split()]     
+
+filtered_words = [word for word in words if word not in stopword_list]
+clean_text = " ".join(filtered_words)
+```
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
 ## Keywords and Sentiment
-- 
+### Keyword Analysis
+- NEED: Bring in word cloud example from http://amueller.github.io/word_cloud/
+```
+# scatterplot of each row's char count by word count
+df["content_length"] = df["text"].apply(len)
+df["word_count"] = df["text"].split().apply(len)
+sns.relplot(df["content_length"], df["word_count"], hue=df["target"])
+# stacked bar chart of class proportions by word (PERFORM NORMALIZATION FIRST)
+all_words = df["clean"].str.cat(sep=" ")
+all_cts = pd.Series(all_words.split(" ")).value_counts().rename("all")
+spam_words = df[df["target"] == "spam"]["clean"].str.cat(sep=" ")
+spam_cts = pd.Series(spam_words.split(" ")).value_counts().rename("spam")
+ham_words = df[df["target"] == "ham"]["clean"].str.cat(sep=" ")
+ham_cts = pd.Series(ham_words.split(" ")).value_counts().rename("ham")
+word_counts = pd.concat([all_cts, spam_cts, ham_cts], axis=1)
+word_counts['p_spam'] = word_counts["spam"] / word_counts["all"]
+word_counts['p_ham'] = word_counts["ham"] / word_counts["all"]
+(
+    word_counts[['p_spam','p_ham']]
+        .tail(20)
+        .sort_values(by='p_ham')
+        .plot.barh(stacked=True)
+)
+```
+### Sentiment Analysis
+- Afinn and Vader are sentiment analysis tools based on social media
+- Sentiment is best analyzed without normalization
+```
+# singular sentiment analysis
+import nltk
+from nltk.sentiment import SentimentIntensityAnalyzer
+sia = SentimentIntensityAnalyzer()
+text = "Hello my name is Bob. You look great!"
+sentences = nltk.sent_tokenize(text)
+scores = [sia.polarity_scores(sentence) for sentence in sentences]
+print(scores)
+```
+```
+# vectorized sentiment analysis
+(
+    pd.DataFrame({"text":[
+        "Hello my name is Bob. You look great!",
+        "My name is Bob too! How weird..."
+    ]})
+    ["text"]
+        .apply(nltk.sent_tokenize)
+        .apply(lambda sentences: [
+            sia.polarity_scores(sentence) for sentence in sentences
+        ])
+)
+```
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
 ## NLP for Prediction
-- 
+- NEED: Apply SelectKBest or RFE to select most-predictive words for outcomes
+- Count Vectorization: 
+    * Each column is a word, each row is an record, each value is a **count**
+- TFIDF Vectorization (Term Frequency * Inverse Document Frequency): 
+    * Each column is a word, each row is an record, each value is a **weight**
+    * TF is how often a word shows; IDF is how unique the word is in all records
+    * Calculation identifies word importance (weight) and filters out stopwords
+```
+# perform prep and split before following the steps
+do_CV = False
+if do_CV:
+    # Count Vectorization
+    vectorizer = sklearn.feature_extraction.text.CountVectorizer()
+    bow = vectorizer.fit_transform(train.clean_text)        # use y_train
+    print(vectorizer.vocabulary_)                           # show word counts
+else:
+    # TFIDF Vectorization
+    vectorizer = sklearn.feature_extraction.text.TfidfVectorizer()
+    bow = vectorizer.fit_transform(train["clean_text"])     # use y_train
+    bow = pd.DataFrame(bow.todense(), columns=vectorizer.get_feature_names())
+    word_imps = dict(zip(vectorizer.get_feature_names(), vectorizer.idf_))
+    print(pd.Series(word_importances).sort_values())        # show importances
+# Decision Tree
+tree = DecisionTreeClassifier(max_depth=5)
+tree.fit(bow, y_train)
+y_train_preds = tree.predict(bow)
+features = dict(zip(vectorizer.get_feature_names(), tree.feature_importances_))
+print(pd.Series(features).sort_values().tail(5))            # top-5 features
+```
 
 [[Return to Top]](#table-of-contents)
 
@@ -1515,7 +1629,7 @@ Baselining a dataset to find anomalies in unseen data requires a careful hand.
 --------------------------------------------------------------------------------
 <!-- Needs work -->
 ## Anomalic Metrics
-- 
+- Calculate many metrics and do clustering!
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
