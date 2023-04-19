@@ -1145,12 +1145,19 @@ Explanations here shouldn't go any further than feature engineering.
 <!-- Needs work -->
 ## Dataframe Normalization
 ```
+# split JSON fields out into their own columns
+fix_keys = lambda x: {f"{col}.{key}":value for key, value in x.items()}
+for col in df:
+    if type(df.loc[0, col]) is dict:
+        print("Flattening column:", col)
+        tdf = pd.DataFrame(df[col].apply(flatten_json).apply(fix_keys).tolist())
+        df = pd.concat([df.drop(columns=[col]), tdf], axis=1)
 # split a string column into multiple columns
-df[["newcol1","newcol2"]] = df["col"].str.split(":", exxpand=True)
+df[["newcol1","newcol2"]] = df["col"].str.split(":", expand=True)
+# melt "wide" columns
+melted = pd.melt(df, id_vars="cat", value_vars=[c for c in df if c != "cat"])
 # merge two dataframes
 df1.merge(df2, left_on="df1c1", right_on="df2c1", how="outer", indicator=True)
-# fix df from wide w/ categorical index into combinatorics index
-melted = pd.melt(df, id_vars="cat", value_vars=[c for c in df if c != "cat"])
 ```
 
 --------------------------------------------------------------------------------
@@ -1497,7 +1504,16 @@ calcs = df.groupby("col1")[["col2","col3"]].agg(["mean","max","std"])
 <!-- Needs work -->
 ## Visualizations
 - Inspiration: https://www.python-graph-gallery.com/all-charts
-- PLT: https://matplotlib.org/stable/tutorials/introductory/customizing.html
+- Custom: https://matplotlib.org/stable/tutorials/introductory/customizing.html
+```
+# grab the orange color from seaborn's default palette
+import seaborn as sns
+d = sns.color_palette()[1]     # (1.0, 0.4980392156862745, 0.054901960784313725)
+# decimal to hex
+x = '#%02x%02x%02x' % tuple([int(255 * i) for i in d])
+# hex to decimal
+d = tuple([(int(f"0x{x[i:i+2]}", 16) / 255) for i in range(1, len(x), 2)])
+```
 ### Dataframe Styling
 ```
 # make values display differently
@@ -1507,14 +1523,66 @@ df.style.background_gradient(cmap="gnuplot")            # matplotlib cmap
 c1 = "background-color: red; color: white"
 c2 = "background-color: green; color: white"
 df.style.applymap(lambda x: c1 if x <= 0 else c2)       # defined colors
+df.corr().style.background_gradient(vmin=-1, vmax=1).format('{:.3f}'.format)
 # markdown
 print(df.to_markdown(tablefmt="grid"))
 # latex
 selectors = [{"selector": "toprule", "props":":hline;"},]
 latex = df.style.set_table_styles(selectors).to_latex(column_format="|l|l|l|")
 ```
-### Useful Visualizations
-- 
+```
+s = pd.Series([-3,-2,-1,0,1,2,3])
+cats = pd.Series(['1','2','1','1','1','2','1'])
+df = pd.DataFrame({'cats':cats, 'orig':s, 'squared':s**2, 'abs_x2':s.abs()*2})
+# plot from df
+plt.figure(1)
+df[['orig','squared','abs_x2']].plot.line("orig", "abs_x2")
+plt.title("line")
+plt.axis([-4,4,-2,10])
+plt.axhline(0, ls='--',alpha=.3)
+plt.axvline(0, ls='--',alpha=.3)
+# plot from groupby
+plt.figure(2)
+df.groupby('cats')[['orig','squared','abs_x2']].sum()\
+.plot.bar(color=['red','green','blue'], alpha=.6)
+plt.title("bar")
+plt.legend(shadow=True, loc="upper right")
+plt.text(0.8, 10, "hi")
+plt.show()
+```
+### Chart Approaches
+```
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+# generate data for visualization
+s = pd.Series([-3,-2,-1,0,1,2,3])
+cats = pd.Series(['a','b','a','a','a','b','a'])
+df = pd.DataFrame({'cats':cats, 'orig':s, 'squared':s**2, 'abs_x2':s.abs()*2})
+# preferred method for: 2-variable charting, separate charts by a 3rd var's cats
+fig = sns.relplot(df, x="orig", y="squared", col="cats")    # "col" can be "row"
+ax0, ax1 = fig.axes[0][0], fig.axes[0][1]            # for "row", fig.axes[1][0]
+ax0.axvline(0, alpha=0.2, ls=":")
+ax1.axhline(0, alpha=0.2, ls=":")
+arrow_p = {'facecolor': 'black', 'shrink': 0.1, 'headlength': 10, 'width': 2,}
+ax0.annotate('Apex', xy=(0,.3), xytext=(-1,3), fontsize=15, arrowprops=arrow_p)
+plt.show()
+# preferred method for: complete freedom over multiple charts
+fig, axes = plt.subplots(1, 2, figsize=(8,4), sharey=True)  # param: gridspec_kw
+fig.suptitle("hi")
+ax0, ax1 = axes[0], axes[1]
+ax0.set_title("$Y_o$")
+ax0.axis([-2,10,-2,20])
+ax0.set_yticks(s**2)
+ax1.set_title("sup")
+ax1.set_xlabel("dawgs", rotation=20) # "cats" isn't replaced... hmm...
+sns.barplot(df, x="cats", y="squared", ax=ax0, color=sns.color_palette()[1])
+sns.barplot(df, x="cats", y="abs_x2", ax=ax1)
+fig.tight_layout()
+plt.subplots_adjust(wspace=0.2)
+# plt.savefig('chart.png')
+plt.show()
+```
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
