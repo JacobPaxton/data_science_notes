@@ -170,7 +170,9 @@ I might want to add a script to update packages...
         * Selenium requires downloading a browser driver, ex: "chromedriver.exe"
     * Interactivity: `conda install dataclasses plotly dash flask django`
     * Big data: `conda install dask pyspark vaex scikit-learn-intelex`
-    * Natural Language Processing: `conda install nltk`
+    * Natural Language Processing: `conda install nltk wordcloud`
+        * Run `nltk.download(dataset_name)` to install a single required dataset
+        * Required sets: 'stopwords' 'vader_lexicon' 'punkt' 'wordnet' 'omw-1.4'
     * Network data: `pip install ipcalc nfstream dash dash_cytoscape`
         * NFStream install: https://nfstream.org/docs/#installation-guide
     * Elasticsearch: `pip install elasticsearch elasticsearch-dsl`
@@ -394,6 +396,7 @@ I'd like to have a repository of links for datasets for future reference.
 API notes should be structured in API request examples, with options explained.
 The end state of both methods should be an initial dataframe pre-editing.
 ```
+- NOTE: CONSIDER ADDING STRUCTURAL CONVERSION (DATA STRUCTURES)
 
 --------------------------------------------------------------------------------
 <!-- Polished -->
@@ -468,6 +471,7 @@ Three main methods: pd.read_html, requests/beautifulsoup, selenium/beautifulsoup
 I should use different examples for each, and incorporate REGEX usage.
 The end state of all methods should be an initial dataframe pre-editing.
 ```
+- NOTE: CONSIDER ADDING A REGEX SECTION
 
 --------------------------------------------------------------------------------
 <!-- Polished -->
@@ -485,6 +489,9 @@ df1 = pd.read_html(url)[0] # read HTML tables from URL, set first table as df1
 myhtml = "<table><tr><th>hi</th></tr><tr><td>12</td></tr></table>"
 df2 = pd.read_html(myhtml)[0] # read HTML tables from string, set first as df2
 ```
+### Secret Method
+- Sometimes the fastest solution is the best.
+- `df = pd.read_clipboard()` makes a dataframe from many potential formats
 
 --------------------------------------------------------------------------------
 <!-- Polished -->
@@ -630,6 +637,7 @@ SQLite and PostgreSQL are popular options for local DB work and should be shown.
 Both sections should be structured as an example with DB design tips throughout.
 The end state of both explanations should be a "SELECT *"-style return (to DF).
 ```
+- NOTE: CONSIDER ADDING IDEAL DB CREATION STRATEGY / CONCEPTS
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
@@ -1136,23 +1144,27 @@ Explanations here shouldn't go any further than feature engineering.
 --------------------------------------------------------------------------------
 <!-- Needs work -->
 ## Dataframe Normalization
-- 
+```
+# split a string column into multiple columns
+df[["newcol1","newcol2"]] = df["col"].str.split(":", exxpand=True)
+# merge two dataframes
+df1.merge(df2, left_on="df1c1", right_on="df2c1", how="outer", indicator=True)
+# fix df from wide w/ categorical index into combinatorics index
+melted = pd.melt(df, id_vars="cat", value_vars=[c for c in df if c != "cat"])
+```
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
 ## Fixing Dataframes at Speed
-- 
+- AVOID APPENDING ROWS TO DATAFRAMES (SLOW)
 ```
 # watch the speed of an `apply` operation
 from tqdm import tqdm
 tqdm.pandas()
 df = pd.DataFrame([{"hi":1, "yo":5}] * 1_000_000)
-(
-    df["hi"].progress_apply(lambda x: x * 100),
-    df.progress_apply(lambda x: x[0] * x[1], axis=1)
-)
-
-# check the size of an object
+s1 = df["hi"].progress_apply(lambda x: x * 100)
+df1 = df.progress_apply(lambda x: x[0] * x[1], axis=1)
+# check the size of a dataframe in memory
 print(df.__sizeof__())
 ```
 ### Bounties
@@ -1166,12 +1178,23 @@ print(df.__sizeof__())
 --------------------------------------------------------------------------------
 <!-- Needs work -->
 ## Feature Engineering
-- 
+- `.pipe(func)` df-wise, `.apply(func)` col/rowwise, `.applymap(func)` cellwise
+```
+# categorize strings
+df["cats"] = df["string"].map({"hi":"greet","yo":"greet","bye":"dismiss"})
+df["is_good"] = df["string"].str.startswith("good")
+# continuous to categorical
+df["ht_cats"] = pd.cut(df["height"], bins=[0,160,190,300], labels=["s","n","t"])
+df["spt_cats"] = pd.cut(df["split"], bins=np.arange(0,101,50), labels=["s","l"])
+df["wt_cats"] = pd.cut(df["weight"], bins=np.linspace(0,100,3),labels=["l","h"])
+df["versus_avg"] = np.where(df["height"] > 175, "Above Avg", "Below Avg")
+df["quartiles"] = pd.qcut(df["bmi"], q=4, labels["low","normal","high","obese"])
+```
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
 ## Speedy Data Structures
-
+- 
 ### Leads
 - Potential
 
@@ -1277,11 +1300,15 @@ NLP's "bag of words" works nicely in conjunction with classification.
 - NEED: Vectorized method for performing this cleaning work
     * NOTE: Add ngram compilation to this
 ```
-import nltk
 nltk.download('stopwords')
 nltk.download('vader_lexicon')
 nltk.download('punkt')
-word_tokenizer = nltk.tokenize.toktok.ToktokTokenizer()
+nltk.download('wordnet')
+nltk.download('omw-1.4')
+```
+```
+import nltk
+tokenizer = nltk.tokenize.toktok.ToktokTokenizer()
 ps = nltk.porter.PorterStemmer()
 wnl = nltk.stem.WordNetLemmatizer()
 stopword_list = nltk.corpus.stopwords.words("english")
@@ -1313,19 +1340,19 @@ clean_text = " ".join(filtered_words)
 <!-- Needs work -->
 ## Keywords and Sentiment
 ### Keyword Analysis
-- NEED: Bring in word cloud example from http://amueller.github.io/word_cloud/
+- Cool: https://github.com/amueller/word_cloud/blob/master/examples/parrot.py
 ```
 # scatterplot of each row's char count by word count
 df["content_length"] = df["text"].apply(len)
 df["word_count"] = df["text"].split().apply(len)
 sns.relplot(df["content_length"], df["word_count"], hue=df["target"])
 # stacked bar chart of class proportions by word (PERFORM NORMALIZATION FIRST)
-all_words = df["clean"].str.cat(sep=" ")
-all_cts = pd.Series(all_words.split(" ")).value_counts().rename("all")
+all_words  = df["clean"].str.cat(sep=" ")
 spam_words = df[df["target"] == "spam"]["clean"].str.cat(sep=" ")
+ham_words  = df[df["target"] == "ham"]["clean"].str.cat(sep=" ")
+all_cts  = pd.Series(all_words.split(" ")).value_counts().rename("all")
 spam_cts = pd.Series(spam_words.split(" ")).value_counts().rename("spam")
-ham_words = df[df["target"] == "ham"]["clean"].str.cat(sep=" ")
-ham_cts = pd.Series(ham_words.split(" ")).value_counts().rename("ham")
+ham_cts  = pd.Series(ham_words.split(" ")).value_counts().rename("ham")
 word_counts = pd.concat([all_cts, spam_cts, ham_cts], axis=1)
 word_counts['p_spam'] = word_counts["spam"] / word_counts["all"]
 word_counts['p_ham'] = word_counts["ham"] / word_counts["all"]
@@ -1335,6 +1362,29 @@ word_counts['p_ham'] = word_counts["ham"] / word_counts["all"]
         .sort_values(by='p_ham')
         .plot.barh(stacked=True)
 )
+```
+```
+from os import path
+from PIL import Image
+import numpy as np
+import matplotlib.pyplot as plt
+import os
+from wordcloud import WordCloud, STOPWORDS
+# build the wordcloud and save to file
+mask = np.array(Image.open("mask.png"))     # white-black img, cloud is in black
+stopwords = set(STOPWORDS)
+stopwords.add("said")
+wc = WordCloud(background_color="white", max_words=2000, mask=mask,
+               stopwords=stopwords, contour_width=3, contour_color='steelblue')
+wc.generate(text)                           # generate word cloud
+wc.to_file("output.png")                    # store to file
+# show the wordcloud
+plt.imshow(wc, interpolation='bilinear')
+plt.axis("off")
+plt.figure()
+plt.imshow(mask, cmap=plt.cm.gray, interpolation='bilinear')
+plt.axis("off")
+plt.show()
 ```
 ### Sentiment Analysis
 - Afinn and Vader are sentiment analysis tools based on social media
@@ -1434,40 +1484,43 @@ Jupyter notebooks are optimal for report delivery and should be mastered.
 --------------------------------------------------------------------------------
 <!-- Needs work -->
 ## Statistical Analysis
-- 
+```
+# crosstab (counts of each unique combo between col1 / col2) with margin totals
+crosstab = pd.crosstab(df.col1, df.col2, margins=True, normalize=True)
+# average col3 value for each combo of col1 and col2 (average is default)
+pivots = df.pivot_table(index="col1", columns="col2", values="col3")
+# statistics of col2 and col3 by col1 category
+calcs = df.groupby("col1")[["col2","col3"]].agg(["mean","max","std"])
+```
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
 ## Visualizations
+- Inspiration: https://www.python-graph-gallery.com/all-charts
+- PLT: https://matplotlib.org/stable/tutorials/introductory/customizing.html
 ### Dataframe Styling
 ```
+# make values display differently
+df.style.format({"col1": str.lower, "col2": "${:.1f}"}, na_rep="MISSING")
+# coloring cells
+df.style.background_gradient(cmap="gnuplot")            # matplotlib cmap
+c1 = "background-color: red; color: white"
+c2 = "background-color: green; color: white"
+df.style.applymap(lambda x: c1 if x <= 0 else c2)       # defined colors
+# markdown
 print(df.to_markdown(tablefmt="grid"))
-print(df.style.to_latex())
-latex = df.style.set_table_styles([
-    {"selector": "toprule", "props":":hline;"},
-    {"selector": "midrule", "props":":hline;"},
-    {"selector": "bottomrule", "props":":hline;"}]
-).to_latex(column_format="|l|l|l|")
-print(latex)
+# latex
+selectors = [{"selector": "toprule", "props":":hline;"},]
+latex = df.style.set_table_styles(selectors).to_latex(column_format="|l|l|l|")
 ```
-- `df.style.format({"col1": str.lower, "col2": "${:.1f}"}), na_rep="MISSING")`
-- `df.style.background_gradient()` applies a default, can choose cmaps
-```
-def highlight_number(row):
-    return [
-        "background-color: red; color: white"
-        if cell <= 0
-        else "background-color: green; color: white"
-        for cell in row
-    ]
-    styl
-df.style.apply(highlight_number)
-```
+### Useful Visualizations
+- 
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
 ## Magic in Jupyter
-- 
+- MD LaTeX: `$H_0$`, see: https://www.caam.rice.edu/~heinken/latex/symbols.pdf
+- PLT LaTeX: https://matplotlib.org/stable/tutorials/text/mathtext.html
 
 [[Return to Top]](#table-of-contents)
 
