@@ -177,6 +177,7 @@ I might want to add a script to update packages...
         * NFStream install: https://nfstream.org/docs/#installation-guide
     * Elasticsearch: `pip install elasticsearch elasticsearch-dsl`
     * Handling YAML: `pip install pyyaml ruamel.yaml`
+    * Sample data: `pip install pydataset`
 1. Install PyTorch if you want
     * `conda install pytorch torchvision torchaudio cudatoolkit=11.3 -c pytorch`
     * `conda install astunparse numpy ninja pyyaml setuptools cmake cffi`
@@ -1165,14 +1166,25 @@ df1.merge(df2, left_on="df1c1", right_on="df2c1", how="outer", indicator=True)
 ## Fixing Dataframes at Speed
 - AVOID APPENDING ROWS TO DATAFRAMES (SLOW)
 ```
-# watch the speed of an `apply` operation
+# DF.APPLY WITH PROGRESS BAR
 from tqdm import tqdm
 tqdm.pandas()
 df = pd.DataFrame([{"hi":1, "yo":5}] * 1_000_000)
 s1 = df["hi"].progress_apply(lambda x: x * 100)
 df1 = df.progress_apply(lambda x: x[0] * x[1], axis=1)
-# check the size of a dataframe in memory
+# CHECK MEMORY ALLOC FOR DF
 print(df.__sizeof__())
+```
+### Setting Up for Exploration
+```
+import sklearn
+from sklearnex import patch_sklearn
+patch_sklearn()
+from sklearn.model_selection import train_test_split as tts
+from pydataset import data
+df = data('iris')
+t_v, test = tts(df, test_size=0.3, random_state=123, stratify=df["Species"])
+train, val = tts(t_v, test_size=.325, random_state=123, stratify=t_v["Species"])
 ```
 ### Bounties
 - Memory efficient dataframe write from list of dict
@@ -1190,6 +1202,7 @@ print(df.__sizeof__())
 # categorize strings
 df["cats"] = df["string"].map({"hi":"greet","yo":"greet","bye":"dismiss"})
 df["is_good"] = df["string"].str.startswith("good")
+df["is_hot"] = df["string"].str.contains("hot|scalding|scorching|searing")
 # continuous to categorical
 df["ht_cats"] = pd.cut(df["height"], bins=[0,160,190,300], labels=["s","n","t"])
 df["spt_cats"] = pd.cut(df["split"], bins=np.arange(0,101,50), labels=["s","l"])
@@ -1249,7 +1262,48 @@ Popular clustering methods: K-Means, Hierarchical, and DBSCAN.
 --------------------------------------------------------------------------------
 <!-- Needs work -->
 ## Clustering Methods
-- 
+- KMeans: Use euclidian distances, select cluster count subjectively
+    * Domain knowledge (3 types), exploration (looks like 3), intertia (elbow)
+- https://stackabuse.com/hierarchical-clustering-with-python-and-scikit-learn
+    * Agglomerative moves closest two clusters into one cluster, repeatedly
+    * This operation walks vertically; long-unmerged clusters become candidates
+    * Draw horizontal line at base of longest-unmerged line, count intersections
+    * Count of horizontal line's vertical intersections is the cluster count.
+- DBSCAN: Overlaps of proximity boundaries
+```
+from sklearnex import patch_sklearn
+patch_sklearn()
+# KMEANS
+from sklearn.cluster import kmeans
+kmeans = Kmeans(n_clusters=3, random_state=123).fit(X_train_scaled)
+train["cluster"] = kmeans.predict(X_train_scaled)
+print(kmeans.cluster_centers_)
+print(kmeans.labels_)
+print(kmenas.intertia_)  # sum of each ((point-to-centerpoint distance) ** 2)
+centroids = df.groupby("cluster")["col1","col2","col3"].mean()
+centroids.plot.scatter(
+    x="col1", y="col2", marker="x", s=1000, ax=plt.gca(), label="centroid"
+)
+# HIERARCHICAL
+from sklearn.cluster import AgglomerativeClustering as AC
+import scipy.cluster.hierarchy as shc
+dend = shc.dendrogram(shc.linkage(data, method="ward"))
+cluster = AC(n_clusters=2, affinity="euclidian", linkage="ward")
+cluster.fit_predict(X_train)
+print(cluster.labels_)
+plt.scatter(
+    X_train[:,0], X_train[:,1], c=cluster.labels_, cmap="rainbow"
+)
+# DBSCAN
+from sklearn.cluster import DBSCAN
+dbsc = DBSCAN(eps=.1, min_samples=20).fit(X_train_scaled)
+clustered_train = dbsc.transform(X_train_scaled)
+print(clustered_df.labels)  # labels; outliers are -1
+cluster = clustered_df[clustered_df.labels == cluster_num]
+plt.scatter(
+    clustered_df, hue="labels"
+)
+```
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
@@ -1501,73 +1555,73 @@ calcs = df.groupby("col1")[["col2","col3"]].agg(["mean","max","std"])
 ```
 
 --------------------------------------------------------------------------------
-<!-- Needs work -->
+<!-- Polished -->
 ## Visualizations
 - Inspiration: https://www.python-graph-gallery.com/all-charts
 - Custom: https://matplotlib.org/stable/tutorials/introductory/customizing.html
+- `sns.set_palette("colorblind")`
+### Chart Choices
+- Figure-level plots for multiple sub-charts; axis-level plot for a single chart
+- Continuous x-axis: `displot` w/ `kind`: hist,kde or `relplot` w/ line,scatter
+- Categorical x-axis: `catplot` w/ `kind`: count,bar,box,violin,swarm,strip,more
+- `pairplot`, `heatmap`, `regplot`(scatter+reg), `jointplot`(scatter+edge hists)
+    * `pairplot` charts can be accessed/modified with `.axes`
+    * `regplot` uses `line_kws={'color':'red'}`
 ```
 # grab the orange color from seaborn's default palette
 import seaborn as sns
 d = sns.color_palette()[1]     # (1.0, 0.4980392156862745, 0.054901960784313725)
 # decimal to hex
-x = '#%02x%02x%02x' % tuple([int(255 * i) for i in d])
+x = '#%02x%02x%02x' % tuple([int(255 * i) for i in d])           # "#ff7f0e"
 # hex to decimal
 d = tuple([(int(f"0x{x[i:i+2]}", 16) / 255) for i in range(1, len(x), 2)])
 ```
 ### Dataframe Styling
+- `df.style` is used for changing data presentation (not changing the data)
+- `df.plot` is only really useful for lightweight/few-line df plotting
 ```
-# make values display differently
-df.style.format({"col1": str.lower, "col2": "${:.1f}"}, na_rep="MISSING")
-# coloring cells
-df.style.background_gradient(cmap="gnuplot")            # matplotlib cmap
-c1 = "background-color: red; color: white"
-c2 = "background-color: green; color: white"
-df.style.applymap(lambda x: c1 if x <= 0 else c2)       # defined colors
-df.corr().style.background_gradient(vmin=-1, vmax=1).format('{:.3f}'.format)
-# markdown
-print(df.to_markdown(tablefmt="grid"))
-# latex
-selectors = [{"selector": "toprule", "props":":hline;"},]
-latex = df.style.set_table_styles(selectors).to_latex(column_format="|l|l|l|")
-```
-```
-s = pd.Series([-3,-2,-1,0,1,2,3])
-cats = pd.Series(['1','2','1','1','1','2','1'])
-df = pd.DataFrame({'cats':cats, 'orig':s, 'squared':s**2, 'abs_x2':s.abs()*2})
-# plot from df
-plt.figure(1)
-df[['orig','squared','abs_x2']].plot.line("orig", "abs_x2")
-plt.title("line")
-plt.axis([-4,4,-2,10])
-plt.axhline(0, ls='--',alpha=.3)
-plt.axvline(0, ls='--',alpha=.3)
-# plot from groupby
-plt.figure(2)
-df.groupby('cats')[['orig','squared','abs_x2']].sum()\
-.plot.bar(color=['red','green','blue'], alpha=.6)
-plt.title("bar")
-plt.legend(shadow=True, loc="upper right")
-plt.text(0.8, 10, "hi")
-plt.show()
+# STYLE DF: format/bar numbers, color levels, format strings; print to HTML file
+import numpy as np
+import pandas as pd
+a1 = np.random.randint(30_000,200_000,1_000)
+a2 = np.random.randint(1,11,1_000)
+a3 = np.random.choice(list("abcdefghijklmnopqrstuvwxyz"),1_000)
+df = pd.DataFrame({"salary":a1, "level":a2, "title":a3})
+with open("my.md", "w") as f:
+    f.write(df.to_markdown())
+styler = df.head(10).style\
+    .format({"salary":"${:,.0f}", "title":str.upper})\
+    .hide(axis="index")\
+    .background_gradient(cmap="Oranges")\
+    .highlight_max(subset="salary", color="green")\
+    .highlight_min(subset="salary", color="red")\
+    .bar(subset="salary", color="#1f77b4")\
+    .export()
+html = df.head(10).style.use(styler).to_html()
+# with open("my.html", "w") as f:
+#     f.write(html)
 ```
 ### Chart Approaches
+- For interactivity, check out plotly: https://plotly.com/python/plotly-express/
+    * `import plotly.express as px`
 ```
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
-# generate data for visualization
+# GENERATE DATA
 s = pd.Series([-3,-2,-1,0,1,2,3])
 cats = pd.Series(['a','b','a','a','a','b','a'])
 df = pd.DataFrame({'cats':cats, 'orig':s, 'squared':s**2, 'abs_x2':s.abs()*2})
-# preferred method for: 2-variable charting, separate charts by a 3rd var's cats
+# PREFERRED METHOD FOR: 2-variable charting, separate charts by a 3rd var's cats
 fig = sns.relplot(df, x="orig", y="squared", col="cats")    # "col" can be "row"
 ax0, ax1 = fig.axes[0][0], fig.axes[0][1]            # for "row", fig.axes[1][0]
 ax0.axvline(0, alpha=0.2, ls=":")
 ax1.axhline(0, alpha=0.2, ls=":")
 arrow_p = {'facecolor': 'black', 'shrink': 0.1, 'headlength': 10, 'width': 2,}
 ax0.annotate('Apex', xy=(0,.3), xytext=(-1,3), fontsize=15, arrowprops=arrow_p)
+# plt.savefig("chart_cols.png")
 plt.show()
-# preferred method for: complete freedom over multiple charts
+# PREFERRED METHOD FOR: complete freedom over multiple charts
 fig, axes = plt.subplots(1, 2, figsize=(8,4), sharey=True)  # param: gridspec_kw
 fig.suptitle("hi")
 ax0, ax1 = axes[0], axes[1]
@@ -1575,12 +1629,35 @@ ax0.set_title("$Y_o$")
 ax0.axis([-2,10,-2,20])
 ax0.set_yticks(s**2)
 ax1.set_title("sup")
-ax1.set_xlabel("dawgs", rotation=20) # "cats" isn't replaced... hmm...
+ax1.set_xlabel("dawgs", rotation=20)           # "cats" isn't replaced... hmm...
 sns.barplot(df, x="cats", y="squared", ax=ax0, color=sns.color_palette()[1])
 sns.barplot(df, x="cats", y="abs_x2", ax=ax1)
 fig.tight_layout()
 plt.subplots_adjust(wspace=0.2)
-# plt.savefig('chart.png')
+# plt.savefig('chart_customs.png')
+plt.show()
+```
+```
+# PLOT DF: using df methods for fast plotting
+import pandas as pd
+import matplotlib.pyplot as plt
+s = pd.Series([-3,-2,-1,0,1,2,3])
+cats = pd.Series(['1','2','1','1','1','2','1'])
+df = pd.DataFrame({'cats':cats, 'orig':s, 'squared':s**2, 'abs_x2':s.abs()*2})
+# PLOT FROM DF
+plt.figure(1)
+df[['orig','squared','abs_x2']].plot.line("orig", "abs_x2")
+plt.title("line")
+plt.axis([-4,4,-2,10])
+plt.axhline(0, ls='--',alpha=.3)
+plt.axvline(0, ls='--',alpha=.3)
+# PLOT DF FROM GROUPBY
+plt.figure(2)
+df.groupby('cats')[['orig','squared','abs_x2']].sum()\
+.plot.bar(color=['red','green','blue'], alpha=.6)
+plt.title("bar")
+plt.legend(shadow=True, loc="upper right")
+plt.text(0.8, 10, "hi")
 plt.show()
 ```
 
@@ -1661,6 +1738,25 @@ Model evaluation is important and done in two stages: validate and test.
 <!-- Needs work -->
 ## Features for Regression
 - 
+```
+from sklearnex import patch_sklearn
+patch_sklearn()
+# SELECTKBEST: fast, not comprehensive
+from sklearn.feature_selection import SelectKBest
+kbest = SelectKBest("f_regression", k=3).fit(X_train, y_train)  # top 3 features
+p_values = kbest.pvalues_
+chosen_cols = X_train.columns[kbest.get_support()]
+X_train_kbest = X_train[chosen_cols]  # select top 3 features into X_train_kbest
+X_val_kbest, X_test_kbest = X_val[chosen_cols], X_test[chosen_cols]
+# RECURSIVE FEATURE ENGINEERING (RFE): slow, comprehensive
+from sklearn.feature_selection import RFE
+from sklearn.linear_model import LinearRegression as LR
+rfe = RFE(estimator=LR(), n_features_to_select=3).fit(X_train, y_train)
+chosen_cols = X_train.columns[rfe.get_support()]
+not_sure = pd.Series(rfe.ranking_, index=X_train.columns)
+X_train_RFE = X_train[chosen_cols]  # select top 3 features into X_train_RFE
+X_val_RFE, X_test_RFE = X_val[chosen_cols], X_test[chosen_cols]
+```
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
