@@ -168,7 +168,7 @@ I might want to add a script to update packages...
 1. Now that your env is active, choose the additional packages you need
     * Webscraping: `conda install bs4 selenium`
         * Selenium requires downloading a browser driver, ex: "chromedriver.exe"
-    * Interactivity: `conda install dataclasses plotly dash flask django`
+    * Interactivity: `conda install dataclasses plotly flask django sqlite3`
     * Big data: `conda install dask pyspark vaex scikit-learn-intelex`
     * Natural Language Processing: `conda install nltk wordcloud`
         * Run `nltk.download(dataset_name)` to install a single required dataset
@@ -1352,7 +1352,7 @@ The results of NLP can be used to identify keywords and sentiment.
 NLP's "bag of words" works nicely in conjunction with classification.
 ```
 - NEED: Bring in notes from https://github.com/lets-talk-codeup/github-guesser
-- NLTK: https://www.nltk.org/index.html
+- Natural Language Toolkit (NLTK): https://www.nltk.org/index.html
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
@@ -1361,6 +1361,7 @@ NLP's "bag of words" works nicely in conjunction with classification.
 - NEED: Vectorized method for performing this cleaning work
     * NOTE: Add ngram compilation to this
 ```
+import nltk
 nltk.download('stopwords')
 nltk.download('vader_lexicon')
 nltk.download('punkt')
@@ -1543,15 +1544,126 @@ Jupyter notebooks are optimal for report delivery and should be mastered.
 ```
 
 --------------------------------------------------------------------------------
-<!-- Needs work -->
+<!-- Needs Work -->
 ## Statistical Analysis
+- X categoricals against y categorical: chi2; independent cells, cells are > 5
+    * Degree of Freedom: (num_cols - 1) * (num_rows - 1)
+- X categoricals against y continuous: t-test; 1samp/2samp, normality, variance
+    * One-sample t-test: when comparing a sample to a general population mean
+    * Two-sample t-test: when comparing a distinct sample to another sample
+- X conts against X conts or the y cont: corr; linearity, normality / monotonic
+    * Correlation statistic: strength and direction of correlation (-1.0 to 1.0)
+    * Strength indicators: similar rate of change, both monotonic / polytonic
+- ERRORS: Type I (falsely-reject null), Type II (falsely-accept null)
+    * False Positive Rate: probability of a Type I error
+    * False Negative Rate: probability of a Type II error
 ```
-# crosstab (counts of each unique combo between col1 / col2) with margin totals
+import pandas as pd
+from scipy import stats
+# metrics
+pivot_table = df.pivot_table(index="col1", columns="col2", values="col3")
+category_metrics = df.groupby("col1")[["col2","col3"]].agg(["mean","max","std"])
 crosstab = pd.crosstab(df.col1, df.col2, margins=True, normalize=True)
-# average col3 value for each combo of col1 and col2 (average is default)
-pivots = df.pivot_table(index="col1", columns="col2", values="col3")
-# statistics of col2 and col3 by col1 category
-calcs = df.groupby("col1")[["col2","col3"]].agg(["mean","max","std"])
+corr = df[[col1, col2]].corr()
+zscores = stats.zscore(values) # "demeaning a vector", STDEVs from mean
+# passed normality and other assumptions
+t, p = stats.f_oneway(samp1.y, samp2.y, samp3.y, ...)  # multiple "check" ttests
+t, p = stats.ttest_ind(samp1.y, samp2.y, alternative=) # independence from other
+t, p = stats.ttest_1samp(samp1.y, pop.y, alternative=) # independence from all
+t, p = stats.ttest_rel(past.y, future.y, alternative=) # independence from self
+corr, p = stats.pearsonr(col1, col2)  # correlation between two linear cont cols
+chi2, p, degf, expected = stats.chi2_contingency(observed_crosstab)
+# did not pass normality
+t, p = stats.kruskal(samp1.y, samp2.y, samp3.y, ...)   # multiple "check" ttests
+t, p = stats.mannwhitneyu(samp1.y, samp2.y, alternative=) # one- or two-sample
+t, p = stats.wilcoxon(past.y, future.y, alternative=)     # paired
+corr, p = stats.spearmanr(col1, col2)    # corr between ord/monotonic-cont cols
+chi2, p, degf, expected = stats.chi2_contingency(observed_crosstab)
+```
+### Do Statistics!!
+```
+import pandas as pd
+from scipy import stats
+def test_normality(s):
+    """Print results of normality test; is the Series normally distributed?"""
+    result = stats.anderson(s, 'norm')
+    if (result.statistic < result.critical_values[2]): # index 2 is p_value=0.05
+        print(f"Column '{s.name}' has normal distribution!")
+        return True
+    print(s.name, "does not have normal distribution!")
+    return False
+def run_chi2(x, y):
+    """Print results of chi2; x, y are Series"""
+    observed_crosstab = pd.crosstab(x, y, margins=True)
+    if (observed_crosstab < 5).sum().sum() == 0:
+        chi2, p, degf, expected = stats.chi2_contingency(observed_crosstab)
+        if p < 0.05:
+            print(f"{x.name} and {y.name} have dependent relationship!")
+def run_ttest(x, y, normal_y=False):
+    """Print results of ttests; x, y are Series; normal_y flags normal dist"""
+    samples = {category:y[x == category] for category in x.unique()}
+    stat, p = stats.levene(*samples.values())  # equal variance test
+    if p < 0.05 or normal_y is False:  # if can't do parametric t-test
+        for key in samples:
+            drops = samples[key].index
+            t, p = stats.mannwhitneyu(samples[key], y.drop(drops))  # two-sample
+            if p < 0.05:
+                direction = "statistically " + "greater" if t > 0 else "less"
+                print(f"{key} is {direction} than other category(s). (>95%)")
+    else:                         # if *can* do parametric t-test
+        for key in samples:
+            drops = samples[key].index
+            t, p = stats.ttest_ind(samples[key], y.drop(drops))  # two-sample
+            if p < 0.05:
+                direction = "statistically " + "greater" if t > 0 else "less"
+                print(f"{key} is {direction} than other category(s). (>95%)")
+def run_corr(col1, col2, pearsonr=False):
+    """Print results of corr tests; col1, col2 are Series; pearsonr is flag"""
+    if pearsonr is True:
+        corr, p = stats.pearsonr(col1, col2)  # normal, linear
+    else:
+        corr, p = stats.spearmanr(col1, col2) # monotonic
+    if p < 0.05:
+        print(f"{col1.name} correlates with {col2.name}! (>95%)")
+def do_stats(df, y=None, chi2s=None, ttests=None, corrs=None, pearsonr=False):
+    """Run chi2, ttest, and corr tests using a dataframe and column names"""
+    print("Starting tests...")
+    if y is not None:
+        numeric_y = df[y].dtype.kind in 'biufc'
+        if numeric_y:
+            normal_y = test_normality(df[y])  # returns bool
+        if chi2s is not None:
+            for col in chi2s:
+                run_chi2(df[col], df[y])
+        if ttests is not None and numeric_y: 
+            for col in ttests:
+                run_ttest(df[col], df[y], normal_y)
+        if corrs is not None: 
+            for col in corrs:
+                run_corr(df[col], df[y], pearsonr is True)
+    elif len(corrs) >= 2:
+        print("No target! Can only do correlation tests on independent vars!")
+        tried = []
+        for col1 in corrs:
+            for col2 in corrs:
+                cond1 = col1 != col2
+                cond2 = (col1, col2) not in tried
+                cond3 = (col2, col1) not in tried
+                if cond1 and cond2 and cond3:
+                    run_corr(df[col1], df[col2], pearsonr is True)
+                    tried.append((col1, col2))
+    else:
+        print("Please select column labels for tests!")
+    print("Tests complete! All significant results are shown; none may show!")
+```
+```
+import numpy as np
+s1 = np.random.choice(list("gattaca"), size=70000)
+s2 = pd.Series(list("agttatg")*10000)
+s3 = np.random.normal(3, 1, size=70000)
+df = pd.DataFrame({"hi":s1, "yo":s2, "sup":s3})
+do_stats(df, y="hi", chi2s=["yo"])                        # run chi2 test
+do_stats(df, y="sup", ttests=["hi","yo"], corrs=["sup"])  # run t-tests, corrs
 ```
 
 --------------------------------------------------------------------------------
