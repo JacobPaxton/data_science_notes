@@ -1166,6 +1166,9 @@ df1.merge(df2, left_on="df1c1", right_on="df2c1", how="outer", indicator=True)
 ## Fixing Dataframes at Speed
 - AVOID APPENDING ROWS TO DATAFRAMES (SLOW)
 ```
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
 # DF.APPLY WITH PROGRESS BAR
 from tqdm import tqdm
 tqdm.pandas()
@@ -1174,6 +1177,60 @@ s1 = df["hi"].progress_apply(lambda x: x * 100)
 df1 = df.progress_apply(lambda x: x[0] * x[1], axis=1)
 # CHECK MEMORY ALLOC FOR DF
 print(df.__sizeof__())
+```
+### Null Characterization
+```
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+df = pd.DataFrame({"hi":[None,1,2]*30, "yo":[None,None,1]*30, 
+    "sup":[1,2,3]*30, "hey":[1,None,2]*30, "hello":[None,None,1]*30})
+# calculate null metrics
+avg_c_nulls = int(df.isna().sum().mean())
+c_nulls = [(c, df[c].isna().sum(), df[c].isna().sum()*100//len(df)) for c in df]
+rowwise_nullct = df.isna().sum(axis=1)
+r_nulls = {"counts":rowwise_nullct, "avg":int(rowwise_nullct.mean()),
+    "oneplus": (rowwise_nullct > 0).sum(), "zero":(rowwise_nullct == 0).sum()}
+dropna_percent_loss = round(1 - (len(df.dropna()) / len(df)), 3)
+t_nulls = {"count": df.isna().sum().sum(), "dropna_result": dropna_percent_loss}
+# print stats
+print("Total number of missing values across the dataframe:", t_nulls["count"])
+print("Average nullcount per col:", avg_c_nulls)
+print("Cols with zero nulls:", len([_ for c in c_nulls if c[1] == 0]))
+print("Cols with 1+ nulls:", len([_ for c in c_nulls if c[1] > 0]))
+print("Average nullcount per row:", r_nulls["avg"])
+print("Count of rows with zero nulls:", r_nulls["zero"])
+print("Count of rows with at least one null:", r_nulls["oneplus"])
+print(f"Data lost if drop all rows w/ nulls: {int(dropna_percent_loss * 100)}%")
+# plot col-wise null percentage histogram
+col_percents = pd.Series([c[2] for c in c_nulls])
+plt.hist(col_percents[col_percents <= avg_c_nulls], bins=np.arange(0,101,2))
+plt.hist(col_percents[col_percents > avg_c_nulls], bins=np.arange(0,101,2))
+plt.axvline(avg_c_nulls, ls="--", c="black")
+annot_xy = (avg_c_nulls, col_percents.value_counts().max() / 2)
+plt.annotate("Average", xy=annot_xy, rotation=90)
+plt.title("Percentage-Null By Column, Counts")
+plt.xlabel("Null (Percentage)")
+plt.ylabel("Count of Columns")
+plt.show()
+# plot row-wise null count histogram
+low_null_mask = rowwise_nullct <= r_nulls["avg"]
+plt.hist(rowwise_nullct[low_null_mask], bins=np.arange(0,r_nulls["avg"]*2.1,1))
+plt.hist(rowwise_nullct[~low_null_mask], bins=np.arange(0,r_nulls["avg"]*2.1,1))
+plt.axvline(r_nulls["avg"], ls="--", c="black")
+annot_xy = (r_nulls["avg"], rowwise_nullct.value_counts().max() / 2)
+plt.annotate("Average", xy=annot_xy, rotation=90)
+plt.title("Row-wise Nullcounts, Counts")
+plt.xlabel("Count of Nulls in Row")
+plt.ylabel("Count of Rows")
+plt.show()
+```
+```
+drop_cols = [c[0] for c in c_nulls if c[1] > 20]
+print(f"DROPPING THESE COLUMNS (>20% NULL):\n{drop_cols}")
+df = df.drop(columns=drop_cols)
+nonnull_minimum = int(r_nulls["avg"])  # thresh is minimum number of NON-NULL
+df = df.dropna(axis=1, thresh=nonnull_minimum)
 ```
 ### Setting Up for Exploration
 ```
@@ -1199,6 +1256,10 @@ train, val = tts(t_v, test_size=.325, random_state=123, stratify=t_v["Species"])
 ## Feature Engineering
 - `.pipe(func)` df-wise, `.apply(func)` col/rowwise, `.applymap(func)` cellwise
 ```
+import numpy as np
+import pandas as pd
+# fix numerical features
+log_unskewed = df[["col1","col2","col3"]].apply(lambda x: np.log(x + 1))
 # categorize strings
 df["cats"] = df["string"].map({"hi":"greet","yo":"greet","bye":"dismiss"})
 df["is_good"] = df["string"].str.startswith("good")
@@ -1209,6 +1270,17 @@ df["spt_cats"] = pd.cut(df["split"], bins=np.arange(0,101,50), labels=["s","l"])
 df["wt_cats"] = pd.cut(df["weight"], bins=np.linspace(0,100,3),labels=["l","h"])
 df["versus_avg"] = np.where(df["height"] > 175, "Above Avg", "Below Avg")
 df["quartiles"] = pd.qcut(df["bmi"], q=4, labels["low","normal","high","obese"])
+```
+```
+import numpy as np
+import pandas as pd
+from sklearn.preprocessing import StandardScaler
+s = pd.Series(np.random.randint(-3, 4, size=1000))
+df = pd.DataFrame({'orig':s, 'squared':s**2, 'abs_x2':s.abs()*2})
+encoded_df = df.dropna(thresh=len(df.columns))
+encoded_df = df.reset_index(drop=True)
+scaler = StandardScaler().fit(encoded_df)
+scaled_df = scaler.transform(encoded_df)
 ```
 
 --------------------------------------------------------------------------------
@@ -1257,7 +1329,35 @@ Popular clustering methods: K-Means, Hierarchical, and DBSCAN.
 --------------------------------------------------------------------------------
 <!-- Needs work -->
 ## Selecting Number of Clusters
-- 
+- Categorical columns should be ignored; we can use categories for filtering.
+- Principal Component Analysis (PCA)
+```
+import numpy as np
+import pandas as pd
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+np.random.seed(42)
+s = pd.Series(np.random.randint(-3, 4, size=1000))
+df = pd.DataFrame({'orig':s, 'neg':s*-1, 'squared':s**2, 'abs_x2':s.abs()*2})
+encoded_df = df.dropna(thresh=len(df.columns))
+encoded_df = df.reset_index(drop=True)
+scaler = StandardScaler().fit(encoded_df)
+scaled_df = scaler.transform(encoded_df)
+pca = PCA().fit(scaled_df)
+# plot cumulative explained variance
+print("Explained variance ratio:\n", pca.explained_variance_ratio_)
+plt.plot(pca.explained_variance_ratio_.cumsum())
+plt.title("Cumulative Explained Variance")
+plt.xlabel("Component Count")
+plt.ylabel("Explained Variance")
+plt.grid()
+plt.show()
+# Re-apply PCA to the data while selecting for number of components to retain.
+# Elbow method: 1 component explains nearly 100%, use 1!!
+pca1 = PCA(n_components=1)
+pca_df = pca1.fit_transform(scaled_df)
+components_df = pd.DataFrame(pca1.components_, columns=encoded_df.columns)
+```
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
@@ -1270,21 +1370,68 @@ Popular clustering methods: K-Means, Hierarchical, and DBSCAN.
     * Draw horizontal line at base of longest-unmerged line, count intersections
     * Count of horizontal line's vertical intersections is the cluster count.
 - DBSCAN: Overlaps of proximity boundaries
+### KMeans
 ```
 from sklearnex import patch_sklearn
 patch_sklearn()
-# KMEANS
 from sklearn.cluster import kmeans
+min_clusters = 2
+max_clusters = 10
+kmeans_dict = {}
+for i in np.arange(min_clusters, max_clusters + 1, 2):
+    print("Cluster count:", i)
+    print("Working... may take some time...")
+    # run k-means clustering on the data and...
+    kmeans = KMeans(n_clusters=i, random_state=42)
+    kmeans.fit(pca_df)
+    print("Done fitting!")
+    clusters = kmeans.predict(pca_df)  # compute avg within-cluster distances
+    print("Inertia (less is better):", kmeans.inertia_)
+    kmeans_dict[f"kmeans{i}"] = (kmeans, clusters, kmeans.inertia_)
+    print("Done with", i, "clusters!")
+# Investigate the change in within-cluster distance across number of clusters.
+plt.plot([kmeans_dict[f"kmeans{i}"][2] for i in np.arange(1,17,3)])
+plt.xticks((0,1,2,3,4,5), ("1","4","7","10","13","16"))
+plt.title("Elbow for Cluster Count Selection")
+plt.xlabel("Cluster count")
+plt.ylabel("Inertia (10,000,000s)")
+plt.show()
+```
+```
+selected_count = 7  # selected from elbow method
+selected_kmeans = kmeans_dict[f"kmeans{selected_count}"][0]
+clusters = selected_kmeans.predict(pca_df)
+encoded_df["cluster"] = clusters
+preds_vc = encoded_df["cluster"].value_counts(normalize=True, sort=False)\
+    .sort_index()
+preds_vc.plot.bar()
+plt.title("Cluster Assignment Proportions")
+plt.xlabel("Cluster")
+plt.ylabel("Proportion")
+plt.show()
+if len(preds_vc) >= 2:
+    clus0 = encoded_df[encoded_df["cluster"] == preds_vc.index[0]]
+    clus1 = encoded_df[encoded_df["cluster"] == preds_vc.index[1]]
+    for col in encoded_df:
+        print("-"*20, "Column:", col, "-"*20)
+        print("-"*10, "Cluster", preds_vc.index[0], "\n")
+        print(clus0[col].value_counts(normalize=True))
+        print("-"*10, "Cluster", preds_vc.index[1], "\n")
+        print(clus1[col].value_counts(normalize=True))
+```
+```
 kmeans = Kmeans(n_clusters=3, random_state=123).fit(X_train_scaled)
 train["cluster"] = kmeans.predict(X_train_scaled)
 print(kmeans.cluster_centers_)
 print(kmeans.labels_)
-print(kmenas.intertia_)  # sum of each ((point-to-centerpoint distance) ** 2)
+print(kmenas.inertia_)  # sum of each ((point-to-centerpoint distance) ** 2)
 centroids = df.groupby("cluster")["col1","col2","col3"].mean()
 centroids.plot.scatter(
     x="col1", y="col2", marker="x", s=1000, ax=plt.gca(), label="centroid"
 )
-# HIERARCHICAL
+```
+### Hierarchical (Agglomerative)
+```
 from sklearn.cluster import AgglomerativeClustering as AC
 import scipy.cluster.hierarchy as shc
 dend = shc.dendrogram(shc.linkage(data, method="ward"))
@@ -1294,6 +1441,9 @@ print(cluster.labels_)
 plt.scatter(
     X_train[:,0], X_train[:,1], c=cluster.labels_, cmap="rainbow"
 )
+```
+### DBSCAN
+```
 # DBSCAN
 from sklearn.cluster import DBSCAN
 dbsc = DBSCAN(eps=.1, min_samples=20).fit(X_train_scaled)
@@ -1720,6 +1870,7 @@ html = df.head(10).style.use(styler).to_html()
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+# %matplotlib inline              # uncomment for Jupyter notebooks
 # GENERATE DATA
 s = pd.Series([-3,-2,-1,0,1,2,3])
 cats = pd.Series(['a','b','a','a','a','b','a'])
@@ -1765,7 +1916,7 @@ plt.axhline(0, ls='--',alpha=.3)
 plt.axvline(0, ls='--',alpha=.3)
 # PLOT DF FROM GROUPBY
 plt.figure(2)
-df.groupby('cats')[['orig','squared','abs_x2']].sum()\
+df.groupby('cats')[['orig','squared','abs_x2']].sum().sort_index()\
 .plot.bar(color=['red','green','blue'], alpha=.6)
 plt.title("bar")
 plt.legend(shadow=True, loc="upper right")
@@ -1813,7 +1964,46 @@ Model evaluation is important and done in two stages: validate and test.
 --------------------------------------------------------------------------------
 <!-- Needs work -->
 ## Training Classifiers
-- 
+```
+from time import time
+from sklearn.metrics import fbeta_score
+# train a classifier
+def trainme(cls, X_train, y_train, X_test, y_test):
+    model_name = cls.__class__.__name__
+    seed = 42
+    models = {}
+    for size in [1,10,100]:  # %s of sample
+        start_time = time()
+        X_samp = X_train.sample(size, random_state=seed)
+        y_samp = y_train.sample(size, random_state=seed)
+        cls = cls.fit(X_samp, y_samp)
+        train_time = time() - start_time
+        models[f"{model_name}_{size}"] = (cls, time_spent)
+    return models
+def predictme(cls, X_train, y_train, X_test, y_test):
+    results = {}
+    results["X_train_preds"] = cls.predict(X_train)
+    results["X_test_preds"] = cls.predict(X_test)
+    results["train_acc"] = (X_train_preds == y_train).sum() / len(y_train)
+    results["test_acc"] = (X_test_preds == y_test).sum() / len(y_test)
+    results["train_fscore"] = fbeta_score(y_train, X_train_preds, beta=0.5)
+    results["test_fscore"] = fbeta_score(y_test, X_test_preds, beta=0.5)
+    return results
+```
+```
+algos = [
+    ("tree", DecisionTreeClassifier(random_state=42)),
+    ("rf", RandomForestClassifier(random_state=42)),
+    ("logit", LogisticRegression(random_state=42))
+]
+alldict = {}
+for algo in algos:
+    alldict[algo[0]] = []
+    models = trainme(algo[1], X_train, y_train, X_test, y_test)
+    for model in models.keys():
+        results = predictme(models[model][0], X_train, y_train, X_test, y_test)
+        alldict[algo[0]].append((model, models[model][0], results))
+```
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
