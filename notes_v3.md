@@ -161,15 +161,16 @@ I might want to add a script to update packages...
 1. Enter: `conda config --append channels conda-forge` (add main package source)
 1. Create your Conda environment and install basic data science packages into it
     * Basic: `conda create -n env1 numpy pandas matplotlib seaborn scikit-learn`
-    * `conda install --name env1 statsmodels scipy imbalanced-learn jupyter`
+    * `conda install --name env1 scipy statsmodels jupyter scikit-learn-intelex`
 1. Enable Windows CMD as a front for Conda: `conda init cmd.exe`
 1. Activate your environment: `conda activate env1`
 1. Install pip into your environment: `conda install pip`
 1. Now that your env is active, choose the additional packages you need
+    * Classification: `conda install imbalanced-learn xgboost`
     * Webscraping: `conda install bs4 selenium`
         * Selenium requires downloading a browser driver, ex: "chromedriver.exe"
     * Interactivity: `conda install dataclasses plotly flask django sqlite3`
-    * Big data: `conda install dask pyspark vaex scikit-learn-intelex`
+    * Big data: `conda install dask pyspark vaex`
     * Natural Language Processing: `conda install nltk wordcloud`
         * Run `nltk.download(dataset_name)` to install a single required dataset
         * Required sets: 'stopwords' 'vader_lexicon' 'punkt' 'wordnet' 'omw-1.4'
@@ -1282,6 +1283,16 @@ encoded_df = df.reset_index(drop=True)
 scaler = StandardScaler().fit(encoded_df)
 scaled_df = scaler.transform(encoded_df)
 ```
+```
+from imblearn.combine import SMOTETomek
+def resampler(X_train, y_train):
+    """ Use SMOTE+Tomek to eliminate class imbalances for train split """
+    smtom = SMOTETomek(random_state=42)
+    X_train_res, y_train_res = smtom.fit_resample(X_train, y_train)
+    print("Before SMOTE+Tomek applied:", X_train.shape, y_train.shape)
+    print("After SMOTE+Tomek applied:", X_train_res.shape, y_train_res.shape)
+    return X_train_res, y_train_res    # return resampled train data
+```
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
@@ -1960,55 +1971,202 @@ Model evaluation is important and done in two stages: validate and test.
 <!-- Needs work -->
 ## Features for Classification
 - 
+```
+
+```
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
 ## Training Classifiers
 ```
-from time import time
-from sklearn.metrics import fbeta_score
-# train a classifier
-def trainme(cls, X_train, y_train, X_test, y_test):
-    model_name = cls.__class__.__name__
-    seed = 42
-    models = {}
-    for size in [1,10,100]:  # %s of sample
-        start_time = time()
-        X_samp = X_train.sample(size, random_state=seed)
-        y_samp = y_train.sample(size, random_state=seed)
-        cls = cls.fit(X_samp, y_samp)
-        train_time = time() - start_time
-        models[f"{model_name}_{size}"] = (cls, time_spent)
-    return models
-def predictme(cls, X_train, y_train, X_test, y_test):
-    results = {}
-    results["X_train_preds"] = cls.predict(X_train)
-    results["X_test_preds"] = cls.predict(X_test)
-    results["train_acc"] = (X_train_preds == y_train).sum() / len(y_train)
-    results["test_acc"] = (X_test_preds == y_test).sum() / len(y_test)
-    results["train_fscore"] = fbeta_score(y_train, X_train_preds, beta=0.5)
-    results["test_fscore"] = fbeta_score(y_test, X_test_preds, beta=0.5)
-    return results
+import pandas as pd
+from sklearn.tree import DecisionTreeClassifier as TREE
+from sklearn.ensemble import RandomForestClassifier as RF
+from sklearn.linear_model import LogisticRegression as LOGIT
+from sklearn.naive_bayes import GaussianNB as NB
+from sklearn.neighbors import KNeighborsClassifier as KNN
+from xgboost import XGBClassifier as XGB
+def classification_shotgun(X_train, y_train, X_out, y_out):
+    """
+    Build various classification models and get their predictions on a dataset.
+    - Models: DecisionTree, RF, LogisticRegression, GaussianNB, KNeighbors, XGB
+    """
+    if type(y_train) != type(pd.DataFrame()):
+        y_train = pd.DataFrame(y_train.rename('in_actuals'))
+    if type(y_out) != type(pd.DataFrame()):
+        y_out = pd.DataFrame(y_out.rename('out_actuals'))
+    y_train, y_out = mode_bl(y_train, y_out)
+    y_train, y_out = decisiontree(X_train, y_train, X_out, y_out)
+    y_train, y_out = randomforest(X_train, y_train, X_out, y_out)
+    y_train, y_out = logisticregression(X_train, y_train, X_out, y_out)
+    y_train, y_out = naivebayes(X_train, y_train, X_out, y_out)
+    y_train, y_out = knearestneighbors(X_train, y_train, X_out, y_out)
+    y_train, y_out = xgboosts(X_train, y_train, X_out, y_out)
+    return y_train, y_out # return dataframes of predictions
+def manual_baseline(y_train, y_out, baseline_value):
+    """Add a column for the manually-selected baseline prediction"""
+    y_train['manual_baseline'] = baseline_value
+    y_out['manual_baseline'] = baseline_value
+    return y_train, y_out   # return DATAFRAMES with new preds columns
+def mode_bl(y_train, y_out):
+    """Calculate baseline using mode class for model comparison"""
+    mode = y_train.in_actuals.mode().tolist()[0]  # find baseline
+    y_train['mode_baseline'] = mode
+    y_out['mode_baseline'] = mode
+    return y_train, y_out   # return DATAFRAMES with new preds columns
+def tree(X_train, y_train, X_out, y_out):
+    """Creates decision trees with max_depth 1,2,3,5,10 and random_state=42"""
+    for depth in [1,2,3,5,10]:
+        tree = TREE(max_depth=i,random_state=42).fit(X_train,y_train.in_actuals)
+        y_train['tree_maxdepth' + str(depth)] = tree.predict(X_train)
+        y_out['tree_maxdepth' + str(depth)] = tree.predict(X_out)
+    return y_train, y_out    # return DATAFRAMES with new preds columns
+def randomforest(X_train, y_train, X_out, y_out):
+    """Creates random forests with max_depth 1,2,3,5,10 and random_state=42"""
+    for i in [1,2,3,5,10]:
+        rf = RF(max_depth=i, random_state=42).fit(X_train, y_train.in_actuals)
+        y_train['rf_depth' + str(i)] = rf.predict(X_train)
+        y_out['rf_depth' + str(i)] = rf.predict(X_out)
+    return y_train, y_out    # return DATAFRAMES with new preds columns
+def logisticregression(X_train, y_train, X_out, y_out):
+    """Creates logistic regressions with random_state=42"""
+    logit = LOGIT(random_state=42).fit(X_train, y_train.in_actuals)
+    y_train['logit'] = logit.predict(X_train)
+    y_out['logit'] = logit.predict(X_out)
+    return y_train, y_out    # return DATAFRAMES with new preds columns
+def naivebayes(X_train, y_train, X_out, y_out):
+    """Creates Naive-Bayes with var_smoothing of .001, .01, 10, 100"""
+    for smooth_level in [.00001, .0001, .001, .01, 10, 100]:
+        nb = NB(var_smoothing=smooth_level).fit(X_train, y_train.in_actuals)
+        y_train['nb_vsmooth' + str(smooth_level)] = nb.predict(X_train)
+        y_out['nb_vsmooth' + str(smooth_level)] = nb.predict(X_out)
+    return y_train, y_out    # return DATAFRAMES with new preds columns
+def knearestneighbors(X_train, y_train, X_out, y_out):
+    """Create KNNs with neighbor counts of 3, 5, 10, 25, 75"""
+    for neighbor_count in [3,5,10,25,75]:
+        knn = KNN(n_neighbors=neighbor_count).fit(X_train, y_train.in_actuals)
+        y_train['knn_n' + str(neighbor_count)] = knn.predict(X_train)
+        y_out['knn_n' + str(neighbor_count)] = knn.predict(X_out)
+    return y_train, y_out    # return DATAFRAMES with new preds columns
+def xgboosts(X_train, y_train, X_out, y_out):
+    """Create XGBoost models with max_depth 3,5,7,9 and random_state=42"""
+    for i in [3,5,7,9]:
+        xgb = XGB(max_depth=i, random_state=42).fit(X_train, y_train.in_actuals)
+        y_train['xgb_maxdepth' + str(i)] = xgb.predict(X_train)
+        y_out['xgb_maxdepth' + str(i)] = xgb.predict(X_out)
+    return y_train, y_out    # return DATAFRAMES with new preds columns
 ```
 ```
-algos = [
-    ("tree", DecisionTreeClassifier(random_state=42)),
-    ("rf", RandomForestClassifier(random_state=42)),
-    ("logit", LogisticRegression(random_state=42))
-]
-alldict = {}
-for algo in algos:
-    alldict[algo[0]] = []
-    models = trainme(algo[1], X_train, y_train, X_test, y_test)
-    for model in models.keys():
-        results = predictme(models[model][0], X_train, y_train, X_test, y_test)
-        alldict[algo[0]].append((model, models[model][0], results))
+from sklearn.model_selection import train_test_split
+df = pd.DataFrame({"hi":[1,2,3,4,3,2,3,2,1]*300, "yo":[1,0,0,1,1,1,0,1,1]*300,
+                   "sup":[1,0,1,1,1,1,0,0,1]*300})
+train, test = train_test_split(df)
+X_train, y_train = train.drop(columns=["sup"]), train.sup
+X_test, y_test = test.drop(columns=["sup"]), test.sup
+y_train, y_out = classification_shotgun(X_train, y_train, X_test, y_test)
 ```
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
 ## Evaluating Classifiers
-- 
+```
+def print_classification_results(y_train, y_out):
+    """Get metrics for a dataframe of model predictions columns, return a df."""
+    cols = ['Model','InSample_Accuracy','OutSample_Accuracy','InSample_Recall'
+        'OutSample_Recall','InSample_Precision','OutSample_Precision',
+        'InSample_F1_Score','OutSample_F1_Score']
+    running_list = []
+    # loop through each model
+    for i, model in enumerate(y_train.columns[1:]):
+        train_TP = ((y_train[model] == 1) & (y_train['in_actuals'] == 1)).sum()
+        train_TN = ((y_train[model] == 0) & (y_train['in_actuals'] == 0)).sum()
+        train_FP = ((y_train[model] == 1) & (y_train['in_actuals'] == 0)).sum()
+        train_FN = ((y_train[model] == 0) & (y_train['in_actuals'] == 1)).sum()
+        out_TP = ((y_out[model] == 1) & (y_out['out_actuals'] == 1)).sum()
+        out_TN = ((y_out[model] == 0) & (y_out['out_actuals'] == 0)).sum()
+        out_FP = ((y_out[model] == 1) & (y_out['out_actuals'] == 0)).sum()
+        out_FN = ((y_out[model] == 0) & (y_out['out_actuals'] == 1)).sum()
+        # calculate accuracy, recall, precision, f1 score
+        in_acc = (y_train[model] == y_train.in_actuals).mean()
+        out_acc = (y_out[model] == y_out.out_actuals).mean()
+        in_recall = train_TP / (train_TP + train_FN)
+        out_recall = out_TP / (out_TP + out_FN)
+        in_prec = train_TP / (train_TP + train_FP)
+        out_prec = out_TP / (out_TP + out_FP)
+        in_f1 = (2 * in_prec * in_recall) / (in_prec + in_recall)
+        out_f1 = (2 * out_prec * out_recall) / (out_prec + out_recall)
+        # build results dataframe
+        row = {'Model':model, 
+            'InSample_Accuracy': round(in_acc, 4), 
+            'OutSample_Accuracy': round(out_acc, 4),
+            'InSample_Recall': round(in_recall, 4),
+            'OutSample_Recall': round(out_recall, 4),
+            'InSample_Precision': round(in_prec, 4),
+            'OutSample_Precision': round(out_prec, 4),
+            'InSample_F1_Score': round(in_f1, 4),
+            'OutSample_F1_Score': round(out_f1, 4)}
+        running_list.append(row)
+    return pd.DataFrame(running_list)  # return dataframe of model performances
+```
+```
+from sklearn.model_selection import train_test_split
+df = pd.DataFrame({"hi":[1,2,3,4,3,2,3,2,1]*300, "yo":[1,0,0,1,1,1,0,1,1]*300,
+                   "sup":[1,0,1,1,1,1,0,0,1]*300})
+train, test = train_test_split(df)
+X_train, y_train = train.drop(columns=["sup"]), train.sup
+X_test, y_test = test.drop(columns=["sup"]), test.sup
+y_train, y_out = classification_shotgun(X_train, y_train, X_test, y_test)
+print_classification_results(y_train, y_out)
+```
+### Receiver Operating Characteristic AUC
+- Track model's ability to get correct answers across decision thresholds
+```
+from sklearn.metrics import roc_curve, auc, roc_auc_score
+from sklearn.linear_model import LogisticRegression
+bl_probs = [True for _ in range(len(y_test))]
+model = LogisticRegression(random_state=42)
+model.fit(X_train, y_train["in_actuals"])
+model_probs = model.predict_proba(X_test)[:,1]
+bl_auc = roc_auc_score(y_test.astype("bool"), bl_probs)
+model_auc = roc_auc_score(y_test.astype("bool"), model_probs)
+print('Baseline: ROC AUC=%.3f' % (bl_auc))
+print('Logistic Regression: ROC AUC=%.3f' % (model_auc))
+bl_fpr, bl_tpr, _ = roc_curve(y_test, bl_probs)
+model_fpr, model_tpr, _ = roc_curve(y_test, model_probs)
+plt.plot(bl_fpr, bl_tpr, linestyle='--', label='Baseline')
+plt.plot(model_fpr, model_tpr, marker='.', label='Model')
+plt.xlabel("False Positive Rate")
+plt.ylabel("True Positive Rate")
+plt.title("Receiver Operating Characteristic")
+plt.legend(loc="lower right")
+plt.show()
+```
+### Cross-Validation
+- K-Folds: Evaluate a model's metric across data subsets
+- Grid Search: Pass a parameter grid to build many models and evaluate accuracy
+```
+# K-Folds Cross Validation
+from sklearn.model_selection import cross_val_score as CVS
+from sklearn.metrics import precision_score, make_scorer
+acc = CVS(model, X_train, y_train["in_actuals"], cv=5).mean()
+scorer = make_scorer(precision_score, pos_label=1)
+prec = CVS(model, X_train, y_train["in_actuals"], cv=5, scoring=scorer).mean()
+```
+```
+# Grid Search
+import numpy as np
+from sklearn.model_selection import GridSearchCV
+from sklearn.ensemble import RandomForestClassifier as RF
+params = {"max_features":[1.0]}
+params["n_estimators"] = [100,200,500,1000]
+params["max_depth"] = list(range(1,8))
+grid = GridSearchCV(RF(random_state=42), params, cv=5, verbose=2)
+if type(y_train) is type(pd.DataFrame()):
+    y_train = y_train["in_actuals"]
+grid.fit(np.array(X_train), y_train)  # cast X_train as array to avoid warnings
+print(grid.best_estimator_)
+(grid.best_estimator_.predict(X_train) == y_train).mean()
+```
 
 [[Return to Top]](#table-of-contents)
 
