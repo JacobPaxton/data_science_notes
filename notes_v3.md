@@ -1961,6 +1961,14 @@ x = '#%02x%02x%02x' % tuple([int(255 * i) for i in d])           # "#ff7f0e"
 # hex to decimal
 d = tuple([(int(f"0x{x[i:i+2]}", 16) / 255) for i in range(1, len(x), 2)])
 ```
+```
+cmap_bluegreen_r = plt.get_cmap("BuGn_r")
+num_colors = crosstab.max().max()
+colors = ["whitesmoke"] + [cmap_bluegreen_r(i / num_colors) for i in range(2, num_colors)]
+cmap = LinearSegmentedColormap.from_list('', colors, num_colors)
+sns.heatmap(crosstab, cmap=cmap, cbar=False, 
+    vmin=low_threshold, vmax=high_threshold, center=center, annot=True, fmt="d")
+```
 ### Dataframe Styling
 - `df.style` is used for changing data presentation (not changing the data)
 - `df.plot` is only really useful for lightweight/few-line df plotting
@@ -1989,6 +1997,18 @@ html = df.head(10).style.use(styler).to_html()
 ### Chart Approaches
 - For interactivity, check out plotly: https://plotly.com/python/plotly-express/
     * `import plotly.express as px`
+```
+plt.figure(figsize=(14,5))
+bar_color = (0.0, 0.267, 0.106) # dark green, hint of blue
+splot = sns.barplot(x=x, y=y, color=bar_color, alpha=0.9)  # splot for bar annot
+bar_height = splot.containers[0]  # containers[0] contains each bar's height
+plt.title(title)
+plt.xlabel(xlabel)
+plt.ylabel(ylabel)
+plt.xticks(rotation=x_rot)
+plt.bar_label(bar_height, bar_labels)
+plt.show()
+```
 ```
 import pandas as pd
 import seaborn as sns
@@ -2533,6 +2553,7 @@ Modeling varies from using past data with adjustment to actual trainable models.
 --------------------------------------------------------------------------------
 <!-- Needs work -->
 ## Timestamp Engineering
+- VERY POWERFUL: `df.set_index("interval_ts").reindex([t1,t2,t3,t4]).fillna(0)`
 ```
 with open(r"C:\Users\Jake\sample_linux_authlog.txt") as f: text_data = f.read()
 regexp = "^(.{15})\s+(\S+)\s+([^\s\[:]+)(\[\d*\])*:\s+(.+)$"
