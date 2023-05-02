@@ -83,6 +83,7 @@ XI.   [Regression                    ](#regression)
 1.    [Evaluating Regressors         ](#evaluating-regressors)
 
 XII.  [Time Series                   ](#time-series)
+1.    [Timestamp Engineering         ](#timestamp-engineering)
 1.    [Metrics of Time Series        ](#metrics-of-time-series)
 1.    [Outcome Plotting              ](#outcome-plotting)
 1.    [Time Series Modeling          ](#time-series-modeling)
@@ -2094,6 +2095,29 @@ Model evaluation is important and done in two stages: validate and test.
 - Use chi-square tests to see which features are related to the target
     * Can use heatmaps/mosaic plots to visualize these crosstabs
 - One-hot encode all selected columns for modeling
+## Features for Classification
+- You can always train a model first and evaluate which features were best!
+```
+def feature_plot(importances, X_train, y_train):
+    # Display the five most important features
+    indices = np.argsort(importances)[::-1]
+    columns = X_train.columns.values[indices[:5]]
+    values = importances[indices][:5]
+    fig = plt.figure(figsize = (9,5))
+    plt.title("Top5 Most Predictive Features, Normalized Weights", fontsize=16)
+    plt.bar(np.arange(5), values, width=0.6, align="center", color='#00A000',
+            label="Feature Weight")
+    plt.bar(np.arange(5) - 0.3, np.cumsum(values), width=0.2, align="center", 
+            color='#00A0A0', label="Cumulative Feature Weight")
+    plt.xticks(np.arange(5), columns, rotation=30)
+    plt.xlim((-0.5, 4.5))
+    plt.ylabel("Weight", fontsize = 12)
+    plt.xlabel("Feature", fontsize = 12)
+    plt.legend(loc = 'upper center')
+    plt.tight_layout()
+    plt.show() 
+feature_plot(clf.feature_importances_, X_train, y_train) 
+```
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
@@ -2118,6 +2142,7 @@ Model evaluation is important and done in two stages: validate and test.
     * World-class performance but near-impossible to explain to stakeholders
 - **One Vs Rest**
     * Breakdown of multiclass problem into several binary class problems
+- Not shown: Bagging, AdaBoost, SGDC, SVM
 ```
 import pandas as pd
 from sklearn.tree import DecisionTreeClassifier as TREE
@@ -2425,6 +2450,15 @@ X_val_RFE, X_test_RFE = X_val[chosen_cols], X_test[chosen_cols]
 - **Polynomial Regression** 
     * Really just feature engineering to make polynomial features
     * Use number of curves from exploration as hyperparameter
+- An intercept is just an array of value: 1
+```
+df["cat1_col2"] = (df["col1"] == "cat1") * df["col2"]
+logit = sm.Logit(df[["target"]], df[["intercept","col1","col2","cat1_col2"]])
+fit = logit.fit()
+predictions = fit.predict(df[["intercept","col1","col2","cat1_col2"]])
+print(list(predictions)[:10])
+fit.summary()
+```
 ```
 from sklearn.linear_model import LinearRegression     # OLS
 from sklearn.linear_model import LassoLars            # reduce r2, increase bias
@@ -2498,6 +2532,140 @@ Modeling varies from using past data with adjustment to actual trainable models.
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
+## Timestamp Engineering
+```
+with open(r"C:\Users\Jake\sample_linux_authlog.txt") as f: text_data = f.read()
+regexp = "^(.{15})\s+(\S+)\s+([^\s\[:]+)(\[\d*\])*:\s+(.+)$"
+cols = ["timestamp", "hostname", "reporter", "pid", "message"]
+rows = re.findall(regexp, text_data, re.MULTILINE)
+df = pd.DataFrame(rows, columns=cols)
+df["ts"] = pd.to_datetime(df["ts"], format="%Y %b %d %H:%M:%S", errors="coerce")
+df["day"] = df["ts"].dt.strftime("%Y-%m-%d")
+df["hour"] = df["ts"].dt.strftime("%Y-%m-%d %H:00:00")
+df["minute"] = df["ts"].dt.strftime("%Y-%m-%d %H:%M:00")
+```
+```
+def get_holidays(selected_year):
+    """
+    Gather US holidays for a given year.
+    :param selected_year: Integer for selected year
+    :return: Python list of US holidays (dates only) in string format
+    """
+    us_holidays = []
+    for item in holidays.UnitedStates(years=selected_year).items():
+        us_holidays.append(str(item[0])) # only pull date of holiday- no name
+    return us_holidays
+def amplify_timestamps(timestamps_series, only_do_day=False):
+    """
+    Create a dataframe of timestamp amplification.
+    :param timestamps_series: pandas Series where values are pandas datetimes
+    :param only_do_day: Bool to just return a pandas-type timestamps series
+    :return: pandas DataFrame containing timestamps and amplifying information
+    """
+    try:
+        timestamps_series.rename("datetime", inplace=True)
+        timestamps_series = pd.to_datetime(timestamps_series)
+    except:
+        return "Error: can not convert specified series to datetime format!"
+    if only_do_day:
+        return timestamps_series.dt.date
+    years = [int(yr) for yr in timestamps_series.dt.year.astype("str").unique()]
+    us_holidays = []
+    for year in years:
+        us_holidays.extend(get_holidays(year))
+    df = pd.DataFrame(timestamps_series)
+    df["date"] = df["datetime"].dt.date
+    df["time"] = df["datetime"].dt.time
+    df["weekday"] = df["datetime"].dt.weekday # 0 for Monday, 1 for Tuesday, ...
+    df["dayname"] = df["datetime"].dt.day_name()
+    df["is_weekday"] = df["weekday"] < 5      # 5 is Saturday, 6 is Sunday
+    df["not_holiday"] = ~df["date"].astype("str").isin(us_holidays)
+    df["is_working_day"] = df["is_weekday"] & df["not_holiday"]
+    past_dawn = df["datetime"] > (df["date"].astype("str") + " 06:30:00")
+    before_dusk = df["datetime"] < (df["date"].astype("str") + " 18:30:00")
+    df["during_business_hours"] = df["is_working_day"] & past_dawn & before_dusk
+    return df
+def day_range_to_week_numbers(timestamps_series):
+    """
+    Convert timestamps in a Series to their relative week number.
+    - If first 790 timestamps happen in first seven days, they become "1"
+    - If timestamps 791-1558 happen in second seven days, they become "2"
+    We also return the day:week mapping dict in case it's needed elsewhere.
+    :param timestamps_series: pandas Series containing timestamps
+    :return week_number_series: pandas Series of mapped timestamps_series values
+    :return day_week_map: Python dict map for distinct_date:week_number
+    """
+    timestamps_series = pd.to_datetime(timestamps_series)  # just in case
+    first_day = timestamps_series.dt.date.min()
+    last_day = timestamps_series.dt.date.max()
+    days = pd.date_range(first_day,last_day,normalize=True).strftime("%Y-%m-%d")
+    day_week_map = {}
+    week_number = 0
+    for i, day in enumerate(days):
+        if i % 7 == 0:
+            week_number += 1
+        day_week_map[day] = week_number
+    dates_series = timestamps_series.dt.date.astype("str")
+    week_number_series = dates_series.map(day_week_map)
+    return week_number_series, day_week_map
+def detect_time_precision(date_series):
+    """
+    Use some logic to detect the time precision of a pandas Series.
+    :param date_series: pandas Series containing datetime values
+    :return interval_string: String to use in title/ylabel/legend (ex: "Daily")
+    :return interval: String to use for discrete x axis (ex: "Day")
+    """
+    is_weekly, zero_hrs, zero_mins, zero_secs = False, False, False, False
+    if date_series.dtype == "O":
+        if date_series.str.isdigit().all(): 
+            is_weekly = True
+    if is_weekly == False:
+        if date_series.dtype == "O":
+            date_series = pd.to_datetime(date_series)
+        zero_hrs  = (date_series.strftime("%H") == '00').all()
+        zero_mins = (date_series.strftime("%M") == '00').all()
+        zero_secs = (date_series.strftime("%S") == '00').all()
+    if is_weekly: 
+        interval_string, interval = "Weekly", "Week"
+    elif zero_hrs and zero_mins and zero_secs: 
+        interval_string, interval = "Daily", "Day"
+    elif zero_mins and zero_secs: 
+        interval_string, interval = "Hourly", "Hour"
+    elif zero_secs: 
+        interval_string, interval = "Minutely", "Minute"
+    else: 
+        return "Data interval unknown; agg the data using calculators.py", None
+    return interval_string, interval
+def determine_best_time_aggregation(datetime_series):
+    """
+    Calc duration of a series, determine best agg interval for trend analysis.
+    :param datetime_series: pandas Series where each value is a pandas timestamp
+    :return interval_list: Python list of strings indicating intervals to use
+    :return logic: Single string giving context to the decision
+    """
+    # discover start and end datetimes
+    earliest = datetime_series[datetime_series.index[0]]
+    latest = datetime_series[datetime_series.index[-1]]
+    # calculate duration
+    duration = latest - earliest
+    # choose interval for time aggregation
+    if duration.days <= 2:      # max 2880 datapoints
+        interval_list, logic = ["minute"], "Duration: < 2 days"
+    elif duration.days <= 5:    # max 5760, 96 datapoints
+        interval_list, logic = ["minute", "hour"], "Duration: 3-5 days"
+    elif duration.days <= 14:   # max 336 datapoints
+        interval_list, logic = ["hour"], "Duration: 6-14 days"
+    elif duration.days <= 30:   # max 720, 30 datapoints
+        interval_list, logic = ["hour", "day"], "Duration: 15-30 days"
+    elif duration.days <= 180:  # max 180 datapoints
+        interval_list, logic = ["day"], "Duration: 31-180 days"
+    else:                       # minimum 181, 26 datapoints
+        interval_list, logic = ["day", "week"], "Duration: > 180 days"
+    return interval_list, logic
+```
+
+--------------------------------------------------------------------------------
+<!-- Needs work -->
 ## Metrics of Time Series
 - 
 ```
@@ -2512,8 +2680,9 @@ s6 = df.col.strftime('%b %D, %Y')
 s7 = df.resample('W').sum()
 s8 = df.date.fillna()
 s9 = df.colname.diff(365)  # colwise, subtract 365-indices-before from current
-s10 = df.colname.shift(30) # colwise, shift column 30 cells deeper
-s11 = df.index.tz      # df.tz_localize(None), df.tz_localize('America/Chicago')
+s10 = s.ewm(alpha=.1).std()
+s11 = df.colname.shift(30) # colwise, shift column 30 cells deeper
+s12 = df.index.tz      # df.tz_localize(None), df.tz_localize('America/Chicago')
 df3 = df.asfreq('D')
 df1 = by_day.assign(ffill=lambda df: df.coffee_consumption.ffill())
 df2 = by_day.assign(bfill=lambda df: df.coffee_consumption.bfill())
@@ -2525,6 +2694,45 @@ df2 = by_day.assign(bfill=lambda df: df.coffee_consumption.bfill())
 - 
 ```
 df.resample('W').sum().colname.plot()  # lineplot of weekly sum
+plt.vlines(up_out.index, *plt.ylim(), color='black', ls='--', label='Ups')
+df[['high', 'low']].plot(color='black', alpha=.6, ls=':', figsize=(16, 6))
+df["mid"].plot(color='black', alpha=.6, ls='--')
+```
+```
+def bollinger_band_outliers(y, n, k, group_avgs=pd.Series(dtype="int")):
+    """
+    Calculate the Bollinger bands and outliers for a time-index pandas Series.
+    Default behavior is to calculate mid band from self's trend.
+    Set the group_avgs parameter to use a different value series for mid band.
+    - Mid band is used to set upper/lower bands; those bands identify outliers
+    - Using group average for mid band shows where activity differs from others
+    :param y: pandas Series for count of events along a time interval index
+    :param n: Integer for n_rolling on the given time interval
+    :param k: Integer for STDEVs to tune outlier factor (usually 2 or 20)
+    :param group_avgs: optional pandas Series to set mid band for comparison
+    :return: Python dictionary for Bollinger calculation results
+    """
+    _, interval = detect_time_precision(y.index)  # get time interval of y
+    cond1 = len(group_avgs) == len(y)
+    cond2 = type(group_avgs)==type(pd.Series())
+    using_group_avgs = cond1 and cond2   # group_avgs is specified and valid
+    if using_group_avgs:
+        mid_band = group_avgs.rolling(n).mean()
+    else: 
+        mid_band = y.rolling(n).mean()
+    upper_band = mid_band + (k * mid_band.std())  # Bollinger upper band
+    lower_band = mid_band - (k * mid_band.std())  # Bollinger lower band
+    volatility = (y - lower_band) / (upper_band - lower_band)  # set %b
+    upper_outliers = y[volatility > 1]  # exceeding %b
+    lower_outliers = y[volatility < 0]  # exceeding %b
+    results_dict = {"actuals":y,"group_averages":group_avgs,"n_rolling":n,"k":k,
+                    "upper_band":upper_band, "upper_outliers":upper_outliers,
+                    "lower_band":lower_band, "lower_outliers":lower_outliers, 
+                    "mid_band":mid_band, "volatility":volatility, 
+                    "time_interval":interval}
+    if not using_group_avgs:
+        del results_dict["group_averages"]
+    return results_dict
 ```
 
 --------------------------------------------------------------------------------
@@ -2545,6 +2753,7 @@ df.resample('W').sum().colname.plot()  # lineplot of weekly sum
 1. Understand the nature of your data
     * Is it years of information? months? weeks? days? hours?
     * From visualizations, are there immediate noticeable trends or seasonality?
+1. Fix the time field if necessary
 1. Downsample (aggregate) or upsample (add rows) based on the analytic goal
     * EX: Downsample from minute-by-minute transactions to daily totals
     * EX: Upsample **patchy** minute-by-minute transaction data to fill gaps
@@ -2605,19 +2814,54 @@ Metrics are the main way of determining anomalies.
 Getting to the number for a metric can be simple or fairly complicated.
 Baselining a dataset to find anomalies in unseen data requires a careful hand.
 ```
+```
+def overlap_detection(start_end_series, starter=1, ender=-1):
+    """
+    Detect when a series of start/end values has overlaps.
+    Overlaps get completely marked with "Overlap"; otherwise, set "Normal".
+    Example:
+    [start,   end, start,   end, start, start,   end,   end]  # Series
+    [    1,    -1,     1,    -1,     1,     1,    -1,    -1]  # Map to 1 and -1
+    [    1,     0,     1,     0,     1,     2,     1,     0]  # CumSum
+    [ True, False,  True, False,  True,  True,  True, False]  # x > 0
+    [ True, False,  True, False,  True,  True,  True,  True]  # Fix last overlap
+    [False, False, False, False,  True,  True,  True,  True]  # Determinations
+    ["Nrm", "Nrm", "Nrm", "Nrm", "Ovr", "Ovr", "Ovr", "Ovr"]  # Map to category
+    :param start_end_series: 1D array with two distinct values for start/end
+    :param starter: The distinct value of the array's start points
+    :param ender: The distinct value of the array's end points
+    """
+    try:
+        # use cumsum, mask, shift-comparison, and .loc to determine overlaps
+        s = pd.Series(start_end_series)              # Series
+        s = s.map({starter:1, ender:-1})             # Map to 1 and -1
+        s = s.cumsum()                               # CumSum
+        s = s > 0                                    # x > 0
+        s = s | s.shift(2)                           # Fix last overlap
+        s.loc[s[~s].index - 1] = False               # Determinations
+        s = s.map({True:"Overlap", False:"Normal"})  # Map to category
+        # If last two values are Normal -> Overlap, assume last is Normal
+        if s[len(s) - 2] == "Normal" and s[len(s) - 1] == "Overlap": 
+            s[len(s) - 1] = "Normal"                                
+        s = s.rename("overlap_status")
+        return s
+    except Exception as error:
+        print("Error:", error)
+        return None
+```
 ## Anomaly Detection Strategy
 - Distances, clustering, and domain knowledge to identify anomalies amongst normal data
 - Wide variety of problem sets, overlapping technique use cases
 ### General Approach
-0. Use domain knowledge / target first as MVP, then move on
+1. Use domain knowledge / target first as MVP, then move on
 1. Start with visuals for each available feature, investigate what is visually anomalous
     * Value counts (histogram) for categorical features (*consider normalizing*)
     * Numerical values over time (line plot) via resampling, averages, counts, sums
     * Categorical v numerical (bar chart) via groupby and aggregation (average, sum)
     * Numerical value v numerical value (scatter plot) via row-wise coords or `sns.pairplot`
-2. Move to statistical outliers for each numerical feature using Z-score and IQR rule
-3. Move to trend (time-relevant) outliers in categorical/numerical features using Bollinger bands
-4. Document observations and potential lines of investigation
+1. Move to statistical outliers for each numerical feature using Z-score and IQR rule
+1. Move to trend (time-relevant) outliers in categorical/numerical features using Bollinger bands
+1. Document observations and potential lines of investigation
 ### Behavioral Anomalies Examples
 - A user accessed, read, changed or copied files that are not associated with their work routine.
 - A user copied files to a personal workstation when policy permits working with them only from a specialized system.
@@ -2648,87 +2892,46 @@ Baselining a dataset to find anomalies in unseen data requires a careful hand.
 
 <!-- Polished -->
 ## Anomaly Detection Syntax
-### Time Anomalies
 - Outside expected times: Manual determination of anomaly via date/time filter
-    * `df["unexpected_time"] = ((df.time < time(9,0)) & (df.time > time(17,0)) | (df.date.weekday > 5) | df.date.isin(holidays)`
-- Too quickly: Downsampling / Reduction of time precision in rows, then value count of event/imprecise_time combinations
-    * `df["minute"] = df.time.dt.to_period("min")`, `df.groupby(["user_id","minute"]).url_path.count().sort_values(ascending=False)`
-    * `df[df["group"].isin(group_list)].groupby('group').resample('W').size().unstack(0).plot()`
-- Should never happen / Should always happen: New column for met_condition, filter by met_condition
-    * `df["bad"] = df["commandline"] == "su -"`, `df[df["bad"]]`
-    * `df["good"] = df["user_id"].isin(permitted_user_list)`
-- Outside expected value range at time: Designate upper/lower/mid Bollinger bands (EWMA or rolling), classify outliers using filtering
-    * `std = s.ewm(alpha=.1).std()`; `df['mid'] = s.ewm(alpha=.1).mean()`; `df['high'] = mid + K * std`; `df['low'] = mid - K * std`
-    * `df[['high', 'low']].plot(color='black', alpha=.6, ls=':', figsize=(16, 6))`; `df.mid.plot(color='black', alpha=.6, ls='--')`
-    * `df['%b'] = (s - df.low) / (df.high - df.low)`; `high_out = bands[bands['%b'] > 1]`, `low_out = bands[bands['%b'] < 0]`
-    * `plt.plot(bands.index, bands.actual, label='coolname')`; `plt.vlines(up_out.index, *plt.ylim(), color='black', ls='--', label='Ups')`
-### Numerical Anomalies
-- Unusual observed y in x: IQR rule or Z-score, classify outliers using filtering
-    * `q1 = col.quantile(0.25)`; `q3 = col.quantile(0.75)`; `iqr = q3 - q1`; `lower_bound = q1 - k * iqr`; `upper_bound = q3 + k * iqr`
-    * `stats.zscore(col)`
-### Combination Anomalies
-- Unusual combination of categories: Value counts of 2+ categorical features
-    * `df[["categorical_feature_1","categorical_feature_2","categorical_feature_3"]].value_counts().unstack().plot.barh()`
-- Unusual numerical value attributed to category: Split numerical into ordinal categories, then value counts (same as above)
-    * `pd.cut(s, bins=[0,2,5], labels=['low','high'], right=False)`
-- Unusually-high amount of same categorical combo at time: New column for is_combination, downsample with count() logic, then EWMA
-    * `df[["is_combination"]].resample("D").sum()`
-- Outlier clustering for all-numerical features: DBSCAN clustering, scale features then train/plot clusters
-    * See: [DBSCAN Clustering](#dbscan); **K-Means is worse for outlier detection** because it groups on centroids (includes outliers)
-    * With categories EX: two categories, three all-numerical clusters per category, average each cluster's features, compare averages
-### Pattern Anomalies
-- Find specific sequence of events for actor: Filter to actor, resample as needed, use dataframe shifting to create met_condition column
-    * `open_then_close = (df.actor == "p1") & (df.act == "open") & (df.actor.shift(-1) == "p1") & (df.act.shift(-1) == "close_doc")`
-    * Consider merging event logs into one continuous dataframe using actor IDs as the key
-- Find unusual sequence of events for actor: Filter to actor, list comprehension, value counts of same-values lists
-    * `three_event_sequences = [[s[i],s[i+1],s[i+2]] for i in s.index if i+2 < len(s)]`
-    * Consider merging event logs into one continuous dataframe using actor IDs as the key
-
-<!-- Polished -->
-## Anomaly Detection Examples
-### Bollinger Bands and Anomalous Temperatures
 ```
-plt.rc('figure', figsize=(13, 6))
-plt.rc('axes.spines', top=False, right=False)
-plt.rc('font', size=13)
-
-def to_fahrenheit(k):
-    return k * 9/5 - 459.67
-
-url = "https://gist.githubusercontent.com/ryanorsinger/0ec766c66f4089bdcbc1d4fb294a3394/raw/197c1f0d7b55a45f29437811bc73d9c4ef8af647/sa_temps.csv"
-s = pd.read_csv(url, index_col='datetime', parse_dates=True).temp
-s = s.dropna()
-s = to_fahrenheit(s)
-s = s.resample('D').mean()
-
-K = 2
-N = 20
-# std = s.rolling(N).std()
-std = s.ewm(alpha=.1).std()
-bands = pd.DataFrame()
-# bands['mid'] = s.rolling(N).mean()
-bands['mid'] = s.ewm(alpha=.1).mean()
-bands['upper'] = bands['mid'] + K * std
-bands['lower'] = bands['mid'] - K * std
-bands['actual'] = s
-
-t = bands.loc['2013']
-t[['upper', 'lower']].plot(color='black', alpha=.6, ls=':', figsize=(16, 6))
-t.mid.plot(color='black', alpha=.6, ls='--')
-t.actual.plot()
-plt.legend('')
-plt.xlabel('')
-
-bands['%b'] = (bands.actual - bands.lower) / (bands.upper - bands.lower)
-upper_outliers = bands[bands['%b'] > 1]
-lower_outliers = bands[bands['%b'] < 0]
-
-plt.plot(bands.index, bands.actual, label='Temperature (deg F)')
-plt.vlines(upper_outliers.index, *plt.ylim(), color='black', ls='--', label='Upper Outlier')
-plt.vlines(lower_outliers.index, *plt.ylim(), color='black', ls=':', label='Lower Outlier')
-plt.title('San Antonio Temperature Over Time')
-plt.legend()
-plt.xlim(pd.to_datetime('2013'), pd.to_datetime('2014'))
+from time import time
+# outside business hours
+outside_hours = (df.time < time(9,0)) & (df.time > time(17,0))
+weekends = df.date.weekday > 5
+holidays = df.date.isin(holiday_date_list)
+df["non_business_hours"] = outside_hours | weekends | holidays
+# happening too quickly
+df["minute"] = df.time.dt.to_period("min")
+df.groupby(["entity","minute"]).col.count().sort_values(ascending=False)
+# count of occurence by time interval
+df["is_thing"] = df["col1"] == "a" & df["col2"] == "cool"
+df.set_index("timestamp")[["is_thing"]].resample("D").rolling(3).mean()
+# event sequences
+three_event_sequences = [[s[i],s[i+1],s[i+2]] for i in s.index if i+2 < len(s)]
+p1_open = (df.actor == "p1") & (df.act == "open")
+p1_close = (df.actor == "p1") & (df.act == "close")
+open_then_close = p1_open & p1_close.shift(-1)
+```
+```
+# category combinations (least-frequency)
+df[["catcol1","catcol2","catcol3"]].value_counts().unstack().plot.barh()
+# should never happen or should always happen
+df["bad"] = df["action"].isin(banned_actions)
+df["good"] = df["entity"].isin(entity_whitelist)
+```
+```
+# ID by bins
+binned = pd.cut(s, bins=[0,2,5], labels=['low','high'], right=False)
+# ID by inter-quantile rule
+q1 = col.quantile(0.25)
+q3 = col.quantile(0.75)
+iqr = q3 - q1
+lower_bound = q1 - k * iqr
+upper_bound = q3 + k * iqr
+# ID by z-score
+stats.zscore(col)
+# DBSCAN (great for outlier detection)
+# KMeans (can do outlier detection)
 ```
 
 --------------------------------------------------------------------------------
