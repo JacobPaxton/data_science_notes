@@ -193,7 +193,7 @@ I might want to add a script to update packages...
         * NFStream install: https://nfstream.org/docs/#installation-guide
     * Elasticsearch: `pip install elasticsearch elasticsearch-dsl`
     * Handling YAML: `pip install pyyaml ruamel.yaml`
-    * Sample data: `pip install pydataset`
+    * Sample data: `pip install pydataset holidays`
 1. Install PyTorch if you want
     * `conda install pytorch torchvision torchaudio cudatoolkit=11.3 -c pytorch`
     * `conda install astunparse numpy ninja pyyaml setuptools cmake cffi`
@@ -269,47 +269,49 @@ jupyter notebook
 --------------------------------------------------------------------------------
 <!-- Needs work -->
 ## Git Setup
-### Github
-1. Create Github account
-1. Set your Github credentials on your computer
-    - Run command: `git config --global user.name "github_username"`
-    - Run command: `git config --global user.email "github_email_address"`
-1. Generate an SSH key for connecting with Github
-    - Run command: `ssh-keygen -t rsa -b 4096 -C "github_email_address"`
+1. Create Github/Gitlab account
+1. Set your Git credentials on your computer (if not already done)
+    - Run command: `git config --global user.name "git_username"`
+    - Run command: `git config --global user.email "git_email_address"`
+1. If you can't do SSH... use https!
+    * Go to account preferences, access tokens
+    * Set token name, delete out expiry date, checkmark all boxes, create token
+    * Save it somewhere; definitely do not save it on your desktop (or, do)
+1. If you can use SSH, generate an SSH key for connecting with Github/Gitlab
+    - Run command: `ssh-keygen -t rsa -b 4096 -C "github_email_address_here"`
     - Hit ENTER on keyboard when it asks where to save the key (save to default)
-1. Add your SSH key to Github here: https://github.com/settings/ssh/new
-    - Run command (Mac/Linux or Git Bash): `cat ~/.ssh/id_rsa.pub | pbcopy`
+1. Add your publickey to Github/Gitlab here: https://github.com/settings/ssh/new
+    - Copy the SSH public key to clipboard
+        * (Mac/Linux): `cat ~/.ssh/id_rsa.pub | pbcopy`
+        * (Windows Git Bash): `cat ~/.ssh/id_rsa.pub | clip`
     - Paste that into the link and give it a title of your choice
-1. Click "Add SSH Key", done
-1. Check if it's working: 
-    - Create new repository on Github
-    - Click "Code" button dropdown
-    - Click SSH
-    - Copy that text
+    - Click "Add SSH Key", done
+1. Check if it's working
+    - Create new repository on Github/Gitlab
+    - Click "Code" or "Clone" button dropdown
+    - Click SSH, copy that link to the repo
     - Open Terminal or Git BASH or CMD or whatever you use
     - Enter `git clone that_text_you_just_copied`
-        - EX: `git clone git@github.com:JacobPaxton/data_science_notes.git`
-        - EX2: `git clone https://github.com/JacobPaxton/data_science_notes.git`
+        - EX: `git clone https://github.com/JacobPaxton/data_science_notes.git`
+        - SSH: `git clone git@github.com:JacobPaxton/data_science_notes.git`
     - If it clones, great- it worked
     - Add a random new file to the folder it created
-    - Run command: 
+    - Open a terminal in the folder and run these commands: 
         * `git add .`
         * `git commit -m 'my first commit'`
         * `git push`
-1. If the above steps work, you are 100% ready to go
-### Gitlab
-1. 
+1. If the above commands work, you are 100% ready to go
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
 ## Git Work
 1. If you're creating a new project, start by creating a repo on Github/Gitlab
-1. Grab the remote repository with `git clone` and `cd` into the created folder
-1. Grab all branches of remote repo with `git remote update`
+1. Open a terminal in the directory where you want your repo to be located
+1. Grab the remote repository with `git clone` then `cd` into the created folder
 1. Switch to your branch of preference if needed with `git branch awesomething`
     * Create a new branch if desired with `git branch -c mynewbranch`
 1. Make your changes in the branch
-    * Consider adding a ".gitignore"! Set file exclusions (line-separated)
+    * Consider adding a ".gitignore" here! Set file exclusions (line-separated)
 1. When you're ready to consider the remote repository, run `git remote update`
     * This is `git fetch`, but is fetching *all* branches in the remote repo
     * This automatically pulls any remote repo branch that the local repo lacks
@@ -1812,9 +1814,15 @@ Jupyter notebooks are optimal for report delivery and should be mastered.
     * P(A) = `recipe.pmf(A)` ----- `.pmf` because of discrete values
 - Lots more distributions... check scipy documentation for stats module
 #### Methods for Theoretical Distributions
-- Chance of specific outcome: **.pmf**(discrete_value), and **.pdf**(continuous_value)
-- Proportion higher: **.sf**(number) = proportion_higher, opposite is **.isf**(proportion_higher) = number
-- Proportion lower/equal: **.cdf**(number) = proportion_lowequal, opposite is **.ppf**(proportion_lowequal) = number
+- Chance of specific outcome: 
+    * `.pmf(discrete)`, 
+    * `.pdf(continuous)`
+- Proportion higher: 
+    * `.sf(number) = proportion_higher`
+    * `.isf(proportion_higher) = number`
+- Proportion lower/equal: 
+    * `.cdf(number) = proportion_lowequal`
+    * `.ppf(proportion_lowequal) = number`
 
 --------------------------------------------------------------------------------
 <!-- Needs Work -->
@@ -2835,111 +2843,110 @@ Metrics are the main way of determining anomalies.
 Getting to the number for a metric can be simple or fairly complicated.
 Baselining a dataset to find anomalies in unseen data requires a careful hand.
 ```
-```
-def overlap_detection(start_end_series, starter=1, ender=-1):
-    """
-    Detect when a series of start/end values has overlaps.
-    Overlaps get completely marked with "Overlap"; otherwise, set "Normal".
-    Example:
-    [start,   end, start,   end, start, start,   end,   end]  # Series
-    [    1,    -1,     1,    -1,     1,     1,    -1,    -1]  # Map to 1 and -1
-    [    1,     0,     1,     0,     1,     2,     1,     0]  # CumSum
-    [ True, False,  True, False,  True,  True,  True, False]  # x > 0
-    [ True, False,  True, False,  True,  True,  True,  True]  # Fix last overlap
-    [False, False, False, False,  True,  True,  True,  True]  # Determinations
-    ["Nrm", "Nrm", "Nrm", "Nrm", "Ovr", "Ovr", "Ovr", "Ovr"]  # Map to category
-    :param start_end_series: 1D array with two distinct values for start/end
-    :param starter: The distinct value of the array's start points
-    :param ender: The distinct value of the array's end points
-    """
-    try:
-        # use cumsum, mask, shift-comparison, and .loc to determine overlaps
-        s = pd.Series(start_end_series)              # Series
-        s = s.map({starter:1, ender:-1})             # Map to 1 and -1
-        s = s.cumsum()                               # CumSum
-        s = s > 0                                    # x > 0
-        s = s | s.shift(2)                           # Fix last overlap
-        s.loc[s[~s].index - 1] = False               # Determinations
-        s = s.map({True:"Overlap", False:"Normal"})  # Map to category
-        # If last two values are Normal -> Overlap, assume last is Normal
-        if s[len(s) - 2] == "Normal" and s[len(s) - 1] == "Overlap": 
-            s[len(s) - 1] = "Normal"                                
-        s = s.rename("overlap_status")
-        return s
-    except Exception as error:
-        print("Error:", error)
-        return None
-```
-## Anomaly Detection Strategy
-- Distances, clustering, and domain knowledge to identify anomalies amongst normal data
-- Wide variety of problem sets, overlapping technique use cases
-### General Approach
-1. Use domain knowledge / target first as MVP, then move on
-1. Start with visuals for each available feature, investigate what is visually anomalous
-    * Value counts (histogram) for categorical features (*consider normalizing*)
-    * Numerical values over time (line plot) via resampling, averages, counts, sums
-    * Categorical v numerical (bar chart) via groupby and aggregation (average, sum)
-    * Numerical value v numerical value (scatter plot) via row-wise coords or `sns.pairplot`
-1. Move to statistical outliers for each numerical feature using Z-score and IQR rule
-1. Move to trend (time-relevant) outliers in categorical/numerical features using Bollinger bands
-1. Document observations and potential lines of investigation
-### Behavioral Anomalies Examples
-- A user accessed, read, changed or copied files that are not associated with their work routine.
-- A user copied files to a personal workstation when policy permits working with them only from a specialized system.
-- A user accessed critical systems or data outside of normal business hours.
-- A user tried to access a system not associated with their work.
-- A user account was used to log on from multiple endpoints at the same time, or different users logged on from the same endpoint at the same time.
-- There was an unusually large number of manipulations with sensitive data.
-- Old accounts became active again.
-### Prosecuting Anomalies by Availability
-- Timestamps enable a lot of anomaly detection actions
-- User identifiers (ex: user1, user2, ...; ex: admin, user, ...; ex: group1, group2, ...) also enable a lot
-- Action details (ex: request details, inputs, errors, etc) are great for action grouping
-- Observation timestamp + user details + action details allows nearly all anomaly detection techniques
-### Time-Series Metrics
-- Exponentially-Weighted Moving Average (EWMA) - used as "expected value" in distance-based outlier detection
-    * Tune EWMA's alpha parameter to tighten/loosen conformity to most-current value (smoothing)
-    * alpha=0: average at location of all previous values; alpha=1: current value exactly; larger alpha means more of past considered
-- Bollinger Bands - upper/mid/lower bands for values in trend, used a lot in finance and stock market analysis
-    * Mid band is moving average; Upper band is mid band + (K * moving STD); Lower band is mid band - (K * moving STD)
-        * Standard values for K are 2 and 20; larger K means less outliers
-    * %b is a calculation of volatility, anything above 1 or below 0 is outside the bands
-### Anomaly Clustering - [DBSCAN](#dbscan)
-- DBSCAN (Density-Based Spatial Clustering of Applications with Noise) - king of cluster-based outlier detection
-- Requires minimum amount of points in a given radius to be considered a non-outlier cluster
-    * SCALING NEEDED
-- Any point(s) that don't meet given non-outlier requirements is returned in cluster "-1"
-- Often done with count/nunique as numeric variable (nunique being too-low or too-high is anomalous)
 
-<!-- Polished -->
-## Anomaly Detection Syntax
-- Outside expected times: Manual determination of anomaly via date/time filter
+--------------------------------------------------------------------------------
+<!-- Needs work -->
+## Anomalic Metrics
+- Calculate many time-based metrics and do clustering!
 ```
-from time import time
-# outside business hours
-outside_hours = (df.time < time(9,0)) & (df.time > time(17,0))
-weekends = df.date.weekday > 5
-holidays = df.date.isin(holiday_date_list)
-df["non_business_hours"] = outside_hours | weekends | holidays
-# happening too quickly
-df["minute"] = df.time.dt.to_period("min")
-df.groupby(["entity","minute"]).col.count().sort_values(ascending=False)
-# count of occurence by time interval
-df["is_thing"] = df["col1"] == "a" & df["col2"] == "cool"
-df.set_index("timestamp")[["is_thing"]].resample("D").rolling(3).mean()
-# event sequences
-three_event_sequences = [[s[i],s[i+1],s[i+2]] for i in s.index if i+2 < len(s)]
-p1_open = (df.actor == "p1") & (df.act == "open")
-p1_close = (df.actor == "p1") & (df.act == "close")
-open_then_close = p1_open & p1_close.shift(-1)
+# SETUP
+import pandas as pd
+from numpy.random import seed, choice
+from datetime import time
+import holidays
+offdays = holidays.UnitedStates(years=2022).keys()
+seed(42)
+d = pd.Series(choice(range(1,31), size=10_000)).astype("str")
+h = pd.Series(choice(range(1,24), size=10_000)).astype("str")
+m = pd.Series(choice(range(1,60), size=10_000)).astype("str")
+s = pd.Series(choice(range(1,60), size=10_000)).astype("str")
+t = pd.to_datetime("2022-01-" + d + "T" + h + ":" + m + ":" + s).rename("ts")
+c1 = pd.Series(choice(["a","b"], p=[.97,.03], size=10_000), name="cat")
+c2 = pd.Series(choice(["uncool","cool"], p=[.8,.2], size=10_000), name="tude")
+df = pd.concat([t, c1, c2], axis=1).sort_values(by="ts").reset_index(drop=True)
+df["cash"] = (df["cat"] == "a") & (df["tude"] == "cool")
 ```
 ```
-# category combinations (least-frequency)
-df[["catcol1","catcol2","catcol3"]].value_counts().unstack().plot.barh()
-# should never happen or should always happen
-df["bad"] = df["action"].isin(banned_actions)
-df["good"] = df["entity"].isin(entity_whitelist)
+# ACTION ANOMALIES
+# DETECT SPECIFIC EVENTS
+df["bad"] = df["cat"].isin(["b","c","d"])
+df["good"] = df["cat"].isin(["a","e","f"])
+# UNIQUE SEQUENCES OF EVENTS
+s = df["cat"]
+three_event_sequences = {(s[i],s[i+1],s[i+2]) for i in s.index if i+2 < len(s)}
+# DETECT AN EVENT SEQUENCE
+ng = ("a","b","b")
+x = [(i,i+1,i+2) for i in s.index if i+2 < len(s) if (s[i],s[i+1],s[i+2]) == ng]
+# EVENT1 THEN EVENT2
+a_cool = (df["cat"] == "a") & (df["tude"] == "cool")
+a_uncool = (df["cat"] == "a") & (df.act == "uncool")
+cool_then_uncool = a_cool & a_uncool.shift(-1)
+detected_i = cool_then_uncool[cool_then_uncool].index
+df.loc[list(detected_i) + [i + 1 for i in detected_i]].sort_index()
+# CHART: COUNTS OF CATEGORY GIVEN CATEGORY
+df[["cat","tude"]].value_counts().unstack().plot.barh()
 ```
+```
+# TIME ANOMALIES
+# OUTSIDE BUSINESS HOURS
+off_hours = (df.ts.dt.time < time(9,0)) & (df.ts.dt.time > time(17,0))
+weekends = df.ts.dt.weekday > 5
+holidays = df.ts.dt.date.isin(offdays)
+outside_hours = off_hours | weekends | holidays
+# TOO MANY OF AN EVENT PER HOUR
+df["hr"] = df["ts"].dt.to_period("h")
+cpm = df.groupby(["cash","hr"])["cash"].count() > 10
+# ROLLING AVERAGE OF EVENT COUNT PER DAY
+tsdf = df.set_index("ts")
+mean_cash = tsdf[["cash"]].resample("D").sum().rolling(3).mean()
+# BOLLINGER BANDS
+actuals = tsdf[["cash"]].resample("D").sum()
+mid_band = actuals.ewm(alpha=0.2).mean()       # alpha: 0 is all vals, 1 is self
+upper_band = mid_band + (2 * mid_band.std())   # 2 or 20 typically
+lower_band = mid_band - (2 * mid_band.std())   # 2 or 20 typically
+volatility = (actuals - lower_band) / (upper_band - lower_band)
+upper_outliers = actuals[volatility > 1]
+lower_outliers = actuals[volatility < 0]
+plt.figure(figsize=(14,5))
+sns.lineplot(x=actuals.index, y=actuals, color="red")
+sns.lineplot(x=actuals.index, y=ewma_cash, color="blue", ls="-.", alpha=.3)
+sns.lineplot(x=actuals.index, y=upper_band, color="black", ls="-.", alpha=.2)
+sns.lineplot(x=actuals.index, y=lower_band, color="black", ls="-.", alpha=.2)
+plt.vlines(upper_outliers.index, *plt.ylim(), alpha=0.3, ls="--", color="red")
+plt.vlines(lower_outliers.index, *plt.ylim(), alpha=0.4, ls=":", color="gray")
+```
+### Actions: Overlapping Sessions
+```
+# Example:
+# [start,   end, start,   end, start, start,   end,   end]  # Series
+# [    1,    -1,     1,    -1,     1,     1,    -1,    -1]  # Map to 1 and -1
+# [    1,     0,     1,     0,     1,     2,     1,     0]  # Cumulative Sum
+# [ True, False,  True, False,  True,  True,  True, False]  # x > 0
+# [ True, False,  True, False,  True,  True,  True,  True]  # Fix last overlap
+# [False, False, False, False,  True,  True,  True,  True]  # Determinations
+# ["Nrm", "Nrm", "Nrm", "Nrm", "Ovr", "Ovr", "Ovr", "Ovr"]  # Map to category
+# use cumsum, mask, shift-comparison, and .loc to determine overlaps
+s = pd.Series(start_end_series)               # Series
+s = s.map({starter:1, ender:-1})              # Map to 1 and -1
+s = s.cumsum()                                # Cumulative Sum
+if s[len(s) - 2] == 0 and s[len(s) - 1] == 1: # Handle edge case
+    flip_last = True
+s = s > 0                                     # x > 0
+s = s | s.shift(2)                            # Fix last overlap
+s.loc[s[~s].index - 1] = False                # Determinations
+if flip_last:                                 # Handle edge case
+    s.loc[len(s) - 1] = False
+s = s.map({True:"Overlap", False:"Normal"})   # Map to category                            
+s = s.rename("overlap_status")
+pd.concat([s, pd.Series(start_end_series)], axis=1)
+```
+
+--------------------------------------------------------------------------------
+<!-- Needs work -->
+## Getting to the Numbers
+- Distance-based clustering is powerful, but needs continuous values to work
+- Creating a ton of features with continuous values is a great approach!
+- Fast plot of numerical interactions: `sns.pairplot`
 ```
 # ID by bins
 binned = pd.cut(s, bins=[0,2,5], labels=['low','high'], right=False)
@@ -2951,24 +2958,40 @@ lower_bound = q1 - k * iqr
 upper_bound = q3 + k * iqr
 # ID by z-score
 stats.zscore(col)
-# DBSCAN (great for outlier detection)
-# KMeans (can do outlier detection)
+```
+```
+# TIME SERIES NUMERICALS HERE
 ```
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
-## Anomalic Metrics
-- Calculate many metrics and do clustering!
-
---------------------------------------------------------------------------------
-<!-- Needs work -->
-## Getting to the Numbers
-- 
-
---------------------------------------------------------------------------------
-<!-- Needs work -->
 ## Baselines and Deviation
-- 
+- A user accessed/read/changed/copied files outside their normal routine
+    * Categorize all files (encode)
+    * Get each user's by-category access probabilities
+    * Set threshold for alerting, apply threshold
+- A user tried to access a system in a different access category
+    * Categorize all systems (encode)
+    * Get each user's access rights
+    * Mask for access attempts not matching access rights
+- A user copied files out of a specialized system
+    * Set alerting on specific actions
+- One user logged in from multiple endpoints at the same time
+    * Check duplicate active states in system processes for a user (easiest)
+    * Combine logs, set session start/end, check user duplication
+- Two or more users logged in from a single endpoint
+    * Depends entirely on the endpoint and how it captures/separates logins
+- Too many manipulations of sensitive data in a given time span
+    * Categorize sensitive/other actions in binary
+    * Perform interval-count aggregation
+    * Set limits on action manually or through Bollinger band outlier detection
+- Old/unused accounts became active
+    * Decide what makes an account old manually or through probabilities
+    * Get last-login information for all accounts
+    * Check login information against reporting criteria
+```
+# HOW TO BASELINE
+```
 
 [[Return to Top]](#table-of-contents)
 
@@ -3005,14 +3028,21 @@ Deep learning leverages multiple neural networks; I might explain it, IDK yet.
 ```
 <!-- Needs work -->
 ## Deep Learning Basics
-- Obscured machine learning
-- We'll use Tensor Flow, the Keras front end
-    * PyTorch is a competitor to Tensor Flow
+
 - Deep Learning takes a long time to perform, and obscures the answers in a way. Have to be careful about when to use it, but it may solve a problemset that an analyst can't
-- Good at: Images/Video, Sound, NLP, Reinforcement Learning (nontabular, large)
+- 
 - Artificial Neural Networks are good at recognizing/replicating patterns leading to an optimized outcome (self-driving cars as an example)
 - Bad at: tabular, small data
-### Design
+
+
+--------------------------------------------------------------------------------
+<!-- Needs work -->
+## Establishing a Neural Network
+- Good at nontabular/large data
+    * It's not great for tabular/small data; slower, black-box
+- Good cases for NNs: images, video, sound, NLP
+- Can do "reinforcement learning" (evaluating itself)
+### Neural Network Design
 - Uses neural nodes for weighing patterns
 - Neural nodes combine into a perceptron
     * Input is however many features you're feeding in (A0, A1, A2)
@@ -3020,14 +3050,26 @@ Deep learning leverages multiple neural networks; I might explain it, IDK yet.
     * One layer of perception is an in-parallel layer
         * Input weights
     * Single-layer perceptron: one step of perception between input and output
-    * Multi-layer perceptron: multiple steps of perception between input and output (series of perception)
-- A tensor is higher-dimensionality data than a scalar (1D), vector (2D), or matrix (3D)
+    * Multi-layer perceptron: multiple steps of perception between input/output
+        * This is a "series of perception"
+- A tensor is higher-dimensionality data than scalar, vector, or matrix
+    * Scalar: 1D, vector: 2D, matrix: 3D
 - Gradient Descent: seeking the minimum loss
     * Distance-based, optimizing connections to reach an answer
     * Backpropogation against feedforward
-### Implementation
 ```
-from tensorflow import keras
+# NEURAL NETWORK WALKTHROUGH
+```
+
+--------------------------------------------------------------------------------
+<!-- Needs work -->
+## Image Classification
+- 
+```
+# PYTORCH EXAMPLE
+```
+```
+from tensorflow import keras     # TensorFlow is frontend, Keras is backend
 from keras import models, layers
 from keras.datasets import mnist # very popular image classification dataset
 (train_images, train_labels), (test_images, test_labels) = mnist.load_data()
@@ -3045,16 +3087,6 @@ network.fit(train_images, train_labels, epochs=20, batch_size=128)
 test_loss, test_acc = network.evaluate(test_images, test_labels)
 print(f'accuracy of network on test set: {test_acc}')
 ```
-
---------------------------------------------------------------------------------
-<!-- Needs work -->
-## Establishing a Neural Network
-- 
-
---------------------------------------------------------------------------------
-<!-- Needs work -->
-## Image Classification
-- 
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
