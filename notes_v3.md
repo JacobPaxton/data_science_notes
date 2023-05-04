@@ -22,7 +22,7 @@ Future:
 1. Trying to move all notes coherently from notes_v2.md into notes_v3.md
 1. Restructuring notes_v3.md if necessary after notes move is complete
 1. Optimizing sections and noting gaps / potential additions
-    * Advanced REGEX!!
+    * REGEX specific to the environment (Elasticsearch lacking, Python REGEX)
 1. Prioritizing effort from the first round of noted gaps/additions
 1. Shifting into maintainable posture
 
@@ -36,89 +36,95 @@ II.   [Dataset Reference             ](#dataset-reference)
 1.    [Links to Datasets             ](#links-to-datasets)
 1.    [REST APIs                     ](#rest-apis)
 
-III.  [Advanced Web Scraping         ](#advanced-web-scraping)
+III.  [Regular Expressions           ](#regular-expressions)
+1.    [REGEX Syntax                  ](#regex-syntax)
+1.    [REGEX Find                    ](#regex-find)
+1.    [REGEX Capture                 ](#regex-capture)
+
+IV.   [Advanced Web Scraping         ](#advanced-web-scraping)
 1.    [Pandas Read-HTML              ](#pandas-read-html)
 1.    [Requests                      ](#requests)
 1.    [Selenium                      ](#selenium)
 1.    [Image Download                ](#image-download)
 
-IV.   [Building a Database           ](#building-a-database)
+V.    [Building a Database           ](#building-a-database)
 1.    [SQLite                        ](#sqlite)
 1.    [PostgreSQL                    ](#postgresql)
 
-V.    [Database Usage Mastery        ](#database-usage-mastery)
+VI.   [Database Usage Mastery        ](#database-usage-mastery)
 1.    [SQL and Variants              ](#sql-and-variants)
 1.    [Elasticsearch                 ](#elasticsearch)
 1.    [Spark                         ](#spark)
 
-VI.   [Feature Transformation        ](#feature-transformation)
+VII.  [Feature Transformation        ](#feature-transformation)
 1.    [Dataframe Normalization       ](#dataframe-normalization)
 1.    [Fixing Dataframes at Speed    ](#fixing-dataframes-at-speed)
 1.    [Feature Engineering           ](#feature-engineering)
 1.    [Speedy Data Structures        ](#speedy-data-structures)
 
-VII.  [Algorithmic Clustering        ](#algorithmic-clustering)
+VIII. [Algorithmic Clustering        ](#algorithmic-clustering)
 1.    [Selecting Number of Clusters  ](#selecting-number-of-clusters)
 1.    [Clustering Methods            ](#clustering-methods)
 1.    [Cluster Analysis              ](#cluster-analysis)
 
-VIII. [Natural Language Processing   ](#natural-language-processing)
+IX.   [Natural Language Processing   ](#natural-language-processing)
 1.    [Normalizing String Features   ](#normalizing-string-features)
 1.    [Keywords and Sentiment        ](#keywords-and-sentiment)
 1.    [NLP for Prediction            ](#nlp-for-prediction)
 
-IX.   [Insight Delivery              ](#insight-delivery)
+X.    [Insight Delivery              ](#insight-delivery)
 1.    [Statistical Analysis          ](#statistical-analysis)
 1.    [Visualizations                ](#visualizations)
 1.    [Magic in Jupyter              ](#magic-in-jupyter)
 
-X.    [Classification                ](#classification)
+XI.   [Classification                ](#classification)
 1.    [Features for Classification   ](#features-for-classification)
 1.    [Training Classifiers          ](#training-classifiers)
 1.    [Evaluating Classifiers        ](#evaluating-classifiers)
 
-XI.   [Regression                    ](#regression)
+XII.  [Regression                    ](#regression)
 1.    [Features for Regression       ](#features-for-regression)
 1.    [Training Regressors           ](#training-regressors)
 1.    [Evaluating Regressors         ](#evaluating-regressors)
 
-XII.  [Time Series                   ](#time-series)
+XIII. [Time Series                   ](#time-series)
 1.    [Timestamp Engineering         ](#timestamp-engineering)
 1.    [Metrics of Time Series        ](#metrics-of-time-series)
 1.    [Outcome Plotting              ](#outcome-plotting)
 1.    [Time Series Modeling          ](#time-series-modeling)
 
-XIII. [Anomaly Detection             ](#anomaly-detection)
+XIV.  [Anomaly Detection             ](#anomaly-detection)
 1.    [Anomalic Metrics              ](#anomalic-metrics)
 1.    [Getting to the Numbers        ](#getting-to-the-numbers)
 1.    [Baselines and Deviation       ](#baselines-and-deviation)
 
-XIV.  [Neural Networks               ](#neural-networks)
+XV.   [Neural Networks               ](#neural-networks)
 1.    [Establishing a Neural Network ](#establishing-a-neural-network)
 1.    [Image Classification          ](#image-classification)
 1.    [Deep Learning                 ](#deep-learning)
 
-XV.   [Model Deployment              ](#model-deployment)
+XVI.  [Generative AI                 ](#generative-ai)
+1.    [Implementing LLMs             ](#implementing-llms)
+1.    [Implementing Image Generation ](#implementing-image-generation)
+
+XVII. [Model Deployment              ](#model-deployment)
 1.    [Building a Flask App          ](#building-a-flask-app)
 1.    [Building a Django App         ](#building-a-django-app)
 1.    [Deploying the Model           ](#deploying-the-model)
 
-XVI.  [Project Management            ](#project-management)
+XVIII.[Project Management            ](#project-management)
 1.    [Planning a Project            ](#planning-a-project)
 1.    [Selecting the Framework       ](#selecting-the-framework)
 
-XVII. [Business Tools                ](#tools-and-languages)
+XIX.  [Business Tools                ](#tools-and-languages)
 1.    [Excel and Google Sheets       ](#excel-and-google-sheets)
 1.    [PowerBI                       ](#powerbi)
 1.    [Tableau                       ](#tableau)
 
-XVIII.[Programming Languages         ](#programming-languages)
+XX.   [Programming Languages         ](#programming-languages)
 1.    [Python Oddities               ](#python-oddities)
 1.    [R                             ](#r)
 1.    [C++                           ](#c)
-
-- ???: Implementing ChatGPT-like models
-- ???: Implementing StableDiffusion-like models
 
 <br>
 
@@ -156,7 +162,6 @@ Git can be mostly copy-pasted, but I'd like to add authentication instructions.
 I might want to add a script to update packages...
 ```
 - TODO: Add regression, time-series, anomaly detection, etc libraries if can
-- TODO: Add GitLab setup notes
 - TODO: Pare down Git commands to specific examples
 
 --------------------------------------------------------------------------------
@@ -463,6 +468,162 @@ print(json_data["name"])
 
 
 
+<!--
+######  #######  #####  ####### #     # 
+#     # #       #     # #        #   #  
+#     # #       #       #         # #   
+######  #####   #  #### #####      #    
+#   #   #       #     # #         # #   
+#    #  #       #     # #        #   #  
+#     # #######  #####  ####### #     # 
+-->
+
+# Regular Expressions
+```
+This section shows off the power of Regular Expressions (REGEX).
+Syntax is important and differs between implementations.
+Find is important and REGEX can do things that normal find can't.
+Capture is important and REGEX excels at this work.
+```
+
+--------------------------------------------------------------------------------
+<!-- Needs work -->
+## REGEX Syntax
+- Language for parsing and slicing strings to capture substrings
+- Uses a mixture of string literals and metacharacters for multiple objectives
+- REGEX by programming language: https://www.regular-expressions.info/tools.html
+- Test your REGEX: https://regex101.com/
+- Go deep learning REGEX: http://www.rexegg.com/regex-disambiguation.html
+```
+| Zero or more (optional): *  | One or more: +        | Optional: ?            |
+| Any character: .            | Choices: [a12qx]      | Anything-but: [^a12qx] |
+| Alphanumeric: \w \W         | Whitespace: \s \S     | Digit: \d \D           |
+| {5} Repeat exactly 5 times  | {3,6} Min 3, Max 6    | {3,} At least 3 times  |
+| Anchor front: ^             | Anchor back: $        | Word boundary: \b      |
+| Capture group: So (cool)!   | Match group: (?:yooo) |
+| Case insensitive: (?i)(?-i) | Ignore spaces: (?x)   | Single line mode: (?s) |
+```
+### REGEX Metacharacter Explanation
+- If these explanations are confusing, see: [REGEX Examples](#regex-examples)
+- `\.`: a period; the backslash escapes the metacharacter so it is just "."
+- `.+`: infinite amount of characters in sequence, but at least one: "?q9 -aAr!"
+- `.+?`: same as above, but not greedy; see: [REGEX Examples](#regex-examples)
+- `.*`: infinite amount of characters in sequence, can be none (optional): "?q9"
+- `.*?`: same as above, but not greedy; see: [REGEX Examples](#regex-examples)
+- `\w+`: infinite alphanumerical characters in sequence, but at least one: "hhh"
+- `\W\w`: a non-alphanumerical followed by an alphanumerical in sequence: "?q"
+- `\s\w`: a whitespace followed by an alphanumerical in sequence: " f"
+- `\S+`: infinite amount of non-whitespace in sequence, but at least one: "Hey"
+- `\d\d\d\d-\d\d-\d\d`: digits following YYYY-MM-DD format, ex: "2022-09-22"
+- `\d{4}-\d{2}-\d{2}`: digits following YYYY-MM-DD format, ex: "2022-09-22"
+- `\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}`: IP address format, ex: "10.3.127.5"
+- `\D+`: infinite amount of anything except digits in sequence, ex: "Hi there!!"
+- `\w(\w)\w`: capture the second alphanumerical character in a sequence of three
+- `[abc123]`: pick one, ex: `F[uiae]ll` matches "Full", "Fill", "Fall", "Fell"
+- `[a-z]+`: infinite amount of any lowercase letter in sequence, ex: "fnjd"
+- `(?i)[a-z]+(?-i)`: case-insensitive version of above, ex: "fNjD"
+- `[a-zA-Z]+`: infinite amount of any lower/uppercase letter in sequence: "fNjD"
+- `[^a-z]+`: infinite amount of anything but lowercase letters in sequence: "A7"
+- `(?i)HELLO(?-i)HELLO`: any-case "hello" followed by all-caps, ex: "hELLoHELLO"
+- `(?x) q r s t u v`: ignore whitespace; matches "qrstuv" but NOT "q r s t u v"
+- `^yo[a-z]*$`: entire line must match; matches "yo" and "yodawg", but NOT "yo!"
+### REGEX Querying in Python
+- REGEX library: `import re`
+- Randomly search for match: `re.search(regexg, subject)`
+- Search from beginning for match: `re.match(regexp, subject)`
+- Put all matches in list (very useful): `re.findall(regexp, subject)`
+- Return match with subbed-in substring: `re.sub(regexp, sub_in, subject)`
+- Capture groups into pandas dataframe columns: `df.colname.str.extract(regexp)`
+#### REGEX in Python - Query Options
+- Raw string: `string = r"c:\user\p1\Desktop"` (neutralizes backslash-escaping)
+    * Only works in print statements and returns.....?
+- Search while ignoring case: `re.IGNORECASE`
+- Run new query on each line: `re.MULTILINE`
+- Ignore whitespace: `re.VERBOSE`
+- `|` for 2+ flags: `re.findall(regexp, subject, re.IGNORECASE | re.MULTILINE)`
+
+--------------------------------------------------------------------------------
+<!-- Needs work -->
+## REGEX Find
+- REGEX is fairly complicated, but is best explained/learned through examples
+    * Try them on your own!!
+- The following examples are done in Python with `re.findall(regex, search_str)`
+    * `re.findall("\w\w", "A BB CCC DDDD")` ---> ["BB", "CC", "DD", "DD]
+    * `re.findall("\d+", "ABCD")` ---> [] (no matches)
+### Simple REGEX Examples
+- `.+` -- *Everything!*
+    * "Hello, Sam!" -------------> ["Hello, Sam!"] (one string for entire thing)
+- `Hello,\s(.+)!` -- *Everything between "Hello, " and final-found "!" (greedy)*
+    * "Hello,Sam!" --------------> []
+    * "Hello, Sam!" -------------> ["Sam"]
+    * "Hello, Sam!!!" -----------> ["Sam!!"] (notice in the REGEX: greedy "+")
+    * "Hello, Sam Witwicky!!!" --> ["Sam Witwicky!!"] (one string for full name)
+    * "Hello, saFBO43Ef$51bf!" --> ["saFBO43Ef$51bf"]
+- `Hello,\s(.+?)!` -- *Everything between "Hello, " and first-found "!"*
+    * "Hello, Sam!!!" -----------> ["Sam"] (".+?" makes it not greedy!)
+    * "Hello, Sam Witwicky!!!": -> ["Sam Witwicky"] (one string for full name)
+    * "Hello, saFBO43Ef$51bf!" --> ["saFBO43Ef$51bf"]
+- `Hello,\s(\w+)!` -- *Alphanumerics between "Hello, " and "!" (greedy)*
+    * "Hello, Sam!" -------------> ["Sam"]
+    * "Hello, Sam!!!" -----------> ["Sam"] ("\w" only captures alphanumerics)
+    * "Hello, 12345!" -----------> ["12345"]
+- `[a-zA-Z]+` -- *Alphabet characters in sequence*
+    * "Hello, Sam!" -------------> ["Hello", "Sam"]
+    * "Hello, Sam Witwicky!!!": -> ["Hello", "Sam", "Witwicky"]
+
+--------------------------------------------------------------------------------
+<!-- Needs work -->
+## REGEX Capture
+- `Hello,\s([a-zA-Z]+)!` *Alphabet characters between "Hello, " and "!"*
+    * "Hello, Sam!" -------------> ["Sam"]
+    * "Hello, Sam Witwicky!!!" --> []
+- `^.+(\S+)!$` *Line ends with non-whitespace and "!" in sequence (greedy)*
+    * "Hello, Sam!" -------------> ["m"]
+    * "Hello, Sam Witwicky!" ----> ["y"]
+- `^.+?(\S+)!$` *Line ends with earliest non-whitespace -> "!" in sequence*
+    * "Hello, Sam!" -------------> ["Sam"]
+    * "Hello, Sam Witwicky!!!" --> ["Witwicky"]
+    * "f7g?3.rb3%79h&2398dh!" ---> ["f7g?3.rb3%79h&2398dh"]
+- `([a-zA-Z]+)(?:\s([a-zA-Z]+))*!` *Two capture groups, second is optional*
+    * First capture group: ([a-zA-Z]+)
+        * A sequence of alphabet characters
+    * Second capture group: (?:\s([a-zA-Z]+))*
+        * Optional (capture group ends with asterisk)
+        * Capture a sequence of alphabet chars that is preceded by a whitespace
+        * Basically: `(?:\s(capture_inside_here))*`
+    * "Hello, Sam!" -------------> [("Sam", "")] (two capture groups -> tuple)
+    * "Hello, Sam Witwicky!" ----> [("Sam", "Witwicky")]
+    * "Hello!" ------------------> [("Hello", "")]
+- `Hello,\s([a-zA-Z]+)(?:\s([a-zA-Z]+))*!` *Best solution of above*
+    * Same as above example but with "Hello,\s" at the beginning
+    * "Hello, Sam!" -------------> [("Sam", "")]
+    * "Hello, Sam Witwicky!" ----> [("Sam", "Witwicky")]
+    * "Hello!" ------------------> []
+- `name = "\s([a-zA-Z]+)"` -> `f"Hello,{name}(?:{name})*!"`
+    * Clearer writing of above example, but with exactly the same output
+- `^(.{15})\s+(\S+)\s+([^\s\[:]+)(\[\d*\])*:\s+(.+)$`
+    * This captures: "timestamp hostname reporter[pid]: message"
+    * Entire line must match (because it uses `^` start and `$` end)
+    * Capture group #1: exactly 15 characters
+    * Capture group #2: at least one of anything that's not whitespace
+    * Capture group #3: at least one of anything but: whitespace, "[", and ":"
+    * Capture group #4: optional; looking for this: "[123]", "[59102]", etc
+    * Capture group #5: all remaining characters following the above
+- `f"{n1}\s+{n2}\s+{any}\s+{any}\s+{any}\s+{any}\s+{any}\s+{any}"`
+    * This captures: "[type] [pid] [pts] [user] [tty] [src] [dest] [timestamp]"
+    * **The following variables are capturing the *inside* of the brackets...**
+    * `n1 = "\[(\d)\]"`: capturing a single digit in brackets, ex: "[8]"
+    * `n2 = "\[(\d+)\]"`: capturing digits in brackets, ex: "[1234]" or "[56]"
+    * `any = "\[(\S+)*\s*\]"`: optional; captures "[Hello  ]", "[Hello]", "[  ]"
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
 <!-- 
    #                                                     
   # #   #####  #    #   ##   #    #  ####  ###### #####  
@@ -491,7 +652,6 @@ Three main methods: pd.read_html, requests/beautifulsoup, selenium/beautifulsoup
 I should use different examples for each, and incorporate REGEX usage.
 The end state of all methods should be an initial dataframe pre-editing.
 ```
-- NOTE: CONSIDER ADDING A REGEX SECTION
 
 --------------------------------------------------------------------------------
 <!-- Polished -->
@@ -500,11 +660,9 @@ The end state of all methods should be an initial dataframe pre-editing.
 - Sample HTML tables (testing): https://www.w3schools.com/html/html_examples.asp
 ```
 import pandas as pd
-
 # read from URL
 url = "https://www.w3schools.com/html/tryit.asp?filename=tryhtml_table_headings"
 df1 = pd.read_html(url)[0] # read HTML tables from URL, set first table as df1
-
 # read from string
 myhtml = "<table><tr><th>hi</th></tr><tr><td>12</td></tr></table>"
 df2 = pd.read_html(myhtml)[0] # read HTML tables from string, set first as df2
@@ -525,19 +683,16 @@ df2 = pd.read_html(myhtml)[0] # read HTML tables from string, set first as df2
 import requests
 from bs4 import BeautifulSoup
 import re
-
 def has_class_but_no_id(tag):
     """Get elements with class attribute but no ID attribute"""
     return tag.has_attr('class') and not tag.has_attr('id')
-
 response = requests.get('https://www.duckduckgo.com', verify=True)
 if not response.ok:
     print("HTTP status code:", response.status_code)
 else:
     soup = BeautifulSoup(response.text)
     print(soup.prettify())
-
-    # select tags
+    # SELECT TAGS
     all_tags = soup.find_all(True)
     all_tags_with_id = soup.find_all(id=True)
     a0 = soup.title
@@ -549,16 +704,13 @@ else:
     a6 = soup.select("div.tag-home.tag-home--slide")                 # AND logic
     a7 = soup.find_all("div", class_=["tag-home.tag","home--slide"]) # OR logic
     a8 = soup.select(".content--home .cw--c .logo-wrap--home a")     # chain dig
-
-    # run function to select tags
+    # RUN FUNCTION TO SELECT TAGS
     b0 = soup.select(has_class_but_no_id)
-
-    # grab tag attributes
+    # GRAB TAG ATTRIBUTES
     c0 = soup.a.span["class"]
     c1 = soup.find("link", {"rel":"canonical"})["href"]
     c2 = [ele["class"] for ele in soup.select("span", class_=True)]
-
-    # grab contents of a tag
+    # GRAB CONTENTS OF TAG
     d0 = soup.title.text
     d1 = [ele.text for ele in soup.find_all("span")]
 ```
@@ -576,41 +728,22 @@ from selenium.webdriver.common.keys import Keys           # allow Keys.TAB, etc
 from selenium.webdriver.support import expected_conditions as EC # detect tag
 from selenium.webdriver.support.ui import WebDriverWait   # wait until tag loads
 from selenium.webdriver.common.action_chains import ActionChains # script action
-
-# basic page pull with Selenium
+# BASIC PAGE PULL
 PATH = r"C:\Users\Jake\chromedriver.exe"
 url = 
 driver = webdriver.Chrome(PATH)
 driver.get(url)
 soup = BeautifulSoup(driver.page_source)
-
-# pause script until a certain ID'd element is loaded
-myElem = (
-    WebDriverWait(browser, delay)
-        .until(EC.presence_of_element_located((By.ID, 'IdOfMyElement')))
-)
+# WAIT FOR ELEMENT TO LOAD
+myElem = WebDriverWait(browser, delay)\
+  .until(EC.presence_of_element_located((By.ID, 'IdOfMyElement')))
 elements = driver.find_elements_by_xpath('//*[@id="q_all"]')
-
-# run actions
+# RUN ACTIONS
 actions = ActionChains(driver)
-(
-    # click on a dropdown box
-    actions
-        .move_to_element(
-            driver.find_element_by_xpath('//*[@id="q_type"]/div[1]')
-        )
-        .click()
-        .perform()
-)
-(
-    # select option in the clicked dropdown box
-    actions
-        .move_to_element(
-            driver.find_element_by_xpath('//*[@id="q_type"]/div[3]/div[2]')
-        )
-        .click()
-        .perform()
-)
+elem1 = driver.find_element_by_xpath('//*[@id="q_type"]/div[1]')
+actions.move_to_element(elem1).click().perform()  # open dropdown box
+elem2 = driver.find_element_by_xpath('//*[@id="q_type"]/div[3]/div[2]')
+actions.move_to_element(elem2).click().perform()  # select an option in dropdown
 ```
 
 --------------------------------------------------------------------------------
@@ -1175,6 +1308,14 @@ df[["newcol1","newcol2"]] = df["col"].str.split(":", expand=True)
 melted = pd.melt(df, id_vars="cat", value_vars=[c for c in df if c != "cat"])
 # merge two dataframes
 df1.merge(df2, left_on="df1c1", right_on="df2c1", how="outer", indicator=True)
+# imputation
+from sklearnex import patch_sklearn
+patch_sklearn()
+from sklearn.impute import SimpleImputer
+imputer = SimpleImputer(strategy="most_frequent")
+train[["embark_town"]] = imputer.fit_transform(train[["embark_town"]])
+validate[["embark_town"]] = imputer.transform(validate[["embark_town"]])
+test[["embark_town"]] = imputer.transform(test[["embark_town"]])
 ```
 
 --------------------------------------------------------------------------------
@@ -1778,51 +1919,6 @@ Good visualizations speak for themselves and you can template them for reuse.
 Jupyter notebooks are optimal for report delivery and should be mastered.
 ```
 - TODO: Probability section
-## Probability
-- Chances and rates
-- Probability of outcome: P(outcome)
-- Probability of A given B (when B is True): P(A|B)
-- Low-probability combination of observed values is an anomaly!
-### Calculating Probability
-- Bayes Theorem: P(A|B) = P(B|A)P(A)/P(B)
-    * If you have either A or B and want to calculate B or A, use Bayes Theorem
-- Observed Rate: `df.col` or `df[['col1','col2']].value_counts(normalize=True)`
-    * Other calculations: 
-        * `(x == 3).mean()` --- `((x == 3) or (x == 2)).mean()`
-        * `(x <= 4).mean()`
-- Theoretical Distribution: `stats.recipe(params).rvs(rolls).method()`
-    * Can pass array (EX: `(3,4)`) instead of rolls to generate an array
-    * Nice chart: https://ds.codeup.com/stats/pdf_pmf_cdf_ppf_sf_isf.png
-- Calculated: `np.random.choice(outcome_list, size=rolls, p=[p1, p2, p3, ...])`
-    * Can pass array: `size=(simulations, trials) as in size=(rows, columns)`
-### Theoretical Distributions from Parameters
-- Equal likelihood of all outcomes: Uniform (coin)
-    * Not very useful for our purposes
-    * Recipe: `stats.randint(low, high_not_including)`
-    * P(A) = 1 / len(Options)
-- Two outcomes: Binomial (success/failure)
-    * Not very useful for our purposes
-    * Recipe: `stats.binom(n=rolls, p=[p_True, p_False])`
-    * P(A) = our input
-- Normal - continuous random variable (bell curve)
-    * Very useful if we expect a normal distribution for something
-    * Recipe: `stats.norm(mean_value, stdev_size)`
-    * P(A) = `recipe.pdf(A)` ----- `.pdf` because of continuous values
-- Poisson - events per time interval
-    * Useful for time-related events
-    * Recipe: `stats.poisson(lambda_value)`
-    * P(A) = `recipe.pmf(A)` ----- `.pmf` because of discrete values
-- Lots more distributions... check scipy documentation for stats module
-#### Methods for Theoretical Distributions
-- Chance of specific outcome: 
-    * `.pmf(discrete)`, 
-    * `.pdf(continuous)`
-- Proportion higher: 
-    * `.sf(number) = proportion_higher`
-    * `.isf(proportion_higher) = number`
-- Proportion lower/equal: 
-    * `.cdf(number) = proportion_lowequal`
-    * `.ppf(proportion_lowequal) = number`
 
 --------------------------------------------------------------------------------
 <!-- Needs Work -->
@@ -1946,12 +2042,60 @@ df = pd.DataFrame({"hi":s1, "yo":s2, "sup":s3})
 do_stats(df, y="hi", chi2s=["yo"])                        # run chi2 test
 do_stats(df, y="sup", ttests=["hi","yo"], corrs=["sup"])  # run t-tests, corrs
 ```
+### Probability
+- Chances and rates
+- Probability of outcome: P(outcome)
+- Probability of A given B (when B is True): P(A|B)
+- Low-probability combination of observed values is an anomaly!
+#### Calculating Probability
+- Bayes Theorem: P(A|B) = P(B|A)P(A)/P(B)
+    * If you have either A or B and want to calculate B or A, use Bayes Theorem
+- Observed Rate: `df.col` or `df[['col1','col2']].value_counts(normalize=True)`
+    * Other calculations: 
+        * `(x == 3).mean()` --- `((x == 3) or (x == 2)).mean()`
+        * `(x <= 4).mean()`
+- Theoretical Distribution: `stats.recipe(params).rvs(rolls).method()`
+    * Can pass array (EX: `(3,4)`) instead of rolls to generate an array
+    * Nice chart: https://ds.codeup.com/stats/pdf_pmf_cdf_ppf_sf_isf.png
+- Calculated: `np.random.choice(outcome_list, size=rolls, p=[p1, p2, p3, ...])`
+    * Can pass array: `size=(simulations, trials) as in size=(rows, columns)`
+#### Theoretical Distributions from Parameters
+- Equal likelihood of all outcomes: Uniform (coin)
+    * Not very useful for our purposes
+    * Recipe: `stats.randint(low, high_not_including)`
+    * P(A) = 1 / len(Options)
+- Two outcomes: Binomial (success/failure)
+    * Not very useful for our purposes
+    * Recipe: `stats.binom(n=rolls, p=[p_True, p_False])`
+    * P(A) = our input
+- Normal - continuous random variable (bell curve)
+    * Very useful if we expect a normal distribution for something
+    * Recipe: `stats.norm(mean_value, stdev_size)`
+    * P(A) = `recipe.pdf(A)` ----- `.pdf` because of continuous values
+- Poisson - events per time interval
+    * Useful for time-related events
+    * Recipe: `stats.poisson(lambda_value)`
+    * P(A) = `recipe.pmf(A)` ----- `.pmf` because of discrete values
+- Lots more distributions... check scipy documentation for stats module
+#### Methods for Theoretical Distributions
+- Chance of specific outcome: 
+    * `.pmf(discrete)`, 
+    * `.pdf(continuous)`
+- Proportion higher: 
+    * `.sf(number) = proportion_higher`
+    * `.isf(proportion_higher) = number`
+- Proportion lower/equal: 
+    * `.cdf(number) = proportion_lowequal`
+    * `.ppf(proportion_lowequal) = number`
 
 --------------------------------------------------------------------------------
 <!-- Polished -->
 ## Visualizations
 - Inspiration: https://www.python-graph-gallery.com/all-charts
 - Custom: https://matplotlib.org/stable/tutorials/introductory/customizing.html
+    * Check out lines_bars_and_markers/bar_label_demo.html (one chart guide)
+    * Check out lines_bars_and_markers/categorical_variables.html (multi-chart)
+- Cheatsheet: "Python Seaborn Cheat Sheet PDF" on Google
 - `sns.set_palette("colorblind")`
 ### Chart Choices
 - Figure-level plots for multiple sub-charts; axis-level plot for a single chart
@@ -1970,9 +2114,9 @@ x = '#%02x%02x%02x' % tuple([int(255 * i) for i in d])           # "#ff7f0e"
 d = tuple([(int(f"0x{x[i:i+2]}", 16) / 255) for i in range(1, len(x), 2)])
 ```
 ```
-cmap_bluegreen_r = plt.get_cmap("BuGn_r")
+rblugrn = plt.get_cmap("BuGn_r")
 num_colors = crosstab.max().max()
-colors = ["whitesmoke"] + [cmap_bluegreen_r(i / num_colors) for i in range(2, num_colors)]
+colors = ["whitesmoke"] + [rblugrn(i / num_colors) for i in range(2,num_colors)]
 cmap = LinearSegmentedColormap.from_list('', colors, num_colors)
 sns.heatmap(crosstab, cmap=cmap, cbar=False, 
     vmin=low_threshold, vmax=high_threshold, center=center, annot=True, fmt="d")
@@ -2145,6 +2289,25 @@ def feature_plot(importances, X_train, y_train):
     plt.tight_layout()
     plt.show() 
 feature_plot(clf.feature_importances_, X_train, y_train) 
+```
+```
+from sklearnex import patch_sklearn
+patch_sklearn()
+# SELECTKBEST: fast, not comprehensive
+from sklearn.feature_selection import SelectKBest
+kbest = SelectKBest("f_regression", k=3).fit(X_train, y_train)  # top 3 features
+p_values = kbest.pvalues_
+chosen_cols = X_train.columns[kbest.get_support()]
+X_train_kbest = X_train[chosen_cols]  # select top 3 features into X_train_kbest
+X_val_kbest, X_test_kbest = X_val[chosen_cols], X_test[chosen_cols]
+# RECURSIVE FEATURE ENGINEERING (RFE): slow, comprehensive
+from sklearn.feature_selection import RFE
+from sklearn.ensemble import RandomForestClassifier as RF
+rfe = RFE(estimator=RF(), n_features_to_select=3).fit(X_train, y_train)
+chosen_cols = X_train.columns[rfe.get_support()]
+not_sure = pd.Series(rfe.ranking_, index=X_train.columns)
+X_train_RFE = X_train[chosen_cols]  # select top 3 features into X_train_RFE
+X_val_RFE, X_test_RFE = X_val[chosen_cols], X_test[chosen_cols]
 ```
 
 --------------------------------------------------------------------------------
@@ -2510,6 +2673,7 @@ y_train_pred = clf.predict(X_train)
     * Fixing heteroscedasticity: Remove outliers, transform data, or 
         * convert feature(s) to logarithmic value(s)
 ```
+# plot residuals
 y_train_residuals = y_train_preds - y_train
 sns.relplot(x=y_train, y=y_train_residuals)
 plt.axhline(y=0, c='gray', alpha=.3)
@@ -3026,14 +3190,6 @@ Neural networks have special setup, so instructions would be nice to have.
 Neural Networks are especially great for image and audio classification.
 Deep learning leverages multiple neural networks; I might explain it, IDK yet.
 ```
-<!-- Needs work -->
-## Deep Learning Basics
-
-- Deep Learning takes a long time to perform, and obscures the answers in a way. Have to be careful about when to use it, but it may solve a problemset that an analyst can't
-- 
-- Artificial Neural Networks are good at recognizing/replicating patterns leading to an optimized outcome (self-driving cars as an example)
-- Bad at: tabular, small data
-
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
@@ -3075,11 +3231,13 @@ from keras.datasets import mnist # very popular image classification dataset
 (train_images, train_labels), (test_images, test_labels) = mnist.load_data()
 train_images = train_images.reshape((60000, 28 * 28)); 
 train_images = train_images.astype('float32') / 255 # reshape data for model
-test_images = test_images.reshape((10000, 28 * 28)); test_images = test_images.astype('float32') / 255
+test_images = test_images.reshape((10000, 28 * 28))
+test_images = test_images.astype('float32') / 255
 network = models.Sequential() # create the model
-network.add(layers.Dense(512, activation='relu', input_shape(28*28,))) # add a layer
+network.add(layers.Dense(512, activation='relu', input_shape(28*28,)))
 network.add(layers.Dense(10, activation='softmax')) # add output layer
-network.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+network.compile(
+    optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 # compile the model
 train_labels = keras.utils.to_categorical(train_labels)
 test_labels = keras.utils.to_categorical(test_labels)
@@ -3091,6 +3249,47 @@ print(f'accuracy of network on test set: {test_acc}')
 --------------------------------------------------------------------------------
 <!-- Needs work -->
 ## Deep Learning
+- Similar methodology to NNs, but the network structure for learning is flexible
+```
+# ADD COMPUTER VISION EXAMPLE
+```
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!--
+ #####                                                           
+#     # ###### #    # ###### #####    ##   ##### # #    # ###### 
+#       #      ##   # #      #    #  #  #    #   # #    # #      
+#  #### #####  # #  # #####  #    # #    #   #   # #    # #####  
+#     # #      #  # # #      #####  ######   #   # #    # #      
+#     # #      #   ## #      #   #  #    #   #   #  #  #  #      
+ #####  ###### #    # ###### #    # #    #   #   #   ##   ###### 
+                                                                 
+   #    ### 
+  # #    #  
+ #   #   #  
+#     #  #  
+#######  #  
+#     #  #  
+#     # ### 
+-->
+
+# Generative AI
+
+--------------------------------------------------------------------------------
+<!-- Needs work -->
+## Implementing LLMs
+- 
+
+--------------------------------------------------------------------------------
+<!-- Needs work -->
+## Implementing Image Generation
 - 
 
 [[Return to Top]](#table-of-contents)
@@ -3126,77 +3325,13 @@ A Flask application is fine if you just need model I/O and basic UI.
 You can use Django if your application needs a wide range of functionality.
 Docker, Kubernetes, and Kafka have handling considerations that should be noted.
 ```
-## Docker
-- Containers: Easy replication and distribution of software solutions
-- Sandboxing: Each container in a Docker daemon is **isolated** from one another, by nature
-    * A container can replicate a computer in a safe state for testing, i.e. intrusion and malware
-- Cloud Support: Install the Docker daemon on a virtual server, then simply build from an image and run
-- Infinitely Scalable: Load balancers can coordinate many daemons and containers through ex: Kubernetes
-- Lightweight: *Not* ran in a virtual machine, runs directly from OS kernel (Docker mediates)
-    * Docker daemon will initialize a virtual machine if OS kernel does not match container 
-- Base images for `docker pull` or `FROM`: https://hub.docker.com
-- Official documentation: https://docs.docker.com/engine/reference/builder/
-### Dockerfile
-- Set of instructions to build a Docker image
-- Starts with `FROM`, which takes a base image as a parameter
-- Each instruction adds a layer or an intermediate layer to the image, and runs to completion before proceeding
-- Instructions are couched in the base layer; `RUN` for the Ubuntu base image uses Linux commands, for example
-- **RUN:** Execute a command when building the image
-    * `RUN ["python3", "my_setup_script.py"]` is the same as typing this into Terminal: `python3 myscript.py`
-    * Can also use: `RUN python3 myscript.py`, but the other form is recommended
-- **COPY:** Copy a specified local directory's files into image's specified directory
-    * Use `COPY . /app` to copy the current local directory's files into image's "app" folder
-- **WORKDIR:** Specify the directory for the image to proceed to for next instructions
-    * Navigate to the runtime-script folder and use ENTRYPOINT + CMD here to run the script
-- **ENTRYPOINT:** Set the command for the image to run *every time*
-    * Can't be modified through command line; if an image is designed to use a python kernel, specify python here
-- **CMD:** Sets the command for the image to use when the image is ran
-    * Often used with ENTRYPOINT; ENTRYPOINT is excellent for selecting a kernel ("python3") to run a script
-    * With `ENTRYPOINT ["python3"]`, use: `CMD ["image_runtime_script.py"]`
-### Initializing, Running Docker Containers
-- Build image(s) from a Dockerfile, Run images from the Docker images folder
-- Build: Specify the context where the Dockerfile + needed files live, ex: `docker build .`
-    * `-t author/purpose:version`: add image tag (image name)
-- Run: Specify which compiled image to use, ex: `docker run -d -p 80:80 --rm image_name`
-    * `-d`: detach from Terminal; `p`: assign ports; `--rm`: remove container on exit
-    * Run named image: `docker run author/purpose` (assumes latest version if not specified)
-    * Alias an image during the run command: `--name alias_name`
-### Example Dockerfile
-```
-FROM ubuntu:latest
-RUN apt-get update -y
-RUN apt-get install -y python3-pip python3-dev build-essential
-COPY . /app
-WORKDIR /app
-RUN pip3 install -r requirements.txt    # requirements.txt specifies py libraries to install
-ENTRYPOINT ["python3"]
-CMD ["app.py"]
-```
 
-## Flask
-- Web interfacing framework built on Python
-- Excellent for translating HTTP requests into function calls
-- Walkthrough of everything-Flask: https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world
-- Links, links, links for Flask-related content: https://www.fullstackpython.com/flask.html
-### Flask Basic Routing
-- Routing typically set in a file called views.py or app.py, allows page navigation from a Python framework
-- Run function on every page navigation regardless of page: `@app.before_request()`
-- Run function for specific page navigation: `@app.route('/cool_page')`
-    - Common return: `return_template(cool_page.html, global_var_thingy="coolthing")` ----- loads cool_page.html when nav to /cool_page
-    - Global variables can be called in HTML like this: `{{ global_var_thingy }}`, works as expected, do Python work in views.py or app.py
-- Allow sending data (POST), rewriting page (PUT): `@app.route('/api/v1/users', methods=['GET','POST','PUT'])`
-    * use: `if request.method == 'POST':` to specify what to do with which HTTP request type
-- Capture args from URL input: `@app.route('/<int:year>/<int:month>/<title>')` --- `def func(x,y,z):`
-### Flask Post-Route Functions
-- Overall route conclusions: Generate page template, Provide response, or Redirect a user somewhere else
-- Page template: `Flask(__name__, template_folder='templates')` --- ... --- `return render_template('index.html')`
-- Return info for coders: `return make_response(programmatic_stuff, HTTP_response_code, headers=headers_dict)`
-- Redirect a user from `@app.route('/cool_page.html')` to elsewhere: `return redirect('/cool_page_2.html')`
-    * Better version: `return redirect(url_for('cool_page_2'))`
-- Request for everything; `request.method`, `request.args.func`, `request.data`, `request.form`, `request.headers`
-- Setting global values: `from flask import g` --- `g.key_name = value` --- `g.pop('value', None)`
-- Error handling: `@app.errorhandler(404)`
-### Flask Example
+--------------------------------------------------------------------------------
+<!-- Needs work -->
+## Building a Flask App
+- Web interfacing framework that uses Python; pretty neato stuff
+- Tutorial: search "Flask mega tutorial miguen grinberg"
+- Links for all things Flask: https://www.fullstackpython.com/flask.html
 ```
 # Import all the packages you need for your model below
 import pickle
@@ -3228,40 +3363,123 @@ def predict_anomaly():
     # predict the scaled input
     predict_result = rf.predict(scaled_inputs)
     # return the result back
-    return 'Predicted result for observation ' + str(input_array) + ' is: ' + str(predict_result)
+    return f'Predicted result for observation {input_array} is {predict_result}'
 if __name__ == '__main__':
-    app.run(debug=True,host='0.0.0.0',port=port)
-
-# Example call when running: http://localhost:5000/predict?srv_count=500&num_failed_logins=0
+    app.run(debug=True, host='0.0.0.0', port=port)
+# Example call: http://localhost:5000/predict?srv_count=500&num_failed_logins=0
 ```
-
-## Apache Kafka
-- Distributed stream processing
-- Kafka 'broker' listens on port 9092 for TCP connection
-    * Distributed system has multiple brokers, each has full copy of topics, each listens on different ports
-    * One broker is 'leader' on a *partition* or topic while others are followers, as necessary
-- Kafka 'producer' publishes to a 'topic' in the Kafka broker, each publish adds a row in the topic marked by index
-    * With partitions, the producer selects the partition to add a row to
-    * Non-Kafka: Publish once, consume once (gone after): "Queue"; Publish once, consume many (not gone): "Pub/Sub"
-    * Kafka: All consumers in a group is "Queue"-style, all in separate groups is "Pub/Sub"-style
-- Kafka 'consumer' reads the topic and all its rows from index 0 onward
-    * Consumer groups distribute the partitions of a topic evenly between consumers in the group on 'consume'
-    * The max number of consumers in a group is the number of partitions in the topic
-
---------------------------------------------------------------------------------
-<!-- Needs work -->
-## Building a Flask App
-- 
+### Flask Basic Routing
+- Typically uses views.py or app.py; this allows page nav from Python framework
+    * Set param `methods=['GET','POST','PUT']` to choose what you can do
+    * Use `if request.method == 'POST':` for maximum effect
+    * Set route as `'/<int:year>/<int:month>/<title>'` to capture args from URL
+        * Capture args: `def func(x,y,z):`
+- `@app.before_request()` Run function on *every* page nav action 
+- `@app.route('/cool_page')` Run function for specific page navigation
+- `@app.errorhandler(404)` Run function for HTTP error codes
+### Flask Post-Route Functions
+- Overall: Generate page template, Provide response, or Redirect the user
+```
+# global variables
+from flask import g
+g.key_name = "value"
+g.pop("value", None)
+# templates
+Flask(__name__, template_folder='templates')
+    return render_template('index.html')
+return_template(cool_page.html, global_var_thingy="cool")  # use JINJA in HTML
+# responses
+return make_response(APIstuff, HTTP_response_code, headers=headers_dict)
+# redirects
+return redirect('/cool_page_2.html')
+return redirect(url_for('cool_page_2'))
+# requests
+request.method
+request.args.func
+request.data
+request.form
+request.headers
+```
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
 ## Building a Django App
-- 
+```
+# CREATE DJANGO EXAMPLE
+```
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
 ## Deploying the Model
-- 
+### Docker
+- Containers: Easy replication and distribution of software solutions
+- Sandboxing: Each container in a Docker daemon is **isolated** from one another
+    * A container can replicate a computer in a safe state for testing
+- Cloud Support: Install the Docker daemon on a virtual server, build image, run
+- Scalable: Load balancers (like Kubernetes) control many daemons/containers 
+- Lightweight: *Not* ran in a VM; runs directly from OS kernel (Docker mediates)
+    * Docker daemon will initialize a VM if OS kernel does not match container 
+- Base images for `docker pull` or `FROM`: https://hub.docker.com
+- Official documentation: https://docs.docker.com/engine/reference/builder/
+#### Dockerfile
+- Set of instructions to build a Docker image
+- Starts with `FROM`, which takes a base image as a parameter
+- Each instruction adds a layer or an intermediate layer to the image
+    * NOTE: Instructions run to completion before proceeding
+- Instructions are couched in the base layer
+    * For example: `RUN` for the Ubuntu base image uses Linux commands
+- **RUN:** Execute a command when building the image
+    * `RUN ["python3", "my_setup_script.py"]` is same as `python3 myscript.py`
+    * Can also use: `RUN python3 myscript.py`, but the other form is recommended
+- **COPY:** Copy a local directory's files into image's specified directory
+    * Use `COPY . /app` to copy the current directory into image's "app" folder
+- **WORKDIR:** Specify the directory for the image to proceed to
+    * Nav to the runtime folder and use ENTRYPOINT + CMD here to run scripts
+- **ENTRYPOINT:** Set the command for the image to run *every time*
+    * Can't be modified through command line
+    * If an image is designed to use a python kernel, specify python here
+- **CMD:** Sets the command for the image to use when the image is ran
+    * Often used with ENTRYPOINT
+        * ENTRYPOINT is great for selecting a kernel ("python3") to run a script
+    * With `ENTRYPOINT ["python3"]`, use: `CMD ["image_runtime_script.py"]`
+```
+FROM ubuntu:latest
+RUN apt-get update -y
+RUN apt-get install -y python3-pip python3-dev build-essential
+COPY . /app
+WORKDIR /app
+RUN pip3 install -r requirements.txt    # specify python libraries to install
+ENTRYPOINT ["python3"]
+CMD ["app.py"]
+```
+#### Initializing, Running Docker Containers
+- Build image(s) from a Dockerfile, Run images from the Docker images folder
+- Build: Specify the context where the Dockerfile + needed files live
+    * Example: `docker build .`
+    * `-t author/purpose:version`: add image tag (image name)
+- Run: Specify which compiled image to use
+    * Example: `docker run -d -p 80:80 --rm image_name`
+        * (d)etach from terminal, specify (p)ort, (rm) container on exit
+    * Run named image: `docker run author/purpose`
+        * This assumes the latest image version if version isn't specified
+    * Alias an image during the run command: `--name alias_name`
+### Kubernetes
+- INSERT INFORMATION/SETUP STEPS HERE
+### Apache Kafka
+- Distributed stream processing
+- Kafka 'broker' listens on port 9092 for TCP connection by default
+    * Distributed system has multiple 'brokers'
+        * Each broker has full copy of 'topics', each listens on different ports
+    * One 'broker' is 'leader' on a 'partition'/'topic'; others are 'followers'
+- Kafka 'producer' publishes to a 'topic' in the Kafka 'broker'
+    * Each publish action adds a row in the 'topic' marked by index
+    * With 'partitions', the 'producer' selects the 'partition' to add a row to
+- Kafka 'consumer' reads the topic and all its rows from index 0 onward
+    * All consumers in a group "Queue"; separate groups "Pub/Sub" each other
+        * "Queue": publish once, consume once (disappears after)
+        * "Pub/Sub": publish once, consume many times (doesn't disappear)
+    * Consume: Consumer groups send topic partitions evenly between consumers
+    * The max number of consumers in a group == number of partitions in a topic
 
 [[Return to Top]](#table-of-contents)
 
@@ -3296,76 +3514,34 @@ Project planning is vital to project success and can't be overestimated.
 There are a lot of common project management frameworks and interpretations.
 ```
 
-<!-- Polished -->
-## Storytelling
-- Data requires velocity to be useful
-- Finding relationships and stories in data, documenting is and isn'ts
-- Goal is to remove redundant/unimportant variables for the story
-- Hypothesize and visualize loop, and if that isn't enough, run statistical tests
-- "What data sources do we have, what are customers doing, how are we reaching people..."
-- "What is our observation???"
-    * titanic_db observations are... people on the titanic.
-### Trello
-- Requirements Stage: Talk with stakeholders about their requirements and a timeline
-- Decision Stage: Decide which requirements you will be able to complete
-    * Goal is to complete *all* user requirements for this "sprint" (the timeline)
-    * You choose how in-depth to go for each requirement
-### Stakeholders Considerations
-- Move functions and analysis to separate .ipynb as required for stakeholders
-    * Stakeholders want just the end product: give them it
-    * Stakeholders want the models and end product: give them it
-    * Stakeholders want everything: give them everything
-### Visualization Considerations
-- Expert-level visualizations != presentation-level visualization
-    * The pivot tables are more appropriate for Appendix
-    * If the audience has to read it, don't include it
-- Serve the "why" first, then follow with the specifics
-    * Leading with specifics will lose your audience
-- Give the "why" some amplifying, relative information to help seat your audience
-    * Avoid cluttering the "why" with too much amplification
-- Design the velocity with your audience in mind
-- Prepare to Create; Talk and Listen; Sketch; Prototype
-    * Clear physical and mental room; Know your data; Understand your audience and Big Idea
-    * Determine which framework to use (persuasive, man-in-hole, story), determine context, challenge, and solution
-    * Understand your audience and use an appropriate approach
-    * A topic isn't a big idea... use your chances to express the big idea
-    * Explain out loud what your project is, take notes of feedback, make corrections [I'm working on... I'm trying to show... Why...]
-    * Use everything so far to sketch out your ideas (brainstorm)
-    * Refine the sketches into presentation material
-- A non-correlation can be more important than a correlation
-- Start with overview in presentation, dissect the focus later (start with churn v not churned, then dive into churn data)
-- Relate the problem to the audience's interests and focus for maximum effect
-
-## Systems Development Lifecycle (SDLC)
-- Framework for delivering software
-- Waterfall: takes it one step at a time, fully-complete each step then move on
-    * All requirements defined ahead of time; inflexible for later requirements or issues, and may be restarted
-- AGILE: quickly builds from scratch to small, doing the full "spiral", then repeats from small to big, big to bigger, and onward
-    * Flexible for requirement changes or issues; but who knows when to call things "finished"
-### Steps of SDLC
-- Analysis: choosing which requirements to build for
-    * Software requirements specification (SRS) used to define all finalized requirements (includes UML diagrams)
-- Design: choosing the solutions to solve those requirements
-- Implementation: building the chosen solutions
-- Testing: ensuring the built solutions are functional and solve the requirements
-### Universal Modeling Language (UML) Diagrams
-- Often used in the SDLC
-    * Analysis: Use case diagram, ex: user choices, choice results
-    * Design: Class diagram, ex: classes and their initialized variables (with types!), inheritance arrows, "unfilled diamond"
-    * Implementation: Activity diagram, a flowchart displaying the logic of the program plus code language
-    * Testing: Sequence diagram, ex: client-server communication sequence
-- Each diagram is not only prescribable to a single element of SDLC; they overlap somewhat
-    * EX: can use the Use case diagram for multiple... but, you should use multiple/different diagrams
-
 --------------------------------------------------------------------------------
 <!-- Needs work -->
 ## Planning a Project
-- 
+- Requirements Stage: Talk with stakeholders about their requirements/timeline
+- Decision Stage: Decide which requirements you will be able to complete
+    * Goal is to complete *all* user requirements for this "sprint" (a timeline)
+    * You choose how in-depth to go for each requirement
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
 ## Selecting the Framework
-- 
+- Waterfall: takes it one step at a time, fully-complete each step then move on
+    * All requirements defined ahead of time
+    * Inflexible for new requirements/issues, must start over; finish is clear
+- AGILE: deliver minimums, expand minimums with features iteratively
+    * An iterations is a "spiral"; spiraling with new features
+    * Flexible for new requirements/issues, but may be hard to say it's finished
+### Systems Development Lifecycle (SDLC)
+- Framework for delivering software
+- Waterfall and AGILE both still in use; each follows same steps; AGILE repeats
+- Step 1: Analysis - Selecting requirements to fulfill (final ones are in SRS)
+    * UML: Use case diagram; user choices, choice result
+- Step 2: Design - choosing the solutions to solve those requirements
+    * UML: Class diagram; classes with vars, inheritance; "unfilled diamond"
+- Step 3: Implementation - building the chosen solutions
+    * UML: Activity diagram; typically a program's flowchart with actual code
+- Step 4: Testing - ensuring the solutions are functional + satisfy requirements
+    * UML: Sequence diagram; example is client-server communication sequence
 
 [[Return to Top]](#table-of-contents)
 
@@ -3436,7 +3612,7 @@ Tableau is popular for its interactive visualizations.
 - Can do reports in Jupyter! And you should!!
 ```
 from powerbiclient import Report, models
-# Import the DeviceCodeLoginAuthentication class to authenticate against Power BI
+# Import the DeviceCodeLoginAuthentication class to authenticate with Power BI
 from powerbiclient.authentication import DeviceCodeLoginAuthentication
 # Initiate device authentication
 device_auth = DeviceCodeLoginAuthentication()
