@@ -460,6 +460,76 @@ json_data = requests.get("https://swapi.dev/api/people/5").json()
 print(json_data["name"])
 ```
 
+--------------------------------------------------------------------------------
+<!-- Needs work -->
+## Conditional read_csv For Local Files
+```
+def find_csvs(dir=None, match=None, folder_start=None, folder_end=None):
+    """
+    Get filepaths of all CSVs nested inside a given directory.
+    dir: directory compatible with `os.walk(dir)`
+    match: only return files where: `match in filename` is True
+    folder_start: only look in folders where: `folder.startswith(folder_start)`
+    folder_end: only look in folders where: `folder.endswith(folder_end)`
+    return: absolute filepaths of all CSVs matching the conditions
+    """
+    if dir is None:
+        dir = os.getcwd()
+    walk = os.walk(dir)
+    all_filepaths = []
+    for tup in walk:
+        folder, files = tup[0], tup[2]
+        if folder_start is not None:
+            if not folder.startswith(folder_start): continue
+        if folder_end is not None:
+            if not folder.endswith(folder_end): continue
+        files = [folder + "\\" + file for file in files if file[-4:] == ".csv"]
+        if match is not None:
+            files = [file for file in files if match in file]
+        all_filepaths.extend(files)
+    return all_filepaths
+def read_csvs(filepaths, set_cols=False):
+    """
+    Read all CSVs from a list of filepaths, concat into one dataframe.
+    filepaths: list of filepaths to iterate through and `read_csv` against
+    set_cols: either bool (lock found cols) or col list (provide restrictions)
+    return: one dataframe of concatenated read-in CSVs
+    """
+    if len(filepaths) == 0: return None
+    first_is_csv = filepaths[0][-4:] == ".csv"
+    first_file_exists = os.path.isfile(filepaths[0])
+    if len(filepaths) == 1 and first_file_exists and first_is_csv:
+        return pd.read_csv(filepaths[0])
+    overprint = len("Done reading!") + len(max(filepaths, key=len))
+    if first_file_exists and first_is_csv:
+        print(f"Reading: {filepaths[0]:<{overprint}}", end="\r", flush=True)
+        if type(set_cols) is list:
+            filepaths = fps  # lmao 80char width
+            set_cols = [c for f in fps for c in pd.read_csv(f, nrows=0).columns 
+                        if col in set_cols]
+            df = pd.read_csv(filepaths[0], usecols=set_cols)
+        elif type(set_cols) is str:
+            set_cols = [set_cols]
+            df = pd.read_csv(filepaths[0], usecols=set_cols)
+        elif type(set_cols) is bool:
+            df = pd.read_csv(filepaths[0])
+            if set_cols: set_cols = [col for col in df.columns]
+            else: set_cols = None
+        else: set_cols = None
+    for filepath in filepaths[1:]:
+        if os.path.isfile(filepath) and filepath[-4:] == ".csv":
+            print("Reading: {filepath:<{overprint}}", end="\r", flush=True)
+            df_new = pd.read_csv(filepath, usecols=set_cols)
+            df = pd.concat([df, df_new])
+    print(f"{Done reading!:<{overprint}}", end="\r", flush=True)
+    if "@timestamp" in df.columns:
+        df = df.sort_values(by="@timestamp").reset_index(drop=True)
+    return df
+```
+```
+df = read_csvs(find_csvs(match="EID4624"), set_cols=False)
+```
+
 [[Return to Top]](#table-of-contents)
 
 
@@ -1230,6 +1300,7 @@ def query_the_stack(query_object, return_count=None):
             break
         print_progress(i)
         obj = d.to_dict()
+        obj["_id"] = d.meta.id
         row = flatten_json(obj)
         del obj
         rows.append(row)
@@ -1248,8 +1319,13 @@ import elk_basics    # these are the functions defined above in the notes
 from env import ip, user, password
 client = ES([ip], ca_certs=False, verify_certs=False, http_auth=(user,password))
 search_context = Search(using=client, index="index_pattern", doc_type="doc")
-s = search_context.query("match", winlog__event_id=4624)
-df = elk_basics.query_the_stack(s, 10000)
+s1 = search_context\
+    .query("match", winlog__event_id=4624)\
+    .filter("range", **{"@timestamp": {"gte": "now-1d"}})\
+    .source(fields=["winlog.provider_name","winlog.event_id"])
+df1 = elk_basics.query_the_stack(s1, 10_000)
+s2 = search_context.query("exists", field="winlog.event_data.LogonType")
+df2 = elk_basics.query_the_stack(s2, 10_000)
 ```
 
 [[Return to Top]](#table-of-contents)
@@ -1295,13 +1371,29 @@ Explanations here shouldn't go any further than feature engineering.
 <!-- Needs work -->
 ## Dataframe Normalization
 ```
+import numpy as np
+import pandas as pd
+import json
+import xmltodict
+from util import flatten_json
 # split JSON fields out into their own columns
-fix_keys = lambda x: {f"{col}.{key}":value for key, value in x.items()}
-for col in df:
-    if type(df.loc[0, col]) is dict:
-        print("Flattening column:", col)
-        tdf = pd.DataFrame(df[col].apply(flatten_json).apply(fix_keys).tolist())
-        df = pd.concat([df.drop(columns=[col]), tdf], axis=1)
+json_breakouts = pd.DataFrame(df[json_col].apply(flatten_json).tolist())
+df = pd.concat([df, json_breakouts], axis=1)
+# convert a column of nested XML into a dataframe of flattened XML
+parse_xml = lambda x: flatten_json(json.loads(json.dumps(xmltodict.parse(x))))
+xml_breakouts = pd.DataFrame(df[xml_col].apply(parse_xml).tolist())
+df = pd.concat([df, xml_breakouts], axis=1)
+# perform an apply operation conditionally
+cond_apply = lambda x: x.upper() if x not in [None, np.nan, "None"] else None
+df["newcol0"] = df[str_col].apply(cond_apply)
+# perform an apply operation with multi-column return
+def determine(x):
+    if type(x) is not str:
+        return pd.Series(["start":None, "end":None, "all":x])
+    a = "alive" if x.startswith("born") else "unalive"
+    b = "dying" if x.endswith("died") else "undying"
+    return pd.Series(["start":a, "end":b, "all":x])
+out_df = df[str_col].apply(determine)
 # split a string column into multiple columns
 df[["newcol1","newcol2"]] = df["col"].str.split(":", expand=True)
 # melt "wide" columns
@@ -1326,10 +1418,15 @@ test[["embark_town"]] = imputer.transform(test[["embark_town"]])
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+df = pd.DataFrame([{"hi":1, "yo":5, "sup":3.2}] * 1_000_000)
+# UNIQUE COMBOS OF COLUMNS
+combos = df.set_index(["hi","yo"]).index.unique()
+for combo in combos:
+    mask = (df["hi"] == combo[0]) & (df["yo"] == combo[1])
+    print(f"--- {list(combo)} ---, "\nMax 'Sup':", df[mask]["sup"].max())
 # DF.APPLY WITH PROGRESS BAR
-from tqdm import tqdm
-tqdm.pandas()
-df = pd.DataFrame([{"hi":1, "yo":5}] * 1_000_000)
+from tqdm.auto import tqdm
+tqdm.pandas(desc="times100")
 s1 = df["hi"].progress_apply(lambda x: x * 100)
 df1 = df.progress_apply(lambda x: x[0] * x[1], axis=1)
 # CHECK MEMORY ALLOC FOR DF
@@ -2227,11 +2324,13 @@ plt.show()
 ### Command Mode
 - dd for cell deletion, y for code cell, m for markdown cell
 ### Edit Mode
-- Line operations
 - TAB for autocomplete of methods/variables/filenames
 - Shift TAB for full context at cursor location
 - Option Shift - to split cell into two cells at cursor
 - Option Dragclick to drag multi-line cursor
+- Run shell commands with `!` like this: `!echo "hi"`
+    * I think the commands depend on what terminal program is running Jupyter
+- Run ipython commands with `%` like this: `%ls`
 
 [[Return to Top]](#table-of-contents)
 
@@ -3687,7 +3786,7 @@ PBI_visualize
 # Programming Languages
 ```
 This section is needed for what should be obvious reasons: syntax, examples, etc
-Python is my manin language, so I'll just use the section to store odd snippets.
+Python is my main language, so I'll just use the section to store odd snippets.
 R is an alternative to Python and used especially in academia (use is waning).
 C++ pointer manipulation is very fast, so C++ might play a role in development.
 ```
@@ -3728,6 +3827,9 @@ C++ pointer manipulation is very fast, so C++ might play a role in development.
 - `{"a":1, "b":2}.get("zzz", "doesn't exist!")` query for a key
 - `x.update({"trees":["Oak"]})` add new key:value without reassignment
 - `{ok:{ik:float(iv) for (ik, iv) in ov.items()} for (ok, ov) in d.items()}`
+### Generators
+- `x = iter(mylist)` creates iterable list, `next(x)` prints next item in x
+    * Iterables track your spot if you use `next`, pretty cool with `os.walk()`
 ### Class Oddities
 - Class methods alter the class itself, ex: `Cool1.name_me("Cool Guy")`
 - Operator overloading
