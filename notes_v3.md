@@ -18,14 +18,6 @@
  #####   ####  #    #   #   ###### #    #   #    ####  
 -->
 
-Future:
-1. Trying to move all notes coherently from notes_v2.md into notes_v3.md
-1. Restructuring notes_v3.md if necessary after notes move is complete
-1. Optimizing sections and noting gaps / potential additions
-    * REGEX specific to the environment (Elasticsearch lacking, Python REGEX)
-1. Prioritizing effort from the first round of noted gaps/additions
-1. Shifting into maintainable posture
-
 # Table of Contents
 I.    [Environment Meta-Work         ](#environment-meta-work)
 1.    [Environment Setup             ](#environment-setup)
