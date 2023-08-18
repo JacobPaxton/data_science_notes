@@ -434,6 +434,15 @@ The end state of both methods should be an initial dataframe pre-editing.
 - `from vega_datasets import data` --- `df = data('iris')`
 - `from sklearn import datasets` --- `array = datasets.load_iris()['data']`
 - datareader https://pandas-datareader.readthedocs.io/en/latest/remote_data.html
+### Important Importing
+- CSV: `df = pd.read_csv(fp, parse_dates=ts_cols)`
+- XLSX: `xls = pd.ExcelFile(fp)` -> `df = xls.parse("sheet1")`
+    * `df = xls.parse("s1", usecols=, skiprows=, ...)`
+- SAS: `with SAS7BDAT(fp) as f:` -> `df = f.to_data_frame()`
+    * `from sas7bdat import SAS7BDAT`
+- Stata: `df = pd.read_stata(fp)`
+- HDF5: `import h5py` -> `mydict = h5py.File(fp)`
+- MATLAB: `import scipy.io` -> `mydict = scipy.io.loadmat(fp)`
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
@@ -931,6 +940,19 @@ new_con.close()
 import os
 os.remove("cool.db")
 ```
+### SQLAlchemy
+```
+from sqlalchemy import create_engine
+engine = create_engine("sqlite:///MyDB.sqlite")
+table_names = engine.table_names()
+con = engine.connect()
+df1 = pd.read_sql_query("SELECT * FROM TABLE1", con)
+rs = con.execute("SELECT * FROM TABLE1")
+df2 = pd.DataFrame(rs.fetchall())
+df2.columns = rs.keys()
+df3 = pd.DataFrame(rs.fetchmany(size=5))
+df3.columns = rs.keys()
+```
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
@@ -1232,72 +1254,254 @@ from pyspark.ml.evaluation import ...     # model evaluation
 - Python interacts with the Elasticsearch REST API on port 9200 (default)
 - To connect: create an account in Kibana and use those creds in Python queries
 - Elasticsearch-DSL makes API calls much easier
+### Stack Assessment
+```
+def gather_indices(client, rough="so-beats-{date}", date_pattern="%Y.%m.%d", 
+                   msn_start=None, msn_end=None):
+    pattern = rough
+    if "{date}" in pattern:
+        pattern = pattern.replace("{date}","*")
+    indices = sorted(list(client.indices.get_alias(pattern).keys()))
+    if len(indices) == 0:
+        print("Index pattern returned no results:", pattern)
+        return list()
+    if msn_start and msn_end:
+        selected_indices = []
+        date_list = list(pd.date_range(start=msn_start, end=msn_end)\
+            .strftime(date_pattern))
+        for date in date_list:
+            try_index = rough.replace("{date}", date)
+            if try_index in indices:
+                selected_indices.append(try_index)
+        if len(selected_indices) == 0:
+            print("No indices found matching format:", end=" ")
+            print(rough.replace("{date}", date_pattern))
+        else:
+            return selected_indices
+    return indices
+def gather_fields_from_index(properties):
+    output_list = []
+    def walk_down(current, name=""):
+        keys = list(current.keys())
+        for key in keys:
+            if "properties" in current[key].keys():
+                walk_down(current[key]["properties"], f"{name}{key}.")
+            else:
+                output_list.append(f"{name}{key}")
+    walk_down(properties)
+    return set(output_list)
+ def gather_all_fields(client, rough="so-beats-{date}",\
+                       date_pattern="%Y.%m.%d", msn_start=None, msn_end=None):
+    all_fields = set()
+    indices = gather_indices(client, rough, date_pattern, msn_start, msn_end)
+    index_count = len(indices)
+    if index_count == 0:
+        return None
+    j = 0.0
+    for i, index in enumerate(indices):
+        if round((i / index_count) * 100) > j:
+            j = round((i / index_count) * 100)
+            print(f"Checking indices: {j}%", end="\r", flush=True)
+        try:
+            index_fields = client.indices.get_mapping(index)\
+                [index]["mappings"]["properties"]
+            new_set = gather_fields_from_index(index_fields)
+            all_fields.update(new_set)
+        except Exception as error:
+            print(index, "---", error)
+    all_fields = sorted(list(all_fields))
+    if len(all_fields) == 0:
+        print("No fields found!")
+        return None
+    print("Check complete! Number of observed fields:", len(all_fields))
+    return all_fields
+def gather_raw_pnids(search_context, pn_field="winlog.provider_name",\
+                     eid_field="winlog.event_id", range_kwargs=None):
+    s = search_context\
+        .query("exists", field=pn_field)\
+        .query("exists", field=eid_field)
+    if type(range_kwargs) is dict:
+        s = s.filter("range", **range_kwargs)
+    s.aggs.bucket("pn", "terms", field=pn_field, size=10_000)\
+        .metric("eid", "terms", field=eid_field, size=10_000)
+    response = s.execute()
+    aggs = response.aggregations.to_dict()
+    output_set = set()
+    for pn_bucket in aggs["pn"]["buckets"]:
+        pn = pn_bucket["key"]
+        eids = {eid_bucket["key"] for eid_bucket in pn_bucket["eid"]["buckets"]}
+        pn_ids = {f"{pn}_{eid}" for eid in eids}
+        output_set.update(pn_ids)
+    return output_set
+def gather_field_pnids(search_context, all_fields,\
+                       pn_field="winlog.provider_name",\
+                       eid_field="winlog.event_id", range_kwargs=None):
+    field_count = len(all_fields)
+    print(f"Getting all PN_ID options for {field_count} fields...",
+          end="\r", flush=True)
+    capture_dict = {}
+    j = 0.0
+    for i, new_field in enumerate(all_fields):
+        if round((i / field_count) * 100) > j:
+            j = round((i / field_count) * 100)
+            print(f"Getting all PN_ID options for {field_count} fields: {j}%",
+                  end="\r", flush=True)
+        sc2 = search_context.query("exists", field=new_field)
+        if type(range_kwargs) is dict:
+            sc2 = sc2.filter("range", **range_kwargs)
+        sc2.aggs.bucket("pn", "terms", field=pn_field, size=10_000)\
+            .metric("eid", "terms", field=eid_field, size=10_000)
+        response = sc2.execute()
+        my_aggs = response.aggregations.to_dict()
+        for pn_bucket in my_aggs["pn"]["buckets"]:
+            pn = pn_bucket["key"]
+            for eid_bucket in pn_bucket["eid"]["buckets"]:
+                eid = eid_bucket["key"]
+                pn_id = f"{pn}_{eid}"
+                if pn_id not in capture_dict.keys():
+                    capture_dict[pn_id] = {"event_cols":{"all":[]}}
+                capture_dict[pn_id]["event_cols"]["all"].append(new_field)
+    print(f"Parsed all {field_count} fields! Count of discovered PN_IDs:",
+          len(capture_dict.keys()))
+    output_dict = {}
+    for key in sorted(list(capture_dict.keys())):
+        col_list = sorted(capture_dict[key]["event_cols"]["all"])
+        output_dict[key] = {"event_cols": {"all":col_list}}
+    return output_dict
+def merge_rawpnids_fieldpnids(search_context, raw_pnids, field_pnids,\
+                              pn_field="winlog.provider_name",\
+                              eid_field="winlog.event_id", range_kwargs=None):
+    raw_pnids_has = {pn_id for pn_id in raw_pnids 
+                        if pn_id not in field_pnids.keys()}
+    if len(raw_pnids_has) > 0:
+        new_pnids = sorted(list(raw_pnids_has))
+        count_new = len(new_pnids)
+        print(f"Found update material: {count_new} additional PN_IDs.")
+        print(f"Grabbing their fields...", end="\r", flush=True)
+        j = 0.0
+        for i, pn_id in enumerate(new_pnids):
+            if round((i / count_new) * 100) > j:
+                j = round((i / count_new) * 100)
+                print(f"Grabbing their fields: {j}%", end="\r", flush=True)
+            field_pnids[pn_id] = {"event_cols":{"all":[]}}
+            pn, eid = pn_id.split("_")
+            query_string = f"{pn_field}: ({pn}) AND {eid_field}: ({eid})"
+            s = search_context.query("query_string", query=query_string)
+            if type(range_kwargs) is dict:
+                s = s.filter("range", **range_kwargs)
+            df = query_the_stack(s, shh=True)
+            if df is not None:
+                fields = sorted(list(df.columns))
+                field_pnids[pn_id]["event_cols"]["all"].extend(fields)
+        print("Completed! Added PN_IDs and fields to 'field_pnids'.")
+    else:
+        print("Nothing new to add to field_pnids!")
+    return field_pnids
+```
+```
+select_mission = False
+run_field_pnids = True
+run_raw_pnids = True
+output_to_json = True
+if run_field_pnids:
+    if select_mission:
+        all_fields = gather_all_fields(
+            client, msn_start=mission_start, msn_end=mission_end)
+        field_pnids = gather_field_pnids(
+            search_context, all_fields, pn_field, eid_field, mission_window)
+    else:
+        all_fields = gather_all_fields(client)
+        field_pnids = gather_field_pnids(
+            search_context, all_fields, pn_field, eid_field)
+    providers = {pn_id.split("_")[0] for pn_id in field_pnids.keys()}
+    provider_printout = "\n".join(sorted(list(providers)))
+    print(f"\nDiscovered Providers:\n{provider_printout}\n")
+    sample_val = "Microsoft-Windows-Security-Auditing_4624"
+    if sample_val in field_pnids.keys():
+        print(f"Fields for sample: {sample_val}\n{field_pnids[sample_val]}\n")
+if run_raw_pnids:
+    if select_mission:
+        raw_pnids = gather_raw_pnids(
+            search_context, pn_field, eid_field, mission_window)
+    else:
+        raw_pnids = gather_raw_pnids(search_context, pn_field, eid_field)
+if run_field_pnids and run_raw_pnids:
+    output_pnids = merge_rawpnids_fieldpnids(
+        search_context, raw_pnids, field_pnids, pn_field, eid_field)
+else:
+    output_pnids = field_pnids
+if run_field_pnids and output_to_json:
+    with open("kb_specific.json", "w") as f:
+        f.write(json.dumps(output_pnids, indent=2))
+```
+### Record Pull
 ```
 def flatten_json(json_input, splitout_lists=False):
-    """
-    Recursively-flatten a nested dictionary (JSON) using dot separators.
-    - Input: {"hi":{"yo":{"odd":99}, "sup":25}, "what":44}
-    - Output: {"hi.yo.odd":99, "hi.sup":25, "what":44}
-    Can choose whether lists are stored in a cell or split out across columns.
-    :param json_input: Python nested dictionary
-    :param splitout_lists: Python bool indicating whether to split lists to cols
-    :return: flattened Python dictionary
-    """
     output_dict = {}
     def flatten(current_structure, name=""):
-        """Flatten and assign to output dict"""
         if type(current_structure) is dict:
             # loop vertically (key -> value)
             for element in current_structure:
                 flatten(current_structure[element], name + element + ".")
         elif type(current_structure) is list:
             if splitout_lists in [True, "True", "true", "Yes", "yes", "sure"]:
-                # add new column for each element of a list (true flatten)
                 for i, element in enumerate(current_structure):
                     flatten(element, name + str(i) + "_")
             else:
-                # assign list as a single value (partial flatten)
                 output_dict[name[:-1]] = current_structure
         else:
-            # add flattened value to output, return to parent loop
             output_dict[name[:-1]] = current_structure
-    # execute recursion
     flatten(json_input)
     return output_dict
 def print_progress(i):
-    """Pretty-print the number of returned records; i is current number"""
     if i < 1_000_000 and i % 1_000 == 0 and i != 0:
         print(f"{i // 1_000}k records found...", end="\r", flush=True)
     elif i % 10_000 == 0 and i != 0:
         print(f"{i / 1_000_000}mil records found...", end="\r", flush=True)
+def use_es_response(response, return_count=10, use_es_id=False):
+    hits = response.__dict__["_d_"]["hits"]["hits"]
+    rows = []
+    for hit in hits[:return_count]:
+        obj = hit["_source"]
+        if use_es_id:
+            obj["_id"] = d.meta.id
+        row = flatten_json(obj)
+        rows.append(row)
+    if len(rows) == 0:
+        return None
+    df = pd.DataFrame(rows)
+    return df
 def query_the_stack(query_object, return_count=None):
-    """
-    Send an Elasticsearch query to the stack.
-    Query object should be an Elasticsearch-DSL "Search" object.
-    - EX: Search(using=Elasticsearch(), index="index_pattern", doc_type="doc")
-    - EX: Search(...).query("match", event__module="sysmon")
-    Can choose how many records are returned by setting return_count to an int.
-    - EX: Settng this to 41 limits results to 41 records
-    :param query_object: Prepared elasticsearch-dsl Search object
-    :param return_count: Optional integer to limit returns
-    :return: pandas DataFrame where JSON fields are flattened w/ dot separation
-    """
     response = query_object.execute()
     if not response.success(): 
-        print("Failed to connect!")
+        print("Connection failed!")
         return None
+    under10records = len(response.__dict__["_d_"]["hits"]["hits"]) < 10
+    if return_count in range(1,11) or under10records:
+        df = use_es_response(response, return_count, use_es_id)
+        return df
     rows = []
-    for i, d in enumerate(query_object.scan()):
-        if i == return_count:
-            break
-        print_progress(i)
-        obj = d.to_dict()
-        obj["_id"] = d.meta.id
-        row = flatten_json(obj)
-        del obj
-        rows.append(row)
-        del row
-    print("Total records found:", "{:,}".format(i))
+    try:
+        for i, d in enumerate(query_object.scan()):
+            if i == return_count:
+                break
+            if shh is False:
+                print_progress(i)
+            obj = d.to_dict()
+            if use_es_id:
+                obj["_id"] = d.meta.id
+            row = flatten_json(obj)
+            del obj
+            rows.append(row)
+            del row
+    except Exception as error:
+        print("Something went wrong!! The query probably didn't complete.")
+        print(f"Here's the error:\n{error}")
+    try:
+        if shh is False:
+            print("Total records found:", "{:,}".format(i))
+    except:
+        pass
     if len(rows) == 0:
         return None
     df = pd.DataFrame(rows)
@@ -1318,6 +1522,39 @@ s1 = search_context\
 df1 = elk_basics.query_the_stack(s1, 10_000)
 s2 = search_context.query("exists", field="winlog.event_data.LogonType")
 df2 = elk_basics.query_the_stack(s2, 10_000)
+```
+```
+from env import ip_address, user, password
+import warnings
+warnings.filterwarnings("ignore")
+import pandas as pd
+from elasticsearch import Elasticsearch
+from elasticsearch_dsl import Search, Q
+client = Elasticsearch([ip_address], ca_certs=False, verify_certs=False, http_auth=(user,password))
+search_context = Search(using=client, index="sessions2-*", doc_type="doc")
+painless_script = """
+boolean x;
+x = doc["srcDataBytes"].value > doc["dstDataBytes"].value;
+x
+"""
+fields = ["srcIp","dstIp","srcDataBytes","dstDataBytes"]
+s = search_context\
+    .query("bool", **{"must": [{"match": {"srcIp":"123.45.67.0/24"}}],
+                      "filter": {"script": {"script": {"source": painless_script}}}})\
+    .params(request_timeout=90)
+s.aggs.bucket("src", "terms", field="srcIp", size=10_000)\
+    .metric("dst", "terms", field="dstIp", size=10_000)
+print("Executing... please hold for a few seconds...", end="\r", flush=True)
+response = s.execute()
+print("Done!" + " "*100)
+results = response.aggregations.to_dict()
+output_set = set()
+for bucket in results["src"]["buckets"]:
+    src = bucket["key"]
+    dsts = {bkt["key"] for bkt in bucket["dst"]["buckets"]}
+    rows = {(src, dst) for dst in dsts}
+    output_set.update(rows)
+df = pd.DataFrame([{"source":os[0], "destination":os[1]} for os in output_set])
 ```
 
 [[Return to Top]](#table-of-contents)
@@ -1367,6 +1604,7 @@ import numpy as np
 import pandas as pd
 import json
 import xmltodict
+import statsmodels.api as sm
 from util import flatten_json
 # split JSON fields out into their own columns
 json_breakouts = pd.DataFrame(df[json_col].apply(flatten_json).tolist())
@@ -1400,19 +1638,44 @@ imputer = SimpleImputer(strategy="most_frequent")
 train[["embark_town"]] = imputer.fit_transform(train[["embark_town"]])
 validate[["embark_town"]] = imputer.transform(validate[["embark_town"]])
 test[["embark_town"]] = imputer.transform(test[["embark_town"]])
+# slick way to eval imputation results: linear regression
+dropna_df = df.dropna(how="any") 
+meanimp_df = df. ... (impute mean)
+... # run/store any imputation method df here
+results = {}
+for each imp_df:
+    X = sm.add_constant(nullfix_df.drop(columns="target"))
+    y = nullfix_df["target"]
+    lm = sm.OLS(y, X).fit()
+    print(lm.rsquared_adj) # r2, larger is better
+    print(lm.params)       # index: colname, row: coefficient
+    results[this_imp_method] = lm.params
+print(pd.DataFrame(results))
+dropna_df["col"].plot(kind="kde", c="red", linewidth=3)
+meanimp_df['col"].plot(kind="kde")
+... # plot other imputation KDEs; compare KDEs for closeness to original DF
+```
+```
+from fancyimpute import KNN   # or, IterativeImputer (MICE)
+df_knn = df.copy(deep=True)
+knn_imputer = KNN()
+df_knn.iloc[:,:] = knn_imputer.fit_transform(df_knn)
 ```
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
 ## Fixing Dataframes at Speed
 - AVOID APPENDING ROWS TO DATAFRAMES (SLOW)
+- Most numpy/pandas methods are NOT vectorized!!
+- Non-numerical DF description: `df.describe(exclude="number")`
+- Find duplicates: `df.duplicated(subset=["col1","col2",...], keep="first")`
 ```
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 df = pd.DataFrame([{"hi":1, "yo":5, "sup":3.2}] * 1_000_000)
 # UNIQUE COMBOS OF COLUMNS
-combos = df.set_index(["hi","yo"]).index.unique()
+combos = df.set_index(["hi","yo"]).index.unique() # df.index.get_level_values(i)
 for combo in combos:
     mask = (df["hi"] == combo[0]) & (df["yo"] == combo[1])
     print(f"--- {list(combo)} ---, "\nMax 'Sup':", df[mask]["sup"].max())
@@ -1476,7 +1739,17 @@ drop_cols = [c[0] for c in c_nulls if c[1] > 20]
 print(f"DROPPING THESE COLUMNS (>20% NULL):\n{drop_cols}")
 df = df.drop(columns=drop_cols)
 nonnull_minimum = int(r_nulls["avg"])  # thresh is minimum number of NON-NULL
-df = df.dropna(axis=1, thresh=nonnull_minimum)
+df = df.dropna(axis=1, thresh=nonnull_minimum, subset=df.columns[3:6])
+```
+```
+import missingno as msno
+plt.figure(1)
+msno.matrix(df)
+plt.figure(2)
+msno.headmap(df)
+plt.figure(3)
+msno.dendrogram(df)
+plt.show()
 ```
 ### Setting Up for Exploration
 ```
@@ -1561,15 +1834,62 @@ def resampler(X_train, y_train):
     print("After SMOTE+Tomek applied:", X_train_res.shape, y_train_res.shape)
     return X_train_res, y_train_res    # return resampled train data
 ```
-### REGEX
+### Feature Reduction
+- t-SNE: exaggerate 2d distances after looking at multi-dimensional differences
+    * result: observations that are similar will be close to one another.
+    * `from sklearn.manifold import TSNE` - `m = TSNE(learning_rate=50)`
+    * `tsne_features = m.fit_transform(df_numeric)`
+    * `df["x"] = tsne_features[:,0]`, `df["y"] = tsne_features[:,1]`
+    * `sns.scatterplot(x="x", y="y", hue="cat_col", data=df)`, `plt.show()`
+- Get rid of features without variance (ex: only one unique value)
+- Get rid of features with high null count
+- Get rid of features that correlate with another feature (multicollinearity)
+- Select features using linreg coefficients (furthest values from zero)
+- Select features using RFE: `from sklearn.feature_selection import RFE`
+    * `rfe = RFE(estimator=RandomForestClassifier(), n_features_to_select=6)`
+        * `estimator=GradientBoostingRegressor()`
+        * `step=5`
+    * try out `verbose=1` to show what's going on
+    * quick check: `print(accuracy_score(y_test, rfe.predict(X_test)))`
+- You can do feature reduction with LASSO regularization (increases bias)
+    * `LassoCV()` does cross-validation to tune regularization to best one
+    * `lcv = LassoCV()`, `lcv.fit(X_train, y_train)`, `lcvmask = lcv.coef_ != 0`
+    * use val of `sum(lcvmask)` to set `n_features_to_select` in RFE
+- `votes = np.sum([lcvmask, rfmask, gbmask], axis=0)`
+    * `mask = votes >= 2` -> `reduced_X = x.loc[:,mask]`
+### Principal Component Analysis (PCA) Dimensionality Reduction
 ```
-| Zero or more (optional): *  | One or more: +        | Optional: ?            |
-| Any character: .            | Choices: [a12qx]      | Anything-but: [^a12qx] |
-| Alphanumeric: \w \W         | Whitespace: \s \S     | Digit: \d \D           |
-| {5} Repeat exactly 5 times  | {3,6} Min 3, Max 6    | {3,} At least 3 times  |
-| Anchor front: ^             | Anchor back: $        | Word boundary: \b      |
-| Capture group: So (cool)!   | Match group: (?:yooo) |
-| Case insensitive: (?i)(?-i) | Ignore spaces: (?x)   | Single line mode: (?s) |
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+std_df = scaler.fit_transform(df)
+from sklearn.decomposition import PCA
+pca = PCA()
+print(pca.fit_transform(std_df))  # no more duplicate information
+print(pca.explained_variance_ratio_)  # each component's variance explanation
+print(pca.explained_variance_ratio_.cumsum())  # walking explained variance to 1
+# plot cumsum against number of features walked to show elbow method chart thing
+```
+```
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+from skelarn.pipeline import Pipeline
+pipe = Pipeline([
+    ("scaler", StandardScaler()), 
+    ("reducer", PCA())])
+pc = pipe.fit_transform(num_df)
+print(pc[:,:2])
+df["PC 1"] = pc[:,0]
+df["PC 2"] = pc[:,1]
+sns.scatterplot(data=df, x="PC 1", y="PC 2", hue="cat_col", alpha=0.4)
+pipe = Pipeline([
+    ("scaler", StandardScaler()), 
+    ("reducer", PCA(n_components=3)),  # choose between 0 and 1 for PCA to lift!
+    ("classifier", RandomForestClassifier())])
+print(pipe["reducer"])
+pipe.fit(X_train, y_train)
+print(pipe["reducer"].explained_variance_ratio_)
+print(pipe["reducer"].explained_variance_ratio_.sum()) # current explained var
+print(pipe.score(X_test, y_test)) # hopefully we did well!!
 ```
 
 --------------------------------------------------------------------------------
@@ -1822,6 +2142,8 @@ NLP's "bag of words" works nicely in conjunction with classification.
 --------------------------------------------------------------------------------
 <!-- Needs work -->
 ## Normalizing String Features
+- Fuzzy matching: `thefuzz.process.extract("matchme", listlikehere, limit=None)`
+    * Return list of match score tuples like: [(string1, score, rank), ...]
 ### Normalizing for Keyword Analysis
 - NEED: Vectorized method for performing this cleaning work
     * NOTE: Add ngram compilation to this
@@ -2291,15 +2613,18 @@ import matplotlib.pyplot as plt
 s = pd.Series([-3,-2,-1,0,1,2,3])
 cats = pd.Series(['1','2','1','1','1','2','1'])
 df = pd.DataFrame({'cats':cats, 'orig':s, 'squared':s**2, 'abs_x2':s.abs()*2})
-# PLOT FROM DF
+# PLOT COL HIST FROM DF
 plt.figure(1)
+df.hist("orig")
+# PLOT TWO VAR LINE FROM DF
+plt.figure(2)
 df[['orig','squared','abs_x2']].plot.line("orig", "abs_x2")
 plt.title("line")
 plt.axis([-4,4,-2,10])
 plt.axhline(0, ls='--',alpha=.3)
 plt.axvline(0, ls='--',alpha=.3)
 # PLOT DF FROM GROUPBY
-plt.figure(2)
+plt.figure(3)
 df.groupby('cats')[['orig','squared','abs_x2']].sum().sort_index()\
 .plot.bar(color=['red','green','blue'], alpha=.6)
 plt.title("bar")
@@ -2817,6 +3142,10 @@ Modeling varies from using past data with adjustment to actual trainable models.
 <!-- Needs work -->
 ## Timestamp Engineering
 - VERY POWERFUL: `df.set_index("interval_ts").reindex([t1,t2,t3,t4]).fillna(0)`
+- ALSO POWERFUL: `quadr_interp = ts_index_df.interpolate(method="quadratic")`
+    * Options: "linear","quadratic","nearest"
+    * `df["col1"].plot(title="figtitle",marker="o",figsize=(30,5))`
+    * `quadr_interp["col1"].plot(color="red",marker="o",linestyle="dotted")`
 ```
 with open(r"C:\Users\Jake\sample_linux_authlog.txt") as f: text_data = f.read()
 regexp = "^(.{15})\s+(\S+)\s+([^\s\[:]+)(\[\d*\])*:\s+(.+)$"
@@ -2827,6 +3156,13 @@ df["ts"] = pd.to_datetime(df["ts"], format="%Y %b %d %H:%M:%S", errors="coerce")
 df["day"] = df["ts"].dt.strftime("%Y-%m-%d")
 df["hour"] = df["ts"].dt.strftime("%Y-%m-%d %H:00:00")
 df["minute"] = df["ts"].dt.strftime("%Y-%m-%d %H:%M:00")
+```
+```
+interpolations = {"Linear Interpolation": linear_interp, ...} # do imputes too!!
+for ax, df_key in zip(axes, interpolations):
+    interpolations[df_key]["col"].plot(color="red", marker="o",
+                                       linestyle="dotted", ax=ax)
+    df["col"].plot(title=f"{df_key} - col", marker="o", ax=ax)
 ```
 ```
 def get_holidays(selected_year):
@@ -3809,11 +4145,12 @@ C++ pointer manipulation is very fast, so C++ might play a role in development.
 - INTERSECTION returns shared vals, DIFFERENCE returns s1's unshared vals
 - UNION returns set + set, SYMMETRIC DIFFERENCE returns s1 and s2's unshared
 ### Lists
+- `mylist[start:stop:step]`, especially backwards with `print("hello"[::-1])`
 - `sorted(mylist)` returns sort, `mylist.sort()` performs and saves sort
     * Same with `reversed(mylist)` and `mylist.reverse()`
 - `mylist.remove("f")` removes "f"; `mylist.insert(2, "m")` inserts at index 2
     * Remove has no gaps; Insert shifts old index 2 (and the rest) to the right
-- `mylist[start:stop:step]`, especially backwards with `print("hello"[::-1])`
+- `mylist[1] = "hi` direct assignment; can also `mylist[1:3] = ["sup","yo"]`
 ### Dicts
 - Dict keys can be any immutable variable, like a tuple!
 - `{"a":1, "b":2}.get("zzz", "doesn't exist!")` query for a key
