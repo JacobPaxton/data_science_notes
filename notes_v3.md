@@ -731,10 +731,10 @@ The end state of all methods should be an initial dataframe pre-editing.
 - Sample HTML tables (testing): https://www.w3schools.com/html/html_examples.asp
 ```
 import pandas as pd
-# read from URL
+# READ FROM URL
 url = "https://www.w3schools.com/html/tryit.asp?filename=tryhtml_table_headings"
 df1 = pd.read_html(url)[0] # read HTML tables from URL, set first table as df1
-# read from string
+# READ FROM STRING
 myhtml = "<table><tr><th>hi</th></tr><tr><td>12</td></tr></table>"
 df2 = pd.read_html(myhtml)[0] # read HTML tables from string, set first as df2
 ```
@@ -759,7 +759,7 @@ def has_class_but_no_id(tag):
     return tag.has_attr('class') and not tag.has_attr('id')
 response = requests.get('https://www.duckduckgo.com', verify=True)
 if not response.ok:
-    print("HTTP status code:", response.status_code)
+    print("Bad response; status code:", response.status_code)
 else:
     soup = BeautifulSoup(response.text)
     print(soup.prettify())
@@ -877,22 +877,19 @@ The end state of both explanations should be a "SELECT *"-style return (to DF).
 - Referential Integrity Violation Constraints are supported!
 - There's no `TRUNCATE TABLE t1`; use this for SQLite: `DELETE FROM t1;`
 ```
-# create a db
+# CREATE A DB
 import sqlite3
 con = sqlite3.connect("cool.db")
 cur = con.cursor()
-
 cur.execute("DROP TABLE IF EXISTS test")
 cur.execute("DROP TABLE IF EXISTS author")
 cur.execute("DROP TABLE IF EXISTS book")
 cur.execute("DROP TABLE IF EXISTS publisher")
-
-# set up row returns as dicts rather than tuples
+# SET UP ROW RETURNS AS DICTS RATHER THAN TUPLES
 def dict_factory(cur, row):
     fields = [column[0] for column in cur.description]
     return {key: value for key, value in zip(fields, row)}
-
-# execute statements for the db
+# EXECUTE STATEMENTS FOR THE DB
 cur.execute("""
 CREATE TABLE test(
     greeting CHAR(50) PRIMARY KEY NOT NULL, 
@@ -908,8 +905,7 @@ con.commit() # do this after inserts
 con.row_factory = dict_factory
 for row in con.execute("SELECT greeting, number, letter FROM test"):
     print(row)
-
-# run a script of SQL statements
+# RUN A SCRIPT OF SQL STATEMENTS
 cur.executescript("""
     BEGIN;
     CREATE TABLE author(authorid PRIMARY KEY, firstname, lastname, age);
@@ -920,8 +916,7 @@ cur.executescript("""
     CREATE TABLE publisher(pubid PRIMARY KEY, name, address);
     COMMIT;
 """)
-
-# show changes are saved to the DB
+# SHOW CHANGES ARE SAVED TO THE DB
 con.close()
 print("\nConnection closed; reopening...")
 new_con = sqlite3.connect("cool.db")
@@ -933,10 +928,8 @@ rowid2, greeting2 = result1.fetchone()
 print(f"Row {rowid2} greets you: {greeting2}!")
 rowid3, greeting3 = result1.fetchone()
 print(f"Row {rowid3} greets you: {greeting3}!")
-
 new_cur.execute("DELETE FROM test") # this is TRUNCATE TABLE
 new_con.close()
-
 import os
 os.remove("cool.db")
 ```
@@ -1250,35 +1243,15 @@ from pyspark.ml.evaluation import ...     # model evaluation
 --------------------------------------------------------------------------------
 <!-- Needs work -->
 ## Elasticsearch
-- Popular SIEM system
+- Popular SIEM system with querying and visualizations/dashboards (Kibana/API)
+- Can use Kibana's UI to perform simple tasks, queries, and visualization
+- Can use the console in Kibana Dev Tools to run powerful queries/indexing/etc
+    * Painless scripting (Java-based language) overcomes KQL shortcomings
 - Python interacts with the Elasticsearch REST API on port 9200 (default)
 - To connect: create an account in Kibana and use those creds in Python queries
-- Elasticsearch-DSL makes API calls much easier
-### Stack Assessment
+### Python: Stack Assessment
 ```
-def gather_indices(client, rough="so-beats-{date}", date_pattern="%Y.%m.%d", 
-                   msn_start=None, msn_end=None):
-    pattern = rough
-    if "{date}" in pattern:
-        pattern = pattern.replace("{date}","*")
-    indices = sorted(list(client.indices.get_alias(pattern).keys()))
-    if len(indices) == 0:
-        print("Index pattern returned no results:", pattern)
-        return list()
-    if msn_start and msn_end:
-        selected_indices = []
-        date_list = list(pd.date_range(start=msn_start, end=msn_end)\
-            .strftime(date_pattern))
-        for date in date_list:
-            try_index = rough.replace("{date}", date)
-            if try_index in indices:
-                selected_indices.append(try_index)
-        if len(selected_indices) == 0:
-            print("No indices found matching format:", end=" ")
-            print(rough.replace("{date}", date_pattern))
-        else:
-            return selected_indices
-    return indices
+# DEFINITION BLOCK
 def gather_fields_from_index(properties):
     output_list = []
     def walk_down(current, name=""):
@@ -1290,49 +1263,6 @@ def gather_fields_from_index(properties):
                 output_list.append(f"{name}{key}")
     walk_down(properties)
     return set(output_list)
- def gather_all_fields(client, rough="so-beats-{date}",\
-                       date_pattern="%Y.%m.%d", msn_start=None, msn_end=None):
-    all_fields = set()
-    indices = gather_indices(client, rough, date_pattern, msn_start, msn_end)
-    index_count = len(indices)
-    if index_count == 0:
-        return None
-    j = 0.0
-    for i, index in enumerate(indices):
-        if round((i / index_count) * 100) > j:
-            j = round((i / index_count) * 100)
-            print(f"Checking indices: {j}%", end="\r", flush=True)
-        try:
-            index_fields = client.indices.get_mapping(index)\
-                [index]["mappings"]["properties"]
-            new_set = gather_fields_from_index(index_fields)
-            all_fields.update(new_set)
-        except Exception as error:
-            print(index, "---", error)
-    all_fields = sorted(list(all_fields))
-    if len(all_fields) == 0:
-        print("No fields found!")
-        return None
-    print("Check complete! Number of observed fields:", len(all_fields))
-    return all_fields
-def gather_raw_pnids(search_context, pn_field="winlog.provider_name",\
-                     eid_field="winlog.event_id", range_kwargs=None):
-    s = search_context\
-        .query("exists", field=pn_field)\
-        .query("exists", field=eid_field)
-    if type(range_kwargs) is dict:
-        s = s.filter("range", **range_kwargs)
-    s.aggs.bucket("pn", "terms", field=pn_field, size=10_000)\
-        .metric("eid", "terms", field=eid_field, size=10_000)
-    response = s.execute()
-    aggs = response.aggregations.to_dict()
-    output_set = set()
-    for pn_bucket in aggs["pn"]["buckets"]:
-        pn = pn_bucket["key"]
-        eids = {eid_bucket["key"] for eid_bucket in pn_bucket["eid"]["buckets"]}
-        pn_ids = {f"{pn}_{eid}" for eid in eids}
-        output_set.update(pn_ids)
-    return output_set
 def gather_field_pnids(search_context, all_fields,\
                        pn_field="winlog.provider_name",\
                        eid_field="winlog.event_id", range_kwargs=None):
@@ -1349,8 +1279,8 @@ def gather_field_pnids(search_context, all_fields,\
         sc2 = search_context.query("exists", field=new_field)
         if type(range_kwargs) is dict:
             sc2 = sc2.filter("range", **range_kwargs)
-        sc2.aggs.bucket("pn", "terms", field=pn_field, size=10_000)\
-            .metric("eid", "terms", field=eid_field, size=10_000)
+        sc2.aggs.bucket("pn",  "terms", field=pn_field,  size=10_000)\
+                .metric("eid", "terms", field=eid_field, size=10_000)
         response = sc2.execute()
         my_aggs = response.aggregations.to_dict()
         for pn_bucket in my_aggs["pn"]["buckets"]:
@@ -1368,74 +1298,48 @@ def gather_field_pnids(search_context, all_fields,\
         col_list = sorted(capture_dict[key]["event_cols"]["all"])
         output_dict[key] = {"event_cols": {"all":col_list}}
     return output_dict
-def merge_rawpnids_fieldpnids(search_context, raw_pnids, field_pnids,\
-                              pn_field="winlog.provider_name",\
-                              eid_field="winlog.event_id", range_kwargs=None):
-    raw_pnids_has = {pn_id for pn_id in raw_pnids 
-                        if pn_id not in field_pnids.keys()}
-    if len(raw_pnids_has) > 0:
-        new_pnids = sorted(list(raw_pnids_has))
-        count_new = len(new_pnids)
-        print(f"Found update material: {count_new} additional PN_IDs.")
-        print(f"Grabbing their fields...", end="\r", flush=True)
-        j = 0.0
-        for i, pn_id in enumerate(new_pnids):
-            if round((i / count_new) * 100) > j:
-                j = round((i / count_new) * 100)
-                print(f"Grabbing their fields: {j}%", end="\r", flush=True)
-            field_pnids[pn_id] = {"event_cols":{"all":[]}}
-            pn, eid = pn_id.split("_")
-            query_string = f"{pn_field}: ({pn}) AND {eid_field}: ({eid})"
-            s = search_context.query("query_string", query=query_string)
-            if type(range_kwargs) is dict:
-                s = s.filter("range", **range_kwargs)
-            df = query_the_stack(s, shh=True)
-            if df is not None:
-                fields = sorted(list(df.columns))
-                field_pnids[pn_id]["event_cols"]["all"].extend(fields)
-        print("Completed! Added PN_IDs and fields to 'field_pnids'.")
-    else:
-        print("Nothing new to add to field_pnids!")
-    return field_pnids
 ```
 ```
-select_mission = False
-run_field_pnids = True
-run_raw_pnids = True
-output_to_json = True
-if run_field_pnids:
-    if select_mission:
-        all_fields = gather_all_fields(
-            client, msn_start=mission_start, msn_end=mission_end)
-        field_pnids = gather_field_pnids(
-            search_context, all_fields, pn_field, eid_field, mission_window)
-    else:
-        all_fields = gather_all_fields(client)
-        field_pnids = gather_field_pnids(
-            search_context, all_fields, pn_field, eid_field)
-    providers = {pn_id.split("_")[0] for pn_id in field_pnids.keys()}
-    provider_printout = "\n".join(sorted(list(providers)))
-    print(f"\nDiscovered Providers:\n{provider_printout}\n")
-    sample_val = "Microsoft-Windows-Security-Auditing_4624"
-    if sample_val in field_pnids.keys():
-        print(f"Fields for sample: {sample_val}\n{field_pnids[sample_val]}\n")
-if run_raw_pnids:
-    if select_mission:
-        raw_pnids = gather_raw_pnids(
-            search_context, pn_field, eid_field, mission_window)
-    else:
-        raw_pnids = gather_raw_pnids(search_context, pn_field, eid_field)
-if run_field_pnids and run_raw_pnids:
-    output_pnids = merge_rawpnids_fieldpnids(
-        search_context, raw_pnids, field_pnids, pn_field, eid_field)
-else:
-    output_pnids = field_pnids
-if run_field_pnids and output_to_json:
+# EXECUTION BLOCK
+output_findings_to_json = True
+ip, user, password = "https://192.168.0.1:9200", "coolguy", "coolpassword"
+index_pattern = "so-beats-*"
+import warnings
+warnings.filterwarnings("ignore")
+from elasticsearch import Elasticsearch as ES
+from elasticsearch_dsl import Search
+client = ES([ip], ca_certs=False, verify_certs=False, http_auth=(user,password))
+indices = sorted(list(client.indices.get_alias(index_pattern).keys()))
+index_count = len(indices)
+for i, ind in enumerate(indices):
+    if round((i / index_count) * 100) > j:
+        j = round((i / index_count) * 100)
+        print(f"Checking indices: {j}%", end="\r", flush=True)
+    try:
+        maps = client.indices.get_mapping(ind)[ind]["mappings"]["properties"]
+        new_set = gather_fields_from_index(index_fields)
+        all_fields.update(new_set)
+    except Exception as error:
+        print(ind, "---", error)
+        print(f"Checking indices: {j}%", end="\r", flush=True)
+all_fields = sorted(list(all_fields))
+print("Check complete! Number of observed fields:", len(all_fields))
+search_context = Search(using=client, index=index_pattern, doc_type="doc")
+field_pnids = gather_field_pnids(
+    search_context, all_fields, pn_field, eid_field, mission_window)
+providers = {pn_id.split("_")[0] for pn_id in field_pnids.keys()}
+provider_printout = "\n".join(sorted(list(providers)))
+print(f"\nDiscovered Providers:\n{provider_printout}\n")
+sample_val = "Microsoft-Windows-Security-Auditing_4624"
+if sample_val in field_pnids.keys():
+    print(f"Fields for sample: {sample_val}\n{field_pnids[sample_val]}\n")
+if output_findings_to_json:
     with open("kb_specific.json", "w") as f:
         f.write(json.dumps(output_pnids, indent=2))
 ```
-### Record Pull
+### Python: Record Pull
 ```
+# DEFINITION BLOCK
 def flatten_json(json_input, splitout_lists=False):
     output_dict = {}
     def flatten(current_structure, name=""):
@@ -1447,10 +1351,8 @@ def flatten_json(json_input, splitout_lists=False):
             if splitout_lists in [True, "True", "true", "Yes", "yes", "sure"]:
                 for i, element in enumerate(current_structure):
                     flatten(element, name + str(i) + "_")
-            else:
-                output_dict[name[:-1]] = current_structure
-        else:
-            output_dict[name[:-1]] = current_structure
+            else: output_dict[name[:-1]] = current_structure
+        else: output_dict[name[:-1]] = current_structure
     flatten(json_input)
     return output_dict
 def print_progress(i):
@@ -1509,12 +1411,16 @@ def query_the_stack(query_object, return_count=None):
     return df
 ```
 ```
+# EXECUTION BLOCK
+ip, user, password = "https://192.168.0.1:9200", "coolguy", "coolpassword"
+index_pattern = "so-beats-*"
+import warnings
+warnings.filterwarnings("ignore")
+import pandas as pd
 from elasticsearch import Elasticsearch as ES
-from elasticsearch_dsl import Search, Q
-import elk_basics    # these are the functions defined above in the notes
-from env import ip, user, password
+from elasticsearch_dsl import Search
 client = ES([ip], ca_certs=False, verify_certs=False, http_auth=(user,password))
-search_context = Search(using=client, index="index_pattern", doc_type="doc")
+search_context = Search(using=client, index=index_pattern, doc_type="doc")
 s1 = search_context\
     .query("match", winlog__event_id=4624)\
     .filter("range", **{"@timestamp": {"gte": "now-1d"}})\
@@ -1523,27 +1429,36 @@ df1 = elk_basics.query_the_stack(s1, 10_000)
 s2 = search_context.query("exists", field="winlog.event_data.LogonType")
 df2 = elk_basics.query_the_stack(s2, 10_000)
 ```
+### Python: Advanced Querying
 ```
-from env import ip_address, user, password
+# DEFINITION BLOCK: NO DEFINITIONS!
+```
+```
+# EXECUTION BLOCK
+ip, user, password = "https://192.168.0.1:9200", "coolguy", "coolpassword"
+index_pattern = "so-zeek-*"
 import warnings
 warnings.filterwarnings("ignore")
 import pandas as pd
-from elasticsearch import Elasticsearch
-from elasticsearch_dsl import Search, Q
-client = Elasticsearch([ip_address], ca_certs=False, verify_certs=False, http_auth=(user,password))
-search_context = Search(using=client, index="sessions2-*", doc_type="doc")
-painless_script = """
-boolean x;
-x = doc["srcDataBytes"].value > doc["dstDataBytes"].value;
-x
+from elasticsearch import Elasticsearch as ES
+from elasticsearch_dsl import Search
+client = ES([ip], ca_certs=False, verify_certs=False, http_auth=(user,password))
+search_context = Search(using=client, index=index_pattern, doc_type="doc")
+painless = """
+boolean x = false;
+def src_regex = /181\.18\.120\.\d{1,3}/.matcher(doc["source.ip"].value);
+if (src_regex.matches()) {
+    x = doc["client.ip_bytes"].value > doc["server.ip_bytes"].value;
+}
+return x;
 """
-fields = ["srcIp","dstIp","srcDataBytes","dstDataBytes"]
+fields = ["source.ip","destination.ip","client.ip_bytes","server.ip_bytes"]
 s = search_context\
-    .query("bool", **{"must": [{"match": {"srcIp":"123.45.67.0/24"}}],
-                      "filter": {"script": {"script": {"source": painless_script}}}})\
+    .query("bool", **{"must": [{"match": {"source.ip":"123.45.67.0/24"}}],
+                      "filter": {"script": {"script": {"source": painless}}}})\
     .params(request_timeout=90)
-s.aggs.bucket("src", "terms", field="srcIp", size=10_000)\
-    .metric("dst", "terms", field="dstIp", size=10_000)
+s.aggs.bucket("src", "terms", field="source.ip", size=10_000)\
+      .metric("dst", "terms", field="destination.ip", size=10_000)
 print("Executing... please hold for a few seconds...", end="\r", flush=True)
 response = s.execute()
 print("Done!" + " "*100)
@@ -1555,6 +1470,85 @@ for bucket in results["src"]["buckets"]:
     rows = {(src, dst) for dst in dsts}
     output_set.update(rows)
 df = pd.DataFrame([{"source":os[0], "destination":os[1]} for os in output_set])
+```
+### Kibana Dev Tools: Print to Console
+```
+# UNIQUE COMBINATIONS OF SOURCE IP FIRST-TWO OCTETS
+# RUNTIME MAPPINGS ARE TEMPORARY FIELDS ADDED TO RECORDS
+# WE CAN AGGREGATE THESE TEMPORARY FIELDS FOR COOL OUTCOMES
+GET so-zeek-*/_search
+{
+"size": 0,   // Focusing on aggregations, so, show zero individual records
+"runtime_mappings": {"srcip_firsttwo_octets": {
+    "type": "keyword",
+    "script": {"source": """
+        boolean requiredfields_exist;
+        String ip;
+        String firsttwo_octets = '';
+        requiredfields_exist = (
+            doc.containsKey('source.ip') && !doc['source.ip'].empty;
+        )
+        if (requiredfields_exist) {
+            ip = doc['source.ip'].value.toString();
+            def octets = ip.splitOnToken('.');
+            for (int i = 0; i < 2 && octets.length == 4; i++) {
+                firsttwo_octets = firsttwo_octets + octets[i] + '.';
+            }
+            emit(firsttwo_octets);
+        }
+    """
+}}},
+"fields": ["source.ip", "srcip_firsttwo_octets"],
+"_source": false,
+"aggs": {
+    "firsttwo": {"terms": {"field": "srcip_firsttwo_octets", "size": 10000}
+}}}
+```
+### Kibana Dev Tools: Reindexing (ETL-like operation)
+```
+# CLONE MAPPINGS; CLOSE THE SOURCE INDEX FIRST! USE AN INDEX WITH LITTLE DATA!
+POST so-beats-2023.10.15/_clone/my-exploration-index
+# CLEAR THE IRRELEVANT DATA, LEAVING JUST THE MAPPINGS THAT WE NEED
+POST my-exploration-index/_delete_by_query
+{"query": {"match_all": {}}}
+# RUN REINDEXING OPERATION
+POST _reindex
+{
+"max_docs": 100,
+"source": {
+    "index": "so-beats-*",
+    "query": {"bool": {
+        "must": {"exists": {"field": "process.executable"}},
+        "filter": {"script": {"script": {"source": """
+            String col = 'process.executable';
+            String cmd = '\\cmd.exe';
+            boolean fp_cmd = doc[col].value.endsWith(cmd);
+            return fp_cmd;
+            """
+        }}}}
+    },
+    "_source": ["@timestamp","agent.name","process.executable"]
+},
+"script": {"source": """
+    ctx._source.investigation = 'early-1';
+    ctx._source.norm_exec = ctx._source.process.executable.toLowerCase();
+"""
+},
+"dest": {
+    "index": "my-exploration-index"
+}}
+# IF _REINDEX TIMES OUT, YOU CAN CHECK RUNNING REINDEXING OPERATIONS...
+GET _tasks?detailed=true&actions=*reindex
+# ...THEN, CHECK THAT SPECIFIC TASK'S PROGRESS...
+GET _tasks/Ovbg8nVuREaqV3INCO13Og:361012073
+# ...AND IF YOU NEED, YOU CAN CANCEL THAT SPECIFIC TASK...
+# NOTE: COPIED RECORDS REMAIN IN THE TARGET INDEX (PROCESSED RECORDS NOT UNDONE)
+POST _tasks/Ovbg8nVuREaqV3INCO13Og:361012073/_cancel
+# ...THEN YOU CAN DELETE THE RECORDS OUT IF NECESSARY...
+POST my-exploration-index/_delete_by_query
+{"query": {"match_all": {}}}
+# ...OR, DELETE THE ENTIRE INDEX AND MAPPINGS!
+DELETE my-exploration-index
 ```
 
 [[Return to Top]](#table-of-contents)
@@ -1606,17 +1600,17 @@ import json
 import xmltodict
 import statsmodels.api as sm
 from util import flatten_json
-# split JSON fields out into their own columns
+# SPLIT JSON FIELDS OUT INTO THEIR OWN COLUMNS
 json_breakouts = pd.DataFrame(df[json_col].apply(flatten_json).tolist())
 df = pd.concat([df, json_breakouts], axis=1)
-# convert a column of nested XML into a dataframe of flattened XML
+# CONVERT A COLUMN OF NESTED XML INTO A DATAFRAME OF FLATTENED XML
 parse_xml = lambda x: flatten_json(json.loads(json.dumps(xmltodict.parse(x))))
 xml_breakouts = pd.DataFrame(df[xml_col].apply(parse_xml).tolist())
 df = pd.concat([df, xml_breakouts], axis=1)
-# perform an apply operation conditionally
+# PERFORM AN APPLY OPERATION CONDITIONALLY
 cond_apply = lambda x: x.upper() if x not in [None, np.nan, "None"] else None
 df["newcol0"] = df[str_col].apply(cond_apply)
-# perform an apply operation with multi-column return
+# PERFORM AN APPLY OPERATION WITH MULTI-COLUMN RETURN
 def determine(x):
     if type(x) is not str:
         return pd.Series(["start":None, "end":None, "all":x])
@@ -1624,23 +1618,40 @@ def determine(x):
     b = "dying" if x.endswith("died") else "undying"
     return pd.Series(["start":a, "end":b, "all":x])
 out_df = df[str_col].apply(determine)
-# split a string column into multiple columns
+# SPLIT A STRING COLUMN INTO MULTIPLE COLUMNS
 df[["newcol1","newcol2"]] = df["col"].str.split(":", expand=True)
-# melt "wide" columns
+# MELT "WIDE" COLUMNS
 melted = pd.melt(df, id_vars="cat", value_vars=[c for c in df if c != "cat"])
-# merge two dataframes
+# MERGE TWO DATAFRAMES
 df1.merge(df2, left_on="df1c1", right_on="df2c1", how="outer", indicator=True)
-# imputation
+# DROP NULLS
+c_nulls = [(c, df[c].isna().sum(), df[c].isna().sum()*100//len(df)) for c in df]
+drop_cols = [c[0] for c in c_nulls if c[1] > 20]
+print(f"DROPPING THESE COLUMNS (>20% NULL):\n{drop_cols}")
+df = df.drop(columns=drop_cols)
+nonnull_minimum = int(r_nulls["avg"])  # thresh is minimum number of NON-NULL
+df = df.dropna(axis=1, thresh=nonnull_minimum, subset=df.columns[3:6])
+```
+### Null Imputation
+```
 from sklearnex import patch_sklearn
 patch_sklearn()
 from sklearn.impute import SimpleImputer
+# SIMPLE IMPUTATION
 imputer = SimpleImputer(strategy="most_frequent")
 train[["embark_town"]] = imputer.fit_transform(train[["embark_town"]])
 validate[["embark_town"]] = imputer.transform(validate[["embark_town"]])
 test[["embark_town"]] = imputer.transform(test[["embark_town"]])
-# slick way to eval imputation results: linear regression
+# KNN IMPUTATION
+from fancyimpute import KNN   # or, IterativeImputer (MICE)
+df_knn = df.copy(deep=True)
+knn_imputer = KNN()
+df_knn.iloc[:,:] = knn_imputer.fit_transform(df_knn)
+```
+```
+# EVALUATE IMPUTATION RESULTS VIA LINEAR REGRESSION
 dropna_df = df.dropna(how="any") 
-meanimp_df = df. ... (impute mean)
+meanimp_df = df.fillna() ... (impute mean)
 ... # run/store any imputation method df here
 results = {}
 for each imp_df:
@@ -1654,12 +1665,6 @@ print(pd.DataFrame(results))
 dropna_df["col"].plot(kind="kde", c="red", linewidth=3)
 meanimp_df['col"].plot(kind="kde")
 ... # plot other imputation KDEs; compare KDEs for closeness to original DF
-```
-```
-from fancyimpute import KNN   # or, IterativeImputer (MICE)
-df_knn = df.copy(deep=True)
-knn_imputer = KNN()
-df_knn.iloc[:,:] = knn_imputer.fit_transform(df_knn)
 ```
 
 --------------------------------------------------------------------------------
@@ -1687,14 +1692,59 @@ df1 = df.progress_apply(lambda x: x[0] * x[1], axis=1)
 # CHECK MEMORY ALLOC FOR DF
 print(df.__sizeof__())
 ```
+### Null Pattern Driver Determination
+```
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+df = pd.DataFrame({"good1":[9,8,8,7,9,8]*15, "good2":["a","a","a","b","b"]*18, 
+    "hi":[None,1,2]*30, "yo":[None,None,1]*30, "sup":[1,2,3]*30, 
+    "hey":[1,None,2]*30, "hello":[None,None,1]*30})
+# NULL PATTERN HASHING
+gd = ["good1","good2"]  # known drivers of null patterns
+df["nullp"] = df.drop(columns=gd).isna().apply(lambda x: hash(tuple(x)), axis=1)
+patt_df = df.set_index(drive_cols).sort_index()
+# PATTERN HASH ASSESSMENT
+cap = {}
+for combo in patt_df.index.unique():
+    subset = patt_df.loc[combo]
+    p_cnt = len(subset["nullp"].unique())
+    p_df = subset.isna().drop_duplicates().reset_index(drop=True)
+    cap[combo] = {"p_count":p_cnt, "p_df":p_df, "exact":[], "close":[]}
+    if p_cnt == 1:
+        continue
+    for col in subset.columns:
+        if col == "nullp": continue
+        valcount = len(subset[col].unique())
+        if valcount == 1: continue
+        values = subset[[col, "nullp"]].value_counts()
+        if len(values) == p_cnt:
+            cap[combo]["exact"].append(col)
+        elif len(values) in [p_cnt + 1, p_cnt + 2]:
+            cap[combo]["close"].append(col)
+# PRINT PATTERN HASH ASSESSMENT RESULTS (INSIDE EXPANDABLE TEXT)
+onepatts = [k for k in cap.keys() if cap[k]["p_count"] == 1]
+regulars = [k for k in cap.keys() if k not in onepatts]
+dets = "<details>x</details>"
+print("-"*20, "ONE NULL PATTERN (click each!)", "-"*20)
+for p in sorted(onepatts):
+    x = f"{cap[p]['p_df'].to_html()}<summary><b>- {p}</b></summary>"
+    display(HTML(dets.replace("x",x)))
+print("\n" + "-"*20, "NULL PATTERNS (click each!)", "-"*20)
+for p in sorted(regulars):
+    x = f"{cap[p]['p_df'].to_html()}<summary><b>- {p}</b></summary>"
+    display(HTML(dets.replace("x",x)))
+```
 ### Null Characterization
 ```
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-df = pd.DataFrame({"hi":[None,1,2]*30, "yo":[None,None,1]*30, 
-    "sup":[1,2,3]*30, "hey":[1,None,2]*30, "hello":[None,None,1]*30})
-# calculate null metrics
+import missingno as msno
+df = pd.DataFrame({"good1":[9,8,8,7,9,8]*15, "good2":["a","a","a","b","b"]*18, 
+    "hi":[None,1,2]*30, "yo":[None,None,1]*30, "sup":[1,2,3]*30, 
+    "hey":[1,None,2]*30, "hello":[None,None,1]*30})
+# CALCULATE NULL METRICS
 avg_c_nulls = int(df.isna().sum().mean())
 c_nulls = [(c, df[c].isna().sum(), df[c].isna().sum()*100//len(df)) for c in df]
 rowwise_nullct = df.isna().sum(axis=1)
@@ -1702,7 +1752,7 @@ r_nulls = {"counts":rowwise_nullct, "avg":int(rowwise_nullct.mean()),
     "oneplus": (rowwise_nullct > 0).sum(), "zero":(rowwise_nullct == 0).sum()}
 dropna_percent_loss = round(1 - (len(df.dropna()) / len(df)), 3)
 t_nulls = {"count": df.isna().sum().sum(), "dropna_result": dropna_percent_loss}
-# print stats
+# PRINT STATS
 print("Total number of missing values across the dataframe:", t_nulls["count"])
 print("Average nullcount per col:", avg_c_nulls)
 print("Cols with zero nulls:", len([_ for c in c_nulls if c[1] == 0]))
@@ -1711,7 +1761,7 @@ print("Average nullcount per row:", r_nulls["avg"])
 print("Count of rows with zero nulls:", r_nulls["zero"])
 print("Count of rows with at least one null:", r_nulls["oneplus"])
 print(f"Data lost if drop all rows w/ nulls: {int(dropna_percent_loss * 100)}%")
-# plot col-wise null percentage histogram
+# PLOT COL-WISE NULL PERCENTAGE HISTOGRAM
 col_percents = pd.Series([c[2] for c in c_nulls])
 plt.hist(col_percents[col_percents <= avg_c_nulls], bins=np.arange(0,101,2))
 plt.hist(col_percents[col_percents > avg_c_nulls], bins=np.arange(0,101,2))
@@ -1722,7 +1772,7 @@ plt.title("Percentage-Null By Column, Counts")
 plt.xlabel("Null (Percentage)")
 plt.ylabel("Count of Columns")
 plt.show()
-# plot row-wise null count histogram
+# PLOT ROW-WISE NULL COUNT HISTOGRAM
 low_null_mask = rowwise_nullct <= r_nulls["avg"]
 plt.hist(rowwise_nullct[low_null_mask], bins=np.arange(0,r_nulls["avg"]*2.1,1))
 plt.hist(rowwise_nullct[~low_null_mask], bins=np.arange(0,r_nulls["avg"]*2.1,1))
@@ -1733,16 +1783,7 @@ plt.title("Row-wise Nullcounts, Counts")
 plt.xlabel("Count of Nulls in Row")
 plt.ylabel("Count of Rows")
 plt.show()
-```
-```
-drop_cols = [c[0] for c in c_nulls if c[1] > 20]
-print(f"DROPPING THESE COLUMNS (>20% NULL):\n{drop_cols}")
-df = df.drop(columns=drop_cols)
-nonnull_minimum = int(r_nulls["avg"])  # thresh is minimum number of NON-NULL
-df = df.dropna(axis=1, thresh=nonnull_minimum, subset=df.columns[3:6])
-```
-```
-import missingno as msno
+# PLOT MSNO CHARTS
 plt.figure(1)
 msno.matrix(df)
 plt.figure(2)
@@ -1777,19 +1818,19 @@ train, val = tts(t_v, test_size=.325, random_state=123, stratify=t_v["Species"])
 ```
 import numpy as np
 import pandas as pd
-# fix numerical features
+# FIX NUMERICAL FEATURES
 log_unskewed = df[["col1","col2","col3"]].apply(lambda x: np.log(x + 1))
 # categorize strings
 df["cats"] = df["string"].map({"hi":"greet","yo":"greet","bye":"dismiss"})
 df["is_good"] = df["string"].str.startswith("good")
 df["is_hot"] = df["string"].str.contains("hot|scalding|scorching|searing")
-# continuous to categorical
+# CONTINUOUS TO CATEGORICAL
 df["ht_cats"] = pd.cut(df["height"], bins=[0,160,190,300], labels=["s","n","t"])
 df["spt_cats"] = pd.cut(df["split"], bins=np.arange(0,101,50), labels=["s","l"])
 df["wt_cats"] = pd.cut(df["weight"], bins=np.linspace(0,100,3),labels=["l","h"])
 df["versus_avg"] = np.where(df["height"] > 175, "Above Avg", "Below Avg")
 df["quartiles"] = pd.qcut(df["bmi"], q=4, labels["low","normal","high","obese"])
-# encoding
+# ENCODING
 df["col1_enc"].map({'lowest':0, 'low-middle':1, 'high-middle':2, 'highest':3})
 dummy_df = pd.get_dummies(df['col1', 'col2'], drop_first=[True, True])
 ```
@@ -1867,7 +1908,7 @@ pca = PCA()
 print(pca.fit_transform(std_df))  # no more duplicate information
 print(pca.explained_variance_ratio_)  # each component's variance explanation
 print(pca.explained_variance_ratio_.cumsum())  # walking explained variance to 1
-# plot cumsum against number of features walked to show elbow method chart thing
+# PLOT CUMSUM AGAINST NUMBER OF FEATURES WALKED TO SHOW ELBOW METHOD CHART THING
 ```
 ```
 from sklearn.preprocessing import StandardScaler
@@ -1966,7 +2007,7 @@ encoded_df = df.reset_index(drop=True)
 scaler = StandardScaler().fit(encoded_df)
 scaled_df = scaler.transform(encoded_df)
 pca = PCA().fit(scaled_df)
-# plot cumulative explained variance
+# PLOT CUMULATIVE EXPLAINED VARIANCE
 print("Explained variance ratio:\n", pca.explained_variance_ratio_)
 plt.plot(pca.explained_variance_ratio_.cumsum())
 plt.title("Cumulative Explained Variance")
@@ -1974,8 +2015,8 @@ plt.xlabel("Component Count")
 plt.ylabel("Explained Variance")
 plt.grid()
 plt.show()
-# Re-apply PCA to the data while selecting for number of components to retain.
-# Elbow method: 1 component explains nearly 100%, use 1!!
+# RE-APPLY PCA TO THE DATA WHILE SELECTING FOR NUMBER OF COMPONENTS TO RETAIN
+# ELBOW METHOD: IF 1 COMPONENT EXPLAINS NEARLY 100%, USE 1!!
 pca1 = PCA(n_components=1)
 pca_df = pca1.fit_transform(scaled_df)
 components_df = pd.DataFrame(pca1.components_, columns=encoded_df.columns)
@@ -2015,7 +2056,7 @@ for i in np.arange(min_clusters, max_clusters + 1, 2):
     print("Inertia (less is better):", kmeans.inertia_)
     kmeans_dict[f"kmeans{i}"] = (kmeans, clusters, kmeans.inertia_)
     print("Done with", i, "clusters!")
-# Investigate the change in within-cluster distance across number of clusters.
+# INVESTIGATE THE CHANGE IN WITHIN-CLUSTER DISTANCE ACROSS NUMBER OF CLUSTERS
 plt.plot([kmeans_dict[f"kmeans{i}"][2] for i in np.arange(1,17,3)])
 plt.xticks((0,1,2,3,4,5), ("1","4","7","10","13","16"))
 plt.title("Elbow for Cluster Count Selection")
@@ -2191,11 +2232,11 @@ clean_text = " ".join(filtered_words)
 ### Keyword Analysis
 - Cool: https://github.com/amueller/word_cloud/blob/master/examples/parrot.py
 ```
-# scatterplot of each row's char count by word count
+# SCATTERPLOT OF EACH ROW'S CHARACTER COUNT BY WORD COUNT
 df["content_length"] = df["text"].apply(len)
 df["word_count"] = df["text"].split().apply(len)
 sns.relplot(df["content_length"], df["word_count"], hue=df["target"])
-# stacked bar chart of class proportions by word (PERFORM NORMALIZATION FIRST)
+# STACKED BAR CHART OF CLASS PROPORTIONS BY WORD (PERFORM NORMALIZATION FIRST)
 all_words  = df["clean"].str.cat(sep=" ")
 spam_words = df[df["target"] == "spam"]["clean"].str.cat(sep=" ")
 ham_words  = df[df["target"] == "ham"]["clean"].str.cat(sep=" ")
@@ -2213,13 +2254,14 @@ word_counts['p_ham'] = word_counts["ham"] / word_counts["all"]
 )
 ```
 ```
+# WORDCLOUD
 from os import path
 from PIL import Image
 import numpy as np
 import matplotlib.pyplot as plt
 import os
 from wordcloud import WordCloud, STOPWORDS
-# build the wordcloud and save to file
+# BUILD THE WORDCLOUD AND SAVE TO FILE
 mask = np.array(Image.open("mask.png"))     # white-black img, cloud is in black
 stopwords = set(STOPWORDS)
 stopwords.add("said")
@@ -2227,7 +2269,7 @@ wc = WordCloud(background_color="white", max_words=2000, mask=mask,
                stopwords=stopwords, contour_width=3, contour_color='steelblue')
 wc.generate(text)                           # generate word cloud
 wc.to_file("output.png")                    # store to file
-# show the wordcloud
+# SHOW THE WORDCLOUD
 plt.imshow(wc, interpolation='bilinear')
 plt.axis("off")
 plt.figure()
@@ -2239,7 +2281,7 @@ plt.show()
 - Afinn and Vader are sentiment analysis tools based on social media
 - Sentiment is best analyzed without normalization
 ```
-# singular sentiment analysis
+# SINGULAR SENTIMENT ANALYSIS
 import nltk
 from nltk.sentiment import SentimentIntensityAnalyzer
 sia = SentimentIntensityAnalyzer()
@@ -2249,7 +2291,7 @@ scores = [sia.polarity_scores(sentence) for sentence in sentences]
 print(scores)
 ```
 ```
-# vectorized sentiment analysis
+# VECTORIZED SENTIMENT ANALYSIS
 (
     pd.DataFrame({"text":[
         "Hello my name is Bob. You look great!",
@@ -2274,21 +2316,21 @@ print(scores)
     * TF is how often a word shows; IDF is how unique the word is in all records
     * Calculation identifies word importance (weight) and filters out stopwords
 ```
-# perform prep and split before following the steps
+# PERFORM PREP AND SPLIT BEFORE FOLLOWING THE STEPS
 do_CV = False
 if do_CV:
-    # Count Vectorization
+    # COUNT VECTORIZATION
     vectorizer = sklearn.feature_extraction.text.CountVectorizer()
     bow = vectorizer.fit_transform(train.clean_text)        # use y_train
     print(vectorizer.vocabulary_)                           # show word counts
 else:
-    # TFIDF Vectorization
+    # TFIDF VECTORIZATION
     vectorizer = sklearn.feature_extraction.text.TfidfVectorizer()
     bow = vectorizer.fit_transform(train["clean_text"])     # use y_train
     bow = pd.DataFrame(bow.todense(), columns=vectorizer.get_feature_names())
     word_imps = dict(zip(vectorizer.get_feature_names(), vectorizer.idf_))
     print(pd.Series(word_importances).sort_values())        # show importances
-# Decision Tree
+# DECISION TREE
 tree = DecisionTreeClassifier(max_depth=5)
 tree.fit(bow, y_train)
 y_train_preds = tree.predict(bow)
@@ -2348,20 +2390,20 @@ Jupyter notebooks are optimal for report delivery and should be mastered.
 ```
 import pandas as pd
 from scipy import stats
-# metrics
+# METRICS
 pivot_table = df.pivot_table(index="col1", columns="col2", values="col3")
 category_metrics = df.groupby("col1")[["col2","col3"]].agg(["mean","max","std"])
 crosstab = pd.crosstab(df.col1, df.col2, margins=True, normalize=True)
 corr = df[[col1, col2]].corr()
 zscores = stats.zscore(values) # "demeaning a vector", STDEVs from mean
-# passed normality and other assumptions
+# PASSED NORMALITY AND OTHER ASSUMPTIONS (PARAMETRIC TESTS)
 t, p = stats.f_oneway(samp1.y, samp2.y, samp3.y, ...)  # multiple "check" ttests
 t, p = stats.ttest_ind(samp1.y, samp2.y, alternative=) # independence from other
 t, p = stats.ttest_1samp(samp1.y, pop.y, alternative=) # independence from all
 t, p = stats.ttest_rel(past.y, future.y, alternative=) # independence from self
 corr, p = stats.pearsonr(col1, col2)  # correlation between two linear cont cols
 chi2, p, degf, expected = stats.chi2_contingency(observed_crosstab)
-# did not pass normality
+# DID NOT PASS NORMALITY (NON-PARAMETRIC TESTS)
 t, p = stats.kruskal(samp1.y, samp2.y, samp3.y, ...)   # multiple "check" ttests
 t, p = stats.mannwhitneyu(samp1.y, samp2.y, alternative=) # one- or two-sample
 t, p = stats.wilcoxon(past.y, future.y, alternative=)     # paired
@@ -2516,15 +2558,16 @@ do_stats(df, y="sup", ttests=["hi","yo"], corrs=["sup"])  # run t-tests, corrs
     * `pairplot` charts can be accessed/modified with `.axes`
     * `regplot` uses `line_kws={'color':'red'}`
 ```
-# grab the orange color from seaborn's default palette
+# GRAB THE ORANGE COLOR FROM SEABORN'S DEFAULT PALETTE
 import seaborn as sns
 d = sns.color_palette()[1]     # (1.0, 0.4980392156862745, 0.054901960784313725)
-# decimal to hex
+# DECIMAL TO HEX
 x = '#%02x%02x%02x' % tuple([int(255 * i) for i in d])           # "#ff7f0e"
-# hex to decimal
+# HEX TO DECIMAL
 d = tuple([(int(f"0x{x[i:i+2]}", 16) / 255) for i in range(1, len(x), 2)])
 ```
 ```
+# HEATMAP WITH A SPECIFIED COLOR FOR THE LOWEST VALUE
 rblugrn = plt.get_cmap("BuGn_r")
 num_colors = crosstab.max().max()
 colors = ["whitesmoke"] + [rblugrn(i / num_colors) for i in range(2,num_colors)]
@@ -2536,7 +2579,7 @@ sns.heatmap(crosstab, cmap=cmap, cbar=False,
 - `df.style` is used for changing data presentation (not changing the data)
 - `df.plot` is only really useful for lightweight/few-line df plotting
 ```
-# STYLE DF: format/bar numbers, color levels, format strings; print to HTML file
+# STYLE DF: FORMAT/BAR NUMBERS, COLOR LEVELS, FORMAT STRINGS; PRINT TO HTML FILE
 import numpy as np
 import pandas as pd
 a1 = np.random.randint(30_000,200_000,1_000)
@@ -2607,7 +2650,7 @@ plt.subplots_adjust(wspace=0.2)
 plt.show()
 ```
 ```
-# PLOT DF: using df methods for fast plotting
+# PLOT DF: USING DF METHODS FOR FAST PLOTTING
 import pandas as pd
 import matplotlib.pyplot as plt
 s = pd.Series([-3,-2,-1,0,1,2,3])
@@ -2687,7 +2730,7 @@ Model evaluation is important and done in two stages: validate and test.
 - You can always train a model first and evaluate which features were best!
 ```
 def feature_plot(importances, X_train, y_train):
-    # Display the five most important features
+    # DISPLAY THE FIVE MOST IMPORTANT FEATURES
     indices = np.argsort(importances)[::-1]
     columns = X_train.columns.values[indices[:5]]
     values = importances[indices][:5]
@@ -2709,14 +2752,14 @@ feature_plot(clf.feature_importances_, X_train, y_train)
 ```
 from sklearnex import patch_sklearn
 patch_sklearn()
-# SELECTKBEST: fast, not comprehensive
+# SELECTKBEST: FAST, NOT COMPREHENSIVE (GREAT FOR MODEL COMPARISON)
 from sklearn.feature_selection import SelectKBest
 kbest = SelectKBest("f_regression", k=3).fit(X_train, y_train)  # top 3 features
 p_values = kbest.pvalues_
 chosen_cols = X_train.columns[kbest.get_support()]
 X_train_kbest = X_train[chosen_cols]  # select top 3 features into X_train_kbest
 X_val_kbest, X_test_kbest = X_val[chosen_cols], X_test[chosen_cols]
-# RECURSIVE FEATURE ENGINEERING (RFE): slow, comprehensive
+# RECURSIVE FEATURE ENGINEERING (RFE): SLOW, COMPREHENSIVE (SINGLE MODEL)
 from sklearn.feature_selection import RFE
 from sklearn.ensemble import RandomForestClassifier as RF
 rfe = RFE(estimator=RF(), n_features_to_select=3).fit(X_train, y_train)
@@ -2871,7 +2914,7 @@ def print_classification_results(y_train, y_out):
         'OutSample_Recall','InSample_Precision','OutSample_Precision',
         'InSample_F1_Score','OutSample_F1_Score']
     running_list = []
-    # loop through each model
+    # LOOP THROUGH EACH MODEL
     for i, model in enumerate(y_train.columns[1:]):
         train_TP = ((y_train[model] == 1) & (y_train['in_actuals'] == 1)).sum()
         train_TN = ((y_train[model] == 0) & (y_train['in_actuals'] == 0)).sum()
@@ -2881,7 +2924,7 @@ def print_classification_results(y_train, y_out):
         out_TN = ((y_out[model] == 0) & (y_out['out_actuals'] == 0)).sum()
         out_FP = ((y_out[model] == 1) & (y_out['out_actuals'] == 0)).sum()
         out_FN = ((y_out[model] == 0) & (y_out['out_actuals'] == 1)).sum()
-        # calculate accuracy, recall, precision, f1 score
+        # CALCULATE ACCURACY, RECALL, PRECISION, F1 SCORE
         in_acc = (y_train[model] == y_train.in_actuals).mean()
         out_acc = (y_out[model] == y_out.out_actuals).mean()
         in_recall = train_TP / (train_TP + train_FN)
@@ -2890,7 +2933,7 @@ def print_classification_results(y_train, y_out):
         out_prec = out_TP / (out_TP + out_FP)
         in_f1 = (2 * in_prec * in_recall) / (in_prec + in_recall)
         out_f1 = (2 * out_prec * out_recall) / (out_prec + out_recall)
-        # build results dataframe
+        # BUILD RESULTS DATAFRAME
         row = {'Model':model, 
             'InSample_Accuracy': round(in_acc, 4), 
             'OutSample_Accuracy': round(out_acc, 4),
@@ -2957,7 +3000,7 @@ plt.show()
 - K-Folds: Evaluate a model's metric across data subsets
 - Grid Search: Pass a parameter grid to build many models and evaluate accuracy
 ```
-# K-Folds Cross Validation
+# K-FOLDS CROSS VALIDATION
 from sklearn.model_selection import cross_val_score as CVS
 from sklearn.metrics import precision_score, make_scorer
 acc = CVS(model, X_train, y_train["in_actuals"], cv=5).mean() # 4 trains, 1 test
@@ -2965,7 +3008,7 @@ scorer = make_scorer(precision_score, pos_label=1)
 prec = CVS(model, X_train, y_train["in_actuals"], cv=5, scoring=scorer).mean()
 ```
 ```
-# Grid Search
+# GRID SEARCH
 import numpy as np
 from sklearn.model_selection import GridSearchCV
 from sklearn.ensemble import RandomForestClassifier as RF
@@ -3018,14 +3061,14 @@ Model evaluation is important and done in two stages: validate and test.
 ```
 from sklearnex import patch_sklearn
 patch_sklearn()
-# SELECTKBEST: fast, not comprehensive
+# SELECTKBEST: FAST, NOT COMPREHENSIVE (GREAT FOR MODEL COMPARISON)
 from sklearn.feature_selection import SelectKBest
 kbest = SelectKBest("f_regression", k=3).fit(X_train, y_train)  # top 3 features
 p_values = kbest.pvalues_
 chosen_cols = X_train.columns[kbest.get_support()]
 X_train_kbest = X_train[chosen_cols]  # select top 3 features into X_train_kbest
 X_val_kbest, X_test_kbest = X_val[chosen_cols], X_test[chosen_cols]
-# RECURSIVE FEATURE ENGINEERING (RFE): slow, comprehensive
+# RECURSIVE FEATURE ENGINEERING (RFE): SLOW, COMPREHENSIVE (SINGLE MODEL)
 from sklearn.feature_selection import RFE
 from sklearn.linear_model import LinearRegression as LR
 rfe = RFE(estimator=LR(), n_features_to_select=3).fit(X_train, y_train)
@@ -3089,7 +3132,7 @@ y_train_pred = clf.predict(X_train)
     * Fixing heteroscedasticity: Remove outliers, transform data, or 
         * convert feature(s) to logarithmic value(s)
 ```
-# plot residuals
+# PLOT RESIDUALS
 y_train_residuals = y_train_preds - y_train
 sns.relplot(x=y_train, y=y_train_residuals)
 plt.axhline(y=0, c='gray', alpha=.3)
@@ -3101,11 +3144,11 @@ plt.axhline(y=0, c='gray', alpha=.3)
     * Indicates amount of data (0% - 100%) explained by regression line
 ```
 from sklearn.metrics import mean_squared_error, r2_score
-# calculate RMSE
+# CALCULATE RMSE
 MSE = mean_squared_error(validate.actuals, validate.predictions)
 SSE = MSE * len(df) # in case you need SSE
 RMSE = mean_squared_error(validate.actuals, validate.predictions, squared=False)
-# calculate r2
+# CALCULATE R2
 r2 = r2_score(df.actuals, df.predictions)
 ```
 
@@ -4122,6 +4165,7 @@ C++ pointer manipulation is very fast, so C++ might play a role in development.
 --------------------------------------------------------------------------------
 <!-- Needs work -->
 ## Python Oddities
+- `import sys` --- `sys.path.append("..")` open relative links to parent dir
 - `reload(coolutil)` Reload your imports (Uses: `from importlib import reload`)
 - `help(coolfunc)` or `print(coolfunc.__doc__)`: Read function's docstring
 - `if __name__ == '__main__': (code)` to run code when directly invoking script
