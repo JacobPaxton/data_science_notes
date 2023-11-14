@@ -2384,18 +2384,35 @@ Jupyter notebooks are optimal for report delivery and should be mastered.
 - X conts against X conts or the y cont: corr; linearity, normality / monotonic
     * Correlation statistic: strength and direction of correlation (-1.0 to 1.0)
     * Strength indicators: similar rate of change, both monotonic / polytonic
+    * Always plot correlations to check for linearity
+    * Can transform one or both: `np.log(col)`, `np.sqrt(col)`, `1 / col`, more
 - ERRORS: Type I (falsely-reject null), Type II (falsely-accept null)
     * False Positive Rate: probability of a Type I error
     * False Negative Rate: probability of a Type II error
 ```
 import pandas as pd
 from scipy import stats
-# METRICS
+# SINGLE COLUMN METRICS
+sum_all_squares = ((col - col.mean()) ** 2).sum()
+sum_samp_squares = ((samp - samp.mean()) ** 2).sum()
+variance_of_all = sum_all_squares / col.count()           # np.var(col)
+variance_of_samp = sum_samp_squares / (samp.count() - 1)  # np.var(samp, ddof=1)
+stdev_of_all = variance_of_all ** 0.5                     # np.std(col)
+stdev_of_samp = variance_of_samp ** 0.5                   # np.std(samp, ddof=1)
+zscore = stats.zscore(values)      # "demeaning vectors"; # of STDEVs from mean
+mean_absolute_deviation = np.mean(np.abs(col - col.mean()))
+quantile = np.quantile(col, 0.5)
+quartiles = np.quantile(col, np.linspace(0, 1, 5))  # [0, 0.25, 0.5, 0.75, 1]
+quintiles = np.quantile(col, np.linspace(0, 1, 6))  # [0, 0.2, 0.4, 0.6, 0.8, 1]
+q1, q3 = np.quantile(col, 0.25), np.quantile(col, 0.75)
+iqr = q3 - q1                                             # stats.iqr(col)
+outliers = (col < (q1 - (1.5 * iqr))) | (col > (q3 + (1.5 * iqr)))
+multiple_metrics = col.describe()
+# MULTI COLUMN METRICS
 pivot_table = df.pivot_table(index="col1", columns="col2", values="col3")
 category_metrics = df.groupby("col1")[["col2","col3"]].agg(["mean","max","std"])
 crosstab = pd.crosstab(df.col1, df.col2, margins=True, normalize=True)
 corr = df[[col1, col2]].corr()
-zscores = stats.zscore(values) # "demeaning a vector", STDEVs from mean
 # PASSED NORMALITY AND OTHER ASSUMPTIONS (PARAMETRIC TESTS)
 t, p = stats.f_oneway(samp1.y, samp2.y, samp3.y, ...)  # multiple "check" ttests
 t, p = stats.ttest_ind(samp1.y, samp2.y, alternative=) # independence from other
@@ -2497,49 +2514,124 @@ do_stats(df, y="sup", ttests=["hi","yo"], corrs=["sup"])  # run t-tests, corrs
 ```
 ### Probability
 - Chances and rates
-- Probability of outcome: P(outcome)
-- Probability of A given B (when B is True): P(A|B)
-- Low-probability combination of observed values is an anomaly!
-#### Calculating Probability
-- Bayes Theorem: P(A|B) = P(B|A)P(A)/P(B)
-    * If you have either A or B and want to calculate B or A, use Bayes Theorem
-- Observed Rate: `df.col` or `df[['col1','col2']].value_counts(normalize=True)`
-    * Other calculations: 
-        * `(x == 3).mean()` --- `((x == 3) or (x == 2)).mean()`
-        * `(x <= 4).mean()`
-- Theoretical Distribution: `stats.recipe(params).rvs(rolls).method()`
-    * Can pass array (EX: `(3,4)`) instead of rolls to generate an array
-    * Nice chart: https://ds.codeup.com/stats/pdf_pmf_cdf_ppf_sf_isf.png
-- Calculated: `np.random.choice(outcome_list, size=rolls, p=[p1, p2, p3, ...])`
-    * Can pass array: `size=(simulations, trials) as in size=(rows, columns)`
+- Probability of outcome: P(outcome) = (count_get_outcome) / (count_get_any)
+    * P(heads flip) = (1) / (2) -> (1) / (2) -> ... (independent events)
+    * P(name drawn) = (1) / (4) -> (1) / (3) -> ... (dependent events)
+- "Total Probability Law": Add each probability together
+    * Overall chance of defect: (1% * 50%) + (2% * 25%) + (3% * 25%) = 0.0175
+- "Bayes Theorem": P(A|B) = (P(B|A) * P(A)) / P(B)
+    * Probability that A is true given B is true: P(A|B)
+    * Probability that you survived if you had a gun: P(lived|gun)
+    * Probability that you had a gun if you survived: P(gun|lived)
+    * You know: P(lived) = 6/10, P(gun) = 3/10, P(gun|lived) = 2/6
+    * Bayes: P(lived|gun) = ((2/6) * (6/10)) / (3/10) -> (2/10) / (3/10) -> 2/3
+- Get P(A|B) of dataset: `(df["A"] & df["B"]).sum() / (df["B"].sum() / len(df))`
+    * Get P(A) given 2+ cols: `(df["A"] & mask).sum() / (mask.sum() / len(df))`
+    * Low probability here indicates "A" outcomes are anomalous!
+#### Building Distributions
+- "Law of Large Numbers": larger sample brings sample mean closer to theoretical
+- Probability distribution: chart of outcomes and their chances
+- Probability from distribution: area
+    * Chance of rolling 1 or 2 from 6: 2/6 of the distribution (1/3)
+- Theoretical Distribution: `dist = stats.recipe(params)`
+    * Probability from distribution: `dist.method()`
+- Rolls from Theoretical Distribution: `dist = stats.recipe(params).rvs(size=x)`
+    * Set size to array (`(3,4)`) instead of `x` to do `(simulations, trials)`
+    * Alternate: `np.random.choice(avail_options, size=rolls, p=[p1, p2, ...])`
 #### Theoretical Distributions from Parameters
-- Equal likelihood of all outcomes: Uniform (coin)
+- Equal likelihood of all outcomes: Uniform (dice rolls)
     * Not very useful for our purposes
-    * Recipe: `stats.randint(low, high_not_including)`
+    * Recipe: `random_int = stats.randint.rvs(gte_val, lt_val, size=(10,10))`
     * P(A) = 1 / len(Options)
-- Two outcomes: Binomial (success/failure)
+- Two outcomes: Binomial (coin flips)
     * Not very useful for our purposes
-    * Recipe: `stats.binom(n=rolls, p=[p_True, p_False])`
-    * P(A) = our input
-- Normal - continuous random variable (bell curve)
+    * Recipe: `wins = stats.binom.rvs(tries, chance_to_win, size=(10,10))`
+    * P(A) = `stats.binom.pmf(wintarget, tries, chance_to_win)` (discrete)
+- Outcomes congregating on one value: Normal (bell curve)
     * Very useful if we expect a normal distribution for something
-    * Recipe: `stats.norm(mean_value, stdev_size)`
-    * P(A) = `recipe.pdf(A)` ----- `.pdf` because of continuous values
-- Poisson - events per time interval
-    * Useful for time-related events
-    * Recipe: `stats.poisson(lambda_value)`
-    * P(A) = `recipe.pmf(A)` ----- `.pmf` because of discrete values
+    * Recipe: `stats.norm.rvs(center, size_one_stdev, size=(10,10))`
+    * P(A) = `stats.norm.pdf(mark, center, size_one_stdev)` (continuous)
+    * Between points: `stats.norm.cdf(0) - stats.norm.cdf(-1)` (AUC)
+    * Strategy: Identify mean and stdev, build distribution
+    * Central Limit Theorem: increase sample size, stats metrics get more normal
+- Events over time: Poisson (probability of an outcome in a time interval)
+    * Useful for time-related events; mu is average events per time interval
+        * With Poisson, lambda and mu are the same value
+    * Recipe: `stats.poisson.rvs(mu, size=(10,10))`
+    * P(A) = `stats.poisson.pmf(x, mu)` (discrete)
+    * Between counts: `stats.poisson.cdf(5, 2) - stats.poisson.cdf(3, 2)` (AUC)
+        * "3 to 5 events when the average is 2 events for that time interval"
+    * Strategy: Identify avg event count for time interval, build distribution
+    * Peak of distribution is always the lambda value (average count)
+- Time between events: Exponential (probability of wait time for Poisson event)
+    * Useful for time-related events; lambda is average events per time interval
+    * Recipe: `stats.expon.rvs(scale=events_per_interval, size=(10,10))`
+    * P(A) = `stats.expon.pdf(x, scale=events_per_interval)` (continuous)
+    * Between times: `stats.expon.cdf(4, scale=2) - stats.expon.cdf(1, scale=2)`
+        * "Between minute 1 and minute 4 when events are (avg) twice per minute"
+    * Strategy: Identify avg event count for time interval, build distribution
+- Failed attempts: Geometric (probability of consecutive failures)
+    * Useful when calculating probability of failing x times (CDF)
+    * Recipe: `stats.geom.rvs(success_chance, size=(10,10))`
+    * P(A): `stats.geom.pmf(attempt_when_successful, fail_chance)`
+    * Between attempts: `stats.geom.cdf(4, 0.3) - stats.geom.cdf(2, 0.3)`
+        * "2 to 4 attempts when the success chance is 30%"
+    * Strategy: Groupby each actor, avg successful attempt #, build distribution
+- Wider normal distribution: t-Distribution (sharper peak, wider flanges)
+    * Increasing degrees of freedom makes it look more like normal distribution
+- Right-skewed for normal: Log-Normal (0 to infinite, normal)
+    * When you can't go below a number, but the distribution is basically normal
+    * Lots of real-world examples for this
 - Lots more distributions... check scipy documentation for stats module
-#### Methods for Theoretical Distributions
-- Chance of specific outcome: 
-    * `.pmf(discrete)`, 
-    * `.pdf(continuous)`
-- Proportion higher: 
-    * `.sf(number) = proportion_higher`
-    * `.isf(proportion_higher) = number`
-- Proportion lower/equal: 
-    * `.cdf(number) = proportion_lowequal`
-    * `.ppf(proportion_lowequal) = number`
+#### Methods for Distributions
+- Nice chart: https://ds.codeup.com/stats/pdf_pmf_cdf_ppf_sf_isf.png
+- Probability from Theoretical Distribution: `dist.method()`
+    * Chance of specific outcome: `dist.pmf(discrete)`, `dist.pdf(continuous)`
+    * Area larger than a mark: `dist.sf(num)`, `dist.isf(proportion)`
+    * Area less than or equal to a mark: `dist.cdf(num)`, `dist.ppf(proportion)`
+- Probability from Discrete Records: `vc = s.value_counts(normalize=True)`
+    * Chance of specific outcome: `vc.loc[x] if x in vc.index else "Not found"`
+    * CDF and SF: `cdf = vc.loc[(vc.index <= x)].sum()`, `sf = 1 - cdf`
+    * P(Between Marks): `vc.loc[(vc.index > left) & (vc.index < right)].sum()`
+- Probability from Continuous Records: `t = s.rank(method='average', pct=True)`
+    * Chance of specific outcome: draw density and plot point? hmm. thinking...
+    * Compare to value: `cdf = (s <= x).mean()`, `sf = 1 - cdf`
+- Proportions of Outcomes: `vc = df[["A","B"]].value_counts(normalize=True)`
+    * `vc.loc[("lived","gun")]` (previous step orders multi-index as "A","B")
+#### Probabilities for KDE line, where KDE is built from numerical observations
+```
+# SET RANGE TO CALCULATE PROBABILITY FOR
+left = -3
+right = 7
+# CREATE MISSHAPEN DATASET
+np.random.seed(1)
+s = stats.norm.rvs(loc=2, scale=12, size=10_000, random_state=1).tolist()
+s.extend(stats.norm.rvs(loc=20, scale=4, size=5_000, random_state=1).tolist())
+s.extend(np.random.choice([-10, -5], p=[0.7,0.3], size=1_000).tolist())
+# CALCULATE KDE OF DATASET
+hist = sns.histplot(s, kde=True)
+inp, out = hist.lines[0].get_data()
+plt.axvline(left, c="red")
+plt.axvline(right, c="red")
+# SLICE KDE BASED ON SELECTED RANGE
+inp_left, out_left = inp[inp <= left], out[inp <= left]
+inp_right, out_right = inp[inp <= right], out[inp <= right]
+# GET CDF OF EACH SELECTED LIMIT
+from sklearn.metrics import auc
+full_area = auc(inp, out)
+cdf_gt = auc(inp_left, out_left)
+cdf_lte = auc(inp_right, out_right)
+# CALCULATE PROBABILITY OF BEING BETWEEN MARKS
+prob_between = (cdf_lte - cdf_gt) / full_area
+print(f"Probability of being between {left} and {right}: {prob_between}")
+# PROBABILITY OF ONE MARK
+loc_nearest_right = np.abs(inp - right).argmin()
+loc_nearest_left = np.abs(inp - left).argmin()
+prob_right = out[loc_nearest_right] / len(s)
+prob_left = out[loc_nearest_left] / len(s)
+print(f"Probability of {right}: {prob_right}")
+print(f"Probability of {left}: {prob_left}")
+```
 
 --------------------------------------------------------------------------------
 <!-- Polished -->
