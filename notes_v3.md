@@ -1594,6 +1594,20 @@ Explanations here shouldn't go any further than feature engineering.
 <!-- Needs work -->
 ## Dataframe Normalization
 ```
+def applycool(x):
+    if type(x) is not str:
+        return pd.Series([None, None])
+    testlist1 = ["\\","A"]
+    testlist2 = ["B","C"]
+    for t in testlist1:
+        if x.upper().startswith(t): return pd.Series(["cool", "awesome"])
+    for t in testlist2:
+        if x.upper().startswith(t): return pd.Series(["sweet", "nice"])
+    return pd.Series([None, None])
+s = pd.Series([None, "s", "\\s","a","b","c","d"])
+df = s.apply(applycool)
+```
+```
 import numpy as np
 import pandas as pd
 import json
@@ -1675,10 +1689,16 @@ meanimp_df['col"].plot(kind="kde")
 - Non-numerical DF description: `df.describe(exclude="number")`
 - Find duplicates: `df.duplicated(subset=["col1","col2",...], keep="first")`
 ```
+import time
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 df = pd.DataFrame([{"hi":1, "yo":5, "sup":3.2}] * 1_000_000)
+# CHECK SPEED OF OPERATION
+tic = time.perf_counter()
+x = 2 + 2
+toc = time.perf_counter()
+print(f"Completed in {toc - tic:0.4f} seconds")
 # UNIQUE COMBOS OF COLUMNS
 combos = df.set_index(["hi","yo"]).index.unique() # df.index.get_level_values(i)
 for combo in combos:
@@ -1710,6 +1730,7 @@ for combo in patt_df.index.unique():
     subset = patt_df.loc[combo]
     p_cnt = len(subset["nullp"].unique())
     p_df = subset.isna().drop_duplicates().reset_index(drop=True)
+    p_df.drop(columns="nullp", inplace=True)
     cap[combo] = {"p_count":p_cnt, "p_df":p_df, "exact":[], "close":[]}
     if p_cnt == 1:
         continue
@@ -1732,7 +1753,8 @@ for p in sorted(onepatts):
     display(HTML(dets.replace("x",x)))
 print("\n" + "-"*20, "NULL PATTERNS (click each!)", "-"*20)
 for p in sorted(regulars):
-    x = f"{cap[p]['p_df'].to_html()}<summary><b>- {p}</b></summary>"
+    x = f"DRIVERS: {cap[p]['exact']}<br>POTENTIAL: {cap[p]['close']}"
+    x += f"{cap[p]['p_df'].to_html()}<summary><b>- {p}</b></summary>"
     display(HTML(dets.replace("x",x)))
 ```
 ### Null Characterization
@@ -2541,11 +2563,11 @@ do_stats(df, y="sup", ttests=["hi","yo"], corrs=["sup"])  # run t-tests, corrs
 #### Theoretical Distributions from Parameters
 - Equal likelihood of all outcomes: Uniform (dice rolls)
     * Not very useful for our purposes
-    * Recipe: `random_int = stats.randint.rvs(gte_val, lt_val, size=(10,10))`
+    * Recipe: `stats.randint.rvs(gte_val, lt_val, size=(10,10))`
     * P(A) = 1 / len(Options)
 - Two outcomes: Binomial (coin flips)
     * Not very useful for our purposes
-    * Recipe: `wins = stats.binom.rvs(tries, chance_to_win, size=(10,10))`
+    * Recipe: `stats.binom.rvs(tries, chance_to_win, size=(10,10))`
     * P(A) = `stats.binom.pmf(wintarget, tries, chance_to_win)` (discrete)
 - Outcomes congregating on one value: Normal (bell curve)
     * Very useful if we expect a normal distribution for something
@@ -2783,6 +2805,17 @@ plt.show()
 - Run shell commands with `!` like this: `!echo "hi"`
     * I think the commands depend on what terminal program is running Jupyter
 - Run ipython commands with `%` like this: `%ls`
+### iPyWidgets
+```
+from IPython.display import display
+import ipywidgets
+from datetime import date
+mydate = date(2023,1,1)
+dateobject = ipywidgets.widgets.DatePicker(value=mydate)
+display(dateobject)
+# RUNNING NEXT CODE UPDATES ALL DISPLAYED OBJECTS IN REAL TIME
+dateobject.value = date(2023,5,20)
+```
 
 [[Return to Top]](#table-of-contents)
 
