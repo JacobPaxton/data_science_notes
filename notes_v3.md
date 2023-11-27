@@ -1816,6 +1816,17 @@ plt.show()
 ```
 ### Setting Up for Exploration
 ```
+import scikitplot as skplt
+import matplotlib.pyplot as plt
+# CUMULATIVE GAINS: HOW MANY SAMPLES TO GET A CERTAIN AMOUNT OF PREDICTION 1
+skplt.metrics.plot_cumulative_gain(actuals, preds) # preds are 0 or 1
+plt.show()
+# LIFT CURVE: MODEL'S PERFORMANCE ABOVE AVG TO TARGET PREDICTION 1 BY THRESH
+skplt.metrics.plot_lift_curve(actuals, preds)
+plt.show()
+# PER-GROUP OUTCOMES (INCIDENCE): % OF TARGETS IN EACH GROUP (CAT/CONT GROUPS!)
+```
+```
 import sklearn
 from sklearnex import patch_sklearn
 patch_sklearn()
@@ -1842,6 +1853,7 @@ import numpy as np
 import pandas as pd
 # FIX NUMERICAL FEATURES
 log_unskewed = df[["col1","col2","col3"]].apply(lambda x: np.log(x + 1))
+df["sqrt_col4"] = df["col4"] ** 0.5  # get to line for linear regression
 # categorize strings
 df["cats"] = df["string"].map({"hi":"greet","yo":"greet","bye":"dismiss"})
 df["is_good"] = df["string"].str.startswith("good")
@@ -1855,6 +1867,17 @@ df["quartiles"] = pd.qcut(df["bmi"], q=4, labels["low","normal","high","obese"])
 # ENCODING
 df["col1_enc"].map({'lowest':0, 'low-middle':1, 'high-middle':2, 'highest':3})
 dummy_df = pd.get_dummies(df['col1', 'col2'], drop_first=[True, True])
+```
+### Outliers
+- Defined in various ways, ex: z-score, percentage, fixed threshold
+- Leverage: how extreme an outlier is
+- Influence: what happens to the model when an outlier is removed
+    * Cook's Distance is a measure of influence
+```
+summary = sm_model.get_influence().summary_frame()
+df["leverage"] = summary["hat_diag"]
+df["cooks_dist"] = summary["cooks_d"]
+df.sort_values(by="cooks_dist", ascending=False)  # big values indicate weird
 ```
 ### Scaling
 - Making 1-10 mean the same to a machine learning model as 1-1000
@@ -2620,6 +2643,31 @@ do_stats(df, y="sup", ttests=["hi","yo"], corrs=["sup"])  # run t-tests, corrs
     * Compare to value: `cdf = (s <= x).mean()`, `sf = 1 - cdf`
 - Proportions of Outcomes: `vc = df[["A","B"]].value_counts(normalize=True)`
     * `vc.loc[("lived","gun")]` (previous step orders multi-index as "A","B")
+#### Likelihood from Probabilities
+- Probability: probability, given the model, that a datapoint is predicted
+- Likelihood: probability, given the data, that a model could output the data
+```
+# HOW MODELS SELECT BEST FIT LINE
+mu_guess = np.mean(sample_distances)
+sigma_guess = np.std(sample_distances)
+probs = np.zeros(len(sample_distances))
+for n, distance in enumerate(sample_distances):
+    coeff_part = 1/(np.sqrt(2 * np.pi * sigma_guess**2))
+    exp_part = np.exp( - (x - mu_guess)**2 / (2 * sigma_guess**2))
+    probs[n] = coeff_part * exp_part
+likelihood = np.product(probs)
+loglikelihood = np.sum(np.log(probs))
+# MAXIMUM LIKELIHOOD ESTIMATION
+low_guess = sample_mean - 2*samp_stdev
+high_guess = sample_mean + 2*samp_stdev
+mu_guesses = np.linspace(low_guess, high_guess, 101)
+# LOGLIKELIHOOD FOR EACH GUESS
+loglikelihoods = np.zeros(len(mu_guesses))
+for n, guess in enumerate(mu_guesses):
+    loglikelihoods[n] = compute_loglikelihood(samp_distances, guess, samp_stdev)
+max_loglikelihood = np.max(loglikelihoods)
+best_mu = mu_guesses[loglikelihoods == max_loglikelihood]
+```
 #### Probabilities for KDE line, where KDE is built from numerical observations
 ```
 # SET RANGE TO CALCULATE PROBABILITY FOR
@@ -2666,11 +2714,13 @@ print(f"Probability of {left}: {prob_left}")
 - `sns.set_palette("colorblind")`
 ### Chart Choices
 - Figure-level plots for multiple sub-charts; axis-level plot for a single chart
-- Continuous x-axis: `displot` w/ `kind`: hist,kde or `relplot` w/ line,scatter
+- Continuous x-axis: `displot` (hist, kde, ecdf) or `relplot` (line, scatter)
 - Categorical x-axis: `catplot` w/ `kind`: count,bar,box,violin,swarm,strip,more
 - `pairplot`, `heatmap`, `regplot`(scatter+reg), `jointplot`(scatter+edge hists)
     * `pairplot` charts can be accessed/modified with `.axes`
     * `regplot` uses `line_kws={'color':'red'}`
+- Normality: `statsmodels.api.qqplot`; x: theoretical quants, y: observed quants
+- Residuals: Scale-Location plot (deviation is change in largeness), `residplot`
 ```
 # GRAB THE ORANGE COLOR FROM SEABORN'S DEFAULT PALETTE
 import seaborn as sns
@@ -2688,6 +2738,14 @@ colors = ["whitesmoke"] + [rblugrn(i / num_colors) for i in range(2,num_colors)]
 cmap = LinearSegmentedColormap.from_list('', colors, num_colors)
 sns.heatmap(crosstab, cmap=cmap, cbar=False, 
     vmin=low_threshold, vmax=high_threshold, center=center, annot=True, fmt="d")
+```
+```
+# SCALE-LOCATION PLOT
+resids = sm_model.get_influence().resid_studentized_internal
+abs_sqrt_resids = np.sqrt(np.abs(resids))
+sns.regplot(x=sm_model.fittedvalues, y=abs_sqrt_resids, ci=None, lowess=None)
+plt.xlabel("fittedvalues")
+plt.ylabel("SQRT of ABS of STDized Residuals")
 ```
 ### Dataframe Styling
 - `df.style` is used for changing data presentation (not changing the data)
@@ -2777,7 +2835,8 @@ df.hist("orig")
 plt.figure(2)
 df[['orig','squared','abs_x2']].plot.line("orig", "abs_x2")
 plt.title("line")
-plt.axis([-4,4,-2,10])
+plt.axis([-4,4,-2,10])  # try also: plt.axis("equal") or "squared"
+plt.axline(xy1=(8,8), slope=0, linewidth=10, color="orange")
 plt.axhline(0, ls='--',alpha=.3)
 plt.axvline(0, ls='--',alpha=.3)
 # PLOT DF FROM GROUPBY
@@ -3207,6 +3266,7 @@ X_val_RFE, X_test_RFE = X_val[chosen_cols], X_test[chosen_cols]
 <!-- Needs work -->
 ## Training Regressors
 - Regression coefficients are line slopes; scaling is required for normalizing
+    * Making features linear will improve model performance!
 - Scatterplots show which regression model is best: reduce error/variance/RMSE
     * Choose the algorithm based on scatterplot shows is needed most
 ### Regressors
