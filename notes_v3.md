@@ -64,56 +64,59 @@ IX.   [Natural Language Processing   ](#natural-language-processing)
 1.    [Keywords and Sentiment        ](#keywords-and-sentiment)
 1.    [NLP for Prediction            ](#nlp-for-prediction)
 
-X.    [Insight Delivery              ](#insight-delivery)
+X.    [Geospatial                    ](#geospatial)
+1.    [Geospatial Analysis           ](#geospatial-analysis)
+
+XI.   [Insight Delivery              ](#insight-delivery)
 1.    [Statistical Analysis          ](#statistical-analysis)
 1.    [Visualizations                ](#visualizations)
 1.    [Magic in Jupyter              ](#magic-in-jupyter)
 
-XI.   [Classification                ](#classification)
+XII.  [Classification                ](#classification)
 1.    [Features for Classification   ](#features-for-classification)
 1.    [Training Classifiers          ](#training-classifiers)
 1.    [Evaluating Classifiers        ](#evaluating-classifiers)
 
-XII.  [Regression                    ](#regression)
+XIII. [Regression                    ](#regression)
 1.    [Features for Regression       ](#features-for-regression)
 1.    [Training Regressors           ](#training-regressors)
 1.    [Evaluating Regressors         ](#evaluating-regressors)
 
-XIII. [Time Series                   ](#time-series)
+XIV.  [Time Series                   ](#time-series)
 1.    [Timestamp Engineering         ](#timestamp-engineering)
 1.    [Metrics of Time Series        ](#metrics-of-time-series)
 1.    [Outcome Plotting              ](#outcome-plotting)
 1.    [Time Series Modeling          ](#time-series-modeling)
 
-XIV.  [Anomaly Detection             ](#anomaly-detection)
+XV.   [Anomaly Detection             ](#anomaly-detection)
 1.    [Anomalic Metrics              ](#anomalic-metrics)
 1.    [Getting to the Numbers        ](#getting-to-the-numbers)
 1.    [Baselines and Deviation       ](#baselines-and-deviation)
 
-XV.   [Neural Networks               ](#neural-networks)
+XVI.  [Neural Networks               ](#neural-networks)
 1.    [Establishing a Neural Network ](#establishing-a-neural-network)
 1.    [Image Classification          ](#image-classification)
 1.    [Deep Learning                 ](#deep-learning)
 
-XVI.  [Generative AI                 ](#generative-ai)
+XVII. [Generative AI                 ](#generative-ai)
 1.    [Implementing LLMs             ](#implementing-llms)
 1.    [Implementing Image Generation ](#implementing-image-generation)
 
-XVII. [Model Deployment              ](#model-deployment)
+XVIII.[Model Deployment              ](#model-deployment)
 1.    [Building a Flask App          ](#building-a-flask-app)
 1.    [Building a Django App         ](#building-a-django-app)
 1.    [Deploying the Model           ](#deploying-the-model)
 
-XVIII.[Project Management            ](#project-management)
+XIX.  [Project Management            ](#project-management)
 1.    [Planning a Project            ](#planning-a-project)
 1.    [Selecting the Framework       ](#selecting-the-framework)
 
-XIX.  [Business Tools                ](#tools-and-languages)
+XX.   [Business Tools                ](#tools-and-languages)
 1.    [Excel and Google Sheets       ](#excel-and-google-sheets)
 1.    [PowerBI                       ](#powerbi)
 1.    [Tableau                       ](#tableau)
 
-XX.   [Programming Languages         ](#programming-languages)
+XXI.  [Programming Languages         ](#programming-languages)
 1.    [Python Oddities               ](#python-oddities)
 1.    [R                             ](#r)
 1.    [C++                           ](#c)
@@ -1650,12 +1653,17 @@ df = df.dropna(axis=1, thresh=nonnull_minimum, subset=df.columns[3:6])
 ```
 from sklearnex import patch_sklearn
 patch_sklearn()
-from sklearn.impute import SimpleImputer
+from sklearn.impute import SimpleImputer, Imputer
 # SIMPLE IMPUTATION
-imputer = SimpleImputer(strategy="most_frequent")
-train[["embark_town"]] = imputer.fit_transform(train[["embark_town"]])
-validate[["embark_town"]] = imputer.transform(validate[["embark_town"]])
-test[["embark_town"]] = imputer.transform(test[["embark_town"]])
+imputer1 = SimpleImputer(strategy="most_frequent")
+train[["embark_town"]] = imputer1.fit_transform(train[["embark_town"]])
+validate[["embark_town"]] = imputer1.transform(validate[["embark_town"]])
+test[["embark_town"]] = imputer1.transform(test[["embark_town"]])
+# STANDARD IMPUTATION
+imputer2 = Imputer(missing_values="NaN", strategy="mean", axis=0)
+train[["embark_town"]] = imputer2.fit_transform(train[["embark_town"]])
+validate[["embark_town"]] = imputer2.transform(validate[["embark_town"]])
+test[["embark_town"]] = imputer2.transform(test[["embark_town"]])
 # KNN IMPUTATION
 from fancyimpute import KNN   # or, IterativeImputer (MICE)
 df_knn = df.copy(deep=True)
@@ -1892,7 +1900,8 @@ df.sort_values(by="cooks_dist", ascending=False)  # big values indicate weird
 - **RobustScaler**
     * Same as StandardScaler but de-weighs outliers
 - **QuantileTransformer**
-    * Normalizes non-normal data; centers data on 0 and limits range
+    * Transform features into uniform or normal dist; de-weighs outliers
+    * Get ECDF line -> discretize to uniform dist -> plot on dist
     * Complex; if you really want your data to be normal, then use this
 ```
 import numpy as np
@@ -1904,6 +1913,23 @@ encoded_df = df.dropna(thresh=len(df.columns))
 encoded_df = df.reset_index(drop=True)
 scaler = StandardScaler().fit(encoded_df)
 scaled_df = scaler.transform(encoded_df)
+```
+```
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import QuantileTransformer as QT
+rng = np.random.RandomState(0)
+X = np.sort(rng.normal(loc=0.5, scale=0.25, size=(250, 1)), axis=0)
+qt_norm = QT(n_quantiles=10, output_distribution="normal", random_state=0)
+X_norm = qt_norm.fit_transform(X)
+qt_unif = QT(n_quantiles=10, output_distribution="uniform", random_state=0)
+X_unif = qt_unif.fit_transform(X)
+plt.plot(X)
+plt.plot(X_norm)
+plt.plot(X_unif - 1.0)
+plt.plot(qt_unif.inverse_transform(X_unif) + 1)
+plt.legend(["original", "normalized", "uniform minus 1.0", "inversed plus 1.0"])
+plt.show()
 ```
 ### Resampling for Model Training
 - SMOTE: Synthetic Minority Oversampling TEchnique
@@ -1937,7 +1963,7 @@ def resampler(X_train, y_train):
         * `step=5`
     * try out `verbose=1` to show what's going on
     * quick check: `print(accuracy_score(y_test, rfe.predict(X_test)))`
-- You can do feature reduction with LASSO regularization (increases bias)
+- Can do feature reduction with LASSO regularization (increases bias/underfit)
     * `LassoCV()` does cross-validation to tune regularization to best one
     * `lcv = LassoCV()`, `lcv.fit(X_train, y_train)`, `lcvmask = lcv.coef_ != 0`
     * use val of `sum(lcvmask)` to set `n_features_to_select` in RFE
@@ -1960,8 +1986,8 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 from skelarn.pipeline import Pipeline
 pipe = Pipeline([
-    ("scaler", StandardScaler()), 
-    ("reducer", PCA())])
+    ("scaler", StandardScaler()),     # step 1
+    ("reducer", PCA())])              # step 2
 pc = pipe.fit_transform(num_df)
 print(pc[:,:2])
 df["PC 1"] = pc[:,0]
@@ -2382,6 +2408,101 @@ y_train_preds = tree.predict(bow)
 features = dict(zip(vectorizer.get_feature_names(), tree.feature_importances_))
 print(pd.Series(features).sort_values().tail(5))            # top-5 features
 ```
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
+ #####                                                           
+#     # ######  ####   ####  #####    ##   ##### #   ##   #      
+#       #      #    # #      #    #  #  #    #   #  #  #  #      
+#  #### #####  #    #  ####  #    # #    #   #   # #    # #      
+#     # #      #    #      # #####  ######   #   # ###### #      
+#     # #      #    # #    # #      #    #   #   # #    # #      
+ #####  ######  ####   ####  #      #    #   #   # #    # ###### 
+-->
+
+# Geospatial
+```
+Latitudes, longitudes, coordinates, and trends.
+```
+
+--------------------------------------------------------------------------------
+<!-- Needs Work -->
+## Geospatial Analysis
+### Geospatial Data
+- Coord Reference System (CRS) baselines the coordinates for plotting
+    * EPSG:4326 in decimal degrees; used by Google Earth
+    * EPSG:3857 in meters; used by Google Maps, Bing Maps, Open Street Maps
+- RASTER file: grid; great at doing semi-3D plotting like topographical map
+- VECTOR file: points, lines, polygons; great for drawing
+- Shapefiles contain geospatial geometry that we can plot
+    * SHP contains geometry, DBF holds attrs, SHX links attrs and geometry
+- GeoJSON is a modern version that combines SHP, DBF, SHX into one file
+- Fiona: API between Python and OpenGIS Simple Features Reference, is VECTORs
+- GDAL: Geospatial Data Abstraction Library, is RASTERs
+- Chloropleth: Thematic map with color variation to differentiate regions
+### Geospatials in Geopandas
+- `geopandas` is an excellent library for geospatial work
+- A cell in a row can contain a point, line, or polygon; `geo_df.loc[0, 'poly']`
+    * Printing the cell will result in object with coord array for ex: line
+```
+import folium
+district1_map = folium.Map(location=[48.858373,2.292292], zoom_start=12)
+folium.GeoJson(district_one.geometry).add_to(district1_map)
+for row in df.iterrows():
+    location, popup = [row["lat"], vals["lng"]], row["popup"]
+    marker = folium.Marker(location=location, popup=popup)
+    marker.add_to(district1_map)
+display(district1_map)
+import geopandas as gpd
+from shapely.geometry import Point
+geo_df1 = gpd.read_file('my_map.shp')
+geo_df2 = gpd.read_file('geo.geojson')
+schools["geoms"] = schools.apply(lambda x: Point((x.lng, x.lat)), axis=1)
+schools_crs = {"init": "epsg:4326"}
+geo_df3 = gpd.GeoDataFrame(schools, src=schools_crs, geometry=schools.geoms)
+geo_df3.changed_crs = geo_df3.geoms.to_crs(epsg="3857")
+leg_kwds = {"title":"District Number", "loc":"upper left", 
+            "bbox_to_anchor":(1,1.03), "n_col":3}
+geo_df1.plot(column="district", cmap="Set3", legend=True, legend_kws=leg_kwds)
+plt.title("Council Districts")
+plt.show()
+schools["polygon_area"] = schools.geometry.area            # calc on each row
+schools["polygon_center"] = schools.geometry.centroid      # calc on each row
+schools["distance_from_other"] = schools.geometry.distance(other)  # each row
+```
+```
+import geopandas as gpd
+# initialize two geodataframes and join the plots
+d1 = gpd.sjoin(gdf1, gdf2, op="contains")  # gdf2 entirely inside gdf1 boundary
+d2 = gpd.sjoin(gdf1, gdf2, op="intersect") # gdf2 is inside or on gdf1 boundary
+d3 = gpd.sjoin(gdf2, gdf1, op="within")    # backwards "contains"
+print(len(d1))                             # number of gdf2 things inside gdf1
+```
+```
+import folium
+nashville = [36.1636, -86.7823]
+m = folium.Map(location=nashville, zoom_start=10)
+folium.Cloropleth(
+    geo_data=districts_with_counts,
+    name="geometry",
+    data=districts_with_counts,
+    columns=["district","school_density"],
+    key_on="feature_properties.district",
+    fill_color="YlGn",
+    fill_opacity=0.75,
+    line_opacity=0.5,
+    legend_name="Schools per km squared by School District
+).add_to(m)
+```
+### Shapely
+- Set correct coord reference system for Geopandas for max accuracy
 
 [[Return to Top]](#table-of-contents)
 
@@ -2900,6 +3021,8 @@ Predicting outcomes and states of unseen data using trained models.
 Features are chosen for modeling via chi2 tests, t-tests, SelectKBest/RFE
 Training data includes "the answers" and can be resampled.
 Model evaluation is important and done in two stages: validate and test.
+Validate is used for checking model performance.
+Test (hold-out set) is used for checking the best model's performance.
 ```
 
 --------------------------------------------------------------------------------
@@ -2956,12 +3079,16 @@ X_val_RFE, X_test_RFE = X_val[chosen_cols], X_test[chosen_cols]
 --------------------------------------------------------------------------------
 <!-- Needs work -->
 ## Training Classifiers
-- **Decision Tree**
-    * A sequence of rules for one-input-binary-output decisions
+- **Decision Tree (CART)**
+    * A sequence of rules or a decision boundary for decisions
+    * Nodes in tree are chosen to maximize "information gain" (class separation)
+    * Measures of IG: "Gini-index" (impurity), "entropy", or MSE at each node
+        * Unconstrained trees end in leaf when IG(node) = 0; otherwise, maxdepth
     * Simple to implement and explain, but prone to overfit
 - **Random Forest**
-    * Uses ensemble of trees that were fit on random features and data samples
-    * All trees vote on each observation; expensive, hard to explain, very good
+    * Many decision trees, all rows, rand features; metamodel counts row's votes
+    * Different from "bagging", which uses all features, row subset, diff models
+    * Feature importance: avg of how much a feature reduces impurity in the tree
 - **K-Nearest Neighbors**
     * Use distances of known-class neighbors to predict unknown-class data
     * Simple and effectively-predictive, but prone to poor performance
@@ -2971,8 +3098,20 @@ X_val_RFE, X_test_RFE = X_val[chosen_cols], X_test[chosen_cols]
 - **Logistic Regression**
     * Regression, but uses thresholds on the regression line to choose class
     * A great baseline predictive model, but usually not the best
+- **AdaBoost**
+    * Sequential training of predictive models, each learning from the previous
+    * A model is trained/evaluated; incorrect preds are weighed higher in next
+        * You can lessen the learning rate (weight strength) with hyperparameter
+    * Classifier: weighted majority votes; Regressor: weighted average
+    * Repeat this learning until N predictors are trained
 - **XG Boost**
-    * Random forest, but also use loss function to drop most weak-learner trees
+    * Sequential training of predictive models, each learning from the previous
+    * A model is trained/evaluated; the residual errors are the labels for next
+        * `res1 = actual - pred` --> `res2 = res1 - pred_res1` --> ...
+        * You can lessen the learning rate (weight strength) with hyperparameter
+    * Gradient Boosted Trees use CART as base learner; XGB uses random forest
+    * Stochastic Gradient Boosting uses random non-replaced rows, rand features
+    * Repeat this learning until N predictors are trained
     * World-class performance but near-impossible to explain to stakeholders
 - **One Vs Rest**
     * Breakdown of multiclass problem into several binary class problems
@@ -2984,6 +3123,8 @@ from sklearn.ensemble import RandomForestClassifier as RF
 from sklearn.linear_model import LogisticRegression as LOGIT
 from sklearn.naive_bayes import GaussianNB as NB
 from sklearn.neighbors import KNeighborsClassifier as KNN
+from sklearn.ensemble import AdaBoostClassifier as ABC
+from sklearn.ensemble import GradientBoostingClassifier as GBC
 from xgboost import XGBClassifier as XGB
 from sklearn.multiclass import OneVsRestClassifier as OVR
 def classification_shotgun(X_train, y_train, X_out, y_out):
@@ -3016,7 +3157,7 @@ def mode_bl(y_train, y_out):
     return y_train, y_out   # return DATAFRAMES with new preds columns
 def tree(X_train, y_train, X_out, y_out):
     """Creates decision trees with max_depth 1,2,3,5,10 and random_state=42"""
-    for depth in [1,2,3,5,10]:
+    for depth in [1,2,3,5,10]:  # decision node depth
         tree = TREE(max_depth=i,random_state=42).fit(X_train,y_train.in_actuals)
         y_train['tree_maxdepth' + str(depth)] = tree.predict(X_train)
         y_out['tree_maxdepth' + str(depth)] = tree.predict(X_out)
@@ -3048,6 +3189,21 @@ def knearestneighbors(X_train, y_train, X_out, y_out):
         y_train['knn_n' + str(neighbor_count)] = knn.predict(X_train)
         y_out['knn_n' + str(neighbor_count)] = knn.predict(X_out)
     return y_train, y_out    # return DATAFRAMES with new preds columns
+def adaboostclass(X_train, y_train, X_out, y_out):
+    """Create AdaBoost classifier models with random_state=42"""
+    tree = TREE(max_depth=1, random_state=42)  # "decision stump"
+    abc = ABC(base_estimator=tree, n_estimators=100)
+    abc.fit(X_train, y_train.in_actuals)
+    y_train['adaboostclass'] = abc.predict(X_train)
+    y_out['adaboostclass'] = abc.predict(X_out)
+    return y_train, y_out    # return DATAFRAMES with new preds columns
+def gradboostclass(X_train, y_train, X_out, y_out):
+    """Create Gradient-Boosted Trees Classifier with weak learners"""
+    gbc = GBC(n_estimators=300, max_depth=1, random_state=42)
+    gbc.fit(X_train, y_train.in_actuals)
+    y_train['gradboostclass'] = gbc.predict(X_train)
+    y_out['gradboostclass'] = gbc.predict(X_out)
+    return y_train, y_out    # return DATAFRAMES with new preds columns
 def xgboosts(X_train, y_train, X_out, y_out):
     """Create XGBoost models with max_depth 3,5,7,9 and random_state=42"""
     for i in [3,5,7,9]:
@@ -3066,18 +3222,41 @@ X_test, y_test = test.drop(columns=["sup"]), test.sup
 y_train, y_out = classification_shotgun(X_train, y_train, X_test, y_test)
 ```
 ```
-from sklearn.tree import DecisionTreeClassifier
-clf = DecisionTreeClassifier(max_depth=3, random_state=123) 
+from sklearn.tree import DecisionTreeClassifier as TREE
+clf = TREE(max_depth=3, random_state=123)  # min_samples_leaf = 0.15   # 15% per
 clf = clf.fit(X_train, y_train)
 y_train_pred = clf.predict(X_train)
 y_train_pred_proba = clf.predict_proba(X_train)
+```
+```
+from sklearn.ensemble import VotingClassifier
+# VOTING CLASSIFIER
+logit = LogisticRegression()
+knn = KNN()
+tree = DecisionTreeClassifier()
+classifiers = [("logit", logit), ("knn", knn), ("tree", tree)]
+vc = VotingClassifier(estimators=classifiers)
+vc.fit(X_train, y_train)
+y_pred = vc.predict(X_test)
+print("Voting Classifier: {.3f}".format(accuracy_score(y_test, y_pred)))
+```
+```
+from sklearn.ensemble import BaggingClassifier as BAGGER
+# BAGGING, AKA, BOOTSTRAPPING
+tree = DecisionTreeClassifer()
+bc1 = BAGGER(base_estimator=tree, n_estimators=300, n_jobs=-1)
+# fit, predict... or...
+# OUT OF BAG EVALUATION: DO BAGGING, BUT EACH HAS HOLD-OUT SET, EVAL, AVG ACROSS
+bc2 = BAGGER(base_estimator=tree, n_estimators=300, n_jobs=-1, oob_score=True)
+print(bc2.oob_score_)  # this is a cheap/effective way to do cross validation
 ```
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
 ## Evaluating Classifiers
-- **Accuracy:** Overall performance of model: (TP + TN) / (TP + TN + FP + FN)
-    * Easy to understand; Imbalanced class problem may yield misleading results
+- **Accuracy:** Overall performance of model: (TP + TN) / (total count)
+    * Easy to understand; how many outcomes did the model accurately predict?
+    * Imbalanced class problem may yield misleading results
 - **Recall:** Positive actual against our predictions: TP / (TP + FN)
     * Example: Credit card fraud detection (maximize fraud capture)
     * Minimizing false negatives; Use when FN is more costly than FP 
@@ -3089,8 +3268,8 @@ y_train_pred_proba = clf.predict_proba(X_train)
     * Prioritizing both Recall and Precision; similar to accuracy
     * Use for accuracy on an imbalanced class problem
 - **Receiver Operating Characteristic:** False Positive Rate, True Positive Rate
-    * Model performance at different thresholds
-    * Calculate area under the curve (ROC AUC) as another metric
+    * Model performance at different decision thresholds
+    * The model with best ROC AUC is best across decision thresholds
 ```
 def print_classification_results(y_train, y_out):
     """Get metrics for a dataframe of model predictions columns, return a df."""
@@ -3170,8 +3349,8 @@ bl_auc = roc_auc_score(y_test.astype("bool"), bl_probs)
 model_auc = roc_auc_score(y_test.astype("bool"), model_probs)
 print('Baseline: ROC AUC=%.3f' % (bl_auc))
 print('Logistic Regression: ROC AUC=%.3f' % (model_auc))
-bl_fpr, bl_tpr, _ = roc_curve(y_test, bl_probs)
-model_fpr, model_tpr, _ = roc_curve(y_test, model_probs)
+bl_fpr, bl_tpr, bl_thresholds = roc_curve(y_test, bl_probs)
+model_fpr, model_tpr, model_thresholds = roc_curve(y_test, model_probs)
 plt.plot(bl_fpr, bl_tpr, linestyle='--', label='Baseline')
 plt.plot(model_fpr, model_tpr, marker='.', label='Model')
 plt.xlabel("False Positive Rate")
@@ -3181,16 +3360,36 @@ plt.legend(loc="lower right")
 plt.show()
 ```
 ### Cross-Validation
-- K-Folds: Evaluate a model's metric across data subsets
-- Grid Search: Pass a parameter grid to build many models and evaluate accuracy
+- Remove bias from selection of train split's records for model generalization
+- The training split itself is split into K folds; K=3 and K=5 are common
+    * Leave-One-Out: `K=len(df)`, useful for small datasets
+- With K=5, a model is trained using 4 folds for "train" and 1 fold for "test"
+- With K=5, five models are trained, each with a different fold as "test"
+- We select an evaluation metric, evaluate all 5 models, and calculate the mean
+    * Options: https://scikit-learn.org/stable/modules/model_evaluation.html
+- The mean value across models is what we'd expect on out-of-sample data!
+- If more errors on CV than on full training split: high variance / overfit
+    * Decrease model complexity (ex: less max_depth, more min samples)
+    * Gather more data so CV performs better
+- If error on CV is similar to train, but still too high: high bias / underfit
+    * Increase model complexity (ex: more max_depth, more min_samples)
+    * Gather more features
 ```
 # K-FOLDS CROSS VALIDATION
 from sklearn.model_selection import cross_val_score as CVS
 from sklearn.metrics import precision_score, make_scorer
-acc = CVS(model, X_train, y_train["in_actuals"], cv=5).mean() # 4 trains, 1 test
-scorer = make_scorer(precision_score, pos_label=1)
-prec = CVS(model, X_train, y_train["in_actuals"], cv=5, scoring=scorer).mean()
+e1, e2, e3 = "accuracy", "roc_auc", make_scorer(precision_score, pos_label=1)
+X, y = X_train, y_train["in_actuals"]
+acc = CVS(model, X, y, cv=5, scoring=e1, n_jobs=-1).mean() # n_jobs=-1 multiproc
+roc_auc = CVS(model, X, y, cv=5, scoring=e2, n_jobs=-1).mean()
+precision = CVS(model, X, y, cv=5, scoring=e3, n_jobs=-1).mean()
 ```
+#### Grid Search Cross Validation
+- Grid Search mixes cross validation with your hyperparameter tuning
+- We pass the hyperparameter grid and K folds, and it trains/evals each model
+- Set `n_jobs = -1` to use multi-core processing! Speed gains!
+- For even more speed gains: try `RandomizedSearchCV`
+    * Doesn't try out the entire grid; "hones in" on the best, faster
 ```
 # GRID SEARCH
 import numpy as np
@@ -3203,8 +3402,32 @@ grid = GridSearchCV(RF(random_state=42), params, cv=5, verbose=2)
 if type(y_train) is type(pd.DataFrame()):
     y_train = y_train["in_actuals"]
 grid.fit(np.array(X_train), y_train)  # cast X_train as array to avoid warnings
+print(grid.best_params_)
 print(grid.best_estimator_)
-(grid.best_estimator_.predict(X_train) == y_train).mean()
+accuracy = (grid.best_estimator_.predict(X_train) == y_train).mean()
+```
+#### Randomized Grid Search Cross Validation
+- Grid Search, but randomly selecting hyperparameters, not trying all of them
+- Pretty good performance, less computationally expensive than full grid search
+```
+# RANDOMIZED GRID SEARCH
+import numpy as np
+from sklearn.ensemble import RandomForestRegressor as RFR
+from sklearn.metrics import make_scorer, mean_absolute_error
+from sklearn.model_selection import RandomizedSearchCV as RSCV
+import joblib
+grid = {"max_depth":[2,4], "max_features":range(2,11), "min_samples_split":[2]}
+grid["n_estimators"] = [100,200,500,1000]
+grid["max_depth"] = range(1,8)
+rfr = RFR(random_state=42)
+if type(y_train) is type(pd.DataFrame()):
+    y_train = y_train["in_actuals"]
+rnd = RSCV(estimator=rfr, param_dist=grid, n_iter=40, cv=5)  # 40 models
+rnd.fit(np.array(X_train), y_train)  # cast X_train as array to avoid warnings
+print(rnd.best_params_)
+print(rnd.best_estimator_)
+rfr = rnd.best_estimator_
+joblib.dump(rfr, "rfr_best.pkl")
 ```
 
 [[Return to Top]](#table-of-contents)
@@ -3231,6 +3454,8 @@ Predicting a numerical value for unseen data using trained models.
 Features are chosen for modeling via correlation tests, t-tests, SelectKBest/RFE
 Training data includes "the answers"; all data (incl. unseen) should be scaled.
 Model evaluation is important and done in two stages: validate and test.
+Validate is used for checking model performance.
+Test (hold-out set) is used for checking the best model's performance.
 ```
 
 --------------------------------------------------------------------------------
@@ -3265,14 +3490,34 @@ X_val_RFE, X_test_RFE = X_val[chosen_cols], X_test[chosen_cols]
 --------------------------------------------------------------------------------
 <!-- Needs work -->
 ## Training Regressors
-- Regression coefficients are line slopes; scaling is required for normalizing
-    * Making features linear will improve model performance!
-- Scatterplots show which regression model is best: reduce error/variance/RMSE
-    * Choose the algorithm based on scatterplot shows is needed most
+- Plotting various regression lines, using a loss function to find best fit line
+- The regression line is indicated by the regression equation
+    * A regression equation looks like this: `y = a1x1 + a2x2 + a3x3 + ...`
+    * Each independent variable (each feature) has a "coefficient" (line slope)
+    * Feature coefficients are added together in the regression equation
+- Many regression lines are plotted; a loss function calculates each line's loss
+    * The regression line with least loss is best
+- You choose the loss function; lots of examples, ex: OLS, LASSO+LARS, GLM, more
+    * A good loss function can yield a better-fit regression line
+    * The best loss functions help plot a line that can generalize accurately
+- As always, poor feature engineering can't be saved by great loss functions
+    * Numerical feature scaling "balances" each feature in loss calculation
+    * Features with a linear relationship to the target are best
 ### Regressors
-- **Ordinary Least Squares (OLS)** 
-    * Minimizes sum of squared differences between prediction and actuals
-    * Linear regression as everyone knows it, assumes normal distribution
+- **Ordinary Least Squares (OLS)**
+    * Computationally simple and efficient regression
+    * `y = a1x1 + a2x2 + a3x3 + ...`
+    * Prone to overfitting because it fits the best line to the sample data
+- **Ridge**
+    * Great for generalizing OLS to unseen data (with `alpha` hyperparameter)
+    * `y = a1x1 + a2x2 + ... + (alpha * ((a1)^2x1 + (a2)^2x2 + ...))`
+    * Regularized, because we "punish" large coefficients by tuning `alpha`
+    * High alpha yields underfitting; low alpha yields overfitting
+- **LASSO**
+    * Great for feature selection (with `alpha` hyperparameter)
+    * `y = a1x1 + a2x2 + ... + (alpha * (abs(a1)x1 + abs(a2)x2 + ...))`
+    * Regularized, because we "punish" small coefficients by tuning `alpha`
+    * Improper tuning of `alpha` can remove too many or too few features
 - **LASSO+LARS** 
     * Feature minimization using regularization penalties
     * Can change slope to reduce variance / increase bias; assumes normality
@@ -3297,12 +3542,16 @@ fit.summary()
 ```
 from sklearn.linear_model import LinearRegression     # OLS
 from sklearn.linear_model import LassoLars            # reduce r2, increase bias
-from sklearn.linear_model import TweedieRegressor     # non-normal distributions
+from sklearn.linear_model import TweedieRegressor     # non-normal dists
 from sklearn.svm import SVR                           # < 50k, discrete target
 from sklearn.svm import LinearSVR                     # > 50k, discrete target
 from sklearn.preprocessing import PolynomialFeatures  # target is polynomial
+from sklearn.ensemble import GradientBoostingRegressor as GBR
 ols = LinearRegression().fit(X_train, y_train)
 y_train_pred = clf.predict(X_train)
+gbr = GBR(max_depth=1, subsample=0.8, max_features=0.2, n_estimators=300,
+          random_state=42).fit(X_train, y_train)
+gbr_pred = gbr.predict(X_train)
 ```
 
 --------------------------------------------------------------------------------
