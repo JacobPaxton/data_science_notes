@@ -803,32 +803,58 @@ from selenium.webdriver.support import expected_conditions as EC # detect tag
 from selenium.webdriver.support.ui import WebDriverWait   # wait until tag loads
 from selenium.webdriver.common.action_chains import ActionChains # script action
 # BASIC PAGE PULL
-PATH = r"C:\Users\Jake\chromedriver.exe"
+chromepath = r"C:\Users\Jake\chromedriver.exe"
+chrome = webdriver.Chrome(chromepath)
 url = 
-driver = webdriver.Chrome(PATH)
-driver.get(url)
-soup = BeautifulSoup(driver.page_source)
+chrome.get(url)
+soup = BeautifulSoup(chrome.page_source)
 # WAIT FOR ELEMENT TO LOAD
-myElem = WebDriverWait(browser, delay)\
+myElem = WebDriverWait(chrome, 1)\
   .until(EC.presence_of_element_located((By.ID, 'IdOfMyElement')))
-elements = driver.find_elements_by_xpath('//*[@id="q_all"]')
+elements = chrome.find_elements_by_xpath('//*[@id="q_all"]')
 # RUN ACTIONS
-actions = ActionChains(driver)
-elem1 = driver.find_element_by_xpath('//*[@id="q_type"]/div[1]')
+actions = ActionChains(chrome)
+elem1 = chrome.find_element_by_xpath('//*[@id="q_type"]/div[1]')
 actions.move_to_element(elem1).click().perform()  # open dropdown box
-elem2 = driver.find_element_by_xpath('//*[@id="q_type"]/div[3]/div[2]')
+elem2 = chrome.find_element_by_xpath('//*[@id="q_type"]/div[3]/div[2]')
 actions.move_to_element(elem2).click().perform()  # select an option in dropdown
 ```
-
---------------------------------------------------------------------------------
-<!-- Needs work -->
-## Image Download
+### Walk Images
 ```
+import os
 import shutil
-r = requests.get(image_url, stream = True)  # stream file to cache
-r.raw.decode_content = True                 # ensure binary is decoded on write
-with open('image.jpeg','wb') as f:          # write from binary
-    shutil.copyfileobj(r.raw, f)            # shutil writes to image.jpeg
+import requests
+from bs4 import BeautifulSoup as SOUP
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait as WDW
+dest = "C:\\Users\\CoolGuy\\CoolImages\\"
+if not os.path.exists(dest):
+    os.mkdir(dest)
+gallery_urls = ["gallery1 img1 url", "gallery2 img1 url", "gallery3 img1 url"]
+ffx = webdriver.Firefox()
+i = 0
+for gallery_url in gallery_urls:
+    url = gallery_url
+    while True:
+        i += 1
+        ffx.get(url)
+        elem = WDW(ffx, 1).until(EC.presence_of_element_located(By.ID, "img"))
+        soup = SOUP(ffx.page_source)
+        img = soup.select("img#img")[-1]["src"]
+        extension = re.findall("^.+(\..+?)$", img)[-1]
+        imgnum = "%05d" % i                  # ex: 00001, 00002, ..., 05914, ...
+        imgname = imgnum + extension         # ex: 00001.png, 00002.png, ...
+        r = requests.get(img, stream=True)   # stream file to cache
+        r.raw.decode_content = True          # ensure binary is decoded on write
+        with open(dest + imgname, "wb") as f:   # write from binary
+            shutil.copyfileobj(r.raw, f)        # shutil writes to image.jpeg
+        nexturl = soup.select("a#next")[0]["href"]   # grab URL of next image
+        if url == nexturl:     # if next image is current image (end of gallery)
+            i -= 1
+            break
+        url = nexturl
 ```
 
 [[Return to Top]](#table-of-contents)
