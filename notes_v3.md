@@ -4368,7 +4368,237 @@ CMD ["app.py"]
         * This assumes the latest image version if version isn't specified
     * Alias an image during the run command: `--name alias_name`
 ### Kubernetes
-- INSERT INFORMATION/SETUP STEPS HERE
+- Alias for *nix: `alias k=kubectl`
+- Alias for Windows: `Set-Alias -Name k -Value kubectl`
+- Events: `kubectl get events -A`
+    * `kubectl get events --sort-by=<JSONPath>` or `kubectl get events -o wide`
+#### Wipe Kubernetes
+```
+kubectl delete -f <file>
+kubectl delete pod,service <name1> <name2>  # if pods/services have same names
+kubectl delete pods,services -l <label_name>=<label_value>  # delete by label
+```
+#### Kubernetes Configuration
+```
+kubectl config view
+KUBECONFIG=~/.kube/config1:~/.kube/config2:~/.kube/config3
+kubectl config view -o jsonpath='{.users[*].name}'
+kubectl config view -o jsonpath='{.users[?{@.name=="admin"}].user.password}'
+kubectl config current-context
+kubectl config get-contexts
+kubectl config use-context <cluster>
+kubectl config set-credentials <username> [options]
+kubectl config set-credentials <user> --client-key=~/.kube/admin.key
+kubectl config set-credentials --username=<username> --password=<password>
+kubectl config set-credentials <user> --client-certificate=<path/to/cert> --
+    embed-certs=true
+kubectl config --kubeconfig=<config/path> use-context <cluster>
+kubectl config set-context gce --user=cluster-admin --namespace=foo \
+    && kubectl config use-context gce
+```
+#### Pods
+```
+kubectl explain pod
+kubectl get pods -A
+kubectl get pods -n <namespace>
+kubectl get pod <pod> --watch
+kubectl get pods -A --watch
+kubectl get pods --sort-by='.status.containerStatuses[0].restartCount   # sroted
+kubectl get pods -o json
+kubectl get pods -o wide
+kubectl get pods -o custom-columns='DATA:spec.containers[*].image'
+kubectl get pods -o custom-columns='DATA:spec.containers[*].volumeMounts'
+kubectl get pods -o custom-columns='DATA:metadata'
+```
+```
+kubectl run <pod> --generator=run-pod/v1 --image=<image>
+kubectl run nginx --generator=run-pod/v1 --image=nginx
+kubectl run busybox --generator=run-pod/v1 --image=busybox
+kubectl run -i --tty nginx --image=nginx -- sh
+kubectl run busybox --image=busybox -- sleep 100000
+kubectl exec <pod> --  <command>
+kubectl exec -it <pod> -- <command>
+kubectl exec -it nginx -- ls -lrth /app/
+kubectl run <pod> --generator=run-pod/v1 --image=nginx --dry-run   # test
+kubectl patch pod <pod> -p '<patch>'
+kubectl patch pod <pod> -p '{"spec":{"containers":[{
+    "name":"kubernetes-serve-hostname",
+    "image":"new image"
+}]}}'
+kubectl patch pod valid-pod --type='json' -p='[{
+    "op":"replace",
+    "path":"/spec/containers/0/image",
+    "value":"new image"
+}]'
+```
+```
+kubectl create -f pod.yaml
+cat <<EOF | kubectl create -f -
+apiVersion: v1
+kind: Pod
+metadata:
+    name: nginx-pod
+spec:
+    containers:
+    - name: nginx
+      image: ngingx:latest
+EOF
+```
+```
+cat <<EOF | kubectl create -f -
+apiVersion: v1
+kind: Pod
+metadata:
+    name: nginx-pod
+spec:
+    containers:
+    - name: nginx
+      image: nginx:latest
+---
+apiVersion: v1
+kind: Pod
+metadata:
+    name: busybox
+spec:
+    containers:
+    - name: busybox
+      image: busybox
+      args:
+      - sleep
+      - "100"
+EOF
+```
+```
+kubectl run nginx --generator=run-pod/v1 --image=nginx -n <namespace>
+kubectl create -f pod.yaml -n <namespace>
+```
+```
+kubectl delete pod <pod>
+kubectl delete -f pod.yaml   # if pod was created from pod.yaml
+kubectl delete pod <pod> --grace-period=0 --force
+```
+```
+kubectl logs <pod>
+kubectl logs <pod> -c <container>
+kubectl logs -f <pod>        # read tail of logs
+kubectl logs -l <label_name>=<label_value>
+kubectl logs -l env=prod
+kubectl logs -l <label_name>=<label_value> -c <container>
+kubectl logs -f -l <label_name>=<label_value> --all-containers
+kubectl get pods --all-namespaces -o jsonpath='{range.items[*].status
+    .initContainerStatuses[*]}{.containerID}{"\n"}{end}' | cut -d/ - f3
+kubectl top pod <pod>
+kubectl top pod <pod> --containers
+```
+#### Deployments
+```
+kubectl run <deployment> --image=<image>
+kubectl create deployment <deployment> --image=<image>
+kubectl run <deployment> --image=<image> --replicas=<replicas> --port=<port>
+kubectl run nginx --image=nginx --replicas=2 --port=80
+kubectl run nginx --image=nginx --replicas=2 --port=80 --expose
+kubectl get deploy <deployment>
+kubectl get deployment <deployment> --watch
+kubectl get deployments.apps <deployment> --watch
+kubectl get deploy -n <namespace>
+kubectl get deploy --all-namespaces
+kubectl get deploy -A
+kubectl get deploy -o yaml
+kubectl get deploy -o wide
+kubectl set image deployment/nginx nginx=nginx:1.9.1
+kubectl set image deployment/backend api=image:v2
+kubectl scale --replicas=5 deployment/<deployment>
+kubectl scale --replicas=5 deploy/<deployment>
+kubectl run nginx --image=nginx --replicas=2 --port=80 --dry-run -o yaml
+kubectl apply -f deployment.yaml
+```
+```
+kubectl port-forward deployment <deployment> <localhost-port>:<deployment-port>
+kubectl port-forward pod <pod> <localhost-port>:<pod-port>
+kubectl port-forward redis 8090:6379
+kubectl port-forward pod <pod> <port>        # same port
+kubectl port-forward pod nginx 8000 9000     # listen on two port:port things
+kubectl port-forward pod <pod> :<pod-port>   # listen on random port
+kubectl port-forward pod nginx :80
+kubectl port-forward --address localhost,123.45.67.89 pod redis 8000:6379
+kubectl port-forward --address 0.0.0.0 pod <pod> <hosts-port>:<pod-port>
+```
+```
+kubectl edit deployment/<deployment>
+kubectl rollout undo deployment <deployment>
+kubectl rollout history deployment <deployment>
+kubectl rollout history deployment nginx
+kubectl rollout undo deployment nginx --to-revision=2
+kubectl rollout status deployment <deployment>
+kubectl rollout pause deployment <deployment>
+kubectl rollout resume deployment <deployment>
+```
+#### Namespaces
+```
+kubectl get namespaces
+kubectl get ns
+kubectl get namespace <namespace>
+kubectl describe namespace <namespace>
+kubectl create namespace <namespace>
+kubectl create -f namespace.yaml
+kubectl -n <namespace> delete pods,services --all
+kubectl delete namespace <namespace>
+kubectl delete -f namespace.yaml
+```
+```
+cat <<EOF | kubectl create -f -
+apiVersion: v1
+kind: Namespace
+metadata:
+    name: mynamespace
+EOF
+```
+#### Nodes
+```
+kubectl describe nodes
+kubectl get nodes
+kubectl get nodes <node>
+kubectl top node <node>
+kubectl get nodes -o jsonpath='{.items[*].status.addresses[?
+    {@.type=="ExternalIP"}].address}'
+kubectl describe nodes <node>
+JSONPATH='{range .items[*]}{@.metadata.name}:{range @.status.conditions[*]}
+    {@.type}={@.status}:{end}{end}' && kubectl get nodes 
+    -o jsonpath="$JSONPATH" | grep "Ready=True"
+kubectl cordon <node>     # mark node as unschedulable
+kubectl drain <node>      # "drain" a node for maintenance
+kubectl uncordon <node>   # mark node as schedulable
+```
+#### Clusters
+```
+kubectl cluster-info
+kubectl cluster-info dump
+kubectl cluster-info dump --output-directory=</file/path>
+kubectl diff -f ./my-manifest.yaml  # compare cluster state to next edited state
+kubectl get pods -A -o custom-columns='DATA:spec.containers[*].image'
+```
+#### Services
+```
+kubectl explain service
+kubectl create service clusterip myclusterip --tcp=5678:8080
+kubectl create service loadbalancer myloadbalancer --tcp=80
+kubectl describe service <service>
+kubectl edit service <service>
+KUBE_EDITOR="vim" edit service <service>
+kubectl delete service myclusterip
+kubectl delete svc myloadbalancer
+kubectl delete service myclusterip myloadbalancer
+
+```
+#### Service Accounts
+```
+kubectl get serviceaccounts
+kubectl get sa
+kubectl get serviceaccount <serviceaccount>
+kubectl create serviceaccount <serviceaccount>
+kubectl delete serviceaccount <serviceaccount>
+kubectl describe serviceaccount <serviceaccount>
+```
 ### Apache Kafka
 - Distributed stream processing
 - Kafka 'broker' listens on port 9092 for TCP connection by default
