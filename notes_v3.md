@@ -167,9 +167,8 @@ I might want to add a script to update packages...
 1. Add Anaconda to Path variable
     * Control Panel > System and Security > System > Advanced system settings 
     * Environment Variables > Path > Edit
-    * Add: C:\Users\Jake\Anaconda3\Scripts
-    * Add: C:\Users\Jake\Anaconda3
-    * Add: C:\Users\Jake\Anaconda3\Library\bin
+    * Add: %USERPROFILE%\AppData\Local\anaconda3
+    * Add: %USERPROFILE%\AppData\Local\anaconda3\condabin
 1. Undo Window's stupid default aliasing
     * Start > Manage App Execution Aliases > Uncheck python.exe and python3.exe
 1. Open CMD (we will be setting up using Windows' default terminal)
@@ -177,19 +176,19 @@ I might want to add a script to update packages...
 1. Create your Conda environment and install basic data science packages into it
     * Basic: `conda create -n env1 numpy pandas matplotlib seaborn scikit-learn`
     * `conda install --name env1 scipy statsmodels jupyter scikit-learn-intelex`
-1. Enable Windows CMD as a front for Conda: `conda init cmd.exe`
+1. Enable Windows CMD as a front for Conda: `conda init cmd.exe` and restart CMD
 1. Activate your environment: `conda activate env1`
 1. Install pip into your environment: `conda install pip`
 1. Now that your env is active, choose the additional packages you need
     * Classification: `conda install imbalanced-learn xgboost`
     * Webscraping: `conda install bs4 selenium`
         * Selenium requires downloading a browser driver, ex: "chromedriver.exe"
-    * Interactivity: `conda install dataclasses plotly flask django sqlite3`
-    * Big data: `conda install dask pyspark vaex`
+    * Interactivity: `conda install dataclasses plotly flask django`
+    * Big data: `conda install dask pyspark`
     * Natural Language Processing: `conda install nltk wordcloud`
         * Run `nltk.download(dataset_name)` to install a single required dataset
         * Required sets: 'stopwords' 'vader_lexicon' 'punkt' 'wordnet' 'omw-1.4'
-    * Network data: `pip install ipcalc nfstream dash dash_cytoscape`
+    * Network data: `pip install ipcalc nfstream dash dash_cytoscape vaex`
         * NFStream install: https://nfstream.org/docs/#installation-guide
     * Elasticsearch: `pip install elasticsearch elasticsearch-dsl`
     * Handling YAML: `pip install pyyaml ruamel.yaml`
@@ -200,7 +199,7 @@ I might want to add a script to update packages...
     * `conda install typing_extensions future six requests dataclasses`
 1. Install Keras and Tensorflow if you want
     * `conda install -c conda-forge keras`
-    * `conda install -c conda-forge tensorflow`
+    * `conda install tensorflow`
 1. Test package installation
     * Open CMD and enter `jupyter notebook`
     * Start up a new Python3 notebook
