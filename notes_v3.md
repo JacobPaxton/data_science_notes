@@ -2904,8 +2904,8 @@ a1 = np.random.randint(30_000,200_000,1_000)
 a2 = np.random.randint(1,11,1_000)
 a3 = np.random.choice(list("abcdefghijklmnopqrstuvwxyz"),1_000)
 df = pd.DataFrame({"salary":a1, "level":a2, "title":a3})
-with open("my.md", "w") as f:
-    f.write(df.to_markdown())
+# with open("my.md", "w") as f:
+#     f.write(df.to_markdown())
 styler = df.head(10).style\
     .format({"salary":"${:,.0f}", "title":str.upper})\
     .hide(axis="index")\
@@ -2959,7 +2959,8 @@ ax0.set_title("$Y_o$")
 ax0.axis([-2,10,-2,20])
 ax0.set_yticks(s**2)
 ax1.set_title("sup")
-ax1.set_xlabel("dawgs", rotation=20)           # "cats" isn't replaced... hmm...
+ax1.set_xlabel("dawgs", rotation=20, color="tab:blue")    
+ax1.tick_params(axis="y", labelcolor="tab:blue")
 sns.barplot(df, x="cats", y="squared", ax=ax0, color=sns.color_palette()[1])
 sns.barplot(df, x="cats", y="abs_x2", ax=ax1)
 fig.tight_layout()
@@ -2993,6 +2994,30 @@ plt.title("bar")
 plt.legend(shadow=True, loc="upper right")
 plt.text(0.8, 10, "hi")
 plt.show()
+```
+```
+# SEVERAL CHARTS IN ONE
+from mpl_toolkits.axes_grid1 import host_subplot
+from mpl_toolkits import axisartist
+import matplotlib.pyplot as plt
+host = host_subplot(111, axes_class=axisartist.Axes)  # create figure
+plt.subplots_adjust(right=0.75)                       # add rightside buffer
+par1 = host.twinx()                                   # parasite of figure
+par2 = host.twinx()                                   # parasite of figure
+par2.axis["left"] = par2.new_fixed_axis(loc="left", offset=(-60, 0))  # tick loc
+par1.axis["right"].toggle(all=True)                   # force ticks show right
+par2.axis["left"].toggle(all=True)                    # force ticks show left
+p1, = host.plot([0, 1, 2], [0, 1, 2], label="Density")
+p2, = par1.plot([0, 1, 2], [0, 3, 2], label="Temperature")
+p3, = par2.plot([0, 1, 2], [50, 30, 15], label="Velocity")
+host.set(xlim=(0, 2), ylim=(0, 2), xlabel="Dist", ylabel="Dens") # limit plot
+par1.set(ylim=(0, 4), ylabel="Temperature")                      # limit plot
+par2.set(ylim=(1, 65), ylabel="Velocity")                        # limit plot
+host.legend()
+host.axis["left"].label.set_color(p1.get_color())     # acqure, use color
+par1.axis["right"].label.set_color(p2.get_color())    # acqure, use color
+par2.axis["left"].label.set_color(p3.get_color())     # acqure, use color
+plt.show() 
 ```
 
 --------------------------------------------------------------------------------
@@ -4863,6 +4888,7 @@ C++ pointer manipulation is very fast, so C++ might play a role in development.
     * Command line: `python cool.py 99 "hello"`, cool1 = 99, cool2 - "hello"
 - Look up character in unicode with Python: `ord('?')`
 - Get character using its unicode "code point" in Python: `chr(63)`
+- Variables: `dir()` ---> `x = 100` ---> `dir()` ---> `del x` ---> `dir()`
 ### Strings
 - `"aaaaaa".replace("a","b",2)` only replaces first two matches
 - `"5 is %20d" % 5` allocates 20 spaces at the %, where 5 takes up the rightmost
