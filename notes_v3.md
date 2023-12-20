@@ -37,7 +37,6 @@ IV.   [Advanced Web Scraping         ](#advanced-web-scraping)
 1.    [Pandas Read-HTML              ](#pandas-read-html)
 1.    [Requests                      ](#requests)
 1.    [Selenium                      ](#selenium)
-1.    [Image Download                ](#image-download)
 
 V.    [Building a Database           ](#building-a-database)
 1.    [SQLite                        ](#sqlite)
@@ -223,12 +222,11 @@ I might want to add a script to update packages...
     * Add your email: `git config --global user.email "joeschmoe@gmail.com`
 1. Done!!! For now...
 ### Registry CMD Launch
-1. Windows + R > regedit > Computer\HKEY_CLASSES_ROOT\Directory\shell\cmd
-1. Right click on `Directory\Background\shell\cmd` folder on left nav pane
-    * Permissions > Advanced
-1. Owner Change > Type username (Jake) > Check Names > Ok
+1. Regedit > `Computer\HKEY_CLASSES_ROOT\Directory\Background\shell\cmd`
+1. Right click on the "cmd" folder > Permissions > Advanced
+1. Owner Change > Administrators > Check Names > Ok
     * Replace owner on subcontainers and objects > Apply 
-1. Add > Select a principal > Type username (Jake) > Check Names > Ok 
+1. Add > Select a principal > Administrators > Check Names > Ok 
     * Check "Full Control" > Ok > Replace all child.. > Ok > Yes > Ok
 1. Right click on HideBasedOnVelocityId (changing reg values now) 
     * Rename > rename to ShowBasedOnVelocityId
@@ -237,7 +235,7 @@ I might want to add a script to update packages...
 1. Open any folder > Shift + right click 
     * If "open Powershell window here" displays, then success!
 1. Right click on `Directory\Background\shell\cmd` folder on left nav pane
-    * Permissions > Advanced > Select user in window (Jake) > Remove 
+    * Permissions > Advanced > Select Administrators in window > Remove 
     * Check "Replace all child"... > Apply > Yes
 1. Owner Change > type trusted installer service NT SERVICE\TrustedInstaller 
     * Check Names > Ok 
@@ -258,10 +256,10 @@ I might want to add a script to update packages...
 - Install an env-contained pip instance: `conda install pip` -> `pip install ..`
 ### Env Launch Script
 ```
-cd C:\Users\Jake\Zen
+cd %USERPROFILE%\zen
 call activate mighty
-%SystemRoot%\explorer.exe "C:\Users\Jake\zen"
-code "" "C:\Users\Jake\zen" | exit
+%SystemRoot%\explorer.exe "%USERPROFILE%\zen"
+code "" "%USERPROFILE%\zen" | exit
 jupyter notebook
 ```
 
@@ -639,6 +637,7 @@ Capture is important and REGEX excels at this work.
 - `Hello,\s(\w+)!` -- *Alphanumerics between "Hello, " and "!" (greedy)*
     * "Hello, Sam!" -------------> ["Sam"]
     * "Hello, Sam!!!" -----------> ["Sam"] ("\w" only captures alphanumerics)
+    * "Hello, Sam Witwicky!!!": -> [] (must be continuous alphanumerics)
     * "Hello, 12345!" -----------> ["12345"]
 - `[a-zA-Z]+` -- *Alphabet characters in sequence*
     * "Hello, Sam!" -------------> ["Hello", "Sam"]
@@ -720,10 +719,10 @@ Capture is important and REGEX excels at this work.
 This is the rebel approach to data; not downloading it or registering for APIs.
 Three main methods: pd.read_html, requests/beautifulsoup, selenium/beautifulsoup
 - pd.read_html should be used to read HTML tables into dataframes
-- requests should be used to scrape pages that don't use Javascript
-- selenium should be used to scrape pages that use Javascript
-I should use different examples for each, and incorporate REGEX usage.
-The end state of all methods should be an initial dataframe pre-editing.
+- requests should be used to pull specific files like images, video, etc
+- selenium should be used to capture full page content
+- beautifulsoup will parse HTML soup from requests, selenium, or otherwise
+Draft an entity-relationship diagram first if crawling pages; save to dataframe
 ```
 
 --------------------------------------------------------------------------------
@@ -791,6 +790,9 @@ else:
 --------------------------------------------------------------------------------
 <!-- Needs work -->
 ## Selenium
+- Driving a browser and working with the browser's page content
+- This method is much more robust because it handles results of Javascript too
+    * Running GET commands gets content before Javascript is run (before loaded)
 - Use this method if you need to scrape the contents of a *dynamic* page
 - Selenium stores all loaded page elements, BeautifulSoup does the tag scraping
     * You have to drive the browser through actions; a bit complicated, but good
@@ -4875,6 +4877,7 @@ Python is my main language, so I'll just use the section to store odd snippets.
 R is an alternative to Python and used especially in academia (use is waning).
 C++ pointer manipulation is very fast, so C++ might play a role in development.
 ```
+- TODO: Add decorators like `@staticmethod` to Python classes
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
