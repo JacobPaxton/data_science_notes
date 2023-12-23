@@ -1029,14 +1029,14 @@ $ LANGUAGE plpgsql;
 
 
 <!-- 
-######                                                     #     #               
-#     #   ##   #####   ##   #####    ##    ####  ######    #     #  ####  ###### 
-#     #  #  #    #    #  #  #    #  #  #  #      #         #     # #      #      
-#     # #    #   #   #    # #####  #    #  ####  #####     #     #  ####  #####  
-#     # ######   #   ###### #    # ######      # #         #     #      # #      
-#     # #    #   #   #    # #    # #    # #    # #         #     # #    # #      
-######  #    #   #   #    # #####  #    #  ####  ######     #####   ####  ###### 
-                                                                                 
+######                                                     #     #             
+#     #   ##   #####   ##   #####    ##    ####  ######    #     #  ####  ######
+#     #  #  #    #    #  #  #    #  #  #  #      #         #     # #      #     
+#     # #    #   #   #    # #####  #    #  ####  #####     #     #  ####  #####
+#     # ######   #   ###### #    # ######      # #         #     #      # #     
+#     # #    #   #   #    # #    # #    # #    # #         #     # #    # #     
+######  #    #   #   #    # #####  #    #  ####  ######     #####   ####  ######
+                                                                                
 #     #                                         
 ##   ##   ##    ####  ##### ###### #####  #   # 
 # # # #  #  #  #        #   #      #    #  # #  
@@ -1044,7 +1044,6 @@ $ LANGUAGE plpgsql;
 #     # ######      #   #   #      #####    #   
 #     # #    # #    #   #   #      #   #    #   
 #     # #    #  ####    #   ###### #    #   #   
-                                                
 -->
 
 # Database Usage Mastery
@@ -1746,6 +1745,9 @@ s1 = df["hi"].progress_apply(lambda x: x * 100)
 df1 = df.progress_apply(lambda x: x[0] * x[1], axis=1)
 # CHECK MEMORY ALLOC FOR DF
 print(df.__sizeof__())
+# RESHAPE AN ARRAY (FAILS IF NOT POSSIBLE)
+array = np.array([1,2,3,4,5,6])  # 6x1 array
+array.reshape((2,3))             # 2x3 array
 ```
 ### Null Characterization
 ```
@@ -1930,6 +1932,7 @@ df.sort_values(by="cooks_dist", ascending=False)  # big values indicate weird
     * Transform features into uniform or normal dist; de-weighs outliers
     * Get ECDF line -> discretize to uniform dist -> plot on dist
     * Complex; if you really want your data to be normal, then use this
+- Not shown (yet): MaxAbsScaler, Normalizer
 ```
 import numpy as np
 import pandas as pd
@@ -2004,6 +2007,7 @@ df = df.drop(columns=highvif_cols)                    # drop cols with > 10 VIF
 ### Principal Component Analysis (PCA) Dimensionality Reduction
 - Reducing physical dataset size without significant loss of information
     * Use PCA if your dataset has a lot of features (many dozens, hundreds, etc)
+    * PCA also de-correlates features by its non-linear feature transformation
 - Principal components (PCs) are eigenvectors of the dataset's covariance matrix
     * Covariance: correlation, but in original units (not simply from -1 to +1)
     * Cov matrix: `cov_matrix = np.cov(df, rowvar=False)`
@@ -2021,38 +2025,36 @@ df = df.drop(columns=highvif_cols)                    # drop cols with > 10 VIF
     * EX1: Use 11 PCs when cumsum of 11 PCs (723 total PCs) explains 95% of info
     * EX2: Use 20 PCs when cumsum of 20 PCs (165 total PCs) explains 90% of info
 - The selected PCs are your dataset, reduced, while still retaining information
+- Real world example: plane flying along known flight path (fixed height/path)
+    * Variance is small in height/path, but huge in the plane's forward movement
+    * PCA will "identify" forward movement as containing significant information
 ```
-from sklearn.preprocessing import StandardScaler
-scaler = StandardScaler()
-std_df = scaler.fit_transform(df)
+# SAMPLE DATA FOR MODEL TESTING
+import numpy as np
+import pandas as pd
+from sklearn.datasets import make_classification as MC
+X, y = MC(n_samples=10_000, n_features=20, n_classes=2, 
+          n_informative=6, n_redundant=10, random_state=42)
+X, y = pd.DataFrame(X), pd.Series(y, name="target")
+X.columns = [str(col) for col in X.columns]
+from sklearn.model_selection import train_test_split as SPLIT
+X1, X_test, y1, y_test = SPLIT(X, y, test_size=0.2, random_state=42)
+X_train, X_val, y_train, y_val = SPLIT(X1, y1, test_size=0.25, random_state=42)
+# RUN PCA, PLOT CUMULATIVE EXPLAINED VARIANCE
 from sklearn.decomposition import PCA
-pca = PCA()
-print(pca.fit_transform(std_df))  # no more duplicate information
-print(pca.explained_variance_ratio_)  # each component's variance explanation
-print(pca.explained_variance_ratio_.cumsum())  # walking explained variance to 1
-# PLOT CUMSUM AGAINST NUMBER OF FEATURES WALKED TO SHOW ELBOW METHOD CHART THING
-```
-```
-from sklearn.preprocessing import StandardScaler
-from sklearn.decomposition import PCA
-from skelarn.pipeline import Pipeline
-pipe = Pipeline([
-    ("scaler", StandardScaler()),     # step 1
-    ("reducer", PCA())])              # step 2
-pc = pipe.fit_transform(num_df)
-print(pc[:,:2])
-df["PC 1"] = pc[:,0]
-df["PC 2"] = pc[:,1]
-sns.scatterplot(data=df, x="PC 1", y="PC 2", hue="cat_col", alpha=0.4)
-pipe = Pipeline([
-    ("scaler", StandardScaler()), 
-    ("reducer", PCA(n_components=3)),  # choose between 0 and 1 for PCA to lift!
-    ("classifier", RandomForestClassifier())])
-print(pipe["reducer"])
-pipe.fit(X_train, y_train)
-print(pipe["reducer"].explained_variance_ratio_)
-print(pipe["reducer"].explained_variance_ratio_.sum()) # current explained var
-print(pipe.score(X_test, y_test)) # hopefully we did well!!
+pca = PCA().fit(X_train)
+explained_variance_ratios = np.concatenate([[0], pca.explained_variance_ratio_])
+print("Explained variance ratios:\n", explained_variance_ratios)
+plt.plot(explained_variance_ratios.cumsum())
+plt.title("Cumulative Explained Variance")
+plt.xlabel("Component Count")
+plt.ylabel("Explained Variance")
+plt.grid()
+plt.show()
+# ELBOW METHOD: USE FIVE COMPONENTS, CUMSUM > 90% EXPLAINED VARIANCE
+pca5 = PCA(n_components=5)
+pca_df = pca5.fit_transform(X_train)
+components_df = pd.DataFrame(pca5.components_, columns=X_train.columns)
 ```
 
 --------------------------------------------------------------------------------
@@ -2102,13 +2104,13 @@ Popular clustering methods: K-Means, Hierarchical, and DBSCAN.
 <!-- Needs work -->
 ## Selecting Number of Clusters
 - Categorical columns should be ignored; we can use categories for filtering.
-- Principal Component Analysis (PCA)
 ### Goals of Clustering
 - Clustering to discover groupings
     * ANOVA test will show if clusters are significantly different
 - Clustering to attribute to groupings (multi-class)
 - Clustering to determine if in grouping (binary-class; filter train f/ cluster)
 - Clustering to add a new feature for modeling
+- Clustering to be able to match target (try crosstab of "cluster" and "target")
 ### Real World Examples of Clustering
 - Text: Document classification, summarization, topic modeling, recommendations
     * Hierarchical using Cosine Similarity
@@ -2116,33 +2118,6 @@ Popular clustering methods: K-Means, Hierarchical, and DBSCAN.
 - Marketing: Customer segmentation, market research
 - Anomaly Detection: Account takeover, security risk, fraud
 - Image Processing: Radiology, security
-```
-import numpy as np
-import pandas as pd
-from sklearn.preprocessing import StandardScaler
-from sklearn.decomposition import PCA
-np.random.seed(42)
-s = pd.Series(np.random.randint(-3, 4, size=1000))
-df = pd.DataFrame({'orig':s, 'neg':s*-1, 'squared':s**2, 'abs_x2':s.abs()*2})
-encoded_df = df.dropna(thresh=len(df.columns))
-encoded_df = df.reset_index(drop=True)
-scaler = StandardScaler().fit(encoded_df)
-scaled_df = scaler.transform(encoded_df)
-pca = PCA().fit(scaled_df)
-# PLOT CUMULATIVE EXPLAINED VARIANCE
-print("Explained variance ratio:\n", pca.explained_variance_ratio_)
-plt.plot(pca.explained_variance_ratio_.cumsum())
-plt.title("Cumulative Explained Variance")
-plt.xlabel("Component Count")
-plt.ylabel("Explained Variance")
-plt.grid()
-plt.show()
-# RE-APPLY PCA TO THE DATA WHILE SELECTING FOR NUMBER OF COMPONENTS TO RETAIN
-# ELBOW METHOD: IF 1 COMPONENT EXPLAINS NEARLY 100%, USE 1!!
-pca1 = PCA(n_components=1)
-pca_df = pca1.fit_transform(scaled_df)
-components_df = pd.DataFrame(pca1.components_, columns=encoded_df.columns)
-```
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
@@ -2164,9 +2139,11 @@ components_df = pd.DataFrame(pca1.components_, columns=encoded_df.columns)
 ```
 # t-SNE: EXPLORE POTENTIAL CLUSTERS FROM 3+ DIMENSIONS IN 2D PLOT
 tsne = TSNE(learning_rate=50)
-df["TSNE_x"] = tsne_features[:,0]
-df["TSNE_y"] = tsne_features[0,:]
-sns.scatterplot(x="TSNE_x", y="TSNE_y", hue="cat_col", data=complex_df)
+transformed = tsne.fit_transform(X_train)
+explore = X_train.copy(deep=True)
+explore["TSNE_x"] = transformed[:,0]
+explore["TSNE_y"] = transformed[:,1]
+sns.scatterplot(x="TSNE_x", y="TSNE_y", hue="cat_col", data=explore)
 plt.show()  # try different params on TSNE for different clustering!
 ```
 ### KMeans
@@ -2229,6 +2206,8 @@ plt.title("Centroids for features: \"0\", \"1\"")
 plt.show()
 ```
 ### Hierarchical (Agglomerative)
+- Clustering using dendrogram-plotted distances in hierarchy
+    * Merge point, y-axis height, is the distance between the two being merged
 - https://stackabuse.com/hierarchical-clustering-with-python-and-scikit-learn
     * Each record is a cluster; group clusters until only one cluster remains
     * Agglomerative moves closest two clusters into one cluster, repeatedly
@@ -2237,15 +2216,26 @@ plt.show()
     * Count of horizontal line's vertical intersections is the cluster count.
 - Divisive (not shown) is opposite of agglomerative: single cluster -> many
 ```
+# PLOT DENDROGRAM
+import matplotlib.pyplot as plt
+from scipy.cluster.hierarchy import linkage as lnk, dendrogram as dnd
+mergings = lnk(samples, method="ward")  # makes the hierarchy clusters
+dend = dnd(mergings, labels=country_names, leaf_rotation=90, leaf_font_size=6)
+plt.show()
+# CLUSTER USING HEIGHT FROM DENDROGRAM
+from scipy.cluster.hierarchy import fcluster
+height = 15
+labels = fcluster(mergings, height, criterion="distance")  # physical distance
+print(labels)  # array containing cluster labels
+pairs = pd.DataFrame({"labels":labels, "cat_col":cat_col})
+print(pairs.sort_values("labels"))   # close categories get clustered
+# CLUSTER USING NUMBER OF CLUSTERS TO HALT AT (DETERMINE BY DENDROGRAM)
 from sklearn.cluster import AgglomerativeClustering as AC
-import scipy.cluster.hierarchy as shc
-dend = shc.dendrogram(shc.linkage(data, method="ward"))
-cluster = AC(n_clusters=2, affinity="euclidian", linkage="ward")
-cluster.fit_predict(X_train)
-print(cluster.labels_)
-plt.scatter(
-    X_train[:,0], X_train[:,1], c=cluster.labels_, cmap="rainbow"
-)
+ac = AC(n_clusters=2, affinity="euclidian", linkage="ward")
+ac.fit_predict(X_train)
+print(ac.labels_)
+plt.scatter(x=X_train[:,0], y=X_train[:,1], c=ac.labels_, cmap="rainbow")
+plt.show()
 ```
 ### DBSCAN
 - DBSCAN: Overlaps of proximity boundaries; great at finding weird data shapes
@@ -2309,6 +2299,7 @@ The results of NLP can be used to identify keywords and sentiment.
 NLP's "bag of words" works nicely in conjunction with classification.
 ```
 - NEED: Bring in notes from https://github.com/lets-talk-codeup/github-guesser
+- NEED: Add PCA example for TruncatedSVD
 - Natural Language Toolkit (NLTK): https://www.nltk.org/index.html
 
 --------------------------------------------------------------------------------
@@ -2439,6 +2430,8 @@ print(scores)
 --------------------------------------------------------------------------------
 <!-- Needs work -->
 ## NLP for Prediction
+- NEED: Sparse matrices (bag of words) efficiently: `scipy.sparse.csr_matrix`
+    * Not compatible with PCA
 - NEED: Apply SelectKBest or RFE to select most-predictive words for outcomes
 - Count Vectorization: 
     * Each column is a word, each row is an record, each value is a **count**
@@ -2467,6 +2460,29 @@ tree.fit(bow, y_train)
 y_train_preds = tree.predict(bow)
 features = dict(zip(vectorizer.get_feature_names(), tree.feature_importances_))
 print(pd.Series(features).sort_values().tail(5))            # top-5 features
+```
+```
+from sklearn.decomposition import TruncatedSVD
+model = TruncatedSVD(n_components=3)
+model.fit(documents)  # documents is scipy csr_matrix
+transformed = model.transform(documents)
+# APPLY PCA HERE
+```
+```
+from sklearn.decomposition import NMF
+model = NMF(n_components=2)
+model.fit(samples)
+nmf_features = model.transform(samples)
+print(nmf_components_.shape)
+```
+```
+from sklearn.preprocessing import normalize
+norm_features = normalize(nmf_features)
+# if has index 23
+current_article = norm_features[23,:]  # "dog bites man" features
+similarities = norm_features.dot(current_articles)  # similarities to "dog bites man"
+print(similarities)  # cosine similarities
+print(similarities.nlargest())  # largest cosine similarities
 ```
 
 [[Return to Top]](#table-of-contents)
@@ -3334,6 +3350,28 @@ bc1 = BAGGER(base_estimator=tree, n_estimators=300, n_jobs=-1)
 # OUT OF BAG EVALUATION: DO BAGGING, BUT EACH HAS HOLD-OUT SET, EVAL, AVG ACROSS
 bc2 = BAGGER(base_estimator=tree, n_estimators=300, n_jobs=-1, oob_score=True)
 print(bc2.oob_score_)  # this is a cheap/effective way to do cross validation
+```
+```
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+from skelarn.pipeline import Pipeline
+pipe = Pipeline([
+    ("scaler", StandardScaler()),     # step 1
+    ("reducer", PCA())])              # step 2
+pc = pipe.fit_transform(num_df)
+print(pc[:,:2])
+df["PC 1"] = pc[:,0]
+df["PC 2"] = pc[:,1]
+sns.scatterplot(data=df, x="PC 1", y="PC 2", hue="cat_col", alpha=0.4)
+pipe = Pipeline([
+    ("scaler", StandardScaler()), 
+    ("reducer", PCA(n_components=3)),  # choose between 0 and 1 for PCA to lift!
+    ("classifier", RandomForestClassifier())])
+print(pipe["reducer"])
+pipe.fit(X_train, y_train)
+print(pipe["reducer"].explained_variance_ratio_)
+print(pipe["reducer"].explained_variance_ratio_.sum()) # current explained var
+print(pipe.score(X_test, y_test)) # hopefully we did well!!
 ```
 
 --------------------------------------------------------------------------------
