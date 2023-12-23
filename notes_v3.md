@@ -1208,7 +1208,7 @@ df = spark.read.csv('filepath', header=True, schema=schema_struct)
 df = df.join(df2, "joiner_col", "left").drop(df.joiner_col).drop(df2.joiner_col)
 # PRINT NULL COUNTS
 df.select(
-    [count(when(isnan(c) | col(c).isNull(), c)).alias(c) for c in df.columns]\
+    [count(when(isnan(c) | col(c).isNull(), c)).alias(c) for c in df.columns]
 ).show(vertical=True)
 # FILL, DROP NULLS
 df = df.na.fill(0, subset=['x', 'y']).na.drop()
@@ -1747,51 +1747,6 @@ df1 = df.progress_apply(lambda x: x[0] * x[1], axis=1)
 # CHECK MEMORY ALLOC FOR DF
 print(df.__sizeof__())
 ```
-### Null Pattern Driver Determination
-```
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-df = pd.DataFrame({"good1":[9,8,8,7,9,8]*15, "good2":["a","a","a","b","b"]*18, 
-    "hi":[None,1,2]*30, "yo":[None,None,1]*30, "sup":[1,2,3]*30, 
-    "hey":[1,None,2]*30, "hello":[None,None,1]*30})
-# NULL PATTERN HASHING
-gd = ["good1","good2"]  # known drivers of null patterns
-df["nullp"] = df.drop(columns=gd).isna().apply(lambda x: hash(tuple(x)), axis=1)
-patt_df = df.set_index(drive_cols).sort_index()
-# PATTERN HASH ASSESSMENT
-cap = {}
-for combo in patt_df.index.unique():
-    subset = patt_df.loc[combo]
-    p_cnt = len(subset["nullp"].unique())
-    p_df = subset.isna().drop_duplicates().reset_index(drop=True)
-    p_df.drop(columns="nullp", inplace=True)
-    cap[combo] = {"p_count":p_cnt, "p_df":p_df, "exact":[], "close":[]}
-    if p_cnt == 1:
-        continue
-    for col in subset.columns:
-        if col == "nullp": continue
-        valcount = len(subset[col].unique())
-        if valcount == 1: continue
-        values = subset[[col, "nullp"]].value_counts()
-        if len(values) == p_cnt:
-            cap[combo]["exact"].append(col)
-        elif len(values) in [p_cnt + 1, p_cnt + 2]:
-            cap[combo]["close"].append(col)
-# PRINT PATTERN HASH ASSESSMENT RESULTS (INSIDE EXPANDABLE TEXT)
-onepatts = [k for k in cap.keys() if cap[k]["p_count"] == 1]
-regulars = [k for k in cap.keys() if k not in onepatts]
-dets = "<details>x</details>"
-print("-"*20, "ONE NULL PATTERN (click each!)", "-"*20)
-for p in sorted(onepatts):
-    x = f"{cap[p]['p_df'].to_html()}<summary><b>- {p}</b></summary>"
-    display(HTML(dets.replace("x",x)))
-print("\n" + "-"*20, "NULL PATTERNS (click each!)", "-"*20)
-for p in sorted(regulars):
-    x = f"DRIVERS: {cap[p]['exact']}<br>POTENTIAL: {cap[p]['close']}"
-    x += f"{cap[p]['p_df'].to_html()}<summary><b>- {p}</b></summary>"
-    display(HTML(dets.replace("x",x)))
-```
 ### Null Characterization
 ```
 import numpy as np
@@ -1848,6 +1803,51 @@ msno.headmap(df)
 plt.figure(3)
 msno.dendrogram(df)
 plt.show()
+```
+### Null Pattern Driver Determination
+```
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+df = pd.DataFrame({"good1":[9,8,8,7,9,8]*15, "good2":["a","a","a","b","b"]*18, 
+    "hi":[None,1,2]*30, "yo":[None,None,1]*30, "sup":[1,2,3]*30, 
+    "hey":[1,None,2]*30, "hello":[None,None,1]*30})
+# NULL PATTERN HASHING
+gd = ["good1","good2"]  # known drivers of null patterns
+df["nullp"] = df.drop(columns=gd).isna().apply(lambda x: hash(tuple(x)), axis=1)
+patt_df = df.set_index(drive_cols).sort_index()
+# PATTERN HASH ASSESSMENT
+cap = {}
+for combo in patt_df.index.unique():
+    subset = patt_df.loc[combo]
+    p_cnt = len(subset["nullp"].unique())
+    p_df = subset.isna().drop_duplicates().reset_index(drop=True)
+    p_df.drop(columns="nullp", inplace=True)
+    cap[combo] = {"p_count":p_cnt, "p_df":p_df, "exact":[], "close":[]}
+    if p_cnt == 1:
+        continue
+    for col in subset.columns:
+        if col == "nullp": continue
+        valcount = len(subset[col].unique())
+        if valcount == 1: continue
+        values = subset[[col, "nullp"]].value_counts()
+        if len(values) == p_cnt:
+            cap[combo]["exact"].append(col)
+        elif len(values) in [p_cnt + 1, p_cnt + 2]:
+            cap[combo]["close"].append(col)
+# PRINT PATTERN HASH ASSESSMENT RESULTS (INSIDE EXPANDABLE TEXT)
+onepatts = [k for k in cap.keys() if cap[k]["p_count"] == 1]
+regulars = [k for k in cap.keys() if k not in onepatts]
+dets = "<details>x</details>"
+print("-"*20, "ONE NULL PATTERN (click each!)", "-"*20)
+for p in sorted(onepatts):
+    x = f"{cap[p]['p_df'].to_html()}<summary><b>- {p}</b></summary>"
+    display(HTML(dets.replace("x",x)))
+print("\n" + "-"*20, "NULL PATTERNS (click each!)", "-"*20)
+for p in sorted(regulars):
+    x = f"DRIVERS: {cap[p]['exact']}<br>POTENTIAL: {cap[p]['close']}"
+    x += f"{cap[p]['p_df'].to_html()}<summary><b>- {p}</b></summary>"
+    display(HTML(dets.replace("x",x)))
 ```
 ### Setting Up for Exploration
 ```
@@ -1974,29 +1974,53 @@ def resampler(X_train, y_train):
     return X_train_res, y_train_res    # return resampled train data
 ```
 ### Feature Reduction
-- t-SNE: exaggerate 2d distances after looking at multi-dimensional differences
-    * result: observations that are similar will be close to one another.
-    * `from sklearn.manifold import TSNE` - `m = TSNE(learning_rate=50)`
-    * `tsne_features = m.fit_transform(df_numeric)`
-    * `df["x"] = tsne_features[:,0]`, `df["y"] = tsne_features[:,1]`
-    * `sns.scatterplot(x="x", y="y", hue="cat_col", data=df)`, `plt.show()`
 - Get rid of features without variance (ex: only one unique value)
 - Get rid of features with high null count
 - Get rid of features that correlate with another feature (multicollinearity)
 - Select features using linreg coefficients (furthest values from zero)
-- Select features using RFE: `from sklearn.feature_selection import RFE`
-    * `rfe = RFE(estimator=RandomForestClassifier(), n_features_to_select=6)`
-        * `estimator=GradientBoostingRegressor()`
-        * `step=5`
-    * try out `verbose=1` to show what's going on
-    * quick check: `print(accuracy_score(y_test, rfe.predict(X_test)))`
+- Select features using SelectKBeast or Recursive Feature Engineering
 - Can do feature reduction with LASSO regularization (increases bias/underfit)
     * `LassoCV()` does cross-validation to tune regularization to best one
     * `lcv = LassoCV()`, `lcv.fit(X_train, y_train)`, `lcvmask = lcv.coef_ != 0`
     * use val of `sum(lcvmask)` to set `n_features_to_select` in RFE
 - `votes = np.sum([lcvmask, rfmask, gbmask], axis=0)`
     * `mask = votes >= 2` -> `reduced_X = x.loc[:,mask]`
+```
+orig_df = df.copy(deep=True)    # expensive copy; you might not want to use this
+# STANDARD FEATURE REDUCTION: NUNIQUE, NULLS
+col_nonnull = 0.9           # each column that is at least {value*100}% non-null
+row_nonnull = 0.9           # each row that is at least {value*100}% non-null
+df = df[[col for col in df if df[col].nunique() > 1]]   # cols w/ 2+ unique vals
+df = df.dropna(axis=1, thresh=len(df) * col_nonnull)           # col null thresh
+df = df.dropna(axis=0, thresh=len(df.columns) * row_nonnull)   # row null thresh
+# VARIANCE INFLATION FACTOR (MULTICOLLINEARITY REDUCTION)
+vif = 10
+from pandas.api.types import is_numeric_dtype as ISNUMERIC
+from statsmodels.stats.outliers_influence import variance_inflation_factor as VF
+temp = df[[col for col in df if ISNUMERIC(df[col])]]  # VIF needs numerical cols
+highvif_cols = [col for (i, col) in enumerate(temp) if VF(temp.values, i) > vif]
+df = df.drop(columns=highvif_cols)                    # drop cols with > 10 VIF
+```
 ### Principal Component Analysis (PCA) Dimensionality Reduction
+- Reducing physical dataset size without significant loss of information
+    * Use PCA if your dataset has a lot of features (many dozens, hundreds, etc)
+- Principal components (PCs) are eigenvectors of the dataset's covariance matrix
+    * Covariance: correlation, but in original units (not simply from -1 to +1)
+    * Cov matrix: `cov_matrix = np.cov(df, rowvar=False)`
+        * 2D: [[COVxx,COVxy],[COVxy,COVyy]], a 2x2 matrix; 3D is 3x3 matrix
+    * Eigenvectors/eigenvalues: `eigs = np.linalg.eig(cov_matrix, rowvar=False)`
+- Order PCs highest to lowest by their associated eigenvalue (their variance)
+    * Solve for lambda: `determinant(cov_matrix_2d - lambda[[1,0],[0,1]]) = 0`
+        * `D([[7,3],[3,-1]])`->`(7 - y)*(-1 - y) - (3 - 0)*(3 - 0)`->`y=8, y=-2`
+        * 3D EX: `determinant(cov_matrix_3d - lambda[[1,0,0],[0,1,0],[0,0,1]])`
+    * Calculate/order PCs: `pca = sklearn.decomposition.PCA().fit_transform(df)`
+- Calculate cumulative sum of explained variance ratio for descending-order PCs
+    * PC explained variance ratio: `PC_eigenvalue / total_variance`; between 0-1
+- Select PCs by setting a cutoff threshold for this cumulative sum
+    * Plot cumulative sum of PC explained variance ratios against count of PCs
+    * EX1: Use 11 PCs when cumsum of 11 PCs (723 total PCs) explains 95% of info
+    * EX2: Use 20 PCs when cumsum of 20 PCs (165 total PCs) explains 90% of info
+- The selected PCs are your dataset, reduced, while still retaining information
 ```
 from sklearn.preprocessing import StandardScaler
 scaler = StandardScaler()
@@ -2133,67 +2157,76 @@ components_df = pd.DataFrame(pca1.components_, columns=encoded_df.columns)
 - Build, fit, predict using the technique
 - Use scatterplots to visually-check results
 - Use ANOVA to test clusters statistically
+### t-SNE
+- Visualize multidimensional clustering in a 2D (default) or 3D plot
+- Stochastically modifies the dataset to spread tight data, condense sparse data
+- Will sequence differently with new data... not useful for preparation/modeling
+```
+# t-SNE: EXPLORE POTENTIAL CLUSTERS FROM 3+ DIMENSIONS IN 2D PLOT
+tsne = TSNE(learning_rate=50)
+df["TSNE_x"] = tsne_features[:,0]
+df["TSNE_y"] = tsne_features[0,:]
+sns.scatterplot(x="TSNE_x", y="TSNE_y", hue="cat_col", data=complex_df)
+plt.show()  # try different params on TSNE for different clustering!
+```
 ### KMeans
 - KMeans: Use euclidian distances, select cluster count subjectively
-    * Domain knowledge (3 types), exploration (looks like 3), intertia (elbow)
+- Domain knowledge ("3 types"), exploration ("looks like 3"), intertia (elbow)
+    * Inertia: `sum([distance(x,center) ** 2 for x in cluster])`
 ```
 from sklearnex import patch_sklearn
 patch_sklearn()
-from sklearn.cluster import kmeans
-min_clusters = 2
-max_clusters = 10
-kmeans_dict = {}
-for i in np.arange(min_clusters, max_clusters + 1, 2):
-    print("Cluster count:", i)
-    print("Working... may take some time...")
-    # run k-means clustering on the data and...
-    kmeans = KMeans(n_clusters=i, random_state=42)
-    kmeans.fit(pca_df)
-    print("Done fitting!")
-    clusters = kmeans.predict(pca_df)  # compute avg within-cluster distances
-    print("Inertia (less is better):", kmeans.inertia_)
-    kmeans_dict[f"kmeans{i}"] = (kmeans, clusters, kmeans.inertia_)
-    print("Done with", i, "clusters!")
-# INVESTIGATE THE CHANGE IN WITHIN-CLUSTER DISTANCE ACROSS NUMBER OF CLUSTERS
-plt.plot([kmeans_dict[f"kmeans{i}"][2] for i in np.arange(1,17,3)])
-plt.xticks((0,1,2,3,4,5), ("1","4","7","10","13","16"))
+# SAMPLE DATA FOR MODEL TESTING
+from sklearn.datasets import make_classification as MC
+X, y = MC(n_samples=10_000, n_features=20, n_classes=2, 
+          n_informative=6, n_redundant=10, random_state=42)
+X, y = pd.DataFrame(X), pd.Series(y, name="target")
+X.columns = [str(col) for col in X.columns]
+from sklearn.model_selection import train_test_split as SPLIT
+X1, X_test, y1, y_test = SPLIT(X, y, test_size=0.2, random_state=42)
+X_train, X_val, y_train, y_val = SPLIT(X1, y1, test_size=0.25, random_state=42)
+best = ["0", "1", "2", "3", "4", "5", "6", "7", "10", "13", "17"]
+X_train, X_val, X_test = X_train[best], X_val[best], X_test[best]
+# PERFORM K-MEANS CLUSTERING
+from sklearn.cluster import KMeans
+min_clusters = 3
+max_clusters = 60
+step = 3
+clustercount_selection = np.arange(min_clusters, max_clusters + 1, step)
+results = {}
+for i in clustercount_selection:
+    print(f"Working on cluster count: {i} (may take some time!)", end="\r")
+    kmeans = KMeans(n_clusters=i, random_state=42).fit(X_train)
+    clusters = kmeans.predict(X_train)
+    results[f"kmeans{i}"] = (kmeans, clusters, kmeans.inertia_)
+    print(f"{i} clusters inertia: {kmeans.inertia_}" + " "*100)
+# SCREE PLOT: FIND THE CLUSTER COUNT AT THE "ELBOW"
+plt.plot([results[f"kmeans{i}"][2] for i in clustercount_selection])
+plt.xticks(range(len(clustercount_selection)), clustercount_selection)
 plt.title("Elbow for Cluster Count Selection")
 plt.xlabel("Cluster count")
-plt.ylabel("Inertia (10,000,000s)")
+plt.ylabel("Inertia")
+plt.grid()
 plt.show()
 ```
 ```
-selected_count = 7  # selected from elbow method
-selected_kmeans = kmeans_dict[f"kmeans{selected_count}"][0]
-clusters = selected_kmeans.predict(pca_df)
-encoded_df["cluster"] = clusters
-preds_vc = encoded_df["cluster"].value_counts(normalize=True, sort=False)\
-    .sort_index()
-preds_vc.plot.bar()
-plt.title("Cluster Assignment Proportions")
-plt.xlabel("Cluster")
-plt.ylabel("Proportion")
+# SELECT CLUSTER COUNT FROM SCREE PLOT AND GET CLUSTER ASSIGNMENTS
+selected_count = 15  # selected from elbow method
+kmeans, clusterings, inertia = results[f"kmeans{selected_count}"]
+X_train_c = pd.Series(clusterings, name="cluster")
+vc = X_train_c.value_counts(normalize=True).cumsum()
+vc.plot.bar(xlabel="Cluster", ylabel="Proportion", grid=True)
+plt.title("Cumulative Sum of Cluster Assignment Proportions")
 plt.show()
-if len(preds_vc) >= 2:
-    clus0 = encoded_df[encoded_df["cluster"] == preds_vc.index[0]]
-    clus1 = encoded_df[encoded_df["cluster"] == preds_vc.index[1]]
-    for col in encoded_df:
-        print("-"*20, "Column:", col, "-"*20)
-        print("-"*10, "Cluster", preds_vc.index[0], "\n")
-        print(clus0[col].value_counts(normalize=True))
-        print("-"*10, "Cluster", preds_vc.index[1], "\n")
-        print(clus1[col].value_counts(normalize=True))
 ```
 ```
-kmeans = Kmeans(n_clusters=3, random_state=123).fit(X_train_scaled)
-train["cluster"] = kmeans.predict(X_train_scaled)
-print(kmeans.cluster_centers_)
-print(kmeans.labels_)
-print(kmenas.inertia_)  # sum of each ((point-to-centerpoint distance) ** 2)
-centroids = df.groupby("cluster")["col1","col2","col3"].mean()
-centroids.plot.scatter(
-    x="col1", y="col2", marker="x", s=1000, ax=plt.gca(), label="centroid"
-)
+# PLOT CENTROIDS (NOT VERY USEFUL IN 4+ DIMENSIONS)
+with_clusters = pd.concat([X_train, X_train_c], axis=1)
+centroids = with_clusters.groupby(["cluster"]).mean()
+sns.scatterplot(x=X_train["0"], y=X_train["1"], hue=X_train_c, alpha=0.1)
+centroids.plot.scatter(x="0", y="1", marker="x", c="red", s=100, ax=plt.gca())
+plt.title("Centroids for features: \"0\", \"1\"")
+plt.show()
 ```
 ### Hierarchical (Agglomerative)
 - https://stackabuse.com/hierarchical-clustering-with-python-and-scikit-learn
@@ -3057,14 +3090,14 @@ dateobject.value = date(2023,5,20)
 
 
 
-<!-- 
- ####                                                                             
-#    # #       ##    ####   ####  # ###### #  ####    ##   ##### #  ####  #    # 
-#      #      #  #  #      #      # #      # #    #  #  #    #   # #    # ##   # 
-#      #     #    #  ####   ####  # #####  # #      #    #   #   # #    # # #  # 
-#      #     ######      #      # # #      # #      ######   #   # #    # #  # # 
-#    # #     #    # #    # #    # # #      # #    # #    #   #   # #    # #   ## 
- ####  ##### #    #  ####   ####  # #      #  ####  #    #   #   #  ####  #    # 
+<!--
+ ####
+#    # #       ##    ####   ####  # ###### #  ####    ##   ##### #  ####  #    #
+#      #      #  #  #      #      # #      # #    #  #  #    #   # #    # ##   #
+#      #     #    #  ####   ####  # #####  # #      #    #   #   # #    # # #  #
+#      #     ######      #      # # #      # #      ######   #   # #    # #  # #
+#    # #     #    # #    # #    # # #      # #    # #    #   #   # #    # #   ##
+ ####  ##### #    #  ####   ####  # #      #  ####  #    #   #   #  ####  #    #
 -->
 
 # Classification
@@ -3082,50 +3115,45 @@ Test (hold-out set) is used for checking the best model's performance.
 ## Features for Classification
 - Convert continuous/ordinal columns to categorical ones, ex: binning
     * Can use histograms to determine these groupings
-- Use chi-square tests to see which features are related to the target
+- Use chi-square tests to find which categorical features are related to target
     * Can use heatmaps/mosaic plots to visualize these crosstabs
 - One-hot encode all selected columns for modeling
-## Features for Classification
+- Features that correlate with other features contribute to multicollinearity
+    * Multicollinearity reduces model performance
+    * Reduce multicollinearity by thresholding variance inflation factor (VIF)
 - You can always train a model first and evaluate which features were best!
-```
-def feature_plot(importances, X_train, y_train):
-    # DISPLAY THE FIVE MOST IMPORTANT FEATURES
-    indices = np.argsort(importances)[::-1]
-    columns = X_train.columns.values[indices[:5]]
-    values = importances[indices][:5]
-    fig = plt.figure(figsize = (9,5))
-    plt.title("Top5 Most Predictive Features, Normalized Weights", fontsize=16)
-    plt.bar(np.arange(5), values, width=0.6, align="center", color='#00A000',
-            label="Feature Weight")
-    plt.bar(np.arange(5) - 0.3, np.cumsum(values), width=0.2, align="center", 
-            color='#00A0A0', label="Cumulative Feature Weight")
-    plt.xticks(np.arange(5), columns, rotation=30)
-    plt.xlim((-0.5, 4.5))
-    plt.ylabel("Weight", fontsize = 12)
-    plt.xlabel("Feature", fontsize = 12)
-    plt.legend(loc = 'upper center')
-    plt.tight_layout()
-    plt.show() 
-feature_plot(clf.feature_importances_, X_train, y_train) 
-```
 ```
 from sklearnex import patch_sklearn
 patch_sklearn()
-# SELECTKBEST: FAST, NOT COMPREHENSIVE (GREAT FOR MODEL COMPARISON)
-from sklearn.feature_selection import SelectKBest
-kbest = SelectKBest("f_regression", k=3).fit(X_train, y_train)  # top 3 features
+# SAMPLE DATA FOR MODEL TESTING
+from sklearn.datasets import make_classification as MC
+X, y = MC(n_samples=10_000, n_features=20, n_classes=2, 
+          n_informative=6, n_redundant=10, random_state=42)
+X, y = pd.DataFrame(X), pd.Series(y, name="target")
+X.columns = [str(col) for col in X.columns]
+from sklearn.model_selection import train_test_split as SPLIT
+X1, X_test, y1, y_test = SPLIT(X, y, test_size=0.2, random_state=42)
+X_train, X_val, y_train, y_val = SPLIT(X1, y1, test_size=0.25, random_state=42)
+# DETERMINE "K-BEST" COUNT VIA ALGORITHM (IF NEEDED)
+from sklearn.feature_selection import RFECV
+from sklearn.tree import DecisionTreeClassifier as TREE
+rfecv = RFECV(estimator=TREE(random_state=42), cv=5, scoring='accuracy')
+rfecv.fit(X_train, y_train)
+k = rfecv.n_features_
+# SELECTKBEST: EVALUATE ESTIMATOR ONCE, KEEP BEST {K} FEATURES
+from sklearn.feature_selection import SelectKBest, f_classif
+kbest = SelectKBest(score_func=f_classif, k=k).fit(X_train, y_train)
 p_values = kbest.pvalues_
-chosen_cols = X_train.columns[kbest.get_support()]
-X_train_kbest = X_train[chosen_cols]  # select top 3 features into X_train_kbest
-X_val_kbest, X_test_kbest = X_val[chosen_cols], X_test[chosen_cols]
-# RECURSIVE FEATURE ENGINEERING (RFE): SLOW, COMPREHENSIVE (SINGLE MODEL)
+best = X_train.columns[kbest.get_support()]
+X_train_kb, X_val_kb, X_test_kb = X_train[best], X_val[best], X_test[best]
+# RECURSIVE FEATURE ENGINEERING (RFE): ITERATE EVALS, REMOVE FEATURES UNTIL {K}
 from sklearn.feature_selection import RFE
-from sklearn.ensemble import RandomForestClassifier as RF
-rfe = RFE(estimator=RF(), n_features_to_select=3).fit(X_train, y_train)
-chosen_cols = X_train.columns[rfe.get_support()]
-not_sure = pd.Series(rfe.ranking_, index=X_train.columns)
-X_train_RFE = X_train[chosen_cols]  # select top 3 features into X_train_RFE
-X_val_RFE, X_test_RFE = X_val[chosen_cols], X_test[chosen_cols]
+from sklearn.tree import DecisionTreeClassifier as TREE
+rfe = RFE(estimator=TREE(random_state=42), n_features_to_select=k, verbose=1)
+rfe.fit(X_train, y_train)
+best = X_train.columns[rfe.get_support()]
+col_rankings = pd.Series(rfe.ranking_, index=X_train.columns)
+X_train_RFE, X_val_RFE, X_test_RFE = X_train[best], X_val[best], X_test[best]
 ```
 
 --------------------------------------------------------------------------------
@@ -3167,7 +3195,7 @@ X_val_RFE, X_test_RFE = X_val[chosen_cols], X_test[chosen_cols]
     * World-class performance but near-impossible to explain to stakeholders
 - **One Vs Rest**
     * Breakdown of multiclass problem into several binary class problems
-- Not shown: Bagging, AdaBoost, SGDC, SVM
+- Not shown: SGDC, SVM
 ```
 import pandas as pd
 from sklearn.tree import DecisionTreeClassifier as TREE
@@ -3210,16 +3238,18 @@ def mode_bl(y_train, y_out):
 def tree(X_train, y_train, X_out, y_out):
     """Creates decision trees with max_depth 1,2,3,5,10 and random_state=42"""
     for depth in [1,2,3,5,10]:  # decision node depth
+        model_name = f"tree_maxdepth{depth}"
         tree = TREE(max_depth=i,random_state=42).fit(X_train,y_train.in_actuals)
-        y_train['tree_maxdepth' + str(depth)] = tree.predict(X_train)
-        y_out['tree_maxdepth' + str(depth)] = tree.predict(X_out)
+        y_train[model_name] = tree.predict(X_train)
+        y_out[model_name] = tree.predict(X_out)
     return y_train, y_out    # return DATAFRAMES with new preds columns
 def randomforest(X_train, y_train, X_out, y_out):
     """Creates random forests with max_depth 1,2,3,5,10 and random_state=42"""
     for i in [1,2,3,5,10]:
+        model_name = f"rf_depth{i}"
         rf = RF(max_depth=i, random_state=42).fit(X_train, y_train.in_actuals)
-        y_train['rf_depth' + str(i)] = rf.predict(X_train)
-        y_out['rf_depth' + str(i)] = rf.predict(X_out)
+        y_train[model_name] = rf.predict(X_train)
+        y_out[model_name] = rf.predict(X_out)
     return y_train, y_out    # return DATAFRAMES with new preds columns
 def logisticregression(X_train, y_train, X_out, y_out):
     """Creates logistic regressions with random_state=42"""
@@ -3230,16 +3260,18 @@ def logisticregression(X_train, y_train, X_out, y_out):
 def naivebayes(X_train, y_train, X_out, y_out):
     """Creates Naive-Bayes with var_smoothing of .001, .01, 10, 100"""
     for smooth_level in [.00001, .0001, .001, .01, 10, 100]:
+        model_name = f"nb_vsmooth{smooth_level}"
         nb = NB(var_smoothing=smooth_level).fit(X_train, y_train.in_actuals)
-        y_train['nb_vsmooth' + str(smooth_level)] = nb.predict(X_train)
-        y_out['nb_vsmooth' + str(smooth_level)] = nb.predict(X_out)
+        y_train[model_name] = nb.predict(X_train)
+        y_out[model_name] = nb.predict(X_out)
     return y_train, y_out    # return DATAFRAMES with new preds columns
 def knearestneighbors(X_train, y_train, X_out, y_out):
     """Create KNNs with neighbor counts of 3, 5, 10, 25, 75"""
     for neighbor_count in [3,5,10,25,75]:
+        model_name = f"knn_n{neighbor_count}"
         knn = KNN(n_neighbors=neighbor_count).fit(X_train, y_train.in_actuals)
-        y_train['knn_n' + str(neighbor_count)] = knn.predict(X_train)
-        y_out['knn_n' + str(neighbor_count)] = knn.predict(X_out)
+        y_train[model_name] = knn.predict(X_train)
+        y_out[model_name] = knn.predict(X_out)
     return y_train, y_out    # return DATAFRAMES with new preds columns
 def adaboostclass(X_train, y_train, X_out, y_out):
     """Create AdaBoost classifier models with random_state=42"""
@@ -3259,9 +3291,10 @@ def gradboostclass(X_train, y_train, X_out, y_out):
 def xgboosts(X_train, y_train, X_out, y_out):
     """Create XGBoost models with max_depth 3,5,7,9 and random_state=42"""
     for i in [3,5,7,9]:
+        model_name = f"xgb_maxdepth{i}"
         xgb = XGB(max_depth=i, random_state=42).fit(X_train, y_train.in_actuals)
-        y_train['xgb_maxdepth' + str(i)] = xgb.predict(X_train)
-        y_out['xgb_maxdepth' + str(i)] = xgb.predict(X_out)
+        y_train[model_name] = xgb.predict(X_train)
+        y_out[model_name] = xgb.predict(X_out)
     return y_train, y_out    # return DATAFRAMES with new preds columns
 ```
 ```
@@ -3515,28 +3548,43 @@ Test (hold-out set) is used for checking the best model's performance.
 ## Features for Regression
 - Keep features that highly-correlate with the target: `df.corr()`
     * Interactions between features can have better correlations; `s1 * s2`
-- Features that correlate >80% with other features are candidates for removal
-    * This reduces multicolinearity, which will improve model performance
+- Features that correlate with other features contribute to multicollinearity
+    * Multicollinearity reduces model performance
+    * Reduce multicollinearity by thresholding variance inflation factor (VIF)
 - Scatterplots can show outliers; consider removing outlier datapoints
     * Removing outliers can improve model performance
+- You can always train a model first and evaluate which features were best!
 ```
 from sklearnex import patch_sklearn
 patch_sklearn()
-# SELECTKBEST: FAST, NOT COMPREHENSIVE (GREAT FOR MODEL COMPARISON)
-from sklearn.feature_selection import SelectKBest
-kbest = SelectKBest("f_regression", k=3).fit(X_train, y_train)  # top 3 features
+# SAMPLE DATA FOR MODEL TESTING
+from sklearn.datasets import make_regression as MR
+X, y = MR(n_samples=10_000, n_features=20, n_informative=6, random_state=0)
+X, y = pd.DataFrame(X), pd.Series(y, name="target")
+X.columns = [str(col) for col in X.columns]
+from sklearn.model_selection import train_test_split as SPLIT
+X1, X_test, y1, y_test = SPLIT(X, y, test_size=0.2, random_state=42)
+X_train, X_val, y_train, y_val = SPLIT(X1, y1, test_size=0.25, random_state=42)
+# DETERMINE "K-BEST" COUNT VIA ALGORITHM (IF NEEDED)
+from sklearn.feature_selection import RFECV
+from sklearn.linear_model import LinearRegression as OLS
+rfecv = RFECV(estimator=OLS(), cv=5, scoring='neg_root_mean_squared_error')
+rfecv.fit(X_train, y_train)
+k = rfecv.n_features_
+# SELECTKBEST: EVALUATE ESTIMATOR ONCE, KEEP {K} FEATURES
+from sklearn.feature_selection import SelectKBest, f_regression
+kbest = SelectKBest(score_func=f_regression, k=k).fit(X_train, y_train)
 p_values = kbest.pvalues_
-chosen_cols = X_train.columns[kbest.get_support()]
-X_train_kbest = X_train[chosen_cols]  # select top 3 features into X_train_kbest
-X_val_kbest, X_test_kbest = X_val[chosen_cols], X_test[chosen_cols]
-# RECURSIVE FEATURE ENGINEERING (RFE): SLOW, COMPREHENSIVE (SINGLE MODEL)
+best = X_train.columns[kbest.get_support()]
+X_train_kb, X_val_kb, X_test_kb = X_train[best], X_val[best], X_test[best]
+# RECURSIVE FEATURE ENGINEERING (RFE): ITERATE EVALS, REMOVE FEATURES UNTIL {K}
 from sklearn.feature_selection import RFE
-from sklearn.linear_model import LinearRegression as LR
-rfe = RFE(estimator=LR(), n_features_to_select=3).fit(X_train, y_train)
-chosen_cols = X_train.columns[rfe.get_support()]
-not_sure = pd.Series(rfe.ranking_, index=X_train.columns)
-X_train_RFE = X_train[chosen_cols]  # select top 3 features into X_train_RFE
-X_val_RFE, X_test_RFE = X_val[chosen_cols], X_test[chosen_cols]
+from sklearn.linear_model import LinearRegression as OLS
+rfe = RFE(estimator=OLS(), n_features_to_select=k, verbose=1)
+rfe.fit(X_train, y_train)
+best = X_train.columns[rfe.get_support()]
+col_rankings = pd.Series(rfe.ranking_, index=X_train.columns)
+X_train_RFE, X_val_RFE, X_test_RFE = X_train[best], X_val[best], X_test[best]
 ```
 
 --------------------------------------------------------------------------------
@@ -3546,6 +3594,7 @@ X_val_RFE, X_test_RFE = X_val[chosen_cols], X_test[chosen_cols]
 - The regression line is indicated by the regression equation
     * A regression equation looks like this: `y = a1x1 + a2x2 + a3x3 + ...`
     * Each independent variable (each feature) has a "coefficient" (line slope)
+    * Regression equations (each is a line's equation) have an intercept
     * Feature coefficients are added together in the regression equation
 - Many regression lines are plotted; a loss function calculates each line's loss
     * The regression line with least loss is best
@@ -3553,8 +3602,18 @@ X_val_RFE, X_test_RFE = X_val[chosen_cols], X_test[chosen_cols]
     * A good loss function can yield a better-fit regression line
     * The best loss functions help plot a line that can generalize accurately
 - As always, poor feature engineering can't be saved by great loss functions
+    * You need to add an intercept to your data; this is just a column of 1s
     * Numerical feature scaling "balances" each feature in loss calculation
     * Features with a linear relationship to the target are best
+```
+# SIMPLE OLS MODEL WITH STATSMODELS
+df["cat1_col2"] = (df["col1"] == "cat1") * df["col2"]
+ols = sm.OLS(df[["target"]], df[["intercept","col1","col2","cat1_col2"]])
+fit = ols.fit()
+predictions = fit.predict(df[["intercept","col1","col2","cat1_col2"]])
+print(list(predictions)[:10])
+fit.summary()
+```
 ### Regressors
 - **Ordinary Least Squares (OLS)**
     * Computationally simple and efficient regression
@@ -3582,60 +3641,172 @@ X_val_RFE, X_test_RFE = X_val[chosen_cols], X_test[chosen_cols]
 - **Polynomial Regression** 
     * Really just feature engineering to make polynomial features
     * Use number of curves from exploration as hyperparameter
-- An intercept is just an array of value: 1
+- **Gradient Boosting Regressor**
 ```
-df["cat1_col2"] = (df["col1"] == "cat1") * df["col2"]
-logit = sm.Logit(df[["target"]], df[["intercept","col1","col2","cat1_col2"]])
-fit = logit.fit()
-predictions = fit.predict(df[["intercept","col1","col2","cat1_col2"]])
-print(list(predictions)[:10])
-fit.summary()
-```
-```
-from sklearn.linear_model import LinearRegression     # OLS
-from sklearn.linear_model import LassoLars            # reduce r2, increase bias
-from sklearn.linear_model import TweedieRegressor     # non-normal dists
-from sklearn.svm import SVR                           # < 50k, discrete target
-from sklearn.svm import LinearSVR                     # > 50k, discrete target
-from sklearn.preprocessing import PolynomialFeatures  # target is polynomial
-from sklearn.ensemble import GradientBoostingRegressor as GBR
-ols = LinearRegression().fit(X_train, y_train)
-y_train_pred = clf.predict(X_train)
-gbr = GBR(max_depth=1, subsample=0.8, max_features=0.2, n_estimators=300,
-          random_state=42).fit(X_train, y_train)
-gbr_pred = gbr.predict(X_train)
+import pandas as pd
+from sklearn.linear_model import LinearRegression as OLS  # need simplicity
+from sklearn.linear_model import LassoLars as LASSOLARS   # lower r2, raise bias
+from sklearn.linear_model import TweedieRegressor as GLM  # dist is non-normal
+from sklearn.preprocessing import PolynomialFeatures as PF     # polynomial data
+from sklearn.svm import SVR                               # < 50k, discrete tgt
+from sklearn.svm import LinearSVR as LSVR                 # > 50k, discrete tgt
+from sklearn.ensemble import GradientBoostingRegressor as GBR  # go big
+def regression_shotgun(X_train, y_train, X_out, y_out):
+    """ 
+    Create various regression models and get their predictions on a dataset.
+    - Models: OLS, LASSO+LARS, GLM, Polynomial OLS, SVR, LSVR, GBR
+    """
+    if type(y_train) != type(pd.DataFrame()):
+        y_train = pd.DataFrame(y_train.rename('in_actuals'))
+    if type(y_out) != type(pd.DataFrame()):
+        y_out = pd.DataFrame(y_out.rename('out_actuals'))
+    y_train, y_out = baselines(y_train, y_out)
+    y_train, y_out = lm(X_train, y_train, X_out, y_out)
+    y_train, y_out = lassolars(X_train, y_train, X_out, y_out)
+    y_train, y_out = glm(X_train, y_train, X_out, y_out)
+    y_train, y_out = pf_ols(X_train, y_train, X_out, y_out)
+    y_train, y_out = svr49k(X_train, y_train, X_out, y_out)
+    y_train, y_out = lsvr51k(X_train, y_train, X_out, y_out)
+    y_train, y_out = gradboost(X_train, y_train, X_out, y_out)
+    return y_train, y_out   # return dataframes of predictions
+def baselines(y_train, y_out):
+    """Create two baseline models: Mean and Median for model comparison"""
+    y_train['mean_bl'] = y_train.in_actuals.mean()
+    y_out['mean_bl'] = y_out.out_actuals.mean()
+    y_train['median_bl'] = y_train.in_actuals.median()
+    y_out['median_bl'] = y_out.out_actuals.median()
+    return y_train, y_out   # return DATAFRAMES with new preds columns
+def lm(X_train, y_train, X_out, y_out):
+    """Predict with OLS model, return predictions"""
+    ols = OLS().fit(X_train, y_train.in_actuals)
+    y_train['ols'] = ols.predict(X_train)
+    y_out['ols'] = ols.predict(X_out)
+    return y_train, y_out   # return DATAFRAMES with new preds columns
+def lassolars(X_train, y_train, X_out, y_out):
+    """Predict with various LASSO+LARS models, return predictions"""
+    alpha_list = [.0001, .001, .01, .1, 1, 10, 100, 1000]
+    for alpha in alpha_list:   # iterate regularization penalties
+        model_name = f"lassolars_{alpha}"
+        lasso = LASSOLARS(alpha=alpha).fit(X_train, y_train.in_actuals)
+        y_train[model_name] = lasso.predict(X_train)
+        y_out[model_name] = lasso.predict(X_out)
+    return y_train, y_out   # return DATAFRAMES with new preds columns
+def glm(X_train, y_train, X_out, y_out):
+    """Predict with various GLM models, return predictions"""
+    power_dict = {0:"gaussian", 1:"poisson", 2:"gamma", 3:"inversegaussian"}
+    power = 0
+    alpha_list = [.0001, .001, .01, .1, 1, 10, 100, 1000]
+    for alpha in alpha_list:
+        pname = power_dict[power]
+        model_name = f"glm_{pname}_a{alpha}"
+        tweed = GLM(power=power, alpha=alpha).fit(X_train, y_train.in_actuals)
+        y_train[model_name] = tweed.predict(X_train)
+        y_out[model_name] = tweed.predict(X_out)
+    return y_train, y_out   # return DATAFRAMES with new preds columns
+def pf_ols(X_train, y_train, X_out, y_out):
+    """Create polynomial features, predict with OLS, return predictions"""
+    degree_list = [2,3,4,5,6]
+    for degree in degree_list:
+        model_name = f"ols_pf{degree}"
+        X_train_pf = PF(degree=degree).fit_transform(X_train)
+        X_out_pf = PF(degree=degree).fit(X_train).transform(X_out)
+        ols = OLS().fit(X_train_pf, y_train.in_actuals)
+        y_train[model_name] = ols.predict(X_train_pf)
+        y_out[model_name] = ols.predict(X_out_pf)
+    return y_train, y_out   # return DATAFRAMES with new preds columns
+def svr49k(X_train, y_train, X_out, y_out):
+    """Predict with SVR model, return predictions"""
+    Cs = [0.01, 0.1, 1, 10, 100]
+    for C in Cs:
+        model_name = f"svr{C}"
+        svr = SVR(C=C).fit(X_train, y_train.in_actuals)
+        y_train[model_name] = svr.predict(X_train)
+        y_out[model_name] = svr.predict(X_out)
+    return y_train, y_out   # return DATAFRAMES with new preds columns
+def lsvr51k(X_train, y_train, X_out, y_out):
+    """Predict with LinearSVR model, return predictions"""
+    Cs = [0.01, 0.1, 1, 10, 100]
+    for C in Cs:
+        model_name = f"lsvr{C}"
+        lsvr = LSVR(C=C).fit(X_train, y_train.in_actuals)
+        y_train[model_name] = lsvr.predict(X_train)
+        y_out[model_name] = lsvr.predict(X_out)
+    return y_train, y_out   # return DATAFRAMES with new preds columns
+def gradboost(X_train, y_train, X_out, y_out):
+    """Predict with GBR model, return predictions"""
+    gbr = GBR(max_depth=1, subsample=.8, max_features=.2, random_state=42)
+    gbr.fit(X_train, y_train)
+    y_train['gbr'] = gbr.predict(X_train)
+    y_out['gbr'] = gbr.predict(X_out)
+    return y_train, y_out   # return DATAFRAMES with new preds columns
 ```
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
 ## Evaluating Regressors
-- **Regression line** --- y = b0 + b1x1 + b2x2 + ... bnxn + ϵ
+- **Regression line**
+    * Regression equation: `y = b0 + b1x1 + b2x2 + ... bnxn + ϵ`
     * y: target; b: coefficient (slope); x: input; ϵ: expected_error
     * Polynomial regression uses: y = b0 + b1x + b2x^2 + b3x^3 + ... + bnx^n + ϵ
-- **Residual** --- e = predicted_y - actual_y
-    * Obvious trends in residual plots (called heteroscedasticity) indicates
-        * unrecognized factors driving target
-    * Fixing heteroscedasticity: Remove outliers, transform data, or 
-        * convert feature(s) to logarithmic value(s)
-```
-# PLOT RESIDUALS
-y_train_residuals = y_train_preds - y_train
-sns.relplot(x=y_train, y=y_train_residuals)
-plt.axhline(y=0, c='gray', alpha=.3)
-```
-- **Root Mean Square Error (RMSE)** --- RMSE = sqrt(mean(sum(residuals)))
+- **Root Mean Square Error (RMSE)**
+    * Calculate RMSE: `RMSE = sqrt(mean(sum(residuals)))`
     * RMSE is in target's units, so calculating home value has RMSE in dollars
     * Other error metrics: SSE (when outliers are the focus), MSE, ESS, TSS
-- **Variance (R^2)** --- r2 = ESS / TSS
+- **Variance (r2)**
+    * Calculate variance: `r2 = ESS / TSS`
     * Indicates amount of data (0% - 100%) explained by regression line
+- **Residual**
+    * Calculate a datapoint's residual error: `e = predicted_y - actual_y`
+- **Heteroscedasticity**
+    * Trend in residual plot, unaccounted-for drivers remain
+    * Fix heteroscedasticity by removing outliers or log/expon/etc transform
 ```
-from sklearn.metrics import mean_squared_error, r2_score
-# CALCULATE RMSE
-MSE = mean_squared_error(validate.actuals, validate.predictions)
-SSE = MSE * len(df) # in case you need SSE
-RMSE = mean_squared_error(validate.actuals, validate.predictions, squared=False)
-# CALCULATE R2
-r2 = r2_score(df.actuals, df.predictions)
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+# GET REGRESSION RESULTS
+def regression_results(actuals, preds):
+    """Returns SSE, ESS, TSS, MSE, RMSE, Residuals, and r2"""
+    mse = mean_squared_error(actuals, preds)
+    rmse = mse ** 0.5
+    sse = mse * len(actuals)
+    ess = sum((preds - actuals.mean())**2)
+    tss = ess + sse
+    r2 = ess / tss
+    res = preds - actuals
+    d = {"MSE":mse,"RMSE":rmse,"SSE":sse,"ESS":ess,"TSS":tss,"err":res,"r2":r2}
+    return d
+results = regression_results(y_train["ols_preds"], y_train["in_actuals"])
+rmse, r2 = round(results["RMSE"], 2), round(results["r2"], 4)
+print("OLS: RMSE: {rmse}, r2: {r2}")
+# PLOT RESIDUALS
+def plot_residuals(model_name, actuals, residuals):
+    plt.title("OLS Residual Plot")
+    sns.relplot(x=actuals, y=residuals, kind='scatter')
+    plt.axhline(y=0, c='gray', alpha=.3)
+    plt.title(f"Residual Plot for Model: {model_name}")
+    plt.ylabel("Residuals")
+    plt.show()
+plot_residuals("OLS", y_train["in_actuals"], results["err"])
+```
+```
+# GET RMSE AND R2 FOR ALL TRAINED MODELS' PREDICTIONS
+def y_df_RMSE_r2(y_train, y_val):
+    """Calculare RMSE, r2 using insample and outsample predictions dataframes"""
+    cols = ["Model", "Train_RMSE", "Validate_RMSE", "Train_r2", "Validate_r2"]
+    rows = []
+    for model in y_train.columns[1:]:
+        rmse_train = mean_squared_error(y_train.actuals, y_train[model]) ** 0.5
+        rmse_out = mean_squared_error(y_val.actuals, y_val[model]) ** 0.5
+        r2_train = r2_score(y_train.actuals, y_train[model])
+        r2_out = r2_score(y_val.actuals, y_val[model])
+        rows.append({
+            "Model":model, "Train_RMSE":rmse_train, "Validate_RMSE":rmse_out,
+            "Train_r2":r2_train, "Validate_r2":r2_validate
+        })
+    results = pd.DataFrame(rows, columns=cols)
+    return running_df
+results_df = y_df_RMSE_r2(y_train, y_validate)
 ```
 
 [[Return to Top]](#table-of-contents)
