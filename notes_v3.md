@@ -40,6 +40,7 @@ IV.   [Advanced Web Scraping         ](#advanced-web-scraping)
 
 V.    [Building a Database           ](#building-a-database)
 1.    [SQLite                        ](#sqlite)
+1.    [SQLAlchemy                    ](#sqlalchemy)
 1.    [PostgreSQL                    ](#postgresql)
 
 VI.   [Database Usage Mastery        ](#database-usage-mastery)
@@ -183,7 +184,8 @@ I might want to add a script to update packages...
     * Webscraping: `conda install bs4 selenium`
         * Selenium requires downloading a browser driver, ex: "chromedriver.exe"
     * Interactivity: `conda install dataclasses plotly flask django`
-    * Big data: `conda install dask pyspark`
+    * Big data: `conda install dask pyspark sqlalchemy h5py`
+    * Geospatial: `conda install geopandas folium shapely`
     * Natural Language Processing: `conda install nltk wordcloud`
         * Run `nltk.download(dataset_name)` to install a single required dataset
         * Required sets: 'stopwords' 'vader_lexicon' 'punkt' 'wordnet' 'omw-1.4'
@@ -191,7 +193,7 @@ I might want to add a script to update packages...
         * NFStream install: https://nfstream.org/docs/#installation-guide
     * Elasticsearch: `pip install elasticsearch elasticsearch-dsl`
     * Handling YAML: `pip install pyyaml ruamel.yaml`
-    * Sample data: `pip install pydataset holidays`
+    * Sample data: `pip install pydataset holidays ucimlrepo vega_datasets`
 1. Install PyTorch if you want
     * `conda install pytorch torchvision torchaudio cudatoolkit=11.3 -c pytorch`
     * `conda install astunparse numpy ninja pyyaml setuptools cmake cffi`
@@ -433,6 +435,7 @@ The end state of both methods should be an initial dataframe pre-editing.
 - `import seaborn as sns` --- `df = sns.load_dataset('iris')`
 - `from vega_datasets import data` --- `df = data('iris')`
 - `from sklearn import datasets` --- `array = datasets.load_iris()['data']`
+- `from ucimlrepo import fetch_ucirepo` --- `wine = fetch_ucirepo(id=109)`
 - datareader https://pandas-datareader.readthedocs.io/en/latest/remote_data.html
 ### Important Importing
 - CSV: `df = pd.read_csv(fp, parse_dates=ts_cols)`
@@ -465,6 +468,8 @@ print(json_data["name"])
 <!-- Needs work -->
 ## Conditional read_csv For Local Files
 ```
+import os
+import pandas as pd
 def find_csvs(dir=None, match=None, folder_start=None, folder_end=None):
     """
     Get filepaths of all CSVs nested inside a given directory.
@@ -528,6 +533,8 @@ def read_csvs(filepaths, set_cols=False):
     return df
 ```
 ```
+import pandas as pd
+import read_csvs, find_csvs
 df = read_csvs(find_csvs(match="EID4624"), set_cols=False)
 ```
 
@@ -556,6 +563,7 @@ Syntax is important and differs between implementations.
 Find is important and REGEX can do things that normal find can't.
 Capture is important and REGEX excels at this work.
 ```
+- TODO: Change example spots to actual code examples
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
@@ -911,10 +919,10 @@ The end state of both explanations should be a "SELECT *"-style return (to DF).
 import sqlite3
 con = sqlite3.connect("cool.db")
 cur = con.cursor()
-cur.execute("DROP TABLE IF EXISTS test")
-cur.execute("DROP TABLE IF EXISTS author")
-cur.execute("DROP TABLE IF EXISTS book")
-cur.execute("DROP TABLE IF EXISTS publisher")
+cur.execute('DROP TABLE IF EXISTS test')
+cur.execute('DROP TABLE IF EXISTS author')
+cur.execute('DROP TABLE IF EXISTS book')
+cur.execute('DROP TABLE IF EXISTS publisher')
 # SET UP ROW RETURNS AS DICTS RATHER THAN TUPLES
 def dict_factory(cur, row):
     fields = [column[0] for column in cur.description]
@@ -927,13 +935,13 @@ CREATE TABLE test(
     letter CHAR(1) CHECK(letter != "f"))
 """)
 data = [("hi", 15, "a"),("yo", 22, "b"),("sup", 8, "c"),("hey",19,"d")]
-cur.executemany("INSERT INTO test VALUES(?, ?, ?)", data)
-cur.execute("UPDATE test SET number = 1000 WHERE rowid = 3")
-cur.execute("DELETE FROM test WHERE letter = "d")
+cur.executemany('INSERT INTO test VALUES(?, ?, ?)', data)
+cur.execute('UPDATE test SET number = 1000 WHERE rowid = 3')
+cur.execute('DELETE FROM test WHERE letter = "d"')
 # con.rollback() # use this if you need to abort the transaction
 con.commit() # do this after inserts
 con.row_factory = dict_factory
-for row in con.execute("SELECT greeting, number, letter FROM test"):
+for row in con.execute('SELECT greeting, number, letter FROM test'):
     print(row)
 # RUN A SCRIPT OF SQL STATEMENTS
 cur.executescript("""
@@ -951,30 +959,81 @@ con.close()
 print("\nConnection closed; reopening...")
 new_con = sqlite3.connect("cool.db")
 new_cur = new_con.cursor()
-result1 = new_cur.execute("SELECT rowid, greeting FROM test ORDER BY rowid")
+result1 = new_cur.execute('SELECT rowid, greeting FROM test ORDER BY rowid')
 rowid1, greeting1 = result1.fetchone()
-print(f"Row {rowid1} greets you: {greeting1}!")
+print(f'Row {rowid1} greets you: {greeting1}!')
 rowid2, greeting2 = result1.fetchone()
-print(f"Row {rowid2} greets you: {greeting2}!")
+print(f'Row {rowid2} greets you: {greeting2}!')
 rowid3, greeting3 = result1.fetchone()
-print(f"Row {rowid3} greets you: {greeting3}!")
-new_cur.execute("DELETE FROM test") # this is TRUNCATE TABLE
+print(f'Row {rowid3} greets you: {greeting3}!')
+new_cur.execute('DELETE FROM test') # this is TRUNCATE TABLE
 new_con.close()
 import os
 os.remove("cool.db")
 ```
-### SQLAlchemy
+
+--------------------------------------------------------------------------------
+<!-- Needs work -->
+## SQLAlchemy
 ```
+import pandas as pd
 from sqlalchemy import create_engine
 engine = create_engine("sqlite:///MyDB.sqlite")
 table_names = engine.table_names()
 con = engine.connect()
-df1 = pd.read_sql_query("SELECT * FROM TABLE1", con)
-rs = con.execute("SELECT * FROM TABLE1")
+df1 = pd.read_sql_query('SELECT * FROM TABLE1', con)
+rs = con.execute('SELECT * FROM TABLE1')
 df2 = pd.DataFrame(rs.fetchall())
 df2.columns = rs.keys()
 df3 = pd.DataFrame(rs.fetchmany(size=5))
 df3.columns = rs.keys()
+```
+```
+username, database, host, port = "postgres", "sqlda", "localhost", 5432
+cnxn_string = f"postgresql+psycopg2://{username}"@{host}:{port}/{database}"
+engine = create_engine(cnxn_string)
+two_rows = engine.execute("SELECT * FROM customers LIMIT 2;").fetchall()
+full_db = pd.read_sql_table("customers", engine)
+top10cities_custbygender = """
+SELECT 
+    city, 
+    COUNT(1) AS number_of_customers,         -- count all rows in table
+    COUNT(NULLIF(gender, 'M')) AS female,    -- count all NOT matching "M"
+    COUNT(NULLIF(gender, 'F')) AS male       -- count all NOT matching "F"
+FROM customers
+WHERE city IS NOT NULL
+GROUP BY 1
+ORDER BY 2 DESC LIMIT 10
+"""
+vc = pd.read_sql_query(top10cities_custbygender, engine)
+vc.plot.bar("city", y=["female","male"], title='# of Customers, by Gender/City')
+vc.to_sql('top_cities_data', engine, index=False, if_exists='replace')   # WRITE
+pd.read_sql_table('top_cities_data', engine)               # READ FROM NEW TABLE
+```
+### Fast Write to DB via STDIN COPY
+```
+import csv
+from io import StringIO
+def gogo(table, conn, keys, data_iter):
+    # gets a DBAPI connection that can provide a cursor
+    dbapi_conn = conn.connection
+    with dbapi_conn.cursor() as cur:
+        s_buf = StringIO()
+        writer = csv.writer(s_buf)
+        writer.writerows(data_iter)
+        s_buf.seek(0)
+        columns = ", ".join('"{}"'.format(k) for k in keys) 
+        if table.schema:
+            table_name = '{}.{}'.format(table.schema, table.name) 
+        else:   
+            table_name = table.name
+        sql = 'COPY {} ({}) FROM STDIN WITH CSV'.format(table_name, columns)
+        cur.copy_expert(sql=sql, file=s_buf)
+top10cities_custbygender = """SELECT city, COUNT(1) AS number_of_customers,
+COUNT(NULLIF(gender, 'M')) AS female, COUNT(NULLIF(gender, 'F')) AS male
+FROM customers WHERE city IS NOT NULL GROUP BY 1 ORDER BY 2 DESC LIMIT 10"""
+vc = pd.read_sql_query(top10cities_custbygender, engine)
+vc.to_sql("top10_table", engine, index=False, if_exists='replace' method=gogo)
 ```
 
 --------------------------------------------------------------------------------
@@ -1006,16 +1065,10 @@ df3.columns = rs.keys()
 ```
 CREATE OR REPLACE PROCEDURE procedure_name(IN val1 INT, IN val2 INT)
     BEGIN
-        UPDATE col1
-        SET col1 = col1 + val1
-        WHERE col2 = val2;
-
+        UPDATE col1 SET col1 = col1 + val1 WHERE col2 = val2;
         INSERT INTO col3 VALUES (TRUE, val1, val2);
-
         COMMIT;
-
-        EXCEPTION WHEN OTHERS THEN
-        ROLLBACK;
+        EXCEPTION WHEN OTHERS THEN ROLLBACK;
     END;
 $ LANGUAGE plpgsql;
 ```
@@ -1095,30 +1148,30 @@ The end state should be a dataframe that matches across query formats.
     * Basically a UNION of the three columns
 ### SQL Simple Records Query
 ```
-show databases; 
-use database_name; 
-show tables; 
-describe table_name;
-select distinct                                    -- distinct: unique **rows**
+SHOW DATABASES; 
+USE database_name; 
+SHOW TABLES; 
+DESCRIBE table_name;
+SELECT DISTINCT                                    -- distinct: unique **rows**
     date_col, 
-    col1 as Col1,                                  -- rename col1 to Col1
+    col1 AS Col1,                                  -- rename col1 to Col1
     col2::INTEGER,                                 -- cast col2 as INTEGER col
     col3::TEXT,                                    -- cast col3 as TEXT column
-IF(date_col > curdate(), True, False) as "Future"  -- new column with True/False
-case 
-    when year(date_col) like '19__' then '1900s'   -- if 19xx then "1900s"
-    when year(date_col) like '20%' then '2000s'    -- if 20... then "2000s"
-    else 'bad_input'                               -- otherwise "bad_input"
-    end as Century                                 -- end case, name column
-from table_name 
-join table_2 using(date_col)                       -- cleaner than ON sometimes
-where
-    (col2 between 10 and 20) and                   -- 10 <= x <= 20
-    (col2 not 15) and                              -- x != 15
-    (col3 in ('irene', 'layla')) and               -- y = "irene" or y = "layla"
-    (year(date_col) like binary '201_')            -- 2010, 201M, 201., 201#
-order by col2 asc, Col1 desc                       -- notice renamed Col1 here
-limit 100;                                         -- return max of 100 rows
+IF(date_col > curdate(), True, False) AS "Future"  -- new column with True/False
+CASE 
+    WHEN year(date_col) LIKE '19__' THEN '1900s'   -- if 19xx then "1900s"
+    WHEN year(date_col) LIKE '20%' THEN '2000s'    -- if 20... then "2000s"
+    ELSE 'bad_input'                               -- otherwise "bad_input"
+    END AS Century                                 -- end case, name column
+FROM table_name 
+JOIN table_2 USING(date_col)                       -- cleaner than ON sometimes
+WHERE
+    (col2 BETWEEN 10 AND 20) AND                   -- 10 <= x <= 20
+    (col2 NOT 15) AND                              -- x != 15
+    (col3 IN ('irene', 'layla')) AND               -- y = "irene" or y = "layla"
+    (year(date_col) LIKE BINARY '201_')            -- 2010, 201M, 201., 201#
+ORDER BY col2 ASC, Col1 DESC                       -- notice renamed Col1 here
+LIMIT 100;                                         -- return max of 100 rows
 SELECT
     COALESCE(col1, "No Value!!!"),  -- Fill nulls with "No Value!!!"
     NULLIF(col1, "wat"),            -- Null-out all "wat" values in col1
@@ -1130,10 +1183,10 @@ FROM t1;
 - `COUNT`, `MIN`, `MAX`, `RAND`
 - `SUM`, `AVG`, `ABS`, `LOG`, `POW(x, y)`, `ROUND(n, decimal_places)`, `SQRT(n)`
 ```
-select SUM(x) + SUM(y) from table; -- sum x, sum y, then sum totals; nulls fine
-select SUM(x + y);                 -- rowwise sum; CAREFUL, NULL + 100 = NULL
-select MAX(x);
-select col1, AVG(col2) as average from table group by col1 having average > 100;
+SELECT SUM(x) + SUM(y) FROM t;     -- sum x, sum y, then sum totals; nulls fine
+SELECT SUM(x + y);                 -- rowwise sum; CAREFUL, NULL + 100 = NULL
+SELECT MAX(x);
+SELECT col1, AVG(col2) AS average FROM t GROUP BY col1 HAVING average > 100;
 SELECT x, MAX(y) FROM t GROUP BY x ORDER BY MAX(y); -- notice: ORDER BY MAX(y)
 SELECT a, b, MAX(c) FROM t GROUP BY a, b HAVING MAX(c) > 100 ORDER BY a, MAX(c);
 SELECT a, b, c FROM t AS f WHERE c > ( -- Where c is higher than...
@@ -1147,12 +1200,12 @@ SELECT a, b, c FROM t AS f WHERE c > ( -- Where c is higher than...
 WITH d AS (SELECT * FROM t1 WHERE t1.a = 12)       -- create table "d" up front
 SELECT * FROM t2 JOIN d.a = t2.a;
 
-select concat(first_name, " ", last_name) as Name 
-from employees 
-where 
-    hire_date = (select hire_date from employees where emp_no = 101010) and
-	emp_no in (select emp_no from dept_emp where to_date > curdate()) and
-    last_name is not null;
+SELECT concat(first_name, " ", last_name) AS Name 
+FROM employees 
+WHERE 
+    hire_date = (SELECT hire_date FROM employees WHERE emp_no = 101010) AND
+	emp_no IN (SELECT emp_no FROM dept_emp WHERE to_date > curdate()) AND
+    last_name IS NOT NULL;
 
 SELECT Name, CountryCode
 FROM City AS C
@@ -1166,12 +1219,12 @@ WHERE EXISTS      -- Rows that match; use WHERE NOT EXISTS to find non-matches
 ```
 ### SQL Temp Table Creation
 ```
-use employees;
-create temporary table germain_1457.employees_with_departments as
-select first_name, last_name, departments.dept_name
-from employees
-join dept_emp using(emp_no)
-join departments using(dept_no);
+USE employees;
+CREATE TEMPORARY TABLE germain_1457.employees_with_departments AS
+    SELECT first_name, last_name, departments.dept_name
+    FROM employees
+    JOIN dept_emp USING(emp_no)
+    JOIN departments USING(dept_no);
 ```
 
 --------------------------------------------------------------------------------
@@ -1737,7 +1790,7 @@ print(f"Completed in {toc - tic:0.4f} seconds")
 combos = df.set_index(["hi","yo"]).index.unique() # df.index.get_level_values(i)
 for combo in combos:
     mask = (df["hi"] == combo[0]) & (df["yo"] == combo[1])
-    print(f"--- {list(combo)} ---, "\nMax 'Sup':", df[mask]["sup"].max())
+    print(f"--- {list(combo)} ---\nMax 'Sup':", df[mask]["sup"].max())
 # DF.APPLY WITH PROGRESS BAR
 from tqdm.auto import tqdm
 tqdm.pandas(desc="times100")
@@ -1748,6 +1801,11 @@ print(df.__sizeof__())
 # RESHAPE AN ARRAY (FAILS IF NOT POSSIBLE)
 array = np.array([1,2,3,4,5,6])  # 6x1 array
 array.reshape((2,3))             # 2x3 array
+# ZIP TWO NUMPY ARRAYS
+zipped = np.column_stack((m.feature_names_in_, m.coef_))
+# FIND TOP {x} VALUES OF NUMPY ARRAY
+best_idx = np.argpartition(m.feature_importances_, n_feats * -1)[n_feats * -1:]
+best_feats = [c for (i, c) in enumerate(m.feature_names_in_) if i in best_idx]
 ```
 ### Null Characterization
 ```
@@ -1838,6 +1896,7 @@ for combo in patt_df.index.unique():
         elif len(values) in [p_cnt + 1, p_cnt + 2]:
             cap[combo]["close"].append(col)
 # PRINT PATTERN HASH ASSESSMENT RESULTS (INSIDE EXPANDABLE TEXT)
+from IPython.display import display, HTML
 onepatts = [k for k in cap.keys() if cap[k]["p_count"] == 1]
 regulars = [k for k in cap.keys() if k not in onepatts]
 dets = "<details>x</details>"
@@ -1936,6 +1995,7 @@ df.sort_values(by="cooks_dist", ascending=False)  # big values indicate weird
 ```
 import numpy as np
 import pandas as pd
+# SCALING
 from sklearn.preprocessing import StandardScaler
 s = pd.Series(np.random.randint(-3, 4, size=1000))
 df = pd.DataFrame({'orig':s, 'squared':s**2, 'abs_x2':s.abs()*2})
@@ -1943,8 +2003,7 @@ encoded_df = df.dropna(thresh=len(df.columns))
 encoded_df = df.reset_index(drop=True)
 scaler = StandardScaler().fit(encoded_df)
 scaled_df = scaler.transform(encoded_df)
-```
-```
+# QUANTILE TRANSFORM
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import QuantileTransformer as QT
@@ -1989,7 +2048,16 @@ def resampler(X_train, y_train):
 - `votes = np.sum([lcvmask, rfmask, gbmask], axis=0)`
     * `mask = votes >= 2` -> `reduced_X = x.loc[:,mask]`
 ```
-orig_df = df.copy(deep=True)    # expensive copy; you might not want to use this
+# SET UP SAMPLE DATASET
+from sklearn.datasets import make_classification as MC
+X, y = MC(n_samples=10_000, n_features=20, n_classes=2, 
+          n_informative=6, n_redundant=10, random_state=42)
+X, y = pd.DataFrame(X), pd.Series(y, name="target")
+X.columns = [str(col) for col in X.columns]
+from sklearn.model_selection import train_test_split as SPLIT
+X1, X_test, y1, y_test = SPLIT(X, y, test_size=0.2, random_state=42)
+X_train, X_val, y_train, y_val = SPLIT(X1, y1, test_size=0.25, random_state=42)
+df = X_train.copy(deep=True) # expensive copy; you might not want to use this
 # STANDARD FEATURE REDUCTION: NUNIQUE, NULLS
 col_nonnull = 0.9           # each column that is at least {value*100}% non-null
 row_nonnull = 0.9           # each row that is at least {value*100}% non-null
@@ -2003,6 +2071,9 @@ from statsmodels.stats.outliers_influence import variance_inflation_factor as VF
 temp = df[[col for col in df if ISNUMERIC(df[col])]]  # VIF needs numerical cols
 highvif_cols = [col for (i, col) in enumerate(temp) if VF(temp.values, i) > vif]
 df = df.drop(columns=highvif_cols)                    # drop cols with > 10 VIF
+dropped_cols = set(X_train.columns).symmetric_difference(set(df.columns))
+dropped_cols = sorted(list(dropped_cols), key=lambda x: int(x))  # numeric cols
+print(f"Columns dropped: {len(dropped_cols)}\n- " + "\n- ".join(dropped_cols))
 ```
 ### Principal Component Analysis (PCA) Dimensionality Reduction
 - Reducing physical dataset size without significant loss of information
@@ -2014,12 +2085,12 @@ df = df.drop(columns=highvif_cols)                    # drop cols with > 10 VIF
         * 2D: [[COVxx,COVxy],[COVxy,COVyy]], a 2x2 matrix; 3D is 3x3 matrix
     * Eigenvectors/eigenvalues: `eigs = np.linalg.eig(cov_matrix, rowvar=False)`
 - Order PCs highest to lowest by their associated eigenvalue (their variance)
-    * Solve for lambda: `determinant(cov_matrix_2d - lambda[[1,0],[0,1]]) = 0`
-        * `D([[7,3],[3,-1]])`->`(7 - y)*(-1 - y) - (3 - 0)*(3 - 0)`->`y=8, y=-2`
-        * 3D EX: `determinant(cov_matrix_3d - lambda[[1,0,0],[0,1,0],[0,0,1]])`
+    * Solve for lambda: determinant(cov_matrix_2d - lambda[[1,0],[0,1]]) = 0
+        * D([[7,3],[3,-1]]) --> ((7-y) * (-1-y)) - ((3-0) * (3-0)) --> y=8, y=-2
+        * 3D EX: determinant(cov_matrix_3d - lambda[[1,0,0],[0,1,0],[0,0,1]])
     * Calculate/order PCs: `pca = sklearn.decomposition.PCA().fit_transform(df)`
 - Calculate cumulative sum of explained variance ratio for descending-order PCs
-    * PC explained variance ratio: `PC_eigenvalue / total_variance`; between 0-1
+    * PC explained variance ratio: PC_eigenvalue / total_variance; between 0-1
 - Select PCs by setting a cutoff threshold for this cumulative sum
     * Plot cumulative sum of PC explained variance ratios against count of PCs
     * EX1: Use 11 PCs when cumsum of 11 PCs (723 total PCs) explains 95% of info
@@ -2051,6 +2122,8 @@ plt.xlabel("Component Count")
 plt.ylabel("Explained Variance")
 plt.grid()
 plt.show()
+```
+```
 # ELBOW METHOD: USE FIVE COMPONENTS, CUMSUM > 90% EXPLAINED VARIANCE
 pca5 = PCA(n_components=5)
 pca_df = pca5.fit_transform(X_train)
@@ -2149,26 +2222,27 @@ plt.show()  # try different params on TSNE for different clustering!
 ### KMeans
 - KMeans: Use euclidian distances, select cluster count subjectively
 - Domain knowledge ("3 types"), exploration ("looks like 3"), intertia (elbow)
-    * Inertia: `sum([distance(x,center) ** 2 for x in cluster])`
+    * Inertia: sum([distance(x,center) ** 2 for x in cluster])
 ```
 from sklearnex import patch_sklearn
 patch_sklearn()
 # SAMPLE DATA FOR MODEL TESTING
-from sklearn.datasets import make_classification as MC
-X, y = MC(n_samples=10_000, n_features=20, n_classes=2, 
-          n_informative=6, n_redundant=10, random_state=42)
-X, y = pd.DataFrame(X), pd.Series(y, name="target")
-X.columns = [str(col) for col in X.columns]
+from ucimlrepo import fetch_ucirepo
+wine = fetch_ucirepo(id=109)    # great clustering dataset
+X, y = wine.data.features, wine.data.targets["class"]
+# PREPARE DATA
 from sklearn.model_selection import train_test_split as SPLIT
+from sklearn.preprocessing import StandardScaler
 X1, X_test, y1, y_test = SPLIT(X, y, test_size=0.2, random_state=42)
 X_train, X_val, y_train, y_val = SPLIT(X1, y1, test_size=0.25, random_state=42)
-best = ["0", "1", "2", "3", "4", "5", "6", "7", "10", "13", "17"]
-X_train, X_val, X_test = X_train[best], X_val[best], X_test[best]
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_val, X_test = scaler.transform(X_val), scaler.transform(X_test)
 # PERFORM K-MEANS CLUSTERING
 from sklearn.cluster import KMeans
-min_clusters = 3
-max_clusters = 60
-step = 3
+min_clusters = 1
+max_clusters = 10
+step = 1
 clustercount_selection = np.arange(min_clusters, max_clusters + 1, step)
 results = {}
 for i in clustercount_selection:
@@ -2188,21 +2262,23 @@ plt.show()
 ```
 ```
 # SELECT CLUSTER COUNT FROM SCREE PLOT AND GET CLUSTER ASSIGNMENTS
-selected_count = 15  # selected from elbow method
+selected_count = 3  # selected from elbow method
 kmeans, clusterings, inertia = results[f"kmeans{selected_count}"]
 X_train_c = pd.Series(clusterings, name="cluster")
-vc = X_train_c.value_counts(normalize=True).cumsum()
+vc = X_train_c.value_counts(normalize=True).sort_index()
 vc.plot.bar(xlabel="Cluster", ylabel="Proportion", grid=True)
-plt.title("Cumulative Sum of Cluster Assignment Proportions")
+plt.title("Cluster Assignment Proportions")
 plt.show()
-```
-```
-# PLOT CENTROIDS (NOT VERY USEFUL IN 4+ DIMENSIONS)
+# LABELED TARGET: VIEW PERFORMANCE OF CLUSTERS USING CROSSTAB
+ctab = pd.crosstab(X_train_c, y_train.reset_index(drop=True))
+print(ctab)
+# PLOT CENTROIDS
+X_train = pd.DataFrame(X_train, columns=X.columns)
+col1, col2 = X.columns[0], X.columns[1]
 with_clusters = pd.concat([X_train, X_train_c], axis=1)
 centroids = with_clusters.groupby(["cluster"]).mean()
-sns.scatterplot(x=X_train["0"], y=X_train["1"], hue=X_train_c, alpha=0.1)
-centroids.plot.scatter(x="0", y="1", marker="x", c="red", s=100, ax=plt.gca())
-plt.title("Centroids for features: \"0\", \"1\"")
+sns.scatterplot(x=X_train[col1], y=X_train[col2], hue=X_train_c)
+centroids.plot.scatter(x=col1, y=col2, marker="x", c"red", s=100, ax=plt.gca())
 plt.show()
 ```
 ### Hierarchical (Agglomerative)
@@ -2216,25 +2292,47 @@ plt.show()
     * Count of horizontal line's vertical intersections is the cluster count.
 - Divisive (not shown) is opposite of agglomerative: single cluster -> many
 ```
+# SAMPLE DATA FOR MODEL TESTING
+import numpy as np
+import pandas as pd
+from ucimlrepo import fetch_ucirepo
+wine = fetch_ucirepo(id=109)    # great clustering dataset
+X, y = wine.data.features, wine.data.targets["class"]
+# PREPARE DATA
+from sklearn.model_selection import train_test_split as SPLIT
+from sklearn.preprocessing import StandardScaler
+X1, X_test, y1, y_test = SPLIT(X, y, test_size=0.2, random_state=42)
+X_train, X_val, y_train, y_val = SPLIT(X1, y1, test_size=0.25, random_state=42)
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_val, X_test = scaler.transform(X_val), scaler.transform(X_test)
 # PLOT DENDROGRAM
 import matplotlib.pyplot as plt
 from scipy.cluster.hierarchy import linkage as lnk, dendrogram as dnd
-mergings = lnk(samples, method="ward")  # makes the hierarchy clusters
-dend = dnd(mergings, labels=country_names, leaf_rotation=90, leaf_font_size=6)
+mergings = lnk(X_train, method="ward")  # makes the hierarchy clusters
+dend = dnd(mergings, leaf_rotation=90, leaf_font_size=6)
 plt.show()
-# CLUSTER USING HEIGHT FROM DENDROGRAM
+```
+```
+# SET HYPERPARAMETERS FROM DENDROGRAM
+height = 12
+n_clust = 3
+# CLUSTER USING HEIGHT FROM DENDROGRAM: BOTTOM OF LONGEST LINE, HORIZONTAL
 from scipy.cluster.hierarchy import fcluster
-height = 15
-labels = fcluster(mergings, height, criterion="distance")  # physical distance
-print(labels)  # array containing cluster labels
-pairs = pd.DataFrame({"labels":labels, "cat_col":cat_col})
-print(pairs.sort_values("labels"))   # close categories get clustered
+labels1 = fcluster(mergings, height, criterion="distance")  # physical distance
+ctab1 = pd.crosstab(labels1, y_train)
+print(ctab1)
+plt.scatter(x=X_train[:,0], y=X_train[:,1], c=labels1)
+plt.title("FCLUSTER")
+plt.show()
 # CLUSTER USING NUMBER OF CLUSTERS TO HALT AT (DETERMINE BY DENDROGRAM)
 from sklearn.cluster import AgglomerativeClustering as AC
-ac = AC(n_clusters=2, affinity="euclidian", linkage="ward")
-ac.fit_predict(X_train)
-print(ac.labels_)
-plt.scatter(x=X_train[:,0], y=X_train[:,1], c=ac.labels_, cmap="rainbow")
+ac = AC(n_clusters=n_clust, affinity="euclidean", linkage="ward").fit(X_train)
+labels2 = ac.labels_
+ctab2 = pd.crosstab(labels2, y_train)
+print(ctab2)
+plt.scatter(x=X_train[:,0], y=X_train[:,1], c=labels1)
+plt.title("AGGLOMERATIVE")
 plt.show()
 ```
 ### DBSCAN
@@ -2255,7 +2353,7 @@ plt.scatter(
 --------------------------------------------------------------------------------
 <!-- Needs work -->
 ## Cluster Analysis
-- 
+- Classification: use crosstab of clusters and target
 
 [[Return to Top]](#table-of-contents)
 
@@ -2311,6 +2409,7 @@ NLP's "bag of words" works nicely in conjunction with classification.
 - NEED: Vectorized method for performing this cleaning work
     * NOTE: Add ngram compilation to this
 ```
+# DOWNLOAD DATASETS FOR WORD PLAY
 import nltk
 nltk.download('stopwords')
 nltk.download('vader_lexicon')
@@ -2320,32 +2419,35 @@ nltk.download('omw-1.4')
 ```
 ```
 import nltk
-tokenizer = nltk.tokenize.toktok.ToktokTokenizer()
+import unicodedata as UNICODE
+import re
+import numpy as np
+np.random.seed(42)
+import pandas as pd
+# CREATE 'APPLY' FUNCTION
+def cleanup(txt, tokenizer, stopwords, wnl=None, ps=None):
+    txt = txt.lower()
+    txt = UNICODE.normalize('NFKD',txt).encode('ascii','ignore').decode('utf-8')
+    txt = re.sub(r"[^a-z0-9'\s]","",txt)          # remove special characters
+    words = tokenizer.tokenize(txt)               # tokenize words
+    filtered = [word for word in words if word not in stopwords]
+    if wnl is not None:  chopped = [wnl.lemmatize(word) for word in filtered]
+    elif ps is not None: chopped = [ps.stem(word) for word in filtered]
+    else:                chopped = filtered
+    clean_text = " ".join(chopped)
+    return clean_text
+# CREATE SAMPLE DATA FOR CLEANUP
+tokenizer = nltk.tokenize.TweetTokenizer()
 ps = nltk.porter.PorterStemmer()
 wnl = nltk.stem.WordNetLemmatizer()
-stopword_list = nltk.corpus.stopwords.words("english")
-# stopword_list.append('word')
-# stopword_list.remove('word')
-import unicodedata
-import re
-
-# t = df["text"].str.cat(sep=' ')
-t = "Hey there! How's it going?"
-t = t.lower()
-t = unicodedata.normalize('NFKD', t).encode('ascii', 'ignore').decode('utf-8')
-t = re.sub(r"[^a-z0-9'\s]", "", t)                       # rm special chars
-words = tokenizer.tokenize(t, return_str = True)         # word tokenization
-
-stem_instead = False
-if stem_instead:
-    # stems of words; cheap on computations
-    words = [ps.stem(word) for word in t.split()]
-else:
-    # lemmatized words; expensive but accurate
-    words = [wnl.lemmatize(word) for word in t.split()]     
-
-filtered_words = [word for word in words if word not in stopword_list]
-clean_text = " ".join(filtered_words)
+stopwords = nltk.corpus.stopwords.words("english")
+stopwords.append("coolword")
+stopwords.remove("coolword")
+word_array = np.random.choice(["red.","the?","happy's","$big times$"],size=5000)
+s = pd.DataFrame(word_array.reshape(1000,5)).apply(lambda x: " ".join(x),axis=1)
+# RUN CLEANUP: LEMMATIZATION, OR, WORD STEMS
+clean_lemmad = s.apply(lambda txt: cleanup(txt, tokenizer, stopwords, wnl=wnl))
+clean_stemmed = s.apply(lambda txt: cleanup(txt, tokenizer, stopwords, ps=ps))
 ```
 
 --------------------------------------------------------------------------------
@@ -2354,29 +2456,38 @@ clean_text = " ".join(filtered_words)
 ### Keyword Analysis
 - Cool: https://github.com/amueller/word_cloud/blob/master/examples/parrot.py
 ```
+import pandas as pd
+import my_util         # import "cleanup" function from normalize-string section
+word_array = np.random.choice(["red.","the?","happy's","$big times$"],size=5000)
+s = pd.DataFrame(word_array.reshape(1000,5)).apply(lambda x: " ".join(x),axis=1)
+tgt = pd.Series(np.random.choice(["spam","ham"], size=1000, p=[0.2,0.8]))
+s.name, tgt.name = "text", "target"
+df = pd.concat([s, tgt], axis=1)
 # SCATTERPLOT OF EACH ROW'S CHARACTER COUNT BY WORD COUNT
 df["content_length"] = df["text"].apply(len)
-df["word_count"] = df["text"].split().apply(len)
-sns.relplot(df["content_length"], df["word_count"], hue=df["target"])
+df["word_count"] = df["text"].str.split(" ").apply(len)
+sns.relplot(x=df["content_length"], y=df["word_count"], hue=df["target"])
+plt.title("Word Count vs Char Count, by Class")
+plt.show()
 # STACKED BAR CHART OF CLASS PROPORTIONS BY WORD (PERFORM NORMALIZATION FIRST)
+tok = nltk.tokenize.TweetTokenizer()
+ps = nltk.porter.PorterStemmer()
+wnl = nltk.stem.WordNetLemmatizer()
+stops = nltk.corpus.stopwords.words("english")
+df["clean"] = df["text"].apply(lambda t: my_util.cleanup(t,tok,stops,wnl=wnl))
 all_words  = df["clean"].str.cat(sep=" ")
 spam_words = df[df["target"] == "spam"]["clean"].str.cat(sep=" ")
 ham_words  = df[df["target"] == "ham"]["clean"].str.cat(sep=" ")
 all_cts  = pd.Series(all_words.split(" ")).value_counts().rename("all")
 spam_cts = pd.Series(spam_words.split(" ")).value_counts().rename("spam")
 ham_cts  = pd.Series(ham_words.split(" ")).value_counts().rename("ham")
-word_counts = pd.concat([all_cts, spam_cts, ham_cts], axis=1)
-word_counts['p_spam'] = word_counts["spam"] / word_counts["all"]
-word_counts['p_ham'] = word_counts["ham"] / word_counts["all"]
-(
-    word_counts[['p_spam','p_ham']]
-        .tail(20)
-        .sort_values(by='p_ham')
-        .plot.barh(stacked=True)
-)
-```
-```
-# WORDCLOUD
+word_cts = pd.concat([all_cts, spam_cts, ham_cts], axis=1)
+word_cts['p_spam'] = word_cts["spam"] / word_cts["all"]
+word_cts['p_ham'] = word_cts["ham"] / word_cts["all"]
+word_cts[['p_spam','p_ham']].tail().sort_values('p_ham').plot.barh(stacked=True)
+plt.title("Class Proportion by Word")
+plt.show()
+# PLOT A WORDCLOUD
 from os import path
 from PIL import Image
 import numpy as np
@@ -2384,19 +2495,23 @@ import matplotlib.pyplot as plt
 import os
 from wordcloud import WordCloud, STOPWORDS
 # BUILD THE WORDCLOUD AND SAVE TO FILE
-mask = np.array(Image.open("mask.png"))     # white-black img, cloud is in black
-stopwords = set(STOPWORDS)
-stopwords.add("said")
-wc = WordCloud(background_color="white", max_words=2000, mask=mask,
-               stopwords=stopwords, contour_width=3, contour_color='steelblue')
-wc.generate(text)                           # generate word cloud
-wc.to_file("output.png")                    # store to file
+mask = np.array(Image.open("blackwhite.png")) # white-black img, words in black
+wc = WordCloud(
+    background_color="white",    # set the color behind the words
+    max_words=2000,              # set max words in wordcloud
+    mask=mask,                   # choose image to use as wordcloud mask
+    contour_width=3,             # make background thicker (think: thin lines)
+    colormap="Blues",            # set words to Matplotlib colormap
+    # color_func=lambda *args, **kwargs: "black",   # set all words to one color
+    contour_color='steelblue',   # background: white -> steelblue
+    collocations=False           # True: show a bigram if see enough of it
+)
+wc.generate(df["clean"].dropna().str.cat(sep=" ").replace("'s",""))                           # generate word cloud
+# wc.to_file("output.png")                    # store to file
 # SHOW THE WORDCLOUD
 plt.imshow(wc, interpolation='bilinear')
 plt.axis("off")
-plt.figure()
-plt.imshow(mask, cmap=plt.cm.gray, interpolation='bilinear')
-plt.axis("off")
+plt.title("Wordcloud, Unique Words")
 plt.show()
 ```
 ### Sentiment Analysis
@@ -2409,22 +2524,15 @@ from nltk.sentiment import SentimentIntensityAnalyzer
 sia = SentimentIntensityAnalyzer()
 text = "Hello my name is Bob. You look great!"
 sentences = nltk.sent_tokenize(text)
-scores = [sia.polarity_scores(sentence) for sentence in sentences]
-print(scores)
-```
-```
+for sentence in sentences:
+    score = sia.polarity_scores(sentence)
+    print(f"--SCORE: {score} for SENTENCE:--\n", sentence)
 # VECTORIZED SENTIMENT ANALYSIS
-(
-    pd.DataFrame({"text":[
-        "Hello my name is Bob. You look great!",
-        "My name is Bob too! How weird..."
-    ]})
-    ["text"]
-        .apply(nltk.sent_tokenize)
-        .apply(lambda sentences: [
-            sia.polarity_scores(sentence) for sentence in sentences
-        ])
-)
+records = ["Hello, I'm Bob. You look great!", "I'm Bob too! How weird..."]
+s1 = pd.Series(records, name="text").apply(nltk.sent_tokenize).explode()
+df = s1.reset_index().rename(columns={"index":"step"})
+df = pd.concat([df, pd.json_normalize(s1.apply(sia.polarity_scores))], axis=1)
+df
 ```
 
 --------------------------------------------------------------------------------
@@ -2912,6 +3020,7 @@ print(f"Probability of {left}: {prob_left}")
 ### Chart Choices
 - Figure-level plots for multiple sub-charts; axis-level plot for a single chart
 - Continuous x-axis: `displot` (hist, kde, ecdf) or `relplot` (line, scatter)
+    * ECDF is awesome! Plot it overlapping a histogram for very cool plots
 - Categorical x-axis: `catplot` w/ `kind`: count,bar,box,violin,swarm,strip,more
 - `pairplot`, `heatmap`, `regplot`(scatter+reg), `jointplot`(scatter+edge hists)
     * `pairplot` charts can be accessed/modified with `.axes`
@@ -2944,11 +3053,28 @@ sns.regplot(x=sm_model.fittedvalues, y=abs_sqrt_resids, ci=None, lowess=None)
 plt.xlabel("fittedvalues")
 plt.ylabel("SQRT of ABS of STDized Residuals")
 ```
+```
+# HISTOGRAM WITH OVERLAPPING ECDF (COOL!)
+import seaborn as sns
+import pandas as pd
+df = sns.load_dataset("penguins").reset_index(drop=True)
+species_list = df["species"].unique()
+fig, axes = plt.subplots(1, 3, figsize=(8,4), sharey=True)
+for i, species in enumerate(species_list):
+    ax = axes[i]
+    temp = df[df["species"] == species]
+    sns.ecdfplot(data=temp, x="bill_length_mm", ax=ax, color="red")
+    sns.histplot(data=temp, x="bill_length_mm", ax=ax, stat="proportion")
+    ax.set_title(species)
+    ax.set_xlim(df["bill_length_mm"].min(), df["bill_length_mm"].max())
+plt.show()
+```
 ### Dataframe Styling
 - `df.style` is used for changing data presentation (not changing the data)
 - `df.plot` is only really useful for lightweight/few-line df plotting
 ```
 # STYLE DF: FORMAT/BAR NUMBERS, COLOR LEVELS, FORMAT STRINGS; PRINT TO HTML FILE
+from IPython.display import display, HTML
 import numpy as np
 import pandas as pd
 a1 = np.random.randint(30_000,200_000,1_000)
@@ -2968,6 +3094,7 @@ styler = df.head(10).style\
 html = df.head(10).style.use(styler).to_html()
 # with open("my.html", "w") as f:
 #     f.write(html)
+display(HTML(html))
 ```
 ### Chart Approaches
 - For interactivity, check out plotly: https://plotly.com/python/plotly-express/
@@ -3150,25 +3277,32 @@ X.columns = [str(col) for col in X.columns]
 from sklearn.model_selection import train_test_split as SPLIT
 X1, X_test, y1, y_test = SPLIT(X, y, test_size=0.2, random_state=42)
 X_train, X_val, y_train, y_val = SPLIT(X1, y1, test_size=0.25, random_state=42)
-# DETERMINE "K-BEST" COUNT VIA ALGORITHM (IF NEEDED)
+# SELECTKBEST: EVALUATE ESTIMATOR ONCE, KEEP BEST {K} FEATURES
+from sklearn.feature_selection import SelectKBest, f_classif
+k = 11
+kbest = SelectKBest(score_func=f_classif, k=k).fit(X_train, y_train)
+p_values = kbest.pvalues_
+best = X_train.columns[kbest.get_support()]
+print(f"SelectK: Best features from {k} selected:\n- " + "\n- ".join(best) + "")
+X_train_kb, X_val_kb, X_test_kb = X_train[best], X_val[best], X_test[best]
+# RECURSIVE FEATURE ENGINEERING (RFE): ITERATE EVALS, REMOVE FEATURES UNTIL {K}
+from sklearn.feature_selection import RFE
+from sklearn.tree import DecisionTreeClassifier as TREE
+k = 11
+rfe = RFE(estimator=TREE(random_state=42), n_features_to_select=k)  # verbose=1
+rfe.fit(X_train, y_train)
+best = X_train.columns[rfe.get_support()]
+col_rankings = pd.Series(rfe.ranking_, index=X_train.columns)
+print(f"RFE: Best features from {k} selected:\n- " + "\n- ".join(best) + "")
+X_train_RFE, X_val_RFE, X_test_RFE = X_train[best], X_val[best], X_test[best]
+# RFE WITH CROSS VALIDATION (MOST EXPENSIVE, MOST THOROUGH)
 from sklearn.feature_selection import RFECV
 from sklearn.tree import DecisionTreeClassifier as TREE
 rfecv = RFECV(estimator=TREE(random_state=42), cv=5, scoring='accuracy')
 rfecv.fit(X_train, y_train)
 k = rfecv.n_features_
-# SELECTKBEST: EVALUATE ESTIMATOR ONCE, KEEP BEST {K} FEATURES
-from sklearn.feature_selection import SelectKBest, f_classif
-kbest = SelectKBest(score_func=f_classif, k=k).fit(X_train, y_train)
-p_values = kbest.pvalues_
-best = X_train.columns[kbest.get_support()]
-X_train_kb, X_val_kb, X_test_kb = X_train[best], X_val[best], X_test[best]
-# RECURSIVE FEATURE ENGINEERING (RFE): ITERATE EVALS, REMOVE FEATURES UNTIL {K}
-from sklearn.feature_selection import RFE
-from sklearn.tree import DecisionTreeClassifier as TREE
-rfe = RFE(estimator=TREE(random_state=42), n_features_to_select=k, verbose=1)
-rfe.fit(X_train, y_train)
-best = X_train.columns[rfe.get_support()]
-col_rankings = pd.Series(rfe.ranking_, index=X_train.columns)
+print("Best # of features from RFECV:", k)
+print("Best features:\n- " + "\n- ".join(rfecv.get_feature_names_out()))
 X_train_RFE, X_val_RFE, X_test_RFE = X_train[best], X_val[best], X_test[best]
 ```
 
@@ -3603,25 +3737,32 @@ X.columns = [str(col) for col in X.columns]
 from sklearn.model_selection import train_test_split as SPLIT
 X1, X_test, y1, y_test = SPLIT(X, y, test_size=0.2, random_state=42)
 X_train, X_val, y_train, y_val = SPLIT(X1, y1, test_size=0.25, random_state=42)
+# SELECTKBEST: EVALUATE ESTIMATOR ONCE, KEEP {K} FEATURES
+from sklearn.feature_selection import SelectKBest, f_regression
+k = 9
+kbest = SelectKBest(score_func=f_regression, k=k).fit(X_train, y_train)
+p_values = kbest.pvalues_
+best = X_train.columns[kbest.get_support()]
+print(f"SelectK: Best features from {k} selected:\n- " + "\n- ".join(best) + "")
+X_train_kb, X_val_kb, X_test_kb = X_train[best], X_val[best], X_test[best]
+# RECURSIVE FEATURE ENGINEERING (RFE): ITERATE EVALS, REMOVE FEATURES UNTIL {K}
+from sklearn.feature_selection import RFE
+from sklearn.linear_model import LinearRegression as OLS
+k = 9
+rfe = RFE(estimator=OLS(), n_features_to_select=k) # verbose=1
+rfe.fit(X_train, y_train)
+best = X_train.columns[rfe.get_support()]
+col_rankings = pd.Series(rfe.ranking_, index=X_train.columns)
+print(f"RFE: Best features from {k} selected:\n- " + "\n- ".join(best) + "")
+X_train_RFE, X_val_RFE, X_test_RFE = X_train[best], X_val[best], X_test[best]
 # DETERMINE "K-BEST" COUNT VIA ALGORITHM (IF NEEDED)
 from sklearn.feature_selection import RFECV
 from sklearn.linear_model import LinearRegression as OLS
 rfecv = RFECV(estimator=OLS(), cv=5, scoring='neg_root_mean_squared_error')
 rfecv.fit(X_train, y_train)
 k = rfecv.n_features_
-# SELECTKBEST: EVALUATE ESTIMATOR ONCE, KEEP {K} FEATURES
-from sklearn.feature_selection import SelectKBest, f_regression
-kbest = SelectKBest(score_func=f_regression, k=k).fit(X_train, y_train)
-p_values = kbest.pvalues_
-best = X_train.columns[kbest.get_support()]
-X_train_kb, X_val_kb, X_test_kb = X_train[best], X_val[best], X_test[best]
-# RECURSIVE FEATURE ENGINEERING (RFE): ITERATE EVALS, REMOVE FEATURES UNTIL {K}
-from sklearn.feature_selection import RFE
-from sklearn.linear_model import LinearRegression as OLS
-rfe = RFE(estimator=OLS(), n_features_to_select=k, verbose=1)
-rfe.fit(X_train, y_train)
-best = X_train.columns[rfe.get_support()]
-col_rankings = pd.Series(rfe.ranking_, index=X_train.columns)
+print("Best # of features from RFECV:", k)
+print("Best features:\n- " + "\n- ".join(rfecv.get_feature_names_out()))
 X_train_RFE, X_val_RFE, X_test_RFE = X_train[best], X_val[best], X_test[best]
 ```
 
@@ -4849,7 +4990,6 @@ KUBE_EDITOR="vim" edit service <service>
 kubectl delete service myclusterip
 kubectl delete svc myloadbalancer
 kubectl delete service myclusterip myloadbalancer
-
 ```
 #### Service Accounts
 ```
@@ -5256,7 +5396,7 @@ if __name__ == "__main__":
 - `by(df$col1, df$col2, func)` apply func on col1 by unique value in col2
     * EX: `by(df$friend_count, df$gender, summary)` friend_count stats by gender
 ### (R)andom Code Blocks
-``` 
+```
 # Take Gapminder then select cols then filter for Kenya
 gapminder %>%
     select(country, lifeExp, gdpPercap) %>%
