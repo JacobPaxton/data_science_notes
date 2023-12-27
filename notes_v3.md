@@ -27,6 +27,7 @@ I.    [Environment Meta-Work         ](#environment-meta-work)
 II.   [Dataset Reference             ](#dataset-reference)
 1.    [Links to Datasets             ](#links-to-datasets)
 1.    [REST APIs                     ](#rest-apis)
+1.    [Read Local Files              ](#read-local-files)
 
 III.  [Regular Expressions           ](#regular-expressions)
 1.    [REGEX Syntax                  ](#regex-syntax)
@@ -45,8 +46,8 @@ V.    [Building a Database           ](#building-a-database)
 
 VI.   [Database Usage Mastery        ](#database-usage-mastery)
 1.    [SQL and Variants              ](#sql-and-variants)
-1.    [Elasticsearch                 ](#elasticsearch)
 1.    [Spark                         ](#spark)
+1.    [Elasticsearch                 ](#elasticsearch)
 
 VII.  [Feature Transformation        ](#feature-transformation)
 1.    [Dataframe Normalization       ](#dataframe-normalization)
@@ -67,56 +68,66 @@ IX.   [Natural Language Processing   ](#natural-language-processing)
 X.    [Geospatial                    ](#geospatial)
 1.    [Geospatial Analysis           ](#geospatial-analysis)
 
-XI.   [Insight Delivery              ](#insight-delivery)
-1.    [Statistical Analysis          ](#statistical-analysis)
+XI.   [Statistics                    ](#statistics)
+1.    [Probability                   ](#probability)
+1.    [Hypothesis Testing            ](#hypothesis-testing)
+
+XII.  [Insight Delivery              ](#insight-delivery)
 1.    [Visualizations                ](#visualizations)
 1.    [Magic in Jupyter              ](#magic-in-jupyter)
 
-XII.  [Classification                ](#classification)
+XIII. [Classification                ](#classification)
 1.    [Features for Classification   ](#features-for-classification)
 1.    [Training Classifiers          ](#training-classifiers)
 1.    [Evaluating Classifiers        ](#evaluating-classifiers)
+1.    [Classification Shotgun        ](#classification-shotgun)
 
-XIII. [Regression                    ](#regression)
+XIV.  [Regression                    ](#regression)
 1.    [Features for Regression       ](#features-for-regression)
 1.    [Training Regressors           ](#training-regressors)
 1.    [Evaluating Regressors         ](#evaluating-regressors)
+1.    [Regression Shotgun            ](#regression-shotgun)
 
-XIV.  [Time Series                   ](#time-series)
+XV.   [Time Series                   ](#time-series)
 1.    [Timestamp Engineering         ](#timestamp-engineering)
 1.    [Metrics of Time Series        ](#metrics-of-time-series)
 1.    [Outcome Plotting              ](#outcome-plotting)
 1.    [Time Series Modeling          ](#time-series-modeling)
 
-XV.   [Anomaly Detection             ](#anomaly-detection)
+XVI.  [Anomaly Detection             ](#anomaly-detection)
 1.    [Anomalic Metrics              ](#anomalic-metrics)
 1.    [Getting to the Numbers        ](#getting-to-the-numbers)
 1.    [Baselines and Deviation       ](#baselines-and-deviation)
 
-XVI.  [Neural Networks               ](#neural-networks)
+XVII. [Neural Networks               ](#neural-networks)
 1.    [Establishing a Neural Network ](#establishing-a-neural-network)
 1.    [Image Classification          ](#image-classification)
 1.    [Deep Learning                 ](#deep-learning)
 
-XVII. [Generative AI                 ](#generative-ai)
+XVIII.[Generative AI                 ](#generative-ai)
 1.    [Implementing LLMs             ](#implementing-llms)
 1.    [Implementing Image Generation ](#implementing-image-generation)
 
-XVIII.[Model Deployment              ](#model-deployment)
+XIX.  [Model Deployment              ](#model-deployment)
+1.    [Pipelining a Model            ](#pipelining-a-model)
 1.    [Building a Flask App          ](#building-a-flask-app)
 1.    [Building a Django App         ](#building-a-django-app)
 1.    [Deploying the Model           ](#deploying-the-model)
 
-XIX.  [Project Management            ](#project-management)
+XX.   [Application Scaling           ](#application-scaling)
+1.    [Kubernetes                    ](#kubernetes)
+1.    [Apache Kafka                  ](#apache-kafka)
+
+XXI.  [Project Management            ](#project-management)
 1.    [Planning a Project            ](#planning-a-project)
 1.    [Selecting the Framework       ](#selecting-the-framework)
 
-XX.   [Business Tools                ](#tools-and-languages)
+XXII. [Business Tools                ](#tools-and-languages)
 1.    [Excel and Google Sheets       ](#excel-and-google-sheets)
 1.    [PowerBI                       ](#powerbi)
 1.    [Tableau                       ](#tableau)
 
-XXI.  [Programming Languages         ](#programming-languages)
+XXIII.[Programming Languages         ](#programming-languages)
 1.    [Python Oddities               ](#python-oddities)
 1.    [R                             ](#r)
 1.    [C++                           ](#c)
@@ -183,7 +194,7 @@ I might want to add a script to update packages...
     * Classification: `conda install imbalanced-learn xgboost`
     * Webscraping: `conda install bs4 selenium`
         * Selenium requires downloading a browser driver, ex: "chromedriver.exe"
-    * Interactivity: `conda install dataclasses plotly flask django`
+    * Interactivity: `conda install dataclasses graphviz plotly flask django`
     * Big data: `conda install dask pyspark sqlalchemy h5py`
     * Geospatial: `conda install geopandas folium shapely`
     * Natural Language Processing: `conda install nltk wordcloud`
@@ -466,7 +477,7 @@ print(json_data["name"])
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
-## Conditional read_csv For Local Files
+## Read Local Files
 ```
 import os
 import pandas as pd
@@ -2697,35 +2708,173 @@ folium.Cloropleth(
 
 
 <!-- 
-###                                     
- #  #    #  ####  #  ####  #    # ##### 
- #  ##   # #      # #    # #    #   #   
- #  # #  #  ####  # #      ######   #   
- #  #  # #      # # #  ### #    #   #   
- #  #   ## #    # # #    # #    #   #   
-### #    #  ####  #  ####  #    #   #   
-                                        
-######                                             
-#     # ###### #      # #    # ###### #####  #   # 
-#     # #      #      # #    # #      #    #  # #  
-#     # #####  #      # #    # #####  #    #   #   
-#     # #      #      # #    # #      #####    #   
-#     # #      #      #  #  #  #      #   #    #   
-######  ###### ###### #   ##   ###### #    #   #   
+ #####                                                    
+#     # #####   ##   ##### #  ####  ##### #  ####   ####  
+#         #    #  #    #   # #        #   # #    # #      
+ #####    #   #    #   #   #  ####    #   # #       ####  
+      #   #   ######   #   #      #   #   # #           # 
+#     #   #   #    #   #   # #    #   #   # #    # #    # 
+ #####    #   #    #   #   #  ####    #   #  ####   ####  
 -->
 
-# Insight Delivery
+# Statistics
 ```
-Delivery of findings is key to project success.
-Hypothesis testing and statistical analysis is complex, but it can be pipelined.
-Good visualizations speak for themselves and you can template them for reuse.
-Jupyter notebooks are optimal for report delivery and should be mastered.
+Statistical analysis is vital for verifying our work.
+We can calculate probabilities to see whether outcomes are rare or common.
+We can run hypothesis tests to understand whether our findings are significant.
 ```
-- TODO: Probability section
+
+--------------------------------------------------------------------------------
+<!-- Needs work -->
+## Probability
+- Chances and rates
+- Probability of outcome: P(outcome) = (count_get_outcome) / (count_get_any)
+    * P(heads flip) = (1) / (2) -> (1) / (2) -> ... (independent events)
+    * P(name drawn) = (1) / (4) -> (1) / (3) -> ... (dependent events)
+- "Total Probability Law": Add each probability together
+    * Overall chance of defect: (1% * 50%) + (2% * 25%) + (3% * 25%) = 0.0175
+- "Bayes Theorem": P(A|B) = (P(B|A) * P(A)) / P(B)
+    * Probability that A is true given B is true: P(A|B)
+    * Probability that you survived if you had a gun: P(lived|gun)
+    * Probability that you had a gun if you survived: P(gun|lived)
+    * You know: P(lived) = 6/10, P(gun) = 3/10, P(gun|lived) = 2/6
+    * Bayes: P(lived|gun) = ((2/6) * (6/10)) / (3/10) -> (2/10) / (3/10) -> 2/3
+- Get P(A|B) of dataset: `(df["A"] & df["B"]).sum() / (df["B"].sum() / len(df))`
+    * Get P(A) given 2+ cols: `(df["A"] & mask).sum() / (mask.sum() / len(df))`
+    * Low probability here indicates "A" outcomes are anomalous!
+### Building Distributions
+- "Law of Large Numbers": larger sample brings sample mean closer to theoretical
+- Probability distribution: chart of outcomes and their chances
+- Probability from distribution: area
+    * Chance of rolling 1 or 2 from 6: 2/6 of the distribution (1/3)
+- Theoretical Distribution: `dist = stats.recipe(params)`
+    * Probability from distribution: `dist.method()`
+- Rolls from Theoretical Distribution: `dist = stats.recipe(params).rvs(size=x)`
+    * Set size to array (`(3,4)`) instead of `x` to do `(simulations, trials)`
+    * Alternate: `np.random.choice(avail_options, size=rolls, p=[p1, p2, ...])`
+### Theoretical Distributions from Parameters
+- Equal likelihood of all outcomes: Uniform (dice rolls)
+    * Not very useful for our purposes
+    * Recipe: `stats.randint.rvs(gte_val, lt_val, size=(10,10))`
+    * P(A) = 1 / len(Options)
+- Two outcomes: Binomial (coin flips)
+    * Not very useful for our purposes
+    * Recipe: `stats.binom.rvs(tries, chance_to_win, size=(10,10))`
+    * P(A) = `stats.binom.pmf(wintarget, tries, chance_to_win)` (discrete)
+- Outcomes congregating on one value: Normal (bell curve)
+    * Very useful if we expect a normal distribution for something
+    * Recipe: `stats.norm.rvs(center, size_one_stdev, size=(10,10))`
+    * P(A) = `stats.norm.pdf(mark, center, size_one_stdev)` (continuous)
+    * Between points: `stats.norm.cdf(0) - stats.norm.cdf(-1)` (AUC)
+    * Strategy: Identify mean and stdev, build distribution
+    * Central Limit Theorem: increase sample size, stats metrics get more normal
+- Events over time: Poisson (probability of an outcome in a time interval)
+    * Useful for time-related events; mu is average events per time interval
+        * With Poisson, lambda and mu are the same value
+    * Recipe: `stats.poisson.rvs(mu, size=(10,10))`
+    * P(A) = `stats.poisson.pmf(x, mu)` (discrete)
+    * Between counts: `stats.poisson.cdf(5, 2) - stats.poisson.cdf(3, 2)` (AUC)
+        * "3 to 5 events when the average is 2 events for that time interval"
+    * Strategy: Identify avg event count for time interval, build distribution
+    * Peak of distribution is always the lambda value (average count)
+- Time between events: Exponential (probability of wait time for Poisson event)
+    * Useful for time-related events; lambda is average events per time interval
+    * Recipe: `stats.expon.rvs(scale=events_per_interval, size=(10,10))`
+    * P(A) = `stats.expon.pdf(x, scale=events_per_interval)` (continuous)
+    * Between times: `stats.expon.cdf(4, scale=2) - stats.expon.cdf(1, scale=2)`
+        * "Between minute 1 and minute 4 when events are (avg) twice per minute"
+    * Strategy: Identify avg event count for time interval, build distribution
+- Failed attempts: Geometric (probability of consecutive failures)
+    * Useful when calculating probability of failing x times (CDF)
+    * Recipe: `stats.geom.rvs(success_chance, size=(10,10))`
+    * P(A): `stats.geom.pmf(attempt_when_successful, fail_chance)`
+    * Between attempts: `stats.geom.cdf(4, 0.3) - stats.geom.cdf(2, 0.3)`
+        * "2 to 4 attempts when the success chance is 30%"
+    * Strategy: Groupby each actor, avg successful attempt #, build distribution
+- Wider normal distribution: t-Distribution (sharper peak, wider flanges)
+    * Increasing degrees of freedom makes it look more like normal distribution
+- Right-skewed for normal: Log-Normal (0 to infinite, normal)
+    * When you can't go below a number, but the distribution is basically normal
+    * Lots of real-world examples for this
+- Lots more distributions... check scipy documentation for stats module
+### Methods for Distributions
+- Nice chart: https://ds.codeup.com/stats/pdf_pmf_cdf_ppf_sf_isf.png
+- Probability from Theoretical Distribution: `dist.method()`
+    * Chance of specific outcome: `dist.pmf(discrete)`, `dist.pdf(continuous)`
+    * Area larger than a mark: `dist.sf(num)`, `dist.isf(proportion)`
+    * Area less than or equal to a mark: `dist.cdf(num)`, `dist.ppf(proportion)`
+- Probability from Discrete Records: `vc = s.value_counts(normalize=True)`
+    * Chance of specific outcome: `vc.loc[x] if x in vc.index else "Not found"`
+    * CDF and SF: `cdf = vc.loc[(vc.index <= x)].sum()`, `sf = 1 - cdf`
+    * P(Between Marks): `vc.loc[(vc.index > left) & (vc.index < right)].sum()`
+- Probability from Continuous Records: `t = s.rank(method='average', pct=True)`
+    * Chance of specific outcome: draw density and plot point? hmm. thinking...
+    * Compare to value: `cdf = (s <= x).mean()`, `sf = 1 - cdf`
+- Proportions of Outcomes: `vc = df[["A","B"]].value_counts(normalize=True)`
+    * `vc.loc[("lived","gun")]` (previous step orders multi-index as "A","B")
+### Likelihood from Probabilities
+- Probability: probability, given the model, that a datapoint is predicted
+- Likelihood: probability, given the data, that a model could output the data
+```
+# HOW MODELS SELECT BEST FIT LINE
+mu_guess = np.mean(sample_distances)
+sigma_guess = np.std(sample_distances)
+probs = np.zeros(len(sample_distances))
+for n, distance in enumerate(sample_distances):
+    coeff_part = 1/(np.sqrt(2 * np.pi * sigma_guess**2))
+    exp_part = np.exp( - (x - mu_guess)**2 / (2 * sigma_guess**2))
+    probs[n] = coeff_part * exp_part
+likelihood = np.product(probs)
+loglikelihood = np.sum(np.log(probs))
+# MAXIMUM LIKELIHOOD ESTIMATION
+low_guess = sample_mean - 2*samp_stdev
+high_guess = sample_mean + 2*samp_stdev
+mu_guesses = np.linspace(low_guess, high_guess, 101)
+# LOGLIKELIHOOD FOR EACH GUESS
+loglikelihoods = np.zeros(len(mu_guesses))
+for n, guess in enumerate(mu_guesses):
+    loglikelihoods[n] = compute_loglikelihood(samp_distances, guess, samp_stdev)
+max_loglikelihood = np.max(loglikelihoods)
+best_mu = mu_guesses[loglikelihoods == max_loglikelihood]
+```
+### Probabilities for KDE line, where KDE is built from numerical observations
+```
+# SET RANGE TO CALCULATE PROBABILITY FOR
+left = -3
+right = 7
+# CREATE MISSHAPEN DATASET
+np.random.seed(1)
+s = stats.norm.rvs(loc=2, scale=12, size=10_000, random_state=1).tolist()
+s.extend(stats.norm.rvs(loc=20, scale=4, size=5_000, random_state=1).tolist())
+s.extend(np.random.choice([-10, -5], p=[0.7,0.3], size=1_000).tolist())
+# CALCULATE KDE OF DATASET
+hist = sns.histplot(s, kde=True)
+inp, out = hist.lines[0].get_data()
+plt.axvline(left, c="red")
+plt.axvline(right, c="red")
+# SLICE KDE BASED ON SELECTED RANGE
+inp_left, out_left = inp[inp <= left], out[inp <= left]
+inp_right, out_right = inp[inp <= right], out[inp <= right]
+# GET CDF OF EACH SELECTED LIMIT
+from sklearn.metrics import auc
+full_area = auc(inp, out)
+cdf_gt = auc(inp_left, out_left)
+cdf_lte = auc(inp_right, out_right)
+# CALCULATE PROBABILITY OF BEING BETWEEN MARKS
+prob_between = (cdf_lte - cdf_gt) / full_area
+print(f"Probability of being between {left} and {right}: {prob_between}")
+# PROBABILITY OF ONE MARK
+loc_nearest_right = np.abs(inp - right).argmin()
+loc_nearest_left = np.abs(inp - left).argmin()
+prob_right = out[loc_nearest_right] / len(s)
+prob_left = out[loc_nearest_left] / len(s)
+print(f"Probability of {right}: {prob_right}")
+print(f"Probability of {left}: {prob_left}")
+```
 
 --------------------------------------------------------------------------------
 <!-- Needs Work -->
-## Statistical Analysis
+## Hypothesis Testing
 - X categoricals against y categorical: chi2; independent cells, cells are > 5
     * Degree of Freedom: (num_cols - 1) * (num_rows - 1)
 - X categoricals against y continuous: t-test; 1samp/2samp, normality, variance
@@ -2862,150 +3011,38 @@ df = pd.DataFrame({"hi":s1, "yo":s2, "sup":s3})
 do_stats(df, y="hi", chi2s=["yo"])                        # run chi2 test
 do_stats(df, y="sup", ttests=["hi","yo"], corrs=["sup"])  # run t-tests, corrs
 ```
-### Probability
-- Chances and rates
-- Probability of outcome: P(outcome) = (count_get_outcome) / (count_get_any)
-    * P(heads flip) = (1) / (2) -> (1) / (2) -> ... (independent events)
-    * P(name drawn) = (1) / (4) -> (1) / (3) -> ... (dependent events)
-- "Total Probability Law": Add each probability together
-    * Overall chance of defect: (1% * 50%) + (2% * 25%) + (3% * 25%) = 0.0175
-- "Bayes Theorem": P(A|B) = (P(B|A) * P(A)) / P(B)
-    * Probability that A is true given B is true: P(A|B)
-    * Probability that you survived if you had a gun: P(lived|gun)
-    * Probability that you had a gun if you survived: P(gun|lived)
-    * You know: P(lived) = 6/10, P(gun) = 3/10, P(gun|lived) = 2/6
-    * Bayes: P(lived|gun) = ((2/6) * (6/10)) / (3/10) -> (2/10) / (3/10) -> 2/3
-- Get P(A|B) of dataset: `(df["A"] & df["B"]).sum() / (df["B"].sum() / len(df))`
-    * Get P(A) given 2+ cols: `(df["A"] & mask).sum() / (mask.sum() / len(df))`
-    * Low probability here indicates "A" outcomes are anomalous!
-#### Building Distributions
-- "Law of Large Numbers": larger sample brings sample mean closer to theoretical
-- Probability distribution: chart of outcomes and their chances
-- Probability from distribution: area
-    * Chance of rolling 1 or 2 from 6: 2/6 of the distribution (1/3)
-- Theoretical Distribution: `dist = stats.recipe(params)`
-    * Probability from distribution: `dist.method()`
-- Rolls from Theoretical Distribution: `dist = stats.recipe(params).rvs(size=x)`
-    * Set size to array (`(3,4)`) instead of `x` to do `(simulations, trials)`
-    * Alternate: `np.random.choice(avail_options, size=rolls, p=[p1, p2, ...])`
-#### Theoretical Distributions from Parameters
-- Equal likelihood of all outcomes: Uniform (dice rolls)
-    * Not very useful for our purposes
-    * Recipe: `stats.randint.rvs(gte_val, lt_val, size=(10,10))`
-    * P(A) = 1 / len(Options)
-- Two outcomes: Binomial (coin flips)
-    * Not very useful for our purposes
-    * Recipe: `stats.binom.rvs(tries, chance_to_win, size=(10,10))`
-    * P(A) = `stats.binom.pmf(wintarget, tries, chance_to_win)` (discrete)
-- Outcomes congregating on one value: Normal (bell curve)
-    * Very useful if we expect a normal distribution for something
-    * Recipe: `stats.norm.rvs(center, size_one_stdev, size=(10,10))`
-    * P(A) = `stats.norm.pdf(mark, center, size_one_stdev)` (continuous)
-    * Between points: `stats.norm.cdf(0) - stats.norm.cdf(-1)` (AUC)
-    * Strategy: Identify mean and stdev, build distribution
-    * Central Limit Theorem: increase sample size, stats metrics get more normal
-- Events over time: Poisson (probability of an outcome in a time interval)
-    * Useful for time-related events; mu is average events per time interval
-        * With Poisson, lambda and mu are the same value
-    * Recipe: `stats.poisson.rvs(mu, size=(10,10))`
-    * P(A) = `stats.poisson.pmf(x, mu)` (discrete)
-    * Between counts: `stats.poisson.cdf(5, 2) - stats.poisson.cdf(3, 2)` (AUC)
-        * "3 to 5 events when the average is 2 events for that time interval"
-    * Strategy: Identify avg event count for time interval, build distribution
-    * Peak of distribution is always the lambda value (average count)
-- Time between events: Exponential (probability of wait time for Poisson event)
-    * Useful for time-related events; lambda is average events per time interval
-    * Recipe: `stats.expon.rvs(scale=events_per_interval, size=(10,10))`
-    * P(A) = `stats.expon.pdf(x, scale=events_per_interval)` (continuous)
-    * Between times: `stats.expon.cdf(4, scale=2) - stats.expon.cdf(1, scale=2)`
-        * "Between minute 1 and minute 4 when events are (avg) twice per minute"
-    * Strategy: Identify avg event count for time interval, build distribution
-- Failed attempts: Geometric (probability of consecutive failures)
-    * Useful when calculating probability of failing x times (CDF)
-    * Recipe: `stats.geom.rvs(success_chance, size=(10,10))`
-    * P(A): `stats.geom.pmf(attempt_when_successful, fail_chance)`
-    * Between attempts: `stats.geom.cdf(4, 0.3) - stats.geom.cdf(2, 0.3)`
-        * "2 to 4 attempts when the success chance is 30%"
-    * Strategy: Groupby each actor, avg successful attempt #, build distribution
-- Wider normal distribution: t-Distribution (sharper peak, wider flanges)
-    * Increasing degrees of freedom makes it look more like normal distribution
-- Right-skewed for normal: Log-Normal (0 to infinite, normal)
-    * When you can't go below a number, but the distribution is basically normal
-    * Lots of real-world examples for this
-- Lots more distributions... check scipy documentation for stats module
-#### Methods for Distributions
-- Nice chart: https://ds.codeup.com/stats/pdf_pmf_cdf_ppf_sf_isf.png
-- Probability from Theoretical Distribution: `dist.method()`
-    * Chance of specific outcome: `dist.pmf(discrete)`, `dist.pdf(continuous)`
-    * Area larger than a mark: `dist.sf(num)`, `dist.isf(proportion)`
-    * Area less than or equal to a mark: `dist.cdf(num)`, `dist.ppf(proportion)`
-- Probability from Discrete Records: `vc = s.value_counts(normalize=True)`
-    * Chance of specific outcome: `vc.loc[x] if x in vc.index else "Not found"`
-    * CDF and SF: `cdf = vc.loc[(vc.index <= x)].sum()`, `sf = 1 - cdf`
-    * P(Between Marks): `vc.loc[(vc.index > left) & (vc.index < right)].sum()`
-- Probability from Continuous Records: `t = s.rank(method='average', pct=True)`
-    * Chance of specific outcome: draw density and plot point? hmm. thinking...
-    * Compare to value: `cdf = (s <= x).mean()`, `sf = 1 - cdf`
-- Proportions of Outcomes: `vc = df[["A","B"]].value_counts(normalize=True)`
-    * `vc.loc[("lived","gun")]` (previous step orders multi-index as "A","B")
-#### Likelihood from Probabilities
-- Probability: probability, given the model, that a datapoint is predicted
-- Likelihood: probability, given the data, that a model could output the data
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
+###                                     
+ #  #    #  ####  #  ####  #    # ##### 
+ #  ##   # #      # #    # #    #   #   
+ #  # #  #  ####  # #      ######   #   
+ #  #  # #      # # #  ### #    #   #   
+ #  #   ## #    # # #    # #    #   #   
+### #    #  ####  #  ####  #    #   #   
+                                        
+######                                             
+#     # ###### #      # #    # ###### #####  #   # 
+#     # #      #      # #    # #      #    #  # #  
+#     # #####  #      # #    # #####  #    #   #   
+#     # #      #      # #    # #      #####    #   
+#     # #      #      #  #  #  #      #   #    #   
+######  ###### ###### #   ##   ###### #    #   #   
+-->
+
+# Insight Delivery
 ```
-# HOW MODELS SELECT BEST FIT LINE
-mu_guess = np.mean(sample_distances)
-sigma_guess = np.std(sample_distances)
-probs = np.zeros(len(sample_distances))
-for n, distance in enumerate(sample_distances):
-    coeff_part = 1/(np.sqrt(2 * np.pi * sigma_guess**2))
-    exp_part = np.exp( - (x - mu_guess)**2 / (2 * sigma_guess**2))
-    probs[n] = coeff_part * exp_part
-likelihood = np.product(probs)
-loglikelihood = np.sum(np.log(probs))
-# MAXIMUM LIKELIHOOD ESTIMATION
-low_guess = sample_mean - 2*samp_stdev
-high_guess = sample_mean + 2*samp_stdev
-mu_guesses = np.linspace(low_guess, high_guess, 101)
-# LOGLIKELIHOOD FOR EACH GUESS
-loglikelihoods = np.zeros(len(mu_guesses))
-for n, guess in enumerate(mu_guesses):
-    loglikelihoods[n] = compute_loglikelihood(samp_distances, guess, samp_stdev)
-max_loglikelihood = np.max(loglikelihoods)
-best_mu = mu_guesses[loglikelihoods == max_loglikelihood]
-```
-#### Probabilities for KDE line, where KDE is built from numerical observations
-```
-# SET RANGE TO CALCULATE PROBABILITY FOR
-left = -3
-right = 7
-# CREATE MISSHAPEN DATASET
-np.random.seed(1)
-s = stats.norm.rvs(loc=2, scale=12, size=10_000, random_state=1).tolist()
-s.extend(stats.norm.rvs(loc=20, scale=4, size=5_000, random_state=1).tolist())
-s.extend(np.random.choice([-10, -5], p=[0.7,0.3], size=1_000).tolist())
-# CALCULATE KDE OF DATASET
-hist = sns.histplot(s, kde=True)
-inp, out = hist.lines[0].get_data()
-plt.axvline(left, c="red")
-plt.axvline(right, c="red")
-# SLICE KDE BASED ON SELECTED RANGE
-inp_left, out_left = inp[inp <= left], out[inp <= left]
-inp_right, out_right = inp[inp <= right], out[inp <= right]
-# GET CDF OF EACH SELECTED LIMIT
-from sklearn.metrics import auc
-full_area = auc(inp, out)
-cdf_gt = auc(inp_left, out_left)
-cdf_lte = auc(inp_right, out_right)
-# CALCULATE PROBABILITY OF BEING BETWEEN MARKS
-prob_between = (cdf_lte - cdf_gt) / full_area
-print(f"Probability of being between {left} and {right}: {prob_between}")
-# PROBABILITY OF ONE MARK
-loc_nearest_right = np.abs(inp - right).argmin()
-loc_nearest_left = np.abs(inp - left).argmin()
-prob_right = out[loc_nearest_right] / len(s)
-prob_left = out[loc_nearest_left] / len(s)
-print(f"Probability of {right}: {prob_right}")
-print(f"Probability of {left}: {prob_left}")
+Delivery of findings is key to project success.
+Good visualizations speak for themselves and you can template them for reuse.
+Jupyter notebooks are optimal for report delivery and should be mastered.
 ```
 
 --------------------------------------------------------------------------------
@@ -3309,6 +3346,9 @@ X_train_RFE, X_val_RFE, X_test_RFE = X_train[best], X_val[best], X_test[best]
 --------------------------------------------------------------------------------
 <!-- Needs work -->
 ## Training Classifiers
+- Ultimately, classifiers always take an input and map it to a discrete output
+- Different classification algorithms use different mapping methodologies
+### Available Classifiers
 - **Decision Tree (CART)**
     * A sequence of rules or a decision boundary for decisions
     * Nodes in tree are chosen to maximize "information gain" (class separation)
@@ -3343,278 +3383,47 @@ X_train_RFE, X_val_RFE, X_test_RFE = X_train[best], X_val[best], X_test[best]
     * Stochastic Gradient Boosting uses random non-replaced rows, rand features
     * Repeat this learning until N predictors are trained
     * World-class performance but near-impossible to explain to stakeholders
+- **Stochastic Gradient Descent**
+- **Support Vector Machine**
 - **One Vs Rest**
     * Breakdown of multiclass problem into several binary class problems
-- Not shown: SGDC, SVM
 ```
+# SAMPLE DATA FOR MODEL TESTING
 import pandas as pd
+from sklearn.datasets import make_classification as MC
+X, y = MC(n_samples=10_000, n_features=20, n_classes=2, 
+          n_informative=6, n_redundant=10, random_state=42)
+X, y = pd.DataFrame(X), pd.Series(y, name="target")
+X.columns = [str(col) for col in X.columns]
+from sklearn.model_selection import train_test_split as SPLIT
+X1, X_test, y1, y_test = SPLIT(X, y, test_size=0.2, random_state=42)
+X_train, X_val, y_train, y_val = SPLIT(X1, y1, test_size=0.25, random_state=42)
+# CREATE, FIT CLASSIFIER
 from sklearn.tree import DecisionTreeClassifier as TREE
-from sklearn.ensemble import RandomForestClassifier as RF
+tree = TREE(max_depth=3, random_state=42)    # min_samples_leaf = 0.15
+tree = clf.fit(X_train, y_train)
+y_train_preds = tree.predict(X_train)
+y_train_preds_proba = tree.predict_proba(X_train)
+# VOTING CLASSIFIER: MULTIPLE MODELS VOTE ON EACH ROW'S CLASS
 from sklearn.linear_model import LogisticRegression as LOGIT
-from sklearn.naive_bayes import GaussianNB as NB
 from sklearn.neighbors import KNeighborsClassifier as KNN
-from sklearn.ensemble import AdaBoostClassifier as ABC
-from sklearn.ensemble import GradientBoostingClassifier as GBC
-from xgboost import XGBClassifier as XGB
-from sklearn.multiclass import OneVsRestClassifier as OVR
-def classification_shotgun(X_train, y_train, X_out, y_out):
-    """
-    Build various classification models and get their predictions on a dataset.
-    - Models: DecisionTree, RF, LogisticRegression, GaussianNB, KNeighbors, XGB
-    """
-    if type(y_train) != type(pd.DataFrame()):
-        y_train = pd.DataFrame(y_train.rename('in_actuals'))
-    if type(y_out) != type(pd.DataFrame()):
-        y_out = pd.DataFrame(y_out.rename('out_actuals'))
-    y_train, y_out = mode_bl(y_train, y_out)
-    y_train, y_out = decisiontree(X_train, y_train, X_out, y_out)
-    y_train, y_out = randomforest(X_train, y_train, X_out, y_out)
-    y_train, y_out = logisticregression(X_train, y_train, X_out, y_out)
-    y_train, y_out = naivebayes(X_train, y_train, X_out, y_out)
-    y_train, y_out = knearestneighbors(X_train, y_train, X_out, y_out)
-    y_train, y_out = xgboosts(X_train, y_train, X_out, y_out)
-    return y_train, y_out # return dataframes of predictions
-def manual_baseline(y_train, y_out, baseline_value):
-    """Add a column for the manually-selected baseline prediction"""
-    y_train['manual_baseline'] = baseline_value
-    y_out['manual_baseline'] = baseline_value
-    return y_train, y_out   # return DATAFRAMES with new preds columns
-def mode_bl(y_train, y_out):
-    """Calculate baseline using mode class for model comparison"""
-    mode = y_train.in_actuals.mode().tolist()[0]  # find baseline
-    y_train['mode_baseline'] = mode
-    y_out['mode_baseline'] = mode
-    return y_train, y_out   # return DATAFRAMES with new preds columns
-def tree(X_train, y_train, X_out, y_out):
-    """Creates decision trees with max_depth 1,2,3,5,10 and random_state=42"""
-    for depth in [1,2,3,5,10]:  # decision node depth
-        model_name = f"tree_maxdepth{depth}"
-        tree = TREE(max_depth=i,random_state=42).fit(X_train,y_train.in_actuals)
-        y_train[model_name] = tree.predict(X_train)
-        y_out[model_name] = tree.predict(X_out)
-    return y_train, y_out    # return DATAFRAMES with new preds columns
-def randomforest(X_train, y_train, X_out, y_out):
-    """Creates random forests with max_depth 1,2,3,5,10 and random_state=42"""
-    for i in [1,2,3,5,10]:
-        model_name = f"rf_depth{i}"
-        rf = RF(max_depth=i, random_state=42).fit(X_train, y_train.in_actuals)
-        y_train[model_name] = rf.predict(X_train)
-        y_out[model_name] = rf.predict(X_out)
-    return y_train, y_out    # return DATAFRAMES with new preds columns
-def logisticregression(X_train, y_train, X_out, y_out):
-    """Creates logistic regressions with random_state=42"""
-    logit = LOGIT(random_state=42).fit(X_train, y_train.in_actuals)
-    y_train['logit'] = logit.predict(X_train)
-    y_out['logit'] = logit.predict(X_out)
-    return y_train, y_out    # return DATAFRAMES with new preds columns
-def naivebayes(X_train, y_train, X_out, y_out):
-    """Creates Naive-Bayes with var_smoothing of .001, .01, 10, 100"""
-    for smooth_level in [.00001, .0001, .001, .01, 10, 100]:
-        model_name = f"nb_vsmooth{smooth_level}"
-        nb = NB(var_smoothing=smooth_level).fit(X_train, y_train.in_actuals)
-        y_train[model_name] = nb.predict(X_train)
-        y_out[model_name] = nb.predict(X_out)
-    return y_train, y_out    # return DATAFRAMES with new preds columns
-def knearestneighbors(X_train, y_train, X_out, y_out):
-    """Create KNNs with neighbor counts of 3, 5, 10, 25, 75"""
-    for neighbor_count in [3,5,10,25,75]:
-        model_name = f"knn_n{neighbor_count}"
-        knn = KNN(n_neighbors=neighbor_count).fit(X_train, y_train.in_actuals)
-        y_train[model_name] = knn.predict(X_train)
-        y_out[model_name] = knn.predict(X_out)
-    return y_train, y_out    # return DATAFRAMES with new preds columns
-def adaboostclass(X_train, y_train, X_out, y_out):
-    """Create AdaBoost classifier models with random_state=42"""
-    tree = TREE(max_depth=1, random_state=42)  # "decision stump"
-    abc = ABC(base_estimator=tree, n_estimators=100)
-    abc.fit(X_train, y_train.in_actuals)
-    y_train['adaboostclass'] = abc.predict(X_train)
-    y_out['adaboostclass'] = abc.predict(X_out)
-    return y_train, y_out    # return DATAFRAMES with new preds columns
-def gradboostclass(X_train, y_train, X_out, y_out):
-    """Create Gradient-Boosted Trees Classifier with weak learners"""
-    gbc = GBC(n_estimators=300, max_depth=1, random_state=42)
-    gbc.fit(X_train, y_train.in_actuals)
-    y_train['gradboostclass'] = gbc.predict(X_train)
-    y_out['gradboostclass'] = gbc.predict(X_out)
-    return y_train, y_out    # return DATAFRAMES with new preds columns
-def xgboosts(X_train, y_train, X_out, y_out):
-    """Create XGBoost models with max_depth 3,5,7,9 and random_state=42"""
-    for i in [3,5,7,9]:
-        model_name = f"xgb_maxdepth{i}"
-        xgb = XGB(max_depth=i, random_state=42).fit(X_train, y_train.in_actuals)
-        y_train[model_name] = xgb.predict(X_train)
-        y_out[model_name] = xgb.predict(X_out)
-    return y_train, y_out    # return DATAFRAMES with new preds columns
-```
-```
-from sklearn.model_selection import train_test_split
-df = pd.DataFrame({"hi":[1,2,3,4,3,2,3,2,1]*300, "yo":[1,0,0,1,1,1,0,1,1]*300,
-                   "sup":[1,0,1,1,1,1,0,0,1]*300})
-train, test = train_test_split(df)
-X_train, y_train = train.drop(columns=["sup"]), train.sup
-X_test, y_test = test.drop(columns=["sup"]), test.sup
-y_train, y_out = classification_shotgun(X_train, y_train, X_test, y_test)
-```
-```
-from sklearn.tree import DecisionTreeClassifier as TREE
-clf = TREE(max_depth=3, random_state=123)  # min_samples_leaf = 0.15   # 15% per
-clf = clf.fit(X_train, y_train)
-y_train_pred = clf.predict(X_train)
-y_train_pred_proba = clf.predict_proba(X_train)
-```
-```
-from sklearn.ensemble import VotingClassifier
-# VOTING CLASSIFIER
-logit = LogisticRegression()
-knn = KNN()
-tree = DecisionTreeClassifier()
+from sklearn.ensemble import VotingClassifier as VC
+logit, knn, tree = LOGIT(), KNN(), TREE()
 classifiers = [("logit", logit), ("knn", knn), ("tree", tree)]
 vc = VotingClassifier(estimators=classifiers)
 vc.fit(X_train, y_train)
-y_pred = vc.predict(X_test)
+y_pred_vc = vc.predict(X_test)
 print("Voting Classifier: {.3f}".format(accuracy_score(y_test, y_pred)))
-```
-```
+# BAGGING: MANY MODELS ON DATA BOOTSTRAPS (RANDOM SUBSETS WITH REPLACEMENT)
 from sklearn.ensemble import BaggingClassifier as BAGGER
-# BAGGING, AKA, BOOTSTRAPPING
-tree = DecisionTreeClassifer()
+tree = TREE()
 bc1 = BAGGER(base_estimator=tree, n_estimators=300, n_jobs=-1)
-# fit, predict... or...
-# OUT OF BAG EVALUATION: DO BAGGING, BUT EACH HAS HOLD-OUT SET, EVAL, AVG ACROSS
+bc1.fit(X_train, y_train)
+y_pred_bc1 = bc1.predict(X_train)
 bc2 = BAGGER(base_estimator=tree, n_estimators=300, n_jobs=-1, oob_score=True)
-print(bc2.oob_score_)  # this is a cheap/effective way to do cross validation
-```
-```
-from sklearn.preprocessing import StandardScaler
-from sklearn.decomposition import PCA
-from skelarn.pipeline import Pipeline
-pipe = Pipeline([
-    ("scaler", StandardScaler()),     # step 1
-    ("reducer", PCA())])              # step 2
-pc = pipe.fit_transform(num_df)
-print(pc[:,:2])
-df["PC 1"] = pc[:,0]
-df["PC 2"] = pc[:,1]
-sns.scatterplot(data=df, x="PC 1", y="PC 2", hue="cat_col", alpha=0.4)
-pipe = Pipeline([
-    ("scaler", StandardScaler()), 
-    ("reducer", PCA(n_components=3)),  # choose between 0 and 1 for PCA to lift!
-    ("classifier", RandomForestClassifier())])
-print(pipe["reducer"])
-pipe.fit(X_train, y_train)
-print(pipe["reducer"].explained_variance_ratio_)
-print(pipe["reducer"].explained_variance_ratio_.sum()) # current explained var
-print(pipe.score(X_test, y_test)) # hopefully we did well!!
-```
-
---------------------------------------------------------------------------------
-<!-- Needs work -->
-## Evaluating Classifiers
-- **Accuracy:** Overall performance of model: (TP + TN) / (total count)
-    * Easy to understand; how many outcomes did the model accurately predict?
-    * Imbalanced class problem may yield misleading results
-- **Recall:** Positive actual against our predictions: TP / (TP + FN)
-    * Example: Credit card fraud detection (maximize fraud capture)
-    * Minimizing false negatives; Use when FN is more costly than FP 
-    * Also known as Sensitivity; opposite-class recall is called Specificity
-- **Precision:** Our prediction against all possible actuals: TP / (TP + FP)
-    * Minimizing false positives; Use when FP is more costly than FN
-    * Example: Spam filter (maximize normal-mail capture)
-- **F1 Score:** Harmonic mean of Precision and Recall: TP / (TP + 0.5(FP + FN))
-    * Prioritizing both Recall and Precision; similar to accuracy
-    * Use for accuracy on an imbalanced class problem
-- **Receiver Operating Characteristic:** False Positive Rate, True Positive Rate
-    * Model performance at different decision thresholds
-    * The model with best ROC AUC is best across decision thresholds
-```
-def print_classification_results(y_train, y_out):
-    """Get metrics for a dataframe of model predictions columns, return a df."""
-    cols = ['Model','InSample_Accuracy','OutSample_Accuracy','InSample_Recall'
-        'OutSample_Recall','InSample_Precision','OutSample_Precision',
-        'InSample_F1_Score','OutSample_F1_Score']
-    running_list = []
-    # LOOP THROUGH EACH MODEL
-    for i, model in enumerate(y_train.columns[1:]):
-        train_TP = ((y_train[model] == 1) & (y_train['in_actuals'] == 1)).sum()
-        train_TN = ((y_train[model] == 0) & (y_train['in_actuals'] == 0)).sum()
-        train_FP = ((y_train[model] == 1) & (y_train['in_actuals'] == 0)).sum()
-        train_FN = ((y_train[model] == 0) & (y_train['in_actuals'] == 1)).sum()
-        out_TP = ((y_out[model] == 1) & (y_out['out_actuals'] == 1)).sum()
-        out_TN = ((y_out[model] == 0) & (y_out['out_actuals'] == 0)).sum()
-        out_FP = ((y_out[model] == 1) & (y_out['out_actuals'] == 0)).sum()
-        out_FN = ((y_out[model] == 0) & (y_out['out_actuals'] == 1)).sum()
-        # CALCULATE ACCURACY, RECALL, PRECISION, F1 SCORE
-        in_acc = (y_train[model] == y_train.in_actuals).mean()
-        out_acc = (y_out[model] == y_out.out_actuals).mean()
-        in_recall = train_TP / (train_TP + train_FN)
-        out_recall = out_TP / (out_TP + out_FN)
-        in_prec = train_TP / (train_TP + train_FP)
-        out_prec = out_TP / (out_TP + out_FP)
-        in_f1 = (2 * in_prec * in_recall) / (in_prec + in_recall)
-        out_f1 = (2 * out_prec * out_recall) / (out_prec + out_recall)
-        # BUILD RESULTS DATAFRAME
-        row = {'Model':model, 
-            'InSample_Accuracy': round(in_acc, 4), 
-            'OutSample_Accuracy': round(out_acc, 4),
-            'InSample_Recall': round(in_recall, 4),
-            'OutSample_Recall': round(out_recall, 4),
-            'InSample_Precision': round(in_prec, 4),
-            'OutSample_Precision': round(out_prec, 4),
-            'InSample_F1_Score': round(in_f1, 4),
-            'OutSample_F1_Score': round(out_f1, 4)}
-        running_list.append(row)
-    return pd.DataFrame(running_list)  # return dataframe of model performances
-```
-```
-from sklearn.model_selection import train_test_split
-df = pd.DataFrame({"hi":[1,2,3,4,3,2,3,2,1]*300, "yo":[1,0,0,1,1,1,0,1,1]*300,
-                   "sup":[1,0,1,1,1,1,0,0,1]*300})
-train, test = train_test_split(df)
-X_train, y_train = train.drop(columns=["sup"]), train.sup
-X_test, y_test = test.drop(columns=["sup"]), test.sup
-y_train, y_out = classification_shotgun(X_train, y_train, X_test, y_test)
-print_classification_results(y_train, y_out)
-```
-```
-from sklearn.metrics import classification_report
-print(clf.score(X_validate, y_validate))
-print(clf.feature_importances_)
-validate_report = pd.DataFrame(classification_report(validate.actuals, 
-    validate.predictions, labels=['true', 'false'], output_dict=True)).T
-```
-### Visualize the Decision Tree
-```
-from sklearn.tree import export_graphviz
-import graphviz
-from graphviz import Graph
-dot_data = export_graphviz(clf, feature_names=X_train.columns, 
-    class_names=clf.classes_, rounded=True, filled=True, out_file=None)
-graph = graphviz.Source(dot_data) 
-graph.render('iris_decision_tree', view=True)   # display tree via PDF
-```
-### Receiver Operating Characteristic AUC
-- Track model's ability to get correct answers across decision thresholds
-```
-from sklearn.metrics import roc_curve, auc, roc_auc_score
-from sklearn.linear_model import LogisticRegression
-bl_probs = [True for _ in range(len(y_test))]
-model = LogisticRegression(random_state=42)
-model.fit(X_train, y_train["in_actuals"])
-model_probs = model.predict_proba(X_test)[:,1]
-bl_auc = roc_auc_score(y_test.astype("bool"), bl_probs)
-model_auc = roc_auc_score(y_test.astype("bool"), model_probs)
-print('Baseline: ROC AUC=%.3f' % (bl_auc))
-print('Logistic Regression: ROC AUC=%.3f' % (model_auc))
-bl_fpr, bl_tpr, bl_thresholds = roc_curve(y_test, bl_probs)
-model_fpr, model_tpr, model_thresholds = roc_curve(y_test, model_probs)
-plt.plot(bl_fpr, bl_tpr, linestyle='--', label='Baseline')
-plt.plot(model_fpr, model_tpr, marker='.', label='Model')
-plt.xlabel("False Positive Rate")
-plt.ylabel("True Positive Rate")
-plt.title("Receiver Operating Characteristic")
-plt.legend(loc="lower right")
-plt.show()
+bc2.fit(X_train, y_train)
+y_pred_bc2 = bc2.predict(X_train)
+print(bc2.oob_score_)  # out of bag score; essentially score on cross-validation
 ```
 ### Cross-Validation
 - Remove bias from selection of train split's records for model generalization
@@ -3687,6 +3496,234 @@ rfr = rnd.best_estimator_
 joblib.dump(rfr, "rfr_best.pkl")
 ```
 
+--------------------------------------------------------------------------------
+<!-- Needs work -->
+## Evaluating Classifiers
+- **Accuracy:** Overall performance of model: (TP + TN) / (total count)
+    * Easy to understand; how many outcomes did the model accurately predict?
+    * Imbalanced class problem may yield misleading results
+- **Recall:** Positive actual against our predictions: TP / (TP + FN)
+    * Example: Credit card fraud detection (maximize fraud capture)
+    * Minimizing false negatives; Use when FN is more costly than FP 
+    * Also known as Sensitivity; opposite-class recall is called Specificity
+- **Precision:** Our prediction against all possible actuals: TP / (TP + FP)
+    * Minimizing false positives; Use when FP is more costly than FN
+    * Example: Spam filter (maximize normal-mail capture)
+- **F1 Score:** Harmonic mean of Precision and Recall: TP / (TP + 0.5(FP + FN))
+    * Prioritizing both Recall and Precision; similar to accuracy
+    * Use for accuracy on an imbalanced class problem
+- **Receiver Operating Characteristic:** False Positive Rate, True Positive Rate
+    * Model performance at different decision thresholds
+    * The model with best ROC AUC is best across decision thresholds
+```
+# SAMPLE DATA FOR MODEL TESTING
+import pandas as pd
+from sklearn.datasets import make_classification as MC
+X, y = MC(n_samples=10_000, n_features=20, n_classes=2, 
+          n_informative=6, n_redundant=10, random_state=42)
+X, y = pd.DataFrame(X), pd.Series(y, name="target")
+X.columns = [str(col) for col in X.columns]
+from sklearn.model_selection import train_test_split as SPLIT
+X1, X_test, y1, y_test = SPLIT(X, y, test_size=0.2, random_state=42)
+X_train, X_val, y_train, y_val = SPLIT(X1, y1, test_size=0.25, random_state=42)
+# CREATE CLASSIFIER
+from sklearn.tree import DecisionTreeClassifier as TREE
+params = {"max_depth":5, "random_state":42}
+model = TREE(**params).fit(X_train, y_train)
+y_train_preds = model.predict(X_train)
+# SHOW DECISION TREE IN VISUAL
+from sklearn.tree import export_graphviz as EG
+from graphviz import Graph, Source
+dot_data = EG(model, feature_names=X_train.columns, 
+    class_names=[str(x) for x in model.classes_], 
+    rounded=True, filled=True, out_file=None)
+graph = Source(dot_data) 
+graph.render('iris_decision_model', view=True)   # display model via PDF
+# EVALUATE CLASSIFIER
+from sklearn.metrics import classification_report as CR
+print("Out of Sample Score:", model.score(X_val, y_val))
+report = CR(y_train, y_train_preds, output_dict=True)
+validate_report = pd.DataFrame(report).T
+# RECEIVER OPERATING CHARACTERISTIC (ROC) AREA UNDER CURVE (AUC)
+from sklearn.metrics import roc_curve, auc, roc_auc_score
+import matplotlib.pyplot as plt
+bl_probs = [True for _ in range(len(y_val))]
+model_probs = model.predict_proba(X_val)[:,1]
+bl_auc = roc_auc_score(y_val.astype("bool"), bl_probs)
+model_auc = roc_auc_score(y_val.astype("bool"), model_probs)
+print(f"Baseline:  ROC AUC={bl_auc:0.3f}")
+print(f"Our Model: ROC AUC={model_auc:0.3f}")
+bl_fpr, bl_tpr, bl_thresholds = roc_curve(y_val, bl_probs)
+model_fpr, model_tpr, model_thresholds = roc_curve(y_val, model_probs)
+plt.plot(bl_fpr, bl_tpr, linestyle='--', label='Baseline')
+plt.plot(model_fpr, model_tpr, marker='.', label='Our Model')
+plt.xlabel("False Positive Rate")
+plt.ylabel("True Positive Rate")
+plt.title("Receiver Operating Characteristic")
+plt.legend(loc="lower right")
+plt.show()
+```
+
+--------------------------------------------------------------------------------
+<!-- Needs work -->
+## Classification Shotgun
+```
+# IMPORT EVERYTHING
+import pandas as pd
+from sklearn.tree import DecisionTreeClassifier as TREE
+from sklearn.ensemble import RandomForestClassifier as RF
+from sklearn.linear_model import LogisticRegression as LOGIT
+from sklearn.naive_bayes import GaussianNB as NB
+from sklearn.neighbors import KNeighborsClassifier as KNN
+from sklearn.ensemble import AdaBoostClassifier as ABC
+from sklearn.ensemble import GradientBoostingClassifier as GBC
+from xgboost import XGBClassifier as XGB
+from sklearn.multiclass import OneVsRestClassifier as OVR
+# CLASSIFICATION SHOTGUN: TRAIN MODELS
+def classification_shotgun(X_train, y_train, X_out, y_out):
+    """
+    Build various classification models and get their predictions on a dataset.
+    - Models: DecisionTree, RF, LogisticRegression, GaussianNB, KNeighbors, XGB
+    """
+    if type(y_train) != type(pd.DataFrame()):
+        y_train = pd.DataFrame(y_train.rename('in_actuals'))
+    if type(y_out) != type(pd.DataFrame()):
+        y_out = pd.DataFrame(y_out.rename('out_actuals'))
+    y_train, y_out = mode_bl(y_train, y_out)
+    y_train, y_out = decisiontree(X_train, y_train, X_out, y_out)
+    y_train, y_out = randomforest(X_train, y_train, X_out, y_out)
+    y_train, y_out = logisticregression(X_train, y_train, X_out, y_out)
+    y_train, y_out = naivebayes(X_train, y_train, X_out, y_out)
+    y_train, y_out = knearestneighbors(X_train, y_train, X_out, y_out)
+    y_train, y_out = xgboosts(X_train, y_train, X_out, y_out)
+    return y_train, y_out   # return dataframes of predictions
+# CLASSIFICATION SHOTGUN: EVALUATE ACCURACY, RECALL, PRECISION, F1 SCORE
+def print_classification_results(y_train, y_out):
+    """Get metrics for a dataframe of model predictions columns, return a df."""
+    cols = ['Model','InSample_Accuracy','OutSample_Accuracy','InSample_Recall'
+        'OutSample_Recall','InSample_Precision','OutSample_Precision',
+        'InSample_F1_Score','OutSample_F1_Score']
+    running_list = []
+    # LOOP THROUGH EACH MODEL
+    for i, model in enumerate(y_train.columns[1:]):
+        train_TP = ((y_train[model] == 1) & (y_train['in_actuals'] == 1)).sum()
+        train_TN = ((y_train[model] == 0) & (y_train['in_actuals'] == 0)).sum()
+        train_FP = ((y_train[model] == 1) & (y_train['in_actuals'] == 0)).sum()
+        train_FN = ((y_train[model] == 0) & (y_train['in_actuals'] == 1)).sum()
+        out_TP = ((y_out[model] == 1) & (y_out['out_actuals'] == 1)).sum()
+        out_TN = ((y_out[model] == 0) & (y_out['out_actuals'] == 0)).sum()
+        out_FP = ((y_out[model] == 1) & (y_out['out_actuals'] == 0)).sum()
+        out_FN = ((y_out[model] == 0) & (y_out['out_actuals'] == 1)).sum()
+        # CALCULATE ACCURACY, RECALL, PRECISION, F1 SCORE
+        in_acc = (y_train[model] == y_train.in_actuals).mean()
+        out_acc = (y_out[model] == y_out.out_actuals).mean()
+        in_recall = train_TP / (train_TP + train_FN)
+        out_recall = out_TP / (out_TP + out_FN)
+        in_prec = train_TP / (train_TP + train_FP)
+        out_prec = out_TP / (out_TP + out_FP)
+        in_f1 = (2 * in_prec * in_recall) / (in_prec + in_recall)
+        out_f1 = (2 * out_prec * out_recall) / (out_prec + out_recall)
+        # BUILD RESULTS DATAFRAME
+        row = {'Model':model, 
+            'InSample_Accuracy': round(in_acc, 4), 
+            'OutSample_Accuracy': round(out_acc, 4),
+            'InSample_Recall': round(in_recall, 4),
+            'OutSample_Recall': round(out_recall, 4),
+            'InSample_Precision': round(in_prec, 4),
+            'OutSample_Precision': round(out_prec, 4),
+            'InSample_F1_Score': round(in_f1, 4),
+            'OutSample_F1_Score': round(out_f1, 4)}
+        running_list.append(row)
+    return pd.DataFrame(running_list)  # return dataframe of model performances
+# CLASSIFICATION SHOTGUN: INDIVIDUAL MODELS
+def manual_baseline(y_train, y_out, baseline_value):
+    """Add a column for the manually-selected baseline prediction"""
+    y_train['manual_baseline'] = baseline_value
+    y_out['manual_baseline'] = baseline_value
+    return y_train, y_out   # return DATAFRAMES with new preds columns
+def mode_bl(y_train, y_out):
+    """Calculate baseline using mode class for model comparison"""
+    mode = y_train.in_actuals.mode().tolist()[0]  # find baseline
+    y_train['mode_baseline'] = mode
+    y_out['mode_baseline'] = mode
+    return y_train, y_out   # return DATAFRAMES with new preds columns
+def decisiontree(X_train, y_train, X_out, y_out):
+    """Creates decision trees with max_depth 1,2,3,5,10 and random_state=42"""
+    for i in [1,2,3,5,10]:  # decision node depth
+        model_name = f"tree_maxdepth{i}"
+        tree = TREE(max_depth=i,random_state=42).fit(X_train,y_train.in_actuals)
+        y_train[model_name] = tree.predict(X_train)
+        y_out[model_name] = tree.predict(X_out)
+    return y_train, y_out    # return DATAFRAMES with new preds columns
+def randomforest(X_train, y_train, X_out, y_out):
+    """Creates random forests with max_depth 1,2,3,5,10 and random_state=42"""
+    for i in [1,2,3,5,10]:
+        model_name = f"rf_depth{i}"
+        rf = RF(max_depth=i, random_state=42).fit(X_train, y_train.in_actuals)
+        y_train[model_name] = rf.predict(X_train)
+        y_out[model_name] = rf.predict(X_out)
+    return y_train, y_out    # return DATAFRAMES with new preds columns
+def logisticregression(X_train, y_train, X_out, y_out):
+    """Creates logistic regressions with random_state=42"""
+    logit = LOGIT(random_state=42).fit(X_train, y_train.in_actuals)
+    y_train['logit'] = logit.predict(X_train)
+    y_out['logit'] = logit.predict(X_out)
+    return y_train, y_out    # return DATAFRAMES with new preds columns
+def naivebayes(X_train, y_train, X_out, y_out):
+    """Creates Naive-Bayes with var_smoothing of .001, .01, 10, 100"""
+    for smooth_level in [.00001, .0001, .001, .01, 10, 100]:
+        model_name = f"nb_vsmooth{smooth_level}"
+        nb = NB(var_smoothing=smooth_level).fit(X_train, y_train.in_actuals)
+        y_train[model_name] = nb.predict(X_train)
+        y_out[model_name] = nb.predict(X_out)
+    return y_train, y_out    # return DATAFRAMES with new preds columns
+def knearestneighbors(X_train, y_train, X_out, y_out):
+    """Create KNNs with neighbor counts of 3, 5, 10, 25, 75"""
+    for neighbor_count in [3,5,10,25,75]:
+        model_name = f"knn_n{neighbor_count}"
+        knn = KNN(n_neighbors=neighbor_count).fit(X_train, y_train.in_actuals)
+        y_train[model_name] = knn.predict(X_train)
+        y_out[model_name] = knn.predict(X_out)
+    return y_train, y_out    # return DATAFRAMES with new preds columns
+def adaboostclass(X_train, y_train, X_out, y_out):
+    """Create AdaBoost classifier models with random_state=42"""
+    tree = TREE(max_depth=1, random_state=42)  # "decision stump"
+    abc = ABC(base_estimator=tree, n_estimators=100)
+    abc.fit(X_train, y_train.in_actuals)
+    y_train['adaboostclass'] = abc.predict(X_train)
+    y_out['adaboostclass'] = abc.predict(X_out)
+    return y_train, y_out    # return DATAFRAMES with new preds columns
+def gradboostclass(X_train, y_train, X_out, y_out):
+    """Create Gradient-Boosted Trees Classifier with weak learners"""
+    gbc = GBC(n_estimators=300, max_depth=1, random_state=42)
+    gbc.fit(X_train, y_train.in_actuals)
+    y_train['gradboostclass'] = gbc.predict(X_train)
+    y_out['gradboostclass'] = gbc.predict(X_out)
+    return y_train, y_out    # return DATAFRAMES with new preds columns
+def xgboosts(X_train, y_train, X_out, y_out):
+    """Create XGBoost models with max_depth 3,5,7,9 and random_state=42"""
+    for i in [3,5,7,9]:
+        model_name = f"xgb_maxdepth{i}"
+        xgb = XGB(max_depth=i, random_state=42).fit(X_train, y_train.in_actuals)
+        y_train[model_name] = xgb.predict(X_train)
+        y_out[model_name] = xgb.predict(X_out)
+    return y_train, y_out    # return DATAFRAMES with new preds columns
+```
+```
+# SAMPLE DATA FOR MODEL TESTING
+from sklearn.datasets import make_classification as MC
+X, y = MC(n_samples=10_000, n_features=20, n_classes=2, 
+          n_informative=6, n_redundant=10, random_state=42)
+X, y = pd.DataFrame(X), pd.Series(y, name="target")
+X.columns = [str(col) for col in X.columns]
+from sklearn.model_selection import train_test_split as SPLIT
+X1, X_test, y1, y_test = SPLIT(X, y, test_size=0.2, random_state=42)
+X_train, X_val, y_train, y_val = SPLIT(X1, y1, test_size=0.25, random_state=42)
+# CLASSIFICATION SHOTGUN
+y_train, y_val = classification_shotgun(X_train, y_train, X_val, y_val)
+print_classification_results(y_train, y_val)
+```
+
 [[Return to Top]](#table-of-contents)
 
 
@@ -3719,7 +3756,8 @@ Test (hold-out set) is used for checking the best model's performance.
 <!-- Needs work -->
 ## Features for Regression
 - Keep features that highly-correlate with the target: `df.corr()`
-    * Interactions between features can have better correlations; `s1 * s2`
+- Interactions are awesome! They can have better correlations; `s1 * s2`
+    * Example: `df["cat1_col2"] = (df["col1"] == "cat1") * df["col2"]`
 - Features that correlate with other features contribute to multicollinearity
     * Multicollinearity reduces model performance
     * Reduce multicollinearity by thresholding variance inflation factor (VIF)
@@ -3784,16 +3822,7 @@ X_train_RFE, X_val_RFE, X_test_RFE = X_train[best], X_val[best], X_test[best]
     * You need to add an intercept to your data; this is just a column of 1s
     * Numerical feature scaling "balances" each feature in loss calculation
     * Features with a linear relationship to the target are best
-```
-# SIMPLE OLS MODEL WITH STATSMODELS
-df["cat1_col2"] = (df["col1"] == "cat1") * df["col2"]
-ols = sm.OLS(df[["target"]], df[["intercept","col1","col2","cat1_col2"]])
-fit = ols.fit()
-predictions = fit.predict(df[["intercept","col1","col2","cat1_col2"]])
-print(list(predictions)[:10])
-fit.summary()
-```
-### Regressors
+### Available Regressors
 - **Ordinary Least Squares (OLS)**
     * Computationally simple and efficient regression
     * `y = a1x1 + a2x2 + a3x3 + ...`
@@ -3822,14 +3851,106 @@ fit.summary()
     * Use number of curves from exploration as hyperparameter
 - **Gradient Boosting Regressor**
 ```
+# SAMPLE DATA FOR MODEL TESTING
+import pandas as pd
+from sklearn.datasets import load_wine
+from sklearn.model_selection import train_test_split as SPLIT
+df = pd.DataFrame(load_wine()["data"], columns=load_wine()["feature_names"])
+df["intercept"] = 1
+X, y = df.drop(columns="alcohol"), df.alcohol
+X1, X_test, y1, y_test = SPLIT(X, y, test_size=0.2, random_state=42)
+X_train, X_val, y_train, y_val = SPLIT(X1, y1, test_size=0.25, random_state=42)
+# SIMPLE OLS WITH SKLEARN
+from sklearn.linear_model import LinearRegression as OLS
+ols1 = OLS().fit(X_train, y_train)
+y_train_preds1 = ols1.predict(X_train)
+y_val_preds1 = ols1.predict(X_val)
+# SIMPLE OLS MODEL WITH STATSMODELS
+import statsmodels.api as sm
+ols2 = sm.OLS(y_train, X_train).fit()
+y_train_preds2 = ols2.predict(X_train)
+y_val_preds2 = ols2.predict(X_val)
+print(list(y_val_preds2)[:10])
+ols2.summary()
+```
+
+--------------------------------------------------------------------------------
+<!-- Needs work -->
+## Evaluating Regressors
+- **Regression line**
+    * Regression equation: `y = b0 + b1x1 + b2x2 + ... bnxn + ϵ`
+    * y: target; b: coefficient (slope); x: input; ϵ: expected_error
+    * Polynomial regression uses: y = b0 + b1x + b2x^2 + b3x^3 + ... + bnx^n + ϵ
+- **Root Mean Square Error (RMSE)**
+    * Calculate RMSE: `RMSE = sqrt(mean(sum(residuals)))`
+    * RMSE is in target's units, so calculating home value has RMSE in dollars
+    * Other error metrics: SSE (when outliers are the focus), MSE, ESS, TSS
+- **Variance (r2)**
+    * Calculate variance: `r2 = ESS / TSS`
+    * Indicates amount of data (0% - 100%) explained by regression line
+- **Residual**
+    * Calculate a datapoint's residual error: `e = predicted_y - actual_y`
+- **Heteroscedasticity**
+    * Trend in residual plot, unaccounted-for drivers remain
+    * Fix heteroscedasticity by removing outliers or log/expon/etc transform
+```
+# SAMPLE DATA FOR MODEL TESTING
+import pandas as pd
+from sklearn.datasets import load_wine
+from sklearn.model_selection import train_test_split as SPLIT
+df = pd.DataFrame(load_wine()["data"], columns=load_wine()["feature_names"])
+X, y = df.drop(columns="alcohol"), df.alcohol
+X1, X_test, y1, y_test = SPLIT(X, y, test_size=0.2, random_state=42)
+X_train, X_val, y_train, y_val = SPLIT(X1, y1, test_size=0.25, random_state=42)
+# SINGLE MODEL: GET REGRESSION RESULTS
+def regression_results(actuals, preds):
+    """Returns SSE, ESS, TSS, MSE, RMSE, Residuals, and r2"""
+    mse = ((preds - actuals)**2).mean()
+    rmse = mse ** 0.5
+    sse = mse * len(actuals)
+    ess = ((preds - actuals.mean())**2).sum()
+    tss = ess + sse
+    r2 = ess / tss
+    res = preds - actuals
+    d = {"MSE":mse,"RMSE":rmse,"SSE":sse,"ESS":ess,"TSS":tss,"err":res,"r2":r2}
+    return d
+# SINGLE MODEL: PLOT RESIDUALS
+def plot_residuals(model_name, actuals, residuals):
+    sns.relplot(x=actuals, y=residuals, kind='scatter')
+    plt.axhline(y=0, c='gray', alpha=.3)
+    plt.title(f"Residual Plot for Model: {model_name}")
+    plt.xlabel("Actual Values")
+    plt.ylabel("Residuals")
+    plt.show()
+# CREATE OLS MODEL
+from sklearn.linear_model import LinearRegression as OLS
+ols = OLS().fit(X_train, y_train)
+y_train_preds = ols.predict(X_train)
+y_val_preds = ols.predict(X_val)
+# GET PREDICTION RESULTS
+import seaborn as sns
+import matplotlib.pyplot as plt
+train_res = regression_results(y_train, y_train_preds)
+val_res = regression_results(y_val, y_val_preds)
+print(f"TRAIN OLS: RMSE: {train_res['RMSE']:0.2f}, r2: {train_res['r2']:0.2f}")
+print(f"VAL OLS: RMSE: {val_res['RMSE']:0.2f}, r2: {val_res['r2']:0.2f}")
+plot_residuals("OLS", y_val, val_res["err"])
+```
+
+--------------------------------------------------------------------------------
+<!-- Needs work -->
+## Regression Shotgun
+```
+# IMPORT EVERYTHING
 import pandas as pd
 from sklearn.linear_model import LinearRegression as OLS  # need simplicity
 from sklearn.linear_model import LassoLars as LASSOLARS   # lower r2, raise bias
 from sklearn.linear_model import TweedieRegressor as GLM  # dist is non-normal
-from sklearn.preprocessing import PolynomialFeatures as PF     # polynomial data
+from sklearn.preprocessing import PolynomialFeatures as PF    # polynomial data
 from sklearn.svm import SVR                               # < 50k, discrete tgt
 from sklearn.svm import LinearSVR as LSVR                 # > 50k, discrete tgt
 from sklearn.ensemble import GradientBoostingRegressor as GBR  # go big
+# REGRESSION SHOTGUN: TRAIN MODELS
 def regression_shotgun(X_train, y_train, X_out, y_out):
     """ 
     Create various regression models and get their predictions on a dataset.
@@ -3848,6 +3969,23 @@ def regression_shotgun(X_train, y_train, X_out, y_out):
     y_train, y_out = lsvr51k(X_train, y_train, X_out, y_out)
     y_train, y_out = gradboost(X_train, y_train, X_out, y_out)
     return y_train, y_out   # return dataframes of predictions
+# REGRESSION SHOTGUN: EVALUATE RMSE, r2
+def print_regression_results(y_train, y_val):
+    """Calculate RMSE, r2 using insample and outsample predictions dataframes"""
+    cols = ["Model", "Train_RMSE", "Validate_RMSE", "Train_r2", "Validate_r2"]
+    rows = []
+    for model in y_train.columns[1:]:
+        rmse_train = mean_squared_error(y_train.actuals, y_train[model]) ** 0.5
+        rmse_out = mean_squared_error(y_val.actuals, y_val[model]) ** 0.5
+        r2_train = r2_score(y_train.actuals, y_train[model])
+        r2_out = r2_score(y_val.actuals, y_val[model])
+        rows.append({
+            "Model":model, "Train_RMSE":rmse_train, "Validate_RMSE":rmse_out,
+            "Train_r2":r2_train, "Validate_r2":r2_validate
+        })
+    results = pd.DataFrame(rows, columns=cols)
+    return running_df
+# REGRESSION SHOTGUN: INDIVIDUAL MODELS
 def baselines(y_train, y_out):
     """Create two baseline models: Mean and Median for model comparison"""
     y_train['mean_bl'] = y_train.in_actuals.mean()
@@ -3919,73 +4057,22 @@ def gradboost(X_train, y_train, X_out, y_out):
     y_out['gbr'] = gbr.predict(X_out)
     return y_train, y_out   # return DATAFRAMES with new preds columns
 ```
-
---------------------------------------------------------------------------------
-<!-- Needs work -->
-## Evaluating Regressors
-- **Regression line**
-    * Regression equation: `y = b0 + b1x1 + b2x2 + ... bnxn + ϵ`
-    * y: target; b: coefficient (slope); x: input; ϵ: expected_error
-    * Polynomial regression uses: y = b0 + b1x + b2x^2 + b3x^3 + ... + bnx^n + ϵ
-- **Root Mean Square Error (RMSE)**
-    * Calculate RMSE: `RMSE = sqrt(mean(sum(residuals)))`
-    * RMSE is in target's units, so calculating home value has RMSE in dollars
-    * Other error metrics: SSE (when outliers are the focus), MSE, ESS, TSS
-- **Variance (r2)**
-    * Calculate variance: `r2 = ESS / TSS`
-    * Indicates amount of data (0% - 100%) explained by regression line
-- **Residual**
-    * Calculate a datapoint's residual error: `e = predicted_y - actual_y`
-- **Heteroscedasticity**
-    * Trend in residual plot, unaccounted-for drivers remain
-    * Fix heteroscedasticity by removing outliers or log/expon/etc transform
 ```
+# SAMPLE DATA FOR MODEL TESTING
 import pandas as pd
+from sklearn.datasets import make_regression as MR
+X, y = MR(n_samples=10_000, n_features=20, n_informative=6, random_state=0)
+X, y = pd.DataFrame(X), pd.Series(y, name="target")
+X.columns = [str(col) for col in X.columns]
+from sklearn.model_selection import train_test_split as SPLIT
+X1, X_test, y1, y_test = SPLIT(X, y, test_size=0.2, random_state=42)
+X_train, X_val, y_train, y_val = SPLIT(X1, y1, test_size=0.25, random_state=42)
+# RUN AND EVALUATE REGRESSION SHOTGUN
 import seaborn as sns
 import matplotlib.pyplot as plt
-# GET REGRESSION RESULTS
-def regression_results(actuals, preds):
-    """Returns SSE, ESS, TSS, MSE, RMSE, Residuals, and r2"""
-    mse = mean_squared_error(actuals, preds)
-    rmse = mse ** 0.5
-    sse = mse * len(actuals)
-    ess = sum((preds - actuals.mean())**2)
-    tss = ess + sse
-    r2 = ess / tss
-    res = preds - actuals
-    d = {"MSE":mse,"RMSE":rmse,"SSE":sse,"ESS":ess,"TSS":tss,"err":res,"r2":r2}
-    return d
-results = regression_results(y_train["ols_preds"], y_train["in_actuals"])
-rmse, r2 = round(results["RMSE"], 2), round(results["r2"], 4)
-print("OLS: RMSE: {rmse}, r2: {r2}")
-# PLOT RESIDUALS
-def plot_residuals(model_name, actuals, residuals):
-    plt.title("OLS Residual Plot")
-    sns.relplot(x=actuals, y=residuals, kind='scatter')
-    plt.axhline(y=0, c='gray', alpha=.3)
-    plt.title(f"Residual Plot for Model: {model_name}")
-    plt.ylabel("Residuals")
-    plt.show()
-plot_residuals("OLS", y_train["in_actuals"], results["err"])
-```
-```
-# GET RMSE AND R2 FOR ALL TRAINED MODELS' PREDICTIONS
-def y_df_RMSE_r2(y_train, y_val):
-    """Calculare RMSE, r2 using insample and outsample predictions dataframes"""
-    cols = ["Model", "Train_RMSE", "Validate_RMSE", "Train_r2", "Validate_r2"]
-    rows = []
-    for model in y_train.columns[1:]:
-        rmse_train = mean_squared_error(y_train.actuals, y_train[model]) ** 0.5
-        rmse_out = mean_squared_error(y_val.actuals, y_val[model]) ** 0.5
-        r2_train = r2_score(y_train.actuals, y_train[model])
-        r2_out = r2_score(y_val.actuals, y_val[model])
-        rows.append({
-            "Model":model, "Train_RMSE":rmse_train, "Validate_RMSE":rmse_out,
-            "Train_r2":r2_train, "Validate_r2":r2_validate
-        })
-    results = pd.DataFrame(rows, columns=cols)
-    return running_df
-results_df = y_df_RMSE_r2(y_train, y_validate)
+from sklearn.metrics import mean_squared_error, r2_score
+y_train, y_val = regression_shotgun(X_train, y_train, X_val, y_val)
+print_regression_results(y_train, y_val)
 ```
 
 [[Return to Top]](#table-of-contents)
@@ -4634,6 +4721,32 @@ Docker, Kubernetes, and Kafka have handling considerations that should be noted.
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
+## Pipelining a Model
+```
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+from skelarn.pipeline import Pipeline
+pipe = Pipeline([
+    ("scaler", StandardScaler()),     # step 1
+    ("reducer", PCA())])              # step 2
+pc = pipe.fit_transform(num_df)
+print(pc[:,:2])
+df["PC 1"] = pc[:,0]
+df["PC 2"] = pc[:,1]
+sns.scatterplot(data=df, x="PC 1", y="PC 2", hue="cat_col", alpha=0.4)
+pipe = Pipeline([
+    ("scaler", StandardScaler()), 
+    ("reducer", PCA(n_components=3)),  # choose between 0 and 1 for PCA to lift!
+    ("classifier", RandomForestClassifier())])
+print(pipe["reducer"])
+pipe.fit(X_train, y_train)
+print(pipe["reducer"].explained_variance_ratio_)
+print(pipe["reducer"].explained_variance_ratio_.sum()) # current explained var
+print(pipe.score(X_test, y_test)) # hopefully we did well!!
+```
+
+--------------------------------------------------------------------------------
+<!-- Needs work -->
 ## Building a Flask App
 - Web interfacing framework that uses Python; pretty neato stuff
 - Tutorial: search "Flask mega tutorial miguen grinberg"
@@ -4717,7 +4830,6 @@ request.headers
 --------------------------------------------------------------------------------
 <!-- Needs work -->
 ## Deploying the Model
-### Docker
 - Containers: Easy replication and distribution of software solutions
 - Sandboxing: Each container in a Docker daemon is **isolated** from one another
     * A container can replicate a computer in a safe state for testing
@@ -4727,7 +4839,7 @@ request.headers
     * Docker daemon will initialize a VM if OS kernel does not match container 
 - Base images for `docker pull` or `FROM`: https://hub.docker.com
 - Official documentation: https://docs.docker.com/engine/reference/builder/
-#### Dockerfile
+### Dockerfile
 - Set of instructions to build a Docker image
 - Starts with `FROM`, which takes a base image as a parameter
 - Each instruction adds a layer or an intermediate layer to the image
@@ -4758,7 +4870,7 @@ RUN pip3 install -r requirements.txt    # specify python libraries to install
 ENTRYPOINT ["python3"]
 CMD ["app.py"]
 ```
-#### Initializing, Running Docker Containers
+### Initializing, Running Docker Containers
 - Build image(s) from a Dockerfile, Run images from the Docker images folder
 - Build: Specify the context where the Dockerfile + needed files live
     * Example: `docker build .`
@@ -4769,18 +4881,54 @@ CMD ["app.py"]
     * Run named image: `docker run author/purpose`
         * This assumes the latest image version if version isn't specified
     * Alias an image during the run command: `--name alias_name`
-### Kubernetes
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
+   #                                                               
+  # #   #####  #####  #      #  ####    ##   ##### #  ####  #    # 
+ #   #  #    # #    # #      # #    #  #  #    #   # #    # ##   # 
+#     # #    # #    # #      # #      #    #   #   # #    # # #  # 
+####### #####  #####  #      # #      ######   #   # #    # #  # # 
+#     # #      #      #      # #    # #    #   #   # #    # #   ## 
+#     # #      #      ###### #  ####  #    #   #   #  ####  #    # 
+                                                                   
+ #####                                       
+#     #  ####    ##   #      # #    #  ####  
+#       #    #  #  #  #      # ##   # #    # 
+ #####  #      #    # #      # # #  # #      
+      # #      ###### #      # #  # # #  ### 
+#     # #    # #    # #      # #   ## #    # 
+ #####   ####  #    # ###### # #    #  ####  
+-->
+
+# Application Scaling
+```
+When you've hit the big time, scaling your applications is required.
+Kubernetes is a popular choice for scaling containerization schemes.
+Apache Kafka is another popular choice for serving data via scaled architecture.
+```
+
+--------------------------------------------------------------------------------
+<!-- Needs work -->
+## Kubernetes
 - Alias for *nix: `alias k=kubectl`
 - Alias for Windows: `Set-Alias -Name k -Value kubectl`
 - Events: `kubectl get events -A`
     * `kubectl get events --sort-by=<JSONPath>` or `kubectl get events -o wide`
-#### Wipe Kubernetes
+### Wipe Kubernetes
 ```
 kubectl delete -f <file>
 kubectl delete pod,service <name1> <name2>  # if pods/services have same names
 kubectl delete pods,services -l <label_name>=<label_value>  # delete by label
 ```
-#### Kubernetes Configuration
+### Kubernetes Configuration
 ```
 kubectl config view
 KUBECONFIG=~/.kube/config1:~/.kube/config2:~/.kube/config3
@@ -4798,7 +4946,7 @@ kubectl config --kubeconfig=<config/path> use-context <cluster>
 kubectl config set-context gce --user=cluster-admin --namespace=foo \
     && kubectl config use-context gce
 ```
-#### Pods
+### Pods
 ```
 kubectl explain pod
 kubectl get pods -A
@@ -4892,7 +5040,7 @@ kubectl get pods --all-namespaces -o jsonpath='{range.items[*].status
 kubectl top pod <pod>
 kubectl top pod <pod> --containers
 ```
-#### Deployments
+### Deployments
 ```
 kubectl run <deployment> --image=<image>
 kubectl create deployment <deployment> --image=<image>
@@ -4935,7 +5083,7 @@ kubectl rollout status deployment <deployment>
 kubectl rollout pause deployment <deployment>
 kubectl rollout resume deployment <deployment>
 ```
-#### Namespaces
+### Namespaces
 ```
 kubectl get namespaces
 kubectl get ns
@@ -4955,7 +5103,7 @@ metadata:
     name: mynamespace
 EOF
 ```
-#### Nodes
+### Nodes
 ```
 kubectl describe nodes
 kubectl get nodes
@@ -4971,7 +5119,7 @@ kubectl cordon <node>     # mark node as unschedulable
 kubectl drain <node>      # "drain" a node for maintenance
 kubectl uncordon <node>   # mark node as schedulable
 ```
-#### Clusters
+### Clusters
 ```
 kubectl cluster-info
 kubectl cluster-info dump
@@ -4979,7 +5127,7 @@ kubectl cluster-info dump --output-directory=</file/path>
 kubectl diff -f ./my-manifest.yaml  # compare cluster state to next edited state
 kubectl get pods -A -o custom-columns='DATA:spec.containers[*].image'
 ```
-#### Services
+### Services
 ```
 kubectl explain service
 kubectl create service clusterip myclusterip --tcp=5678:8080
@@ -4991,7 +5139,7 @@ kubectl delete service myclusterip
 kubectl delete svc myloadbalancer
 kubectl delete service myclusterip myloadbalancer
 ```
-#### Service Accounts
+### Service Accounts
 ```
 kubectl get serviceaccounts
 kubectl get sa
@@ -5000,7 +5148,10 @@ kubectl create serviceaccount <serviceaccount>
 kubectl delete serviceaccount <serviceaccount>
 kubectl describe serviceaccount <serviceaccount>
 ```
-### Apache Kafka
+
+--------------------------------------------------------------------------------
+<!-- Needs work -->
+## Apache Kafka
 - Distributed stream processing
 - Kafka 'broker' listens on port 9092 for TCP connection by default
     * Distributed system has multiple 'brokers'
