@@ -1117,6 +1117,7 @@ Each database format has its own syntax/peculiarities which should be explained.
 Query differences should be demo'd thoroughly on a common dataset, if possible.
 The end state should be a dataframe that matches across query formats.
 ```
+- TODO: Move Spark and Elasticsearch to their own sections at end of notes file
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
@@ -1682,6 +1683,9 @@ Topics: Data structure normalization, cell work, string/number vectorization
 Other data structures like linked lists and hash tables can be useful too.
 Explanations here shouldn't go any further than feature engineering.
 ```
+- TODO: Move null handling, outlier handling, etc to Fix Records section
+- TODO: Move feature analysis, engineering, QT, etc to Engineering section
+- TODO: Move scaling, resampling, feature reduction, and PCA to Fix Dataset
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
