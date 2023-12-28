@@ -1239,412 +1239,6 @@ CREATE TEMPORARY TABLE germain_1457.employees_with_departments AS
     JOIN departments USING(dept_no);
 ```
 
---------------------------------------------------------------------------------
-<!-- Polished -->
-## Spark
-- Computational clustering for big data processing
-    * Velocity (fast gathering, lots of data, streaming)
-    * Volume (large data, bigger than memory or bigger than storage)
-    * Veracity (reliability of data, esp. missing data)
-    * Variety (different sources, unstructured data, data isn't uniform)
-- Java Virtual Machine (JVM) coordinates clusters using Scala
-- The 'pyspark' library translates Python to Scala and operates the JVM
-- Can run 100% locally; it will coordinates computer cores
-    * This is often overkill for one-computer tasks
-- Is 'lazy'- adds to / optimizes queries until the execution order is given
-- Alternatives: Hadoop, Dask
-### Spark Commands
-- Check Spark's intentions before query: `df.explain()`
-    * Used for diagnosing performance issues; operation order from bottom-upward
-- Switch to SQL: `df.createOrReplaceTempView('df')`
-    * Run SQL statements: `spark.sql(''' SELECT * FROM df ''')`
-- Build schema: `schema = StructType([(StructField(...), StructField(...)),])`
-    * StructField syntax: `Structfield("col1", StringType())`
-### Spark Wrangling Example
-```
-# SETUP
-import pyspark
-from pyspark.sql.functions import *
-spark = pyspark.sql.SparkSession.builder.getOrCreate()
-# INGEST
-df = spark.read.csv('filepath', header=True, schema=schema_struct)
-# JOIN DF
-df = df.join(df2, "joiner_col", "left").drop(df.joiner_col).drop(df2.joiner_col)
-# PRINT NULL COUNTS
-df.select(
-    [count(when(isnan(c) | col(c).isNull(), c)).alias(c) for c in df.columns]
-).show(vertical=True)
-# FILL, DROP NULLS
-df = df.na.fill(0, subset=['x', 'y']).na.drop()
-# CHECK DTYPES
-df.printSchema()
-# DTYPE, NAME CHANGES
-df = df.withColumn('ordinals', df.x.cast('string'))\
-.withColumnRenamed("colname_before", "colname_after")
-# TO DATETIME, TO MONTH
-df = df.withColumn("col1", month(to_timestamp("col1", "M/d/yy H:mm")))
-# DATEDIFF
-df = df.withColumn("date_calc_col", datediff(current_timestamp(), "datecol"))
-# REGEX
-df = df.withColumn('repl', regexp_replace(df.x, re, repl)\
-.withColumn('substr', regexp_extract(df.col, re, g)))
-# STRING WHITESPACE, FORMATTING
-df = df.withColumn("c1", trim(lower(df.c1)))\
-.withColumn("c1", format_string("%03d", col("c1").cast("int")),)
-# STRING CONCAT
-df = df.withColumn('c2', concat(lit('x:', df.x)))
-# ADD X + Y AS COLUMN 'Z' TWO DIFFERENT WAYS
-df = df.select(*, expr(df.x + df.y).alias('z')).selectExpr('*', 'x + y as z') 
-# WHEN
-df = df.withColumn('ten', when(df.x > 10, 'over 10').otherwise('not over 10'))
-# WHERE, OR + AND
-df = df.where((df.x > 5) | (df.y < 5)).where(df.z ==7)
-# SMALL SAMPLE
-df = df.sample(fraction=0.01, seed=42)
-# SPLIT
-trn, val, test = df.randomSplit([0.6, 0.2, 0.2], seed=42)
-# RUN ALL, SAVE LOCALLY
-df.write.json("df_json", mode="overwrite")
-trn.write.format("csv").mode("overwrite").option("header", "true").save("train")
-val.write.format("csv").mode("overwrite").option("header", "true").save("val")
-test.write.format("csv").mode("overwrite").option("header", "true").save("test")
-```
-### Spark Aggregation Example
-```
-# COLUMN CALCULATION
-x_y = df.select(sum(df.x)), df.select(mean(df.x))
-# VALUE COUNT TWO COLUMNS, WITH PROPORTIONS COLUMN
-value_counts = df.groupBy('col','target').count().sort('count',ascending=False)\
-.withColumn('proportion', round(col('count') / df.count(), 2))
-# AGG GROUPBY
-mean_min = df.groupBy('gb').agg(mean(df.x), min(df.y))
-# CROSSTAB
-crosstab = df.crosstab('g1', 'g2')
-# PIVOT TABLE
-mean_x_given_g1_g2 = df.groupBy('g1').pivot('g2').agg(mean('x'))
-```
-### Spark Machine Learning Example
-```
-from pyspark.ml.stat import ...    # chi square / correlation testing
-from pyspark.ml.feature import ... # imputation, encoding, scaling, vectorize...
-from pyspark.ml.classification import ... # modeling
-from pyspark.ml.regression import ...     # modeling
-from pyspark.ml.clustering import ...     # modeling
-from pyspark.ml.tuning import ...         # model cross-validation
-from pyspark.ml.evaluation import ...     # model evaluation
-```
-
---------------------------------------------------------------------------------
-<!-- Needs work -->
-## Elasticsearch
-- Popular SIEM system with querying and visualizations/dashboards (Kibana/API)
-- Can use Kibana's UI to perform simple tasks, queries, and visualization
-- Can use the console in Kibana Dev Tools to run powerful queries/indexing/etc
-    * Painless scripting (Java-based language) overcomes KQL shortcomings
-- Python interacts with the Elasticsearch REST API on port 9200 (default)
-- To connect: create an account in Kibana and use those creds in Python queries
-### Python: Stack Assessment
-```
-# DEFINITION BLOCK
-def gather_fields_from_index(properties):
-    output_list = []
-    def walk_down(current, name=""):
-        keys = list(current.keys())
-        for key in keys:
-            if "properties" in current[key].keys():
-                walk_down(current[key]["properties"], f"{name}{key}.")
-            else:
-                output_list.append(f"{name}{key}")
-    walk_down(properties)
-    return set(output_list)
-def gather_field_pnids(search_context, all_fields,\
-                       pn_field="winlog.provider_name",\
-                       eid_field="winlog.event_id", range_kwargs=None):
-    field_count = len(all_fields)
-    print(f"Getting all PN_ID options for {field_count} fields...",
-          end="\r", flush=True)
-    capture_dict = {}
-    j = 0.0
-    for i, new_field in enumerate(all_fields):
-        if round((i / field_count) * 100) > j:
-            j = round((i / field_count) * 100)
-            print(f"Getting all PN_ID options for {field_count} fields: {j}%",
-                  end="\r", flush=True)
-        sc2 = search_context.query("exists", field=new_field)
-        if type(range_kwargs) is dict:
-            sc2 = sc2.filter("range", **range_kwargs)
-        sc2.aggs.bucket("pn",  "terms", field=pn_field,  size=10_000)\
-                .metric("eid", "terms", field=eid_field, size=10_000)
-        response = sc2.execute()
-        my_aggs = response.aggregations.to_dict()
-        for pn_bucket in my_aggs["pn"]["buckets"]:
-            pn = pn_bucket["key"]
-            for eid_bucket in pn_bucket["eid"]["buckets"]:
-                eid = eid_bucket["key"]
-                pn_id = f"{pn}_{eid}"
-                if pn_id not in capture_dict.keys():
-                    capture_dict[pn_id] = {"event_cols":{"all":[]}}
-                capture_dict[pn_id]["event_cols"]["all"].append(new_field)
-    print(f"Parsed all {field_count} fields! Count of discovered PN_IDs:",
-          len(capture_dict.keys()))
-    output_dict = {}
-    for key in sorted(list(capture_dict.keys())):
-        col_list = sorted(capture_dict[key]["event_cols"]["all"])
-        output_dict[key] = {"event_cols": {"all":col_list}}
-    return output_dict
-```
-```
-# EXECUTION BLOCK
-output_findings_to_json = True
-ip, user, password = "https://192.168.0.1:9200", "coolguy", "coolpassword"
-index_pattern = "so-beats-*"
-import warnings
-warnings.filterwarnings("ignore")
-from elasticsearch import Elasticsearch as ES
-from elasticsearch_dsl import Search
-client = ES([ip], ca_certs=False, verify_certs=False, http_auth=(user,password))
-indices = sorted(list(client.indices.get_alias(index_pattern).keys()))
-index_count = len(indices)
-for i, ind in enumerate(indices):
-    if round((i / index_count) * 100) > j:
-        j = round((i / index_count) * 100)
-        print(f"Checking indices: {j}%", end="\r", flush=True)
-    try:
-        maps = client.indices.get_mapping(ind)[ind]["mappings"]["properties"]
-        new_set = gather_fields_from_index(index_fields)
-        all_fields.update(new_set)
-    except Exception as error:
-        print(ind, "---", error)
-        print(f"Checking indices: {j}%", end="\r", flush=True)
-all_fields = sorted(list(all_fields))
-print("Check complete! Number of observed fields:", len(all_fields))
-search_context = Search(using=client, index=index_pattern, doc_type="doc")
-field_pnids = gather_field_pnids(
-    search_context, all_fields, pn_field, eid_field, mission_window)
-providers = {pn_id.split("_")[0] for pn_id in field_pnids.keys()}
-provider_printout = "\n".join(sorted(list(providers)))
-print(f"\nDiscovered Providers:\n{provider_printout}\n")
-sample_val = "Microsoft-Windows-Security-Auditing_4624"
-if sample_val in field_pnids.keys():
-    print(f"Fields for sample: {sample_val}\n{field_pnids[sample_val]}\n")
-if output_findings_to_json:
-    with open("kb_specific.json", "w") as f:
-        f.write(json.dumps(output_pnids, indent=2))
-```
-### Python: Record Pull
-```
-# DEFINITION BLOCK
-def flatten_json(json_input, splitout_lists=False):
-    output_dict = {}
-    def flatten(current_structure, name=""):
-        if type(current_structure) is dict:
-            # loop vertically (key -> value)
-            for element in current_structure:
-                flatten(current_structure[element], name + element + ".")
-        elif type(current_structure) is list:
-            if splitout_lists in [True, "True", "true", "Yes", "yes", "sure"]:
-                for i, element in enumerate(current_structure):
-                    flatten(element, name + str(i) + "_")
-            else: output_dict[name[:-1]] = current_structure
-        else: output_dict[name[:-1]] = current_structure
-    flatten(json_input)
-    return output_dict
-def print_progress(i):
-    if i < 1_000_000 and i % 1_000 == 0 and i != 0:
-        print(f"{i // 1_000}k records found...", end="\r", flush=True)
-    elif i % 10_000 == 0 and i != 0:
-        print(f"{i / 1_000_000}mil records found...", end="\r", flush=True)
-def use_es_response(response, return_count=10, use_es_id=False):
-    hits = response.__dict__["_d_"]["hits"]["hits"]
-    rows = []
-    for hit in hits[:return_count]:
-        obj = hit["_source"]
-        if use_es_id:
-            obj["_id"] = d.meta.id
-        row = flatten_json(obj)
-        rows.append(row)
-    if len(rows) == 0:
-        return None
-    df = pd.DataFrame(rows)
-    return df
-def query_the_stack(query_object, return_count=None):
-    response = query_object.execute()
-    if not response.success(): 
-        print("Connection failed!")
-        return None
-    under10records = len(response.__dict__["_d_"]["hits"]["hits"]) < 10
-    if return_count in range(1,11) or under10records:
-        df = use_es_response(response, return_count, use_es_id)
-        return df
-    rows = []
-    try:
-        for i, d in enumerate(query_object.scan()):
-            if i == return_count:
-                break
-            if shh is False:
-                print_progress(i)
-            obj = d.to_dict()
-            if use_es_id:
-                obj["_id"] = d.meta.id
-            row = flatten_json(obj)
-            del obj
-            rows.append(row)
-            del row
-    except Exception as error:
-        print("Something went wrong!! The query probably didn't complete.")
-        print(f"Here's the error:\n{error}")
-    try:
-        if shh is False:
-            print("Total records found:", "{:,}".format(i))
-    except:
-        pass
-    if len(rows) == 0:
-        return None
-    df = pd.DataFrame(rows)
-    del rows
-    return df
-```
-```
-# EXECUTION BLOCK
-ip, user, password = "https://192.168.0.1:9200", "coolguy", "coolpassword"
-index_pattern = "so-beats-*"
-import warnings
-warnings.filterwarnings("ignore")
-import pandas as pd
-from elasticsearch import Elasticsearch as ES
-from elasticsearch_dsl import Search
-client = ES([ip], ca_certs=False, verify_certs=False, http_auth=(user,password))
-search_context = Search(using=client, index=index_pattern, doc_type="doc")
-s1 = search_context\
-    .query("match", winlog__event_id=4624)\
-    .filter("range", **{"@timestamp": {"gte": "now-1d"}})\
-    .source(fields=["winlog.provider_name","winlog.event_id"])
-df1 = elk_basics.query_the_stack(s1, 10_000)
-s2 = search_context.query("exists", field="winlog.event_data.LogonType")
-df2 = elk_basics.query_the_stack(s2, 10_000)
-```
-### Python: Advanced Querying
-```
-# DEFINITION BLOCK: NO DEFINITIONS!
-```
-```
-# EXECUTION BLOCK
-ip, user, password = "https://192.168.0.1:9200", "coolguy", "coolpassword"
-index_pattern = "so-zeek-*"
-import warnings
-warnings.filterwarnings("ignore")
-import pandas as pd
-from elasticsearch import Elasticsearch as ES
-from elasticsearch_dsl import Search
-client = ES([ip], ca_certs=False, verify_certs=False, http_auth=(user,password))
-search_context = Search(using=client, index=index_pattern, doc_type="doc")
-painless = """
-boolean x = false;
-def src_regex = /181\.18\.120\.\d{1,3}/.matcher(doc["source.ip"].value);
-if (src_regex.matches()) {
-    x = doc["client.ip_bytes"].value > doc["server.ip_bytes"].value;
-}
-return x;
-"""
-fields = ["source.ip","destination.ip","client.ip_bytes","server.ip_bytes"]
-s = search_context\
-    .query("bool", **{"must": [{"match": {"source.ip":"123.45.67.0/24"}}],
-                      "filter": {"script": {"script": {"source": painless}}}})\
-    .params(request_timeout=90)
-s.aggs.bucket("src", "terms", field="source.ip", size=10_000)\
-      .metric("dst", "terms", field="destination.ip", size=10_000)
-print("Executing... please hold for a few seconds...", end="\r", flush=True)
-response = s.execute()
-print("Done!" + " "*100)
-results = response.aggregations.to_dict()
-output_set = set()
-for bucket in results["src"]["buckets"]:
-    src = bucket["key"]
-    dsts = {bkt["key"] for bkt in bucket["dst"]["buckets"]}
-    rows = {(src, dst) for dst in dsts}
-    output_set.update(rows)
-df = pd.DataFrame([{"source":os[0], "destination":os[1]} for os in output_set])
-```
-### Kibana Dev Tools: Print to Console
-```
-# UNIQUE COMBINATIONS OF SOURCE IP FIRST-TWO OCTETS
-# RUNTIME MAPPINGS ARE TEMPORARY FIELDS ADDED TO RECORDS
-# WE CAN AGGREGATE THESE TEMPORARY FIELDS FOR COOL OUTCOMES
-GET so-zeek-*/_search
-{
-"size": 0,   // Focusing on aggregations, so, show zero individual records
-"runtime_mappings": {"srcip_firsttwo_octets": {
-    "type": "keyword",
-    "script": {"source": """
-        boolean requiredfields_exist;
-        String ip;
-        String firsttwo_octets = '';
-        requiredfields_exist = (
-            doc.containsKey('source.ip') && !doc['source.ip'].empty;
-        )
-        if (requiredfields_exist) {
-            ip = doc['source.ip'].value.toString();
-            def octets = ip.splitOnToken('.');
-            for (int i = 0; i < 2 && octets.length == 4; i++) {
-                firsttwo_octets = firsttwo_octets + octets[i] + '.';
-            }
-            emit(firsttwo_octets);
-        }
-    """
-}}},
-"fields": ["source.ip", "srcip_firsttwo_octets"],
-"_source": false,
-"aggs": {
-    "firsttwo": {"terms": {"field": "srcip_firsttwo_octets", "size": 10000}
-}}}
-```
-### Kibana Dev Tools: Reindexing (ETL-like operation)
-```
-# CLONE MAPPINGS; CLOSE THE SOURCE INDEX FIRST! USE AN INDEX WITH LITTLE DATA!
-POST so-beats-2023.10.15/_clone/my-exploration-index
-# CLEAR THE IRRELEVANT DATA, LEAVING JUST THE MAPPINGS THAT WE NEED
-POST my-exploration-index/_delete_by_query
-{"query": {"match_all": {}}}
-# RUN REINDEXING OPERATION
-POST _reindex
-{
-"max_docs": 100,
-"source": {
-    "index": "so-beats-*",
-    "query": {"bool": {
-        "must": {"exists": {"field": "process.executable"}},
-        "filter": {"script": {"script": {"source": """
-            String col = 'process.executable';
-            String cmd = '\\cmd.exe';
-            boolean fp_cmd = doc[col].value.endsWith(cmd);
-            return fp_cmd;
-            """
-        }}}}
-    },
-    "_source": ["@timestamp","agent.name","process.executable"]
-},
-"script": {"source": """
-    ctx._source.investigation = 'early-1';
-    ctx._source.norm_exec = ctx._source.process.executable.toLowerCase();
-"""
-},
-"dest": {
-    "index": "my-exploration-index"
-}}
-# IF _REINDEX TIMES OUT, YOU CAN CHECK RUNNING REINDEXING OPERATIONS...
-GET _tasks?detailed=true&actions=*reindex
-# ...THEN, CHECK THAT SPECIFIC TASK'S PROGRESS...
-GET _tasks/Ovbg8nVuREaqV3INCO13Og:361012073
-# ...AND IF YOU NEED, YOU CAN CANCEL THAT SPECIFIC TASK...
-# NOTE: COPIED RECORDS REMAIN IN THE TARGET INDEX (PROCESSED RECORDS NOT UNDONE)
-POST _tasks/Ovbg8nVuREaqV3INCO13Og:361012073/_cancel
-# ...THEN YOU CAN DELETE THE RECORDS OUT IF NECESSARY...
-POST my-exploration-index/_delete_by_query
-{"query": {"match_all": {}}}
-# ...OR, DELETE THE ENTIRE INDEX AND MAPPINGS!
-DELETE my-exploration-index
-```
-
 [[Return to Top]](#table-of-contents)
 
 
@@ -1965,7 +1559,7 @@ import pandas as pd
 # FIX NUMERICAL FEATURES
 log_unskewed = df[["col1","col2","col3"]].apply(lambda x: np.log(x + 1))
 df["sqrt_col4"] = df["col4"] ** 0.5  # get to line for linear regression
-# categorize strings
+# SET STRINGS TO NEW CATEGORIES
 df["cats"] = df["string"].map({"hi":"greet","yo":"greet","bye":"dismiss"})
 df["is_good"] = df["string"].str.startswith("good")
 df["is_hot"] = df["string"].str.contains("hot|scalding|scorching|searing")
@@ -5179,7 +4773,471 @@ kubectl describe serviceaccount <serviceaccount>
 
 
 
-<!-- 
+<!--
+######         #####                              
+#     # #   # #     # #####    ##   #####  #    # 
+#     #  # #  #       #    #  #  #  #    # #   #  
+######    #    #####  #    # #    # #    # ####   
+#         #         # #####  ###### #####  #  #   
+#         #   #     # #      #    # #   #  #   #  
+#         #    #####  #      #    # #    # #    # 
+-->
+
+# PySpark
+```
+
+```
+
+--------------------------------------------------------------------------------
+<!-- Polished -->
+## Spark
+- Computational clustering for big data processing
+    * Velocity (fast gathering, lots of data, streaming)
+    * Volume (large data, bigger than memory or bigger than storage)
+    * Veracity (reliability of data, esp. missing data)
+    * Variety (different sources, unstructured data, data isn't uniform)
+- Java Virtual Machine (JVM) coordinates clusters using Scala
+- The 'pyspark' library translates Python to Scala and operates the JVM
+- Can run 100% locally; it will coordinates computer cores
+    * This is often overkill for one-computer tasks
+- Is 'lazy'- adds to / optimizes queries until the execution order is given
+- Alternatives: Hadoop, Dask
+### PySpark Commands
+- Check Spark's intentions before query: `df.explain()`
+    * Used for diagnosing performance issues; operation order from bottom-upward
+- Switch to SQL: `df.createOrReplaceTempView('df')`
+    * Run SQL statements: `spark.sql(''' SELECT * FROM df ''')`
+- Build schema: `schema = StructType([(StructField(...), StructField(...)),])`
+    * StructField syntax: `Structfield("col1", StringType())`
+### PySpark Wrangling Example
+```
+# SETUP
+import pyspark
+from pyspark.sql.functions import *
+spark = pyspark.sql.SparkSession.builder.getOrCreate()
+# INGEST
+df = spark.read.csv('filepath', header=True, schema=schema_struct)
+# JOIN DF
+df = df.join(df2, "joiner_col", "left").drop(df.joiner_col).drop(df2.joiner_col)
+# PRINT NULL COUNTS
+df.select(
+    [count(when(isnan(c) | col(c).isNull(), c)).alias(c) for c in df.columns]
+).show(vertical=True)
+# FILL, DROP NULLS
+df = df.na.fill(0, subset=['x', 'y']).na.drop()
+# CHECK DTYPES
+df.printSchema()
+# DTYPE, NAME CHANGES
+df = df.withColumn('ordinals', df.x.cast('string'))\
+.withColumnRenamed("colname_before", "colname_after")
+# TO DATETIME, TO MONTH
+df = df.withColumn("col1", month(to_timestamp("col1", "M/d/yy H:mm")))
+# DATEDIFF
+df = df.withColumn("date_calc_col", datediff(current_timestamp(), "datecol"))
+# REGEX
+df = df.withColumn('repl', regexp_replace(df.x, re, repl)\
+.withColumn('substr', regexp_extract(df.col, re, g)))
+# STRING WHITESPACE, FORMATTING
+df = df.withColumn("c1", trim(lower(df.c1)))\
+.withColumn("c1", format_string("%03d", col("c1").cast("int")),)
+# STRING CONCAT
+df = df.withColumn('c2', concat(lit('x:', df.x)))
+# ADD X + Y AS COLUMN 'Z' TWO DIFFERENT WAYS
+df = df.select(*, expr(df.x + df.y).alias('z')).selectExpr('*', 'x + y as z') 
+# WHEN
+df = df.withColumn('ten', when(df.x > 10, 'over 10').otherwise('not over 10'))
+# WHERE, OR + AND
+df = df.where((df.x > 5) | (df.y < 5)).where(df.z ==7)
+# SMALL SAMPLE
+df = df.sample(fraction=0.01, seed=42)
+# SPLIT
+trn, val, test = df.randomSplit([0.6, 0.2, 0.2], seed=42)
+# RUN ALL, SAVE LOCALLY
+df.write.json("df_json", mode="overwrite")
+trn.write.format("csv").mode("overwrite").option("header", "true").save("train")
+val.write.format("csv").mode("overwrite").option("header", "true").save("val")
+test.write.format("csv").mode("overwrite").option("header", "true").save("test")
+```
+### PySpark Aggregation Example
+```
+# COLUMN CALCULATION
+x_y = df.select(sum(df.x)), df.select(mean(df.x))
+# VALUE COUNT TWO COLUMNS, WITH PROPORTIONS COLUMN
+value_counts = df.groupBy('col','target').count().sort('count',ascending=False)\
+.withColumn('proportion', round(col('count') / df.count(), 2))
+# AGG GROUPBY
+mean_min = df.groupBy('gb').agg(mean(df.x), min(df.y))
+# CROSSTAB
+crosstab = df.crosstab('g1', 'g2')
+# PIVOT TABLE
+mean_x_given_g1_g2 = df.groupBy('g1').pivot('g2').agg(mean('x'))
+```
+### PySpark Machine Learning Example
+```
+from pyspark.ml.stat import ...    # chi square / correlation testing
+from pyspark.ml.feature import ... # imputation, encoding, scaling, vectorize...
+from pyspark.ml.classification import ... # modeling
+from pyspark.ml.regression import ...     # modeling
+from pyspark.ml.clustering import ...     # modeling
+from pyspark.ml.tuning import ...         # model cross-validation
+from pyspark.ml.evaluation import ...     # model evaluation
+```
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!--
+####### #       #    #     #####                             
+#       #       #   #     #     # #####   ##    ####  #    # 
+#       #       #  #      #         #    #  #  #    # #   #  
+#####   #       ###        #####    #   #    # #      ####   
+#       #       #  #            #   #   ###### #      #  #   
+#       #       #   #     #     #   #   #    # #    # #   #  
+####### ####### #    #     #####    #   #    #  ####  #    # 
+-->
+
+# ELK Stack
+```
+Elasticsearch, Logstash, Kibana. Otherwise known as the ELK stack.
+Elasticsearch is a storage architecture.
+Logstash is a pipelining architecture.
+Kibana is a user interface for accessing the data/pipelining in Elasticsearch.
+```
+
+--------------------------------------------------------------------------------
+<!-- Needs work -->
+## Elasticsearch
+- Popular SIEM system with querying and visualizations/dashboards (Kibana/API)
+- Can use Kibana's UI to perform simple tasks, queries, and visualization
+- Can use the console in Kibana Dev Tools to run powerful queries/indexing/etc
+    * Painless scripting (Java-based language) overcomes KQL shortcomings
+- Python interacts with the Elasticsearch REST API on port 9200 (default)
+- To connect: create an account in Kibana and use those creds in Python queries
+### Python: Stack Assessment
+```
+# DEFINITION BLOCK
+def gather_fields_from_index(properties):
+    output_list = []
+    def walk_down(current, name=""):
+        keys = list(current.keys())
+        for key in keys:
+            if "properties" in current[key].keys():
+                walk_down(current[key]["properties"], f"{name}{key}.")
+            else:
+                output_list.append(f"{name}{key}")
+    walk_down(properties)
+    return set(output_list)
+def gather_field_pnids(search_context, all_fields,\
+                       pn_field="winlog.provider_name",\
+                       eid_field="winlog.event_id", range_kwargs=None):
+    field_count = len(all_fields)
+    print(f"Getting all PN_ID options for {field_count} fields...",
+          end="\r", flush=True)
+    capture_dict = {}
+    j = 0.0
+    for i, new_field in enumerate(all_fields):
+        if round((i / field_count) * 100) > j:
+            j = round((i / field_count) * 100)
+            print(f"Getting all PN_ID options for {field_count} fields: {j}%",
+                  end="\r", flush=True)
+        sc2 = search_context.query("exists", field=new_field)
+        if type(range_kwargs) is dict:
+            sc2 = sc2.filter("range", **range_kwargs)
+        sc2.aggs.bucket("pn",  "terms", field=pn_field,  size=10_000)\
+                .metric("eid", "terms", field=eid_field, size=10_000)
+        response = sc2.execute()
+        my_aggs = response.aggregations.to_dict()
+        for pn_bucket in my_aggs["pn"]["buckets"]:
+            pn = pn_bucket["key"]
+            for eid_bucket in pn_bucket["eid"]["buckets"]:
+                eid = eid_bucket["key"]
+                pn_id = f"{pn}_{eid}"
+                if pn_id not in capture_dict.keys():
+                    capture_dict[pn_id] = {"event_cols":{"all":[]}}
+                capture_dict[pn_id]["event_cols"]["all"].append(new_field)
+    print(f"Parsed all {field_count} fields! Count of discovered PN_IDs:",
+          len(capture_dict.keys()))
+    output_dict = {}
+    for key in sorted(list(capture_dict.keys())):
+        col_list = sorted(capture_dict[key]["event_cols"]["all"])
+        output_dict[key] = {"event_cols": {"all":col_list}}
+    return output_dict
+```
+```
+# EXECUTION BLOCK
+output_findings_to_json = True
+ip, user, password = "https://192.168.0.1:9200", "coolguy", "coolpassword"
+index_pattern = "so-beats-*"
+import warnings
+warnings.filterwarnings("ignore")
+from elasticsearch import Elasticsearch as ES
+from elasticsearch_dsl import Search
+client = ES([ip], ca_certs=False, verify_certs=False, http_auth=(user,password))
+indices = sorted(list(client.indices.get_alias(index_pattern).keys()))
+index_count = len(indices)
+for i, ind in enumerate(indices):
+    if round((i / index_count) * 100) > j:
+        j = round((i / index_count) * 100)
+        print(f"Checking indices: {j}%", end="\r", flush=True)
+    try:
+        maps = client.indices.get_mapping(ind)[ind]["mappings"]["properties"]
+        new_set = gather_fields_from_index(index_fields)
+        all_fields.update(new_set)
+    except Exception as error:
+        print(ind, "---", error)
+        print(f"Checking indices: {j}%", end="\r", flush=True)
+all_fields = sorted(list(all_fields))
+print("Check complete! Number of observed fields:", len(all_fields))
+search_context = Search(using=client, index=index_pattern, doc_type="doc")
+field_pnids = gather_field_pnids(
+    search_context, all_fields, pn_field, eid_field, mission_window)
+providers = {pn_id.split("_")[0] for pn_id in field_pnids.keys()}
+provider_printout = "\n".join(sorted(list(providers)))
+print(f"\nDiscovered Providers:\n{provider_printout}\n")
+sample_val = "Microsoft-Windows-Security-Auditing_4624"
+if sample_val in field_pnids.keys():
+    print(f"Fields for sample: {sample_val}\n{field_pnids[sample_val]}\n")
+if output_findings_to_json:
+    with open("kb_specific.json", "w") as f:
+        f.write(json.dumps(output_pnids, indent=2))
+```
+### Python: Record Pull
+```
+# DEFINITION BLOCK
+def flatten_json(json_input, splitout_lists=False):
+    output_dict = {}
+    def flatten(current_structure, name=""):
+        if type(current_structure) is dict:
+            # loop vertically (key -> value)
+            for element in current_structure:
+                flatten(current_structure[element], name + element + ".")
+        elif type(current_structure) is list:
+            if splitout_lists in [True, "True", "true", "Yes", "yes", "sure"]:
+                for i, element in enumerate(current_structure):
+                    flatten(element, name + str(i) + "_")
+            else: output_dict[name[:-1]] = current_structure
+        else: output_dict[name[:-1]] = current_structure
+    flatten(json_input)
+    return output_dict
+def print_progress(i):
+    if i < 1_000_000 and i % 1_000 == 0 and i != 0:
+        print(f"{i // 1_000}k records found...", end="\r", flush=True)
+    elif i % 10_000 == 0 and i != 0:
+        print(f"{i / 1_000_000}mil records found...", end="\r", flush=True)
+def use_es_response(response, return_count=10, use_es_id=False):
+    hits = response.__dict__["_d_"]["hits"]["hits"]
+    rows = []
+    for hit in hits[:return_count]:
+        obj = hit["_source"]
+        if use_es_id:
+            obj["_id"] = d.meta.id
+        row = flatten_json(obj)
+        rows.append(row)
+    if len(rows) == 0:
+        return None
+    df = pd.DataFrame(rows)
+    return df
+def query_the_stack(query_object, return_count=None):
+    response = query_object.execute()
+    if not response.success(): 
+        print("Connection failed!")
+        return None
+    under10records = len(response.__dict__["_d_"]["hits"]["hits"]) < 10
+    if return_count in range(1,11) or under10records:
+        df = use_es_response(response, return_count, use_es_id)
+        return df
+    rows = []
+    try:
+        for i, d in enumerate(query_object.scan()):
+            if i == return_count:
+                break
+            if shh is False:
+                print_progress(i)
+            obj = d.to_dict()
+            if use_es_id:
+                obj["_id"] = d.meta.id
+            row = flatten_json(obj)
+            del obj
+            rows.append(row)
+            del row
+    except Exception as error:
+        print("Something went wrong!! The query probably didn't complete.")
+        print(f"Here's the error:\n{error}")
+    try:
+        if shh is False:
+            print("Total records found:", "{:,}".format(i))
+    except:
+        pass
+    if len(rows) == 0:
+        return None
+    df = pd.DataFrame(rows)
+    del rows
+    return df
+```
+```
+# EXECUTION BLOCK
+ip, user, password = "https://192.168.0.1:9200", "coolguy", "coolpassword"
+index_pattern = "so-beats-*"
+import warnings
+warnings.filterwarnings("ignore")
+import pandas as pd
+from elasticsearch import Elasticsearch as ES
+from elasticsearch_dsl import Search
+client = ES([ip], ca_certs=False, verify_certs=False, http_auth=(user,password))
+search_context = Search(using=client, index=index_pattern, doc_type="doc")
+s1 = search_context\
+    .query("match", winlog__event_id=4624)\
+    .filter("range", **{"@timestamp": {"gte": "now-1d"}})\
+    .source(fields=["winlog.provider_name","winlog.event_id"])
+df1 = elk_basics.query_the_stack(s1, 10_000)
+s2 = search_context.query("exists", field="winlog.event_data.LogonType")
+df2 = elk_basics.query_the_stack(s2, 10_000)
+```
+### Python: Advanced Querying
+```
+# DEFINITION BLOCK: NO DEFINITIONS!
+```
+```
+# EXECUTION BLOCK
+ip, user, password = "https://192.168.0.1:9200", "coolguy", "coolpassword"
+index_pattern = "so-zeek-*"
+import warnings
+warnings.filterwarnings("ignore")
+import pandas as pd
+from elasticsearch import Elasticsearch as ES
+from elasticsearch_dsl import Search
+client = ES([ip], ca_certs=False, verify_certs=False, http_auth=(user,password))
+search_context = Search(using=client, index=index_pattern, doc_type="doc")
+painless = """
+boolean x = false;
+def src_regex = /181\.18\.120\.\d{1,3}/.matcher(doc["source.ip"].value);
+if (src_regex.matches()) {
+    x = doc["client.ip_bytes"].value > doc["server.ip_bytes"].value;
+}
+return x;
+"""
+fields = ["source.ip","destination.ip","client.ip_bytes","server.ip_bytes"]
+s = search_context\
+    .query("bool", **{"must": [{"match": {"source.ip":"123.45.67.0/24"}}],
+                      "filter": {"script": {"script": {"source": painless}}}})\
+    .params(request_timeout=90)
+s.aggs.bucket("src", "terms", field="source.ip", size=10_000)\
+      .metric("dst", "terms", field="destination.ip", size=10_000)
+print("Executing... please hold for a few seconds...", end="\r", flush=True)
+response = s.execute()
+print("Done!" + " "*100)
+results = response.aggregations.to_dict()
+output_set = set()
+for bucket in results["src"]["buckets"]:
+    src = bucket["key"]
+    dsts = {bkt["key"] for bkt in bucket["dst"]["buckets"]}
+    rows = {(src, dst) for dst in dsts}
+    output_set.update(rows)
+df = pd.DataFrame([{"source":os[0], "destination":os[1]} for os in output_set])
+```
+
+--------------------------------------------------------------------------------
+<!-- Needs work -->
+## Logstash
+- 
+
+--------------------------------------------------------------------------------
+<!-- Needs work -->
+## Kibana
+### Kibana Dev Tools: Print to Console
+```
+# UNIQUE COMBINATIONS OF SOURCE IP FIRST-TWO OCTETS
+# RUNTIME MAPPINGS ARE TEMPORARY FIELDS ADDED TO RECORDS
+# WE CAN AGGREGATE THESE TEMPORARY FIELDS FOR COOL OUTCOMES
+GET so-zeek-*/_search
+{
+"size": 0,   // Focusing on aggregations, so, show zero individual records
+"runtime_mappings": {"srcip_firsttwo_octets": {
+    "type": "keyword",
+    "script": {"source": """
+        boolean requiredfields_exist;
+        String ip;
+        String firsttwo_octets = '';
+        requiredfields_exist = (
+            doc.containsKey('source.ip') && !doc['source.ip'].empty;
+        )
+        if (requiredfields_exist) {
+            ip = doc['source.ip'].value.toString();
+            def octets = ip.splitOnToken('.');
+            for (int i = 0; i < 2 && octets.length == 4; i++) {
+                firsttwo_octets = firsttwo_octets + octets[i] + '.';
+            }
+            emit(firsttwo_octets);
+        }
+    """
+}}},
+"fields": ["source.ip", "srcip_firsttwo_octets"],
+"_source": false,
+"aggs": {
+    "firsttwo": {"terms": {"field": "srcip_firsttwo_octets", "size": 10000}
+}}}
+```
+### Kibana Dev Tools: Reindexing (ETL-like operation)
+```
+# CLONE MAPPINGS; CLOSE THE SOURCE INDEX FIRST! USE AN INDEX WITH LITTLE DATA!
+POST so-beats-2023.10.15/_clone/my-exploration-index
+# CLEAR THE IRRELEVANT DATA, LEAVING JUST THE MAPPINGS THAT WE NEED
+POST my-exploration-index/_delete_by_query
+{"query": {"match_all": {}}}
+# RUN REINDEXING OPERATION
+POST _reindex
+{
+"max_docs": 100,
+"source": {
+    "index": "so-beats-*",
+    "query": {"bool": {
+        "must": {"exists": {"field": "process.executable"}},
+        "filter": {"script": {"script": {"source": """
+            String col = 'process.executable';
+            String cmd = '\\cmd.exe';
+            boolean fp_cmd = doc[col].value.endsWith(cmd);
+            return fp_cmd;
+            """
+        }}}}
+    },
+    "_source": ["@timestamp","agent.name","process.executable"]
+},
+"script": {"source": """
+    ctx._source.investigation = 'early-1';
+    ctx._source.norm_exec = ctx._source.process.executable.toLowerCase();
+"""
+},
+"dest": {
+    "index": "my-exploration-index"
+}}
+# IF _REINDEX TIMES OUT, YOU CAN CHECK RUNNING REINDEXING OPERATIONS...
+GET _tasks?detailed=true&actions=*reindex
+# ...THEN, CHECK THAT SPECIFIC TASK'S PROGRESS...
+GET _tasks/Ovbg8nVuREaqV3INCO13Og:361012073
+# ...AND IF YOU NEED, YOU CAN CANCEL THAT SPECIFIC TASK...
+# NOTE: COPIED RECORDS REMAIN IN THE TARGET INDEX (PROCESSED RECORDS NOT UNDONE)
+POST _tasks/Ovbg8nVuREaqV3INCO13Og:361012073/_cancel
+# ...THEN YOU CAN DELETE THE RECORDS OUT IF NECESSARY...
+POST my-exploration-index/_delete_by_query
+{"query": {"match_all": {}}}
+# ...OR, DELETE THE ENTIRE INDEX AND MAPPINGS!
+DELETE my-exploration-index
+```
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!--
 ######                                           
 #     # #####   ####       # ######  ####  ##### 
 #     # #    # #    #      # #      #    #   #   
