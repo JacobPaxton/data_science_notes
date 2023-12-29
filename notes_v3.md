@@ -46,88 +46,107 @@ V.    [Building a Database           ](#building-a-database)
 
 VI.   [Database Usage Mastery        ](#database-usage-mastery)
 1.    [SQL and Variants              ](#sql-and-variants)
-1.    [Spark                         ](#spark)
-1.    [Elasticsearch                 ](#elasticsearch)
+1.    [SQL Examples                  ](#sql-examples)
 
-VII.  [Feature Transformation        ](#feature-transformation)
+VII.  [Fixing Nulls                  ](#fixing-nulls)
+1.    [Basic Null Characterization   ](#basic-null-characterization)
+1.    [Null Pattern Characterization ](#null-pattern-characterization)
+1.    [Handling Nulls                ](#handling-nulls)
+1.    [Evaluation of Null Handling   ](#evaluation-of-null-handling)
+
+VIII. [Feature Transformation        ](#feature-transformation)
 1.    [Dataframe Normalization       ](#dataframe-normalization)
 1.    [Fixing Dataframes at Speed    ](#fixing-dataframes-at-speed)
 1.    [Feature Engineering           ](#feature-engineering)
-1.    [Speedy Data Structures        ](#speedy-data-structures)
 
-VIII. [Algorithmic Clustering        ](#algorithmic-clustering)
+IX.   [Modeling Preparation          ](#modeling-preparation)
+1.    [Scaling                       ](#scaling)
+1.    [Feature Reduction             ](#feature-reduction)
+1.    [Resampling                    ](#resampling)
+
+X.    [Algorithmic Clustering        ](#algorithmic-clustering)
 1.    [Selecting Number of Clusters  ](#selecting-number-of-clusters)
 1.    [Clustering Methods            ](#clustering-methods)
 1.    [Cluster Analysis              ](#cluster-analysis)
 
-IX.   [Natural Language Processing   ](#natural-language-processing)
+XI.   [Natural Language Processing   ](#natural-language-processing)
 1.    [Normalizing String Features   ](#normalizing-string-features)
 1.    [Keywords and Sentiment        ](#keywords-and-sentiment)
 1.    [NLP for Prediction            ](#nlp-for-prediction)
 
-X.    [Geospatial                    ](#geospatial)
+XII.  [Geospatial                    ](#geospatial)
 1.    [Geospatial Analysis           ](#geospatial-analysis)
 
-XI.   [Statistics                    ](#statistics)
+XIII. [Statistics                    ](#statistics)
 1.    [Probability                   ](#probability)
 1.    [Hypothesis Testing            ](#hypothesis-testing)
 
-XII.  [Insight Delivery              ](#insight-delivery)
+XIV.  [Insight Delivery              ](#insight-delivery)
 1.    [Visualizations                ](#visualizations)
 1.    [Magic in Jupyter              ](#magic-in-jupyter)
 
-XIII. [Classification                ](#classification)
+XV.   [Classification                ](#classification)
 1.    [Features for Classification   ](#features-for-classification)
 1.    [Training Classifiers          ](#training-classifiers)
 1.    [Evaluating Classifiers        ](#evaluating-classifiers)
 1.    [Classification Shotgun        ](#classification-shotgun)
 
-XIV.  [Regression                    ](#regression)
+XVI.  [Regression                    ](#regression)
 1.    [Features for Regression       ](#features-for-regression)
 1.    [Training Regressors           ](#training-regressors)
 1.    [Evaluating Regressors         ](#evaluating-regressors)
 1.    [Regression Shotgun            ](#regression-shotgun)
 
-XV.   [Time Series                   ](#time-series)
+XVII. [Time Series                   ](#time-series)
 1.    [Timestamp Engineering         ](#timestamp-engineering)
 1.    [Metrics of Time Series        ](#metrics-of-time-series)
 1.    [Outcome Plotting              ](#outcome-plotting)
 1.    [Time Series Modeling          ](#time-series-modeling)
 
-XVI.  [Anomaly Detection             ](#anomaly-detection)
+XVIII.[Anomaly Detection             ](#anomaly-detection)
 1.    [Anomalic Metrics              ](#anomalic-metrics)
 1.    [Getting to the Numbers        ](#getting-to-the-numbers)
 1.    [Baselines and Deviation       ](#baselines-and-deviation)
 
-XVII. [Neural Networks               ](#neural-networks)
+XIX.  [Neural Networks               ](#neural-networks)
 1.    [Establishing a Neural Network ](#establishing-a-neural-network)
 1.    [Image Classification          ](#image-classification)
 1.    [Deep Learning                 ](#deep-learning)
 
-XVIII.[Generative AI                 ](#generative-ai)
+XX.   [Generative AI                 ](#generative-ai)
 1.    [Implementing LLMs             ](#implementing-llms)
 1.    [Implementing Image Generation ](#implementing-image-generation)
 
-XIX.  [Model Deployment              ](#model-deployment)
+XXI.  [Model Deployment              ](#model-deployment)
 1.    [Pipelining a Model            ](#pipelining-a-model)
 1.    [Building a Flask App          ](#building-a-flask-app)
 1.    [Building a Django App         ](#building-a-django-app)
 1.    [Deploying the Model           ](#deploying-the-model)
 
-XX.   [Application Scaling           ](#application-scaling)
+XXII. [Application Scaling           ](#application-scaling)
 1.    [Kubernetes                    ](#kubernetes)
 1.    [Apache Kafka                  ](#apache-kafka)
 
-XXI.  [Project Management            ](#project-management)
+XXIII.[PySpark                       ](#pyspark)
+1.    [Spark                         ](#spark)
+1.    [PySpark Commands              ](#pyspark-commands)
+1.    [PySpark Machine Learning      ](#pyspark-machine-learning)
+
+XXIV. [ELK Stack                     ](#elk-stack)
+1.    [Elasticsearch                 ](#elasticsearch)
+1.    [Logstash                      ](#logstash)
+1.    [Kibana                        ](#kibana)
+
+XXV.  [Project Management            ](#project-management)
 1.    [Planning a Project            ](#planning-a-project)
 1.    [Selecting the Framework       ](#selecting-the-framework)
 
-XXII. [Business Tools                ](#tools-and-languages)
+XXVI. [Business Tools                ](#tools-and-languages)
 1.    [Excel and Google Sheets       ](#excel-and-google-sheets)
 1.    [PowerBI                       ](#powerbi)
 1.    [Tableau                       ](#tableau)
 
-XXIII.[Programming Languages         ](#programming-languages)
+XXVII.[Programming Languages         ](#programming-languages)
 1.    [Python Oddities               ](#python-oddities)
 1.    [R                             ](#r)
 1.    [C++                           ](#c)
@@ -1158,6 +1177,10 @@ The end state should be a dataframe that matches across query formats.
     * This syntax is also used for MODE()
 - `SELECT c1, c2, COUNT(*) FROM t1 GROUP BY GROUPING SETS ((c1),(c2),(c1,c2));`
     * Basically a UNION of the three columns
+
+--------------------------------------------------------------------------------
+<!-- Needs work -->
+## SQL Examples
 ### SQL Simple Records Query
 ```
 SHOW DATABASES; 
@@ -1248,180 +1271,32 @@ CREATE TEMPORARY TABLE germain_1457.employees_with_departments AS
 
 
 <!-- 
-#######                                                                         
-   #    #####    ##   #    #  ####  ######  ####  #####  #    # # #    #  ####  
-   #    #    #  #  #  ##   # #      #      #    # #    # ##  ## # ##   # #    # 
-   #    #    # #    # # #  #  ####  #####  #    # #    # # ## # # # #  # #      
-   #    #####  ###### #  # #      # #      #    # #####  #    # # #  # # #  ### 
-   #    #   #  #    # #   ## #    # #      #    # #   #  #    # # #   ## #    # 
-   #    #    # #    # #    #  ####  #       ####  #    # #    # # #    #  ####  
-                                                                                
-#######                                                 
-#       ######   ##   ##### #    # #####  ######  ####  
-#       #       #  #    #   #    # #    # #      #      
-#####   #####  #    #   #   #    # #    # #####   ####  
-#       #      ######   #   #    # #####  #           # 
-#       #      #    #   #   #    # #   #  #      #    # 
-#       ###### #    #   #    ####  #    # ######  ####  
+#######                             #     #                             
+#       # #    # # #    #  ####     ##    # #    # #      #       ####  
+#       #  #  #  # ##   # #    #    # #   # #    # #      #      #      
+#####   #   ##   # # #  # #         #  #  # #    # #      #       ####  
+#       #   ##   # #  # # #  ###    #   # # #    # #      #           # 
+#       #  #  #  # #   ## #    #    #    ## #    # #      #      #    # 
+#       # #    # # #    #  ####     #     #  ####  ###### ######  ####  
 -->
 
-# Feature Transformation
+# Fixing Nulls
 ```
-Once a dataframe is established, data cleaning and engineering begins.
-There are a variety of goals for this work, but goals share common methods.
-Topics: Data structure normalization, cell work, string/number vectorization
-- Normalization: melt/dummies, merge/join/concat, nulls/imputation
-- Cell work: masks (incl. REGEX), loc, fast find, fast sort, apply/applymap
-- String work: str methods, REGEX capture
-- Number work: calculations, cut/bins, scaling
-Other data structures like linked lists and hash tables can be useful too.
-Explanations here shouldn't go any further than feature engineering.
-```
-- TODO: Move null handling, outlier handling, etc to Fix Records section
-- TODO: Move feature analysis, engineering, QT, etc to Engineering section
-- TODO: Move scaling, resampling, feature reduction, and PCA to Fix Dataset
-
---------------------------------------------------------------------------------
-<!-- Needs work -->
-## Dataframe Normalization
-```
-def applycool(x):
-    if type(x) is not str:
-        return pd.Series([None, None])
-    testlist1 = ["\\","A"]
-    testlist2 = ["B","C"]
-    for t in testlist1:
-        if x.upper().startswith(t): return pd.Series(["cool", "awesome"])
-    for t in testlist2:
-        if x.upper().startswith(t): return pd.Series(["sweet", "nice"])
-    return pd.Series([None, None])
-s = pd.Series([None, "s", "\\s","a","b","c","d"])
-df = s.apply(applycool)
-```
-```
-import numpy as np
-import pandas as pd
-import json
-import xmltodict
-import statsmodels.api as sm
-from util import flatten_json
-# SPLIT JSON FIELDS OUT INTO THEIR OWN COLUMNS
-json_breakouts = pd.DataFrame(df[json_col].apply(flatten_json).tolist())
-df = pd.concat([df, json_breakouts], axis=1)
-# CONVERT A COLUMN OF NESTED XML INTO A DATAFRAME OF FLATTENED XML
-parse_xml = lambda x: flatten_json(json.loads(json.dumps(xmltodict.parse(x))))
-xml_breakouts = pd.DataFrame(df[xml_col].apply(parse_xml).tolist())
-df = pd.concat([df, xml_breakouts], axis=1)
-# PERFORM AN APPLY OPERATION CONDITIONALLY
-cond_apply = lambda x: x.upper() if x not in [None, np.nan, "None"] else None
-df["newcol0"] = df[str_col].apply(cond_apply)
-# PERFORM AN APPLY OPERATION WITH MULTI-COLUMN RETURN
-def determine(x):
-    if type(x) is not str:
-        return pd.Series(["start":None, "end":None, "all":x])
-    a = "alive" if x.startswith("born") else "unalive"
-    b = "dying" if x.endswith("died") else "undying"
-    return pd.Series(["start":a, "end":b, "all":x])
-out_df = df[str_col].apply(determine)
-# SPLIT A STRING COLUMN INTO MULTIPLE COLUMNS
-df[["newcol1","newcol2"]] = df["col"].str.split(":", expand=True)
-# MELT "WIDE" COLUMNS
-melted = pd.melt(df, id_vars="cat", value_vars=[c for c in df if c != "cat"])
-# MERGE TWO DATAFRAMES
-df1.merge(df2, left_on="df1c1", right_on="df2c1", how="outer", indicator=True)
-# DROP NULLS
-c_nulls = [(c, df[c].isna().sum(), df[c].isna().sum()*100//len(df)) for c in df]
-drop_cols = [c[0] for c in c_nulls if c[1] > 20]
-print(f"DROPPING THESE COLUMNS (>20% NULL):\n{drop_cols}")
-df = df.drop(columns=drop_cols)
-nonnull_minimum = int(r_nulls["avg"])  # thresh is minimum number of NON-NULL
-df = df.dropna(axis=1, thresh=nonnull_minimum, subset=df.columns[3:6])
-```
-### Null Imputation
-```
-from sklearnex import patch_sklearn
-patch_sklearn()
-from sklearn.impute import SimpleImputer, Imputer
-# SIMPLE IMPUTATION
-imputer1 = SimpleImputer(strategy="most_frequent")
-train[["embark_town"]] = imputer1.fit_transform(train[["embark_town"]])
-validate[["embark_town"]] = imputer1.transform(validate[["embark_town"]])
-test[["embark_town"]] = imputer1.transform(test[["embark_town"]])
-# STANDARD IMPUTATION
-imputer2 = Imputer(missing_values="NaN", strategy="mean", axis=0)
-train[["embark_town"]] = imputer2.fit_transform(train[["embark_town"]])
-validate[["embark_town"]] = imputer2.transform(validate[["embark_town"]])
-test[["embark_town"]] = imputer2.transform(test[["embark_town"]])
-# KNN IMPUTATION
-from fancyimpute import KNN   # or, IterativeImputer (MICE)
-df_knn = df.copy(deep=True)
-knn_imputer = KNN()
-df_knn.iloc[:,:] = knn_imputer.fit_transform(df_knn)
-```
-```
-# EVALUATE IMPUTATION RESULTS VIA LINEAR REGRESSION
-dropna_df = df.dropna(how="any") 
-meanimp_df = df.fillna() ... (impute mean)
-... # run/store any imputation method df here
-results = {}
-for each imp_df:
-    X = sm.add_constant(nullfix_df.drop(columns="target"))
-    y = nullfix_df["target"]
-    lm = sm.OLS(y, X).fit()
-    print(lm.rsquared_adj) # r2, larger is better
-    print(lm.params)       # index: colname, row: coefficient
-    results[this_imp_method] = lm.params
-print(pd.DataFrame(results))
-dropna_df["col"].plot(kind="kde", c="red", linewidth=3)
-meanimp_df['col"].plot(kind="kde")
-... # plot other imputation KDEs; compare KDEs for closeness to original DF
+Nulls are a common thing in real-world datasets for a variety of reasons.
+In most cases, we run basic characterization to understand a dataset's nulls.
+We have several remedies for nulls, including imputation or removal.
+In rare cases, we see patterns in nulls; so we do null pattern characterization.
 ```
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
-## Fixing Dataframes at Speed
-- AVOID APPENDING ROWS TO DATAFRAMES (SLOW)
-- Most numpy/pandas methods are NOT vectorized!!
-- Non-numerical DF description: `df.describe(exclude="number")`
-- Find duplicates: `df.duplicated(subset=["col1","col2",...], keep="first")`
-```
-import time
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-df = pd.DataFrame([{"hi":1, "yo":5, "sup":3.2}] * 1_000_000)
-# CHECK SPEED OF OPERATION
-tic = time.perf_counter()
-x = 2 + 2
-toc = time.perf_counter()
-print(f"Completed in {toc - tic:0.4f} seconds")
-# UNIQUE COMBOS OF COLUMNS
-combos = df.set_index(["hi","yo"]).index.unique() # df.index.get_level_values(i)
-for combo in combos:
-    mask = (df["hi"] == combo[0]) & (df["yo"] == combo[1])
-    print(f"--- {list(combo)} ---\nMax 'Sup':", df[mask]["sup"].max())
-# DF.APPLY WITH PROGRESS BAR
-from tqdm.auto import tqdm
-tqdm.pandas(desc="times100")
-s1 = df["hi"].progress_apply(lambda x: x * 100)
-df1 = df.progress_apply(lambda x: x[0] * x[1], axis=1)
-# CHECK MEMORY ALLOC FOR DF
-print(df.__sizeof__())
-# RESHAPE AN ARRAY (FAILS IF NOT POSSIBLE)
-array = np.array([1,2,3,4,5,6])  # 6x1 array
-array.reshape((2,3))             # 2x3 array
-# ZIP TWO NUMPY ARRAYS
-zipped = np.column_stack((m.feature_names_in_, m.coef_))
-# FIND TOP {x} VALUES OF NUMPY ARRAY
-best_idx = np.argpartition(m.feature_importances_, n_feats * -1)[n_feats * -1:]
-best_feats = [c for (i, c) in enumerate(m.feature_names_in_) if i in best_idx]
-```
-### Null Characterization
+## Basic Null Characterization
 ```
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import missingno as msno
+# SAMPLE DATA
 df = pd.DataFrame({"good1":[9,8,8,7,9,8]*15, "good2":["a","a","a","b","b"]*18, 
     "hi":[None,1,2]*30, "yo":[None,None,1]*30, "sup":[1,2,3]*30, 
     "hey":[1,None,2]*30, "hello":[None,None,1]*30})
@@ -1468,12 +1343,15 @@ plt.show()
 plt.figure(1)
 msno.matrix(df)
 plt.figure(2)
-msno.headmap(df)
+msno.heatmap(df)
 plt.figure(3)
 msno.dendrogram(df)
 plt.show()
 ```
-### Null Pattern Driver Determination
+
+--------------------------------------------------------------------------------
+<!-- Needs work -->
+## Null Pattern Characterization
 ```
 import numpy as np
 import pandas as pd
@@ -1519,27 +1397,274 @@ for p in sorted(regulars):
     x += f"{cap[p]['p_df'].to_html()}<summary><b>- {p}</b></summary>"
     display(HTML(dets.replace("x",x)))
 ```
-### Setting Up for Exploration
+
+--------------------------------------------------------------------------------
+<!-- Needs work -->
+## Handling Nulls
+### Null Removal
 ```
-import scikitplot as skplt
-import matplotlib.pyplot as plt
-# CUMULATIVE GAINS: HOW MANY SAMPLES TO GET A CERTAIN AMOUNT OF PREDICTION 1
-skplt.metrics.plot_cumulative_gain(actuals, preds) # preds are 0 or 1
-plt.show()
-# LIFT CURVE: MODEL'S PERFORMANCE ABOVE AVG TO TARGET PREDICTION 1 BY THRESH
-skplt.metrics.plot_lift_curve(actuals, preds)
-plt.show()
-# PER-GROUP OUTCOMES (INCIDENCE): % OF TARGETS IN EACH GROUP (CAT/CONT GROUPS!)
+# DROP NULLS
+c_nulls = [(c, df[c].isna().sum(), df[c].isna().sum()*100//len(df)) for c in df]
+drop_cols = [c[0] for c in c_nulls if c[1] > 20]
+print(f"DROPPING THESE COLUMNS (>20% NULL):\n{drop_cols}")
+df = df.drop(columns=drop_cols)
+nonnull_minimum = int(r_nulls["avg"])  # thresh is minimum number of NON-NULL
+df = df.dropna(axis=1, thresh=nonnull_minimum, subset=df.columns[3:6])
 ```
+### Basic Null Imputation
 ```
-import sklearn
 from sklearnex import patch_sklearn
 patch_sklearn()
-from sklearn.model_selection import train_test_split as tts
-from pydataset import data
-df = data('iris')
-t_v, test = tts(df, test_size=0.3, random_state=123, stratify=df["Species"])
-train, val = tts(t_v, test_size=.325, random_state=123, stratify=t_v["Species"])
+# SAMPLE DATA
+from seaborn import load_dataset
+df = load_dataset("titanic")
+X, y = df.drop(columns="survived"), df["survived"]
+from sklearn.model_selection import train_test_split as SPLIT
+X1, X_test, y1, y_test = SPLIT(X, y, test_size=0.2, random_state=42)
+X_train, X_val, y_train, y_val = SPLIT(X1, y1, test_size=0.25, random_state=42)
+# IMPUTATION
+import pandas as pd
+from sklearn.impute import SimpleImputer, Imputer
+from fancyimpute import KNN, IterativeImputer   # having issues installing this
+imps = dict()
+imps["mostfreq"] = SimpleImputer(strategy="most_frequent").fit(X_train)
+imps["mean"] = Imputer(missing_values="NaN",strategy="mean",axis=0).fit(X_train)
+imps["knn"] = KNN().fit(X_train)
+imps["mice"] = IterativeImputer().fit(X_train)
+```
+### Custom Null Imputation
+```
+def make_impute_recipe(df, subcats, impute_for):
+    np.random.seed(42)
+    subcats = [subcats] if type(subcats) is str else subcats
+    subcats_str = ",".join(sorted(subcats))
+    idx_name = df.index.name if df.index.name != None else "index"
+    grp_df = df.reset_index().set_index(subcats).sort_index()
+    cat_grps = grp_df.index.unique()
+    recipes = {subcats_str:{cat_grp:{} for cat_grp in cat_grps}}
+    for grp in cat_grps:
+        idx = grp_df.loc[grp,idx_name].tolist()
+        subset_df = df.loc[idx,impute_for]
+        for col in impute_for:
+            overall_mode = df[col].value_counts()
+            null_idx = subset_df[subset_df[col].isna()].index
+            vc = subset_df[col].value_counts(normalize=True)
+            if vc.isna().all(): func = lambda x: np.random.choice(vc.index)
+            else: func = lambda x: np.random.choice(vc.index, p=vc.tolist())
+            df.loc[null_idx,col] = df.loc[null_idx].apply(func, axis=1)
+            if grp not in recipes[subcats_str].keys(): 
+                recipes[subcats_str][grp] = dict()
+            recipes[subcats_str][grp][col] = vc
+    return recipes
+def use_impute_recipe(df, recipes):
+    np.random.seed(42)
+    str_grps = list(recipes.keys())
+    idx_name = df.index.name if df.index.name != None else "index"
+    cols_done = []
+    for str_grp in str_grps:
+        cols = str_grp.split(",")
+        if cols in cols_done:
+            continue
+        cols_done.append(cols)
+        grp_df = df.reset_index().set_index(cols).sort_index()
+        for obs_grp in grp_df.index.unique():
+            if obs_grp not in recipes[str_grp].keys():
+                print("Couldn't find this grouping in recipes:", obs_grp)
+                continue
+            idx = grp_df.loc[obs_grp,idx_name].tolist()
+            recipe = recipes[str_grp][obs_grp]
+            recipe_cols = sorted(list(recipe.keys()))
+            subset_df = df.loc[idx, cols + recipe_cols]
+            for col in recipe.keys():
+                vc = recipe[col]
+                if vc.isna().all(): func = lambda x: np.random.choice(vc.index)
+                else: func = lambda x: np.random.choice(vc.index, p=vc.tolist())
+                null_idx = subset_df.loc[subset_df[col].isna()].index.tolist()
+                df.loc[null_idx, col] = df.loc[null_idx].apply(func, axis=1)
+    return df
+```
+```
+# SAMPLE DATA
+import numpy as np
+import pandas as pd
+from seaborn import load_dataset
+df = load_dataset("titanic")
+orig_df = df.copy(deep=True)
+X, y = df.drop(columns="survived"), df["survived"]
+from sklearn.model_selection import train_test_split as SPLIT
+X1, X_test, y1, y_test = SPLIT(X, y, test_size=0.2, random_state=42)
+X_train, X_val, y_train, y_val = SPLIT(X1, y1, test_size=0.25, random_state=42)
+# SET VARIABLES FOR IMPUTATION RECIPE
+subcats = ["class","who"]        # group by these
+impute_for = ["deck","embarked"] # impute using groupings' probability dist
+# RUN IMPUTATION
+d = True
+impXtrain, impXval, impXtest = X_train.copy(d), X_val.copy(d), X_test.copy(d)
+recipes = make_impute_recipe(impXtrain, subcats, impute_for) # get X_train imp
+impXtrain = use_impute_recipe(impXtrain, recipes) # use X_train imp
+impXval = use_impute_recipe(impXval, recipes)     # use X_train imp
+impXtest = use_impute_recipe(impXtest, recipes)   # use X_train imp
+```
+
+--------------------------------------------------------------------------------
+<!-- Needs work -->
+## Evaluation of Null Handling
+```
+# SET VARIABLES FOR NULL HANDLING EVALUAITON
+label_type = "cat"     # or, "cont"
+col = "embark_town"
+import pandas as pd
+import statsmodels.api as sm
+results = {}
+for imp in imps.keys():
+    X_train_imp = sm.add_constant(imps[imp].transform(X_train))
+    X_train[col].plot(kind="kde", c="blue", linewidth=3, label=f"Original")
+    X_train_imp[col].plot(kind="kde",c="red",linewidth=3,label=f"Impute:{imp}")
+    plt.show()
+    if label_type == "cat":
+        from sklearn.metrics import confusion_matrix, accuracy_score
+        model = sm.Logit(y_train, X_train_imp).fit()
+        accuracy = (model.predict(X_train_imp) == y_train).mean()
+        print(f"{imp} impute: acc={accuracy}")  # r2, larger is better
+    if label_type == "cont":
+        model = sm.OLS(y_train, X_train_imp).fit()
+        print(f"{imp} impute: r2={model.rsquared_adj}")  # r2, larger is better
+    results[imp] = model.params
+print(pd.DataFrame(results))
+```
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
+#######                                                                         
+   #    #####    ##   #    #  ####  ######  ####  #####  #    # # #    #  ####  
+   #    #    #  #  #  ##   # #      #      #    # #    # ##  ## # ##   # #    # 
+   #    #    # #    # # #  #  ####  #####  #    # #    # # ## # # # #  # #      
+   #    #####  ###### #  # #      # #      #    # #####  #    # # #  # # #  ### 
+   #    #   #  #    # #   ## #    # #      #    # #   #  #    # # #   ## #    # 
+   #    #    # #    # #    #  ####  #       ####  #    # #    # # #    #  ####  
+                                                                                
+#######                                                 
+#       ######   ##   ##### #    # #####  ######  ####  
+#       #       #  #    #   #    # #    # #      #      
+#####   #####  #    #   #   #    # #    # #####   ####  
+#       #      ######   #   #    # #####  #           # 
+#       #      #    #   #   #    # #   #  #      #    # 
+#       ###### #    #   #    ####  #    # ######  ####  
+-->
+
+# Feature Transformation
+```
+Once a dataframe is established, data cleaning and engineering begins.
+There are a variety of goals for this work, but goals share common methods.
+Topics: Data structure normalization, cell work, string/number vectorization
+- Normalization: melt/dummies, merge/join/concat, nulls/imputation
+- Cell work: masks (incl. REGEX), loc, fast find, fast sort, apply/applymap
+- String work: str methods, REGEX capture
+- Number work: calculations, cut/bins, scaling
+Other data structures like linked lists and hash tables can be useful too.
+Explanations here shouldn't go any further than feature engineering.
+```
+- TODO: Fix this section, somehow. It's jumbled with misplaced examples.
+
+--------------------------------------------------------------------------------
+<!-- Needs work -->
+## Dataframe Normalization
+### Explode, Melt, Merge, ETC
+```
+# SPLIT A STRING COLUMN INTO MULTIPLE COLUMNS
+df[["newcol1","newcol2"]] = df["col"].str.split(":", expand=True)
+# MELT "WIDE" COLUMNS
+import pandas as pd
+melted = pd.melt(df, id_vars="cat", value_vars=[c for c in df if c != "cat"])
+# MERGE TWO DATAFRAMES
+df1.merge(df2, left_on="df1c1", right_on="df2c1", how="outer", indicator=True)
+```
+### "Apply" examples
+```
+import numpy as np
+import pandas as pd
+# SAMPLE DATA
+df = pd.DataFrame({"good1":[9,8,8,7,9,8]*15, "good2":["a","a","a","b","b"]*18, 
+    "hi":[None,1,2]*30, "yo":[None,None,1]*30, "sup":[1,2,3]*30, 
+    "hey":[1,None,2]*30, "hello":[None,None,1]*30, "hiya":["x",None,"z"]*30})
+# SERIES: PERFORM AN APPLY OPERATION CONDITIONALLY
+cond_apply = lambda x: x.upper() if x not in [None, np.nan, "None"] else None
+df["newcol0"] = df["hiya"].apply(cond_apply)
+# SERIES: PERFORM AN APPLY OPERATION WITH MULTI-COLUMN RETURN
+def determine(x):
+    if type(x) is not str:
+        return pd.Series({"start":None, "end":None, "all":x})
+    a = "alive" if x.startswith("born") else "unalive"
+    b = "dying" if x.endswith("died") else "undying"
+    return pd.Series({"start":a, "end":b, "all":x})
+out_df = df["hiya"].apply(determine)
+# DATAFRAME: INCORPORATE MULTIPLE COLUMNS
+row_calc = lambda row: row["good1"] * row["sup"]
+df["number"] = df.apply(row_calc, axis=1)
+```
+### Nested JSON in DF column, explode to new columns
+```
+import pandas as pd
+from util import flatten_json
+json_breakouts = pd.DataFrame(df[json_col].apply(flatten_json).tolist())
+df = pd.concat([df, json_breakouts], axis=1)
+```
+### Nested XML in DF column, explode to new columns
+```
+import pandas as pd
+import json
+import xmltodict
+from util import flatten_json
+parse_xml = lambda x: flatten_json(json.loads(json.dumps(xmltodict.parse(x))))
+xml_breakouts = pd.DataFrame(df[xml_col].apply(parse_xml).tolist())
+df = pd.concat([df, xml_breakouts], axis=1)
+```
+
+--------------------------------------------------------------------------------
+<!-- Needs work -->
+## Fixing Dataframes at Speed
+- AVOID APPENDING ROWS TO DATAFRAMES (SLOW)
+- Most numpy/pandas methods are NOT vectorized!!
+- Non-numerical DF description: `df.describe(exclude="number")`
+- Find duplicates: `df.duplicated(subset=["col1","col2",...], keep="first")`
+```
+import time
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+df = pd.DataFrame([{"hi":1, "yo":5, "sup":3.2}] * 1_000_000)
+# CHECK SPEED OF OPERATION
+tic = time.perf_counter()
+df["hey"] = df["yo"] * df["sup"]
+toc = time.perf_counter()
+print(f"Completed in {toc - tic:0.4f} seconds")
+# DF.APPLY WITH PROGRESS BAR
+from tqdm.auto import tqdm
+tqdm.pandas(desc="times100")
+s1 = df["hi"].progress_apply(lambda x: x * 100)
+df1 = df.progress_apply(lambda x: x[0] * x[1], axis=1)
+# CHECK MEMORY ALLOC FOR DF
+print(df.__sizeof__())
+# UNIQUE COMBOS OF COLUMNS
+combos = df.set_index(["hi","yo"]).index.unique() # df.index.get_level_values(i)
+for combo in combos:
+    mask = (df["hi"] == combo[0]) & (df["yo"] == combo[1])
+    print(f"--- {list(combo)} ---\nMax 'Sup':", df[mask]["sup"].max())
+# RESHAPE AN ARRAY (FAILS IF NOT POSSIBLE)
+array = np.array([1,2,3,4,5,6])  # 6x1 array
+array.reshape((2,3))             # 2x3 array
+# ZIP TWO NUMPY ARRAYS
+zipped = np.column_stack((m.feature_names_in_, m.coef_))
+# FIND TOP {x} VALUES OF NUMPY ARRAY
+best_idx = np.argpartition(m.feature_importances_, n_feats * -1)[n_feats * -1:]
+best_feats = [c for (i, c) in enumerate(m.feature_names_in_) if i in best_idx]
 ```
 ### Bounties
 - Memory efficient dataframe write from list of dict
@@ -1584,7 +1709,44 @@ df["leverage"] = summary["hat_diag"]
 df["cooks_dist"] = summary["cooks_d"]
 df.sort_values(by="cooks_dist", ascending=False)  # big values indicate weird
 ```
-### Scaling
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
+#     #                                             
+##   ##  ####  #####  ###### #      # #    #  ####  
+# # # # #    # #    # #      #      # ##   # #    # 
+#  #  # #    # #    # #####  #      # # #  # #      
+#     # #    # #    # #      #      # #  # # #  ### 
+#     # #    # #    # #      #      # #   ## #    # 
+#     #  ####  #####  ###### ###### # #    #  ####  
+                                                    
+######                                                                  
+#     # #####  ###### #####    ##   #####    ##   ##### #  ####  #    # 
+#     # #    # #      #    #  #  #  #    #  #  #    #   # #    # ##   # 
+######  #    # #####  #    # #    # #    # #    #   #   # #    # # #  # 
+#       #####  #      #####  ###### #####  ######   #   # #    # #  # # 
+#       #   #  #      #      #    # #   #  #    #   #   # #    # #   ## 
+#       #    # ###### #      #    # #    # #    #   #   #  ####  #    # 
+-->
+
+# Modeling Preparation
+```
+After we're done with a phase of exploration, we prepare for modeling.
+Ubiquitous in model preparation is scaling; scaling de-weighs features.
+We should also consider reducing our dataset to improve model prediction speed.
+In classification problems, we might face imbalanced classes; use resampling.
+```
+
+--------------------------------------------------------------------------------
+<!-- Needs work -->
+## Scaling
 - Making 1-10 mean the same to a machine learning model as 1-1000
     * "Equalizes density of continuous features for machine learning"
     * Normalizes Euclidian Distance calcs: `d = sqrt((x1 - x2)^2 + (y1 - y2)^2)`
@@ -1629,22 +1791,10 @@ plt.plot(qt_unif.inverse_transform(X_unif) + 1)
 plt.legend(["original", "normalized", "uniform minus 1.0", "inversed plus 1.0"])
 plt.show()
 ```
-### Resampling for Model Training
-- SMOTE: Synthetic Minority Oversampling TEchnique
-    * Fit each class's data values, generate more rows for minority class
-- Tomek Links
-    * Delete from majority class the records that majority/minority overlap on
-```
-from imblearn.combine import SMOTETomek
-def resampler(X_train, y_train):
-    """ Use SMOTE+Tomek to eliminate class imbalances for train split """
-    smtom = SMOTETomek(random_state=42)
-    X_train_res, y_train_res = smtom.fit_resample(X_train, y_train)
-    print("Before SMOTE+Tomek applied:", X_train.shape, y_train.shape)
-    print("After SMOTE+Tomek applied:", X_train_res.shape, y_train_res.shape)
-    return X_train_res, y_train_res    # return resampled train data
-```
-### Feature Reduction
+
+--------------------------------------------------------------------------------
+<!-- Needs work -->
+## Feature Reduction
 - Get rid of features without variance (ex: only one unique value)
 - Get rid of features with high null count
 - Get rid of features that correlate with another feature (multicollinearity)
@@ -1741,10 +1891,22 @@ components_df = pd.DataFrame(pca5.components_, columns=X_train.columns)
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
-## Speedy Data Structures
-- 
-### Leads
-- Potential
+## Resampling
+### Resampling for Model Training
+- SMOTE: Synthetic Minority Oversampling TEchnique
+    * Fit each class's data values, generate more rows for minority class
+- Tomek Links
+    * Delete from majority class the records that majority/minority overlap on
+```
+from imblearn.combine import SMOTETomek
+def resampler(X_train, y_train):
+    """ Use SMOTE+Tomek to eliminate class imbalances for train split """
+    smtom = SMOTETomek(random_state=42)
+    X_train_res, y_train_res = smtom.fit_resample(X_train, y_train)
+    print("Before SMOTE+Tomek applied:", X_train.shape, y_train.shape)
+    print("After SMOTE+Tomek applied:", X_train_res.shape, y_train_res.shape)
+    return X_train_res, y_train_res    # return resampled train data
+```
 
 [[Return to Top]](#table-of-contents)
 
@@ -2523,6 +2685,18 @@ t, p = stats.mannwhitneyu(samp1.y, samp2.y, alternative=) # one- or two-sample
 t, p = stats.wilcoxon(past.y, future.y, alternative=)     # paired
 corr, p = stats.spearmanr(col1, col2)    # corr between ord/monotonic-cont cols
 chi2, p, degf, expected = stats.chi2_contingency(observed_crosstab)
+```
+### Marketing
+```
+import scikitplot as skplt
+import matplotlib.pyplot as plt
+# CUMULATIVE GAINS: HOW MANY SAMPLES TO GET A CERTAIN AMOUNT OF PREDICTION 1
+skplt.metrics.plot_cumulative_gain(actuals, preds) # preds are 0 or 1
+plt.show()
+# LIFT CURVE: MODEL'S PERFORMANCE ABOVE AVG TO TARGET PREDICTION 1 BY THRESH
+skplt.metrics.plot_lift_curve(actuals, preds)
+plt.show()
+# PER-GROUP OUTCOMES (INCIDENCE): % OF TARGETS IN EACH GROUP (CAT/CONT GROUPS!)
 ```
 ### Do Statistics!!
 ```
@@ -4802,7 +4976,10 @@ kubectl describe serviceaccount <serviceaccount>
     * This is often overkill for one-computer tasks
 - Is 'lazy'- adds to / optimizes queries until the execution order is given
 - Alternatives: Hadoop, Dask
-### PySpark Commands
+
+--------------------------------------------------------------------------------
+<!-- Needs work -->
+## PySpark Commands
 - Check Spark's intentions before query: `df.explain()`
     * Used for diagnosing performance issues; operation order from bottom-upward
 - Switch to SQL: `df.createOrReplaceTempView('df')`
@@ -4872,7 +5049,10 @@ crosstab = df.crosstab('g1', 'g2')
 # PIVOT TABLE
 mean_x_given_g1_g2 = df.groupBy('g1').pivot('g2').agg(mean('x'))
 ```
-### PySpark Machine Learning Example
+
+--------------------------------------------------------------------------------
+<!-- Needs work -->
+## PySpark Machine Learning
 ```
 from pyspark.ml.stat import ...    # chi square / correlation testing
 from pyspark.ml.feature import ... # imputation, encoding, scaling, vectorize...
@@ -5700,8 +5880,7 @@ ggplot(aes(x=age, y=friend_count), data=pf) +
         * `++i` here sends 1 as first input??; `i++` would send 0 as first input
         * Last statement is ran at start of loop, so ex: `i = i + 5` works too
 - End the program with `return 0;` ("return without error")
-
-## C++ Pointers
+### C++ Pointers
 - A pointer is a variable that contains a memory address
 - Typically declared with a data type, ex: `int* maxItemPointer;`
     * `maxItemPointer` has an unknown memory address at this stage; dangerous!
@@ -5725,8 +5904,7 @@ ggplot(aes(x=age, y=friend_count), data=pf) +
 - Delete *what is stored* at a memory address: `delete myPointer;`
     * The pointer itself is unchanged!! `cout << myPointer;` is same before/aft
     * "Freeing" an array ex: `new MyClass[6]` is done with `delete[] test3;`
-
-## C++ Libraries
+### C++ Libraries
 - `#include "myFile.h"` - import your own file from the current directory
     * The .h is traditional for C++; quotes tell the compiler to look in CWD
     * myFile.h actually calls functions in myFile.cpp... that's the intention
@@ -5764,8 +5942,7 @@ ggplot(aes(x=age, y=friend_count), data=pf) +
     * `.size()`, `.resize(42)`, `.push_back(element)`
     * `.back()` (return last element), `.pop_back()` (pop last element)
     * `newVector = origVector;` (copy), `v1 == v2` (comparison)
-
-## C++ Examples
+### C++ Examples
 ```
 #include <iostream>
 #include <string>
