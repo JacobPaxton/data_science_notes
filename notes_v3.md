@@ -1798,8 +1798,8 @@ plt.show()
 - Get rid of features without variance (ex: only one unique value)
 - Get rid of features with high null count
 - Get rid of features that correlate with another feature (multicollinearity)
-- Select features using linreg coefficients (furthest values from zero)
-- Select features using SelectKBeast or Recursive Feature Engineering
+- Select features using linear regression coefficients (furthest vals from zero)
+- Select features using SelectKBest or Recursive Feature Engineering
 - Can do feature reduction with LASSO regularization (increases bias/underfit)
     * `LassoCV()` does cross-validation to tune regularization to best one
     * `lcv = LassoCV()`, `lcv.fit(X_train, y_train)`, `lcvmask = lcv.coef_ != 0`
@@ -1835,6 +1835,7 @@ dropped_cols = sorted(list(dropped_cols), key=lambda x: int(x))  # numeric cols
 print(f"Columns dropped: {len(dropped_cols)}\n- " + "\n- ".join(dropped_cols))
 ```
 ### Principal Component Analysis (PCA) Dimensionality Reduction
+- A dataset has "intrinsic dimension" that can be approximated by feature subset
 - Reducing physical dataset size without significant loss of information
     * Use PCA if your dataset has a lot of features (many dozens, hundreds, etc)
     * PCA also de-correlates features by its non-linear feature transformation
@@ -2345,23 +2346,61 @@ from sklearn.decomposition import TruncatedSVD
 model = TruncatedSVD(n_components=3)
 model.fit(documents)  # documents is scipy csr_matrix
 transformed = model.transform(documents)
-# APPLY PCA HERE
 ```
+### Non-Negative Matrix Factorization (NMF)
+- Break down a matrix into "metafeatures" describing the matrix
+- Better than PCA for NLP because it handles sparse non-negative matrices better
+    * A bag of words has extremely low variance and most values are already zero
+    * NMF retains the data structure but reduces the dataset
+- NMF approximates a V matrix by two smaller matrices, W and H
+    * V matrix: original data; each column is observation, each row is feature
+    * W matrix: approximates data; each column is basis vector
+    * H matrix: runs (activates) W matrix; each column is "weights" or "gains"
+    * All three matrices must have non-negative values
+- The math is complicated, and technically, you can't solve for smallest W and H
 ```
+# SILENCE CONVERGENCE WARNING FOR LIMIT ON ITERATIONS
+import warnings
+from sklearn.exceptions import ConvergenceWarning as CW
+warnings.filterwarnings("ignore", category=CW)
+# GRAB DATASET
+from sklearn.datasets import fetch_20newsgroups
+cats = ['alt.atheism','soc.religion.christian','comp.graphics','sci.med']
+kws = {"categories":cats,"shuffle":True,"random_state":42}
+twenty_train = fetch_20newsgroups(subset="train", **kws)
+twenty_test = fetch_20newsgroups(subset="test", **kws)
+# CREATE TFIDF-VECTORIZED BAG OF WORDS
+from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
+count_vect = CountVectorizer()
+X_train_counts = count_vect.fit_transform(twenty_train.data)
+X_test_counts = count_vect.transform(twenty_test.data)
+go_tfidf = TfidfTransformer()
+X_train_tfidf = go_tfidf.fit_transform(X_train_counts)
+X_test_tfidf = go_tfidf.transform(X_test_counts)
+# PERFORM NON-NEGATIVE MATRIX FACTORIZATION (NMF)
 from sklearn.decomposition import NMF
-model = NMF(n_components=2)
-model.fit(samples)
-nmf_features = model.transform(samples)
-print(nmf_components_.shape)
-```
-```
 from sklearn.preprocessing import normalize
-norm_features = normalize(nmf_features)
-# if has index 23
-current_article = norm_features[23,:]  # "dog bites man" features
-similarities = norm_features.dot(current_articles)  # similarities to "dog bites man"
-print(similarities)  # cosine similarities
-print(similarities.nlargest())  # largest cosine similarities
+nmf = NMF(n_components=4, random_state=42).fit(X_train_tfidf)
+n_comps = int(nmf.reconstruction_err_)   # number of topics; consider manual num
+nmf = NMF(n_components=n_comps, random_state=42).fit(X_train_tfidf)
+nmf_train = normalize(nmf.transform(X_train_tfidf))
+nmf_test = normalize(nmf.transform(X_test_tfidf))
+# TRAIN CLASSIFIER
+from sklearn.naive_bayes import MultinomialNB
+clf = MultinomialNB().fit(nmf_train, twenty_train.target)
+train_preds = clf.predict(nmf_train)
+accuracy = (train_preds == twenty_train.target).mean()
+print(f"Model accuracy after CV, TFIDF, NMF, MNB: {accuracy:0.3f}\n\n" + "-"*30)
+# COSINE SIMILARITY OF ONE RECORD TO ALL OTHER RECORDS
+import numpy as np
+record_num = 23
+record_row = nmf_train[record_num,:]
+record_class = twenty_train.target_names[twenty_train.target[record_num]]
+similarities = nmf_train.dot(record_row)
+best10idx = np.argpartition(similarities, -10)[-10:]
+print(twenty_train.data[record_num], "\n"*3 + "-"*30 + "\n"*3)
+for i in best10idx:
+    print(twenty_train.data[i], "\n"*3 + "-"*30 + "\n"*3)
 ```
 
 [[Return to Top]](#table-of-contents)
