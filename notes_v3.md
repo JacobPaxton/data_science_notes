@@ -1154,7 +1154,7 @@ The end state should be a dataframe that matches across query formats.
 - String cleaning: `UPPER('hi')`, `LOWER("HI")`, `TRIM("  sup  ")`
 - String replacement: `REPLACE("Hey", "e", "a")`, `SUBSTRING("Hello", 1, 3)`
 - Concatenate each col's string into one col: `CONCAT(str_col1, str_col2, ...)`
-- Get current datetime: `CURDATE()`, `CURTIME()`, `NOW()` (date, time, datetime) 
+- Get current datetime: `CURDATE()`, `CURTIME()`, `NOW()` (date, time, datetime)
 - Date work: `DATE("2011-01-01 01:01:01")`, and `DAY()`, `MONTH()`, `YEAR()`
 - Time work: `TIME("2011-01-01 01:01:01")`, and `HOUR()`, `MINUTE()`, `SECOND()`
 - Difference in date / time: `DATEDIFF(early, late)`, `TIMEDIFF(early, late)`
@@ -2278,7 +2278,7 @@ wc = WordCloud(
     contour_color='steelblue',   # background: white -> steelblue
     collocations=False           # True: show a bigram if see enough of it
 )
-wc.generate(df["clean"].dropna().str.cat(sep=" ").replace("'s",""))                           # generate word cloud
+wc.generate(df["clean"].dropna().str.cat(sep=" ").replace("'s",""))  # gen cloud
 # wc.to_file("output.png")                    # store to file
 # SHOW THE WORDCLOUD
 plt.imshow(wc, interpolation='bilinear')
@@ -3173,8 +3173,11 @@ X_train_RFE, X_val_RFE, X_test_RFE = X_train[best], X_val[best], X_test[best]
 - **K-Nearest Neighbors**
     * Use distances of known-class neighbors to predict unknown-class data
     * Simple and effectively-predictive, but prone to poor performance
-- **Naive Bayes**
-    * For each feature, P(outcome) * P(outcome when another outcome happens)
+- **Multinomial Naive Bayes**
+    * Evaluate a record's score for each class, choose class with highest score
+    * Score: P(class) * P(col1 = "a" | class) * P(col2 = 42 | class) * ...
+        * No P(...) should eval to 0; in histogram, add alpha=1 to each count
+    * High bias ("naive", doesn't care about order), low variance (good predict)
     * Highly effective at prediction with few major downsides
 - **Logistic Regression**
     * Regression, but uses thresholds on the regression line to choose class
@@ -4304,7 +4307,7 @@ s = s | s.shift(2)                            # Fix last overlap
 s.loc[s[~s].index - 1] = False                # Determinations
 if flip_last:                                 # Handle edge case
     s.loc[len(s) - 1] = False
-s = s.map({True:"Overlap", False:"Normal"})   # Map to category                            
+s = s.map({True:"Overlap", False:"Normal"})   # Map to category
 s = s.rename("overlap_status")
 pd.concat([s, pd.Series(start_end_series)], axis=1)
 ```
