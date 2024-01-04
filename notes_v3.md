@@ -334,7 +334,11 @@ jupyter notebook
         * `git add .`
         * `git commit -m 'my first commit'`
         * `git push`
-1. If the above commands work, you are 100% ready to go
+1. Consider storing your passphrase (MacOS): add/edit `~/.ssh/config` with this:
+```
+Host *
+  UseKeychain yes
+```
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
