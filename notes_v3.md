@@ -235,7 +235,7 @@ I might want to add a script to update packages...
     * `conda install -c conda-forge keras`
     * `conda install tensorflow`
 1. Test package installation
-    * Open CMD and enter `jupyter notebook`
+    * Open CMD and enter `jupyter lab`
     * Start up a new Python3 notebook
     * Try to import the packages you've installed and test them
 1. Install VS Code (my preferred code editor beside Jupyter)
@@ -244,7 +244,7 @@ I might want to add a script to update packages...
         * This should open VS Code; try a second time if first didn't work
         * If it worked, great! This is my preferred way to create files
         * If not working: open VSCode command palette, type 'code', install
-    * Install Python extension to VS Code (HIGHLY recommended)
+    * Install Python and Jupyter extension to VS Code (HIGHLY recommended)
     * 80/120 char width code lines: Settings -> editor.rulers -> set to [80,120]
 1. Install Git (I do defaults except the following, my preferred settings)
     * Windows: download from here: https://git-scm.com/downloads
