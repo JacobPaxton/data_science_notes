@@ -14,7 +14,7 @@ After completing my bachelor's degree, I started writing `notes_v3.md`. I had th
 
 After moving all notes from `notes_v2.md` to `notes_v3.md`, I immediately started my master's degree in data with WGU, I was promoted to Site Lead, I dove into cutting-edge work processes + taught them, and I moved to a new place. I was busy! And I slowed down to accomodate everything.
 
-I'm on a break from my master's program until January 1st; I've figured out how to pace my new workload; and I've settled in to my new place. I'm taking this opportunity to compile everything I've encountered over the past 6 months into `notes_v3.md` and look into new things.
+I'm halfway through my master's degree; I've figured out how to pace my new workload; and I've settled in to my new place. I'm taking this opportunity to compile everything I've encountered over the past 6 months into `notes_v3.md` and look into new things.
 
 ## notes_v3.md
 I noticed some serious flaws in `notes_v2.md` after I basically stopped using it. The original intention was to build an excellent and simple reference sheet for code. This ballooned with theory (taught by WGU), and the golden reference material was buried in over-explanation and already-memorized code. The reference approach fundamentally invites this kind of stagnation (just keep adding!!), and it's time to change the approach with `notes_v3.md`.
