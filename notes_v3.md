@@ -194,20 +194,22 @@ I might want to add a script to update packages...
 ## Environment Setup
 1. Download and install Anaconda: https://www.anaconda.com/products/distribution
     * Defaults are fine
-1. Add Anaconda to Path variable
+1. Add Anaconda to Windows PATH variable (should work automagically in other OS)
     * Control Panel > System and Security > System > Advanced system settings 
     * Environment Variables > Path > Edit
     * Add: %USERPROFILE%\AppData\Local\anaconda3
     * Add: %USERPROFILE%\AppData\Local\anaconda3\condabin
 1. Undo Window's stupid default aliasing
     * Start > Manage App Execution Aliases > Uncheck python.exe and python3.exe
-1. Open CMD (we will be setting up using Windows' default terminal)
+1. Open the command line editor you want to use with Conda going forward
 1. Enter: `conda config --append channels conda-forge` (add main package source)
 1. Create your Conda environment and install basic data science packages into it
     * Basic: `conda create -n env1 numpy pandas matplotlib seaborn scikit-learn`
-    * `conda install --name env1 scipy statsmodels jupyter scikit-learn-intelex`
-1. Enable Windows CMD as a front for Conda: `conda init cmd.exe` and restart CMD
+    * `conda install --name env1 scipy statsmodels jupyter`
+1. Enable Conda in Windows CMD: `conda init cmd.exe` and restart CMD
+    * Choose other terminal programs instead if you want!
 1. Activate your environment: `conda activate env1`
+    * Start each time with `env1`: add activate line to .bash_profile or .zshrc
 1. Install pip into your environment: `conda install pip`
 1. Now that your env is active, choose the additional packages you need
     * Classification: `conda install imbalanced-learn xgboost`
@@ -219,8 +221,9 @@ I might want to add a script to update packages...
     * Natural Language Processing: `conda install nltk wordcloud`
         * Run `nltk.download(dataset_name)` to install a single required dataset
         * Required sets: 'stopwords' 'vader_lexicon' 'punkt' 'wordnet' 'omw-1.4'
+    * Patch sklearn (needs Python 3.9): `pip install scikit-learn-intelex`
     * Network data: `pip install ipcalc nfstream dash dash_cytoscape vaex`
-        * NFStream install: https://nfstream.org/docs/#installation-guide
+        * NFStream install steps: https://nfstream.org/docs/#installation-guide
     * Elasticsearch: `pip install elasticsearch elasticsearch-dsl`
     * Handling YAML: `pip install pyyaml ruamel.yaml`
     * Sample data: `pip install pydataset holidays ucimlrepo vega_datasets`
@@ -237,13 +240,15 @@ I might want to add a script to update packages...
     * Try to import the packages you've installed and test them
 1. Install VS Code (my preferred code editor beside Jupyter)
     * Defaults are fine; I recommend also "Open with Code" for context menus
-    * Open a terminal anywhere and type: `code test.md`
+    * Launch file with VSCode in working dir from a terminal: `code test.md`
         * This should open VS Code; try a second time if first didn't work
         * If it worked, great! This is my preferred way to create files
+        * If not working: open VSCode command palette, type 'code', install
     * Install Python extension to VS Code (HIGHLY recommended)
     * 80/120 char width code lines: Settings -> editor.rulers -> set to [80,120]
 1. Install Git (I do defaults except the following, my preferred settings)
-    * Download: https://git-scm.com/downloads
+    * Windows: download from here: https://git-scm.com/downloads
+    * MacOS: Open Terminal and run `git`; install Xcode from the popup, has git
     * I actually edit the registry to launch CMD on shift+rightclick context...
         * If you agree, disable Git Bash and Git GUI in context menus...
         * If you don't like registry editing, keep Git Bash (remove Git GUI)
@@ -253,7 +258,7 @@ I might want to add a script to update packages...
     * Add your name: `git config --global user.name "Joe Schmoe"`
     * Add your email: `git config --global user.email "joeschmoe@gmail.com`
 1. Done!!! For now...
-### Registry CMD Launch
+### Change Windows Registry to Launch CMD from Right-Click
 1. Regedit > `Computer\HKEY_CLASSES_ROOT\Directory\Background\shell\cmd`
 1. Right click on the "cmd" folder > Permissions > Advanced
 1. Owner Change > Administrators > Check Names > Ok
@@ -3381,6 +3386,9 @@ plt.show()
 --------------------------------------------------------------------------------
 <!-- Needs work -->
 ## Classification Shotgun
+- Train a bunch of classifiers on a given dataset
+- Various classification algorithms with various parameter sets
+- Meant for MVP work; tune more precisely, reduce/increase params, etc later
 ```
 # IMPORT EVERYTHING
 import pandas as pd
@@ -3565,6 +3573,8 @@ Model evaluation is important and done in two stages: validate and test.
 Validate is used for checking model performance.
 Test (hold-out set) is used for checking the best model's performance.
 ```
+- TODO: snippet about polynomial transformation of features to make more linear
+- TODO: snippet about other transforms (log, exponent, etc) to better correlate
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
@@ -3754,6 +3764,9 @@ plot_residuals("OLS", y_val, val_res["err"])
 --------------------------------------------------------------------------------
 <!-- Needs work -->
 ## Regression Shotgun
+- Train a bunch of regressors on a given dataset
+- Various regression algorithms with various parameter sets
+- Meant for MVP work; tune more precisely, reduce/increase params, etc later
 ```
 # IMPORT EVERYTHING
 import pandas as pd
