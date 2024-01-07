@@ -1704,8 +1704,9 @@ df["wt_cats"] = pd.cut(df["weight"], bins=np.linspace(0,100,3),labels=["l","h"])
 df["versus_avg"] = np.where(df["height"] > 175, "Above Avg", "Below Avg")
 df["quartiles"] = pd.qcut(df["bmi"], q=4, labels["low","normal","high","obese"])
 # ENCODING
-df["col1_enc"].map({'lowest':0, 'low-middle':1, 'high-middle':2, 'highest':3})
-dummy_df = pd.get_dummies(df['col1', 'col2'], drop_first=[True, True])
+df["c1_enc"] = df["col1"].map({"lowest":0,"low-mid":1,"high-mid":2,"highest":3})
+df["hat_style"] = pd.get_dummies(df["hat_style"], prefix="hat", drop_first=True)
+dummy_df = pd.get_dummies(df["cats1", "cats2"], drop_first=[True, True])
 ```
 ### Outliers
 - Defined in various ways, ex: z-score, percentage, fixed threshold
@@ -1799,6 +1800,97 @@ plt.plot(X_unif - 1.0)
 plt.plot(qt_unif.inverse_transform(X_unif) + 1)
 plt.legend(["original", "normalized", "uniform minus 1.0", "inversed plus 1.0"])
 plt.show()
+```
+### Example of Why Scaling is Important: KNN (Without Actually Training KNN!)
+```
+# GENERATE DATA: TRUCK VS CAR, VEHICLE WEIGHT AND TIRE SIZE METRICS
+np.random.seed(0)
+trucks_ts = np.abs(np.random.normal(loc=6, scale=4, size=100)) + 22
+cars_ts = np.abs(np.random.normal(loc=3, scale=2, size=100))*-1 + 24
+plt.figure(figsize=(8,4))
+ax = plt.subplot(121)
+ax.hist(trucks_ts, alpha=0.5, label="trucks")
+ax.hist(cars_ts, alpha=0.5, label="cars")
+ax.fill_between([22, trucks_ts.max()], 0, 25, alpha=0.2)
+ax.fill_between([cars_ts.min(), 24], 0, 25, alpha=0.2)
+plt.legend()
+plt.title("Tire Size")
+plt.subplot(122)
+cars_vw = np.random.normal(loc=3500, scale=400, size=100)
+trucks_vw = np.random.normal(loc=4500, scale=400, size=100)
+plt.hist(trucks_vw, alpha=0.5, label="trucks", orientation="horizontal")
+plt.hist(cars_vw, alpha=0.5, label="cars", orientation="horizontal")
+plt.legend()
+plt.title("Vehicle Weight")
+plt.tight_layout()
+plt.show()
+# SCALE THE DATA
+scaled_cars_vw = cars_vw / 100
+scaled_trucks_vw = trucks_vw / 100
+# SET XLIM, YLIM TO BE FAIR BETWEEN CHARTING UNSCALED AND SCALED DATA
+width_y = scaled_trucks_vw.max() - scaled_cars_vw.min()
+mean_x = (cars_ts.sum() + trucks_ts.sum()) / (len(cars_ts) + len(trucks_ts))
+min_x, max_x = mean_x - (0.5 * width_y), mean_x + (0.5 * width_y)
+min_y, max_y = (scaled_cars_vw.min(), scaled_trucks_vw.max())
+# PLOT UNSCALED VS SCALED SCATTERPLOTS; VISUALIIZATION SHOWS STARK DIFFERENCE
+plt.figure(figsize=(8,4))
+plt.subplot(121)
+plt.scatter(x=trucks_ts, y=trucks_vw, label="trucks", alpha=0.5)
+plt.scatter(x=cars_ts, y=cars_vw, label="cars", alpha=0.5)
+plt.xlim((min_x, max_x))
+plt.ylim((4100 - min_y, 4100 + max_y))
+plt.plot(28, 4100, "x", color="red", markersize=8, label="unlabeled")
+legend = plt.legend()
+for label in legend.legend_handles: 
+    label.set_alpha(1)
+plt.title("Without Scaling")
+plt.xlabel("Tire Size")
+plt.ylabel("Vehicle Weight (Unscaled)")
+plt.subplot(122)
+plt.scatter(x=trucks_ts, y=scaled_trucks_vw, label="trucks", alpha=0.5)
+plt.scatter(x=cars_ts, y=scaled_cars_vw, label="cars", alpha=0.5)
+plt.plot(28, 41, "x", color="red", markersize=8, label="unlabeled")
+plt.xlim((min_x, max_x))
+plt.ylim((41 - min_y, 41 + max_y))
+legend = plt.legend()
+for label in legend.legend_handles: 
+    label.set_alpha(1)
+plt.title("With Scaling")
+plt.xlabel("Tire Size")
+plt.ylabel("Vehicle Weight (Scaled)")
+plt.tight_layout()
+plt.savefig("scaling_comparison.png")
+plt.show()
+# SET UP DATASET FOR EUCLIDEAN DISTANCE CALCULATION
+def euclid(tgtxy, labxy):
+    distance = (labxy[0] - tgtxy[0])**2 + (labxy[1] - tgtxy[1])** 2
+    return distance
+unscaled_cars = np.column_stack((cars_ts, cars_vw))
+unscaled_trucks = np.column_stack((trucks_ts, trucks_vw))
+scaled_cars = np.column_stack((cars_ts, scaled_cars_vw))
+scaled_trucks = np.column_stack((trucks_ts, scaled_trucks_vw))
+# SET UNLABELED DATAPOINT
+unscaled_new = (28, 4100)
+scaled_new = (28, 41)
+# CALCULATE EUCLIDEAN DISTANCES
+unscaled_res = []
+for i in range(100):
+    euc_uns_car = euclid(unscaled_new, unscaled_cars[i])
+    euc_uns_truck = euclid(unscaled_new, unscaled_trucks[i])
+    unscaled_res.extend([euc_uns_car,euc_uns_truck]) # even is car, odd is truck
+scaled_res = []
+for i in range(100):
+    euc_s_car = euclid(scaled_new, scaled_cars[i])
+    euc_s_truck = euclid(scaled_new, scaled_trucks[i])
+    scaled_res.extend([euc_s_car,euc_s_truck])       # even is car, odd is truck
+# SET K FOR KNN, FIND NEAREST K NEIGHBORS
+k = 5
+euc_uns_k_nearest_idx = np.argpartition(unscaled_results, (0,k))[:k]
+euc_s_k_nearest_idx = np.argpartition(scaled_results, (0,k))[:k]
+uns_votes_truck = len([x for x in euc_uns_k_nearest_idx if x % 2 != 0])
+s_votes_truck = len([x for x in euc_s_k_nearest_idx if x % 2 != 0])
+print(f"Unscaled data, votes for truck: {uns_votes_truck}/{k} correct")
+print(f"Scaled data, votes for truck: {s_votes_truck}/{k} correct")
 ```
 
 --------------------------------------------------------------------------------
