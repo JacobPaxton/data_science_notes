@@ -221,7 +221,7 @@ I might want to add a script to update packages...
     * Natural Language Processing: `conda install nltk wordcloud`
         * Run `nltk.download(dataset_name)` to install a single required dataset
         * Required sets: 'stopwords' 'vader_lexicon' 'punkt' 'wordnet' 'omw-1.4'
-    * Patch sklearn (needs Python 3.9): `pip install scikit-learn-intelex`
+    * Patch sklearn (only Windows systems): `pip install scikit-learn-intelex`
     * Network data: `pip install ipcalc nfstream dash dash_cytoscape vaex`
         * NFStream install steps: https://nfstream.org/docs/#installation-guide
     * Elasticsearch: `pip install elasticsearch elasticsearch-dsl`
@@ -234,6 +234,7 @@ I might want to add a script to update packages...
 1. Install Keras and Tensorflow if you want
     * `conda install -c conda-forge keras`
     * `conda install tensorflow`
+        * On windows VM I had issues with conda install; pip worked fine though
 1. Test package installation
     * Open CMD and enter `jupyter lab`
     * Start up a new Python3 notebook
@@ -244,6 +245,8 @@ I might want to add a script to update packages...
         * This should open VS Code; try a second time if first didn't work
         * If it worked, great! This is my preferred way to create files
         * If not working: open VSCode command palette, type 'code', install
+    * In VSCode, click File > Open Folder... > open %USERPROFILE% > trust all
+        * If you don't mind VSCode asking you repeatedly for trust, leave alone
     * Install Python and Jupyter extension to VS Code (HIGHLY recommended)
     * 80/120 char width code lines: Settings -> editor.rulers -> set to [80,120]
 1. Install Git (I do defaults except the following, my preferred settings)
@@ -270,9 +273,9 @@ I might want to add a script to update packages...
 1. Task Manager (ctrl+shift+escape) > More Details 
     * select Windows Explorer > Restart
 1. Open any folder > Shift + right click 
-    * If "open Powershell window here" displays, then success!
+    * If "open command window here" displays, then success!
 1. Right click on `Directory\Background\shell\cmd` folder on left nav pane
-    * Permissions > Advanced > Select Administrators in window > Remove 
+    * Permissions > Advanced > highlight Administrators > Edit > no Full Control
     * Check "Replace all child"... > Apply > Yes
 1. Owner Change > type trusted installer service NT SERVICE\TrustedInstaller 
     * Check Names > Ok 
@@ -1626,6 +1629,8 @@ json_breakouts = pd.DataFrame(df[json_col].apply(flatten_json).tolist())
 df = pd.concat([df, json_breakouts], axis=1)
 ```
 ### Nested XML in DF column, explode to new columns
+- Note: you can render XML to HTML using its <xsl:stylesheet> with XSLT/xsltproc
+    * EX: `xsltproc myXMLfile.xml -o HTMLoutput.html`
 ```
 import pandas as pd
 import json
@@ -5249,6 +5254,18 @@ Kibana is a user interface for accessing the data/pipelining in Elasticsearch.
     * Painless scripting (Java-based language) overcomes KQL shortcomings
 - Python interacts with the Elasticsearch REST API on port 9200 (default)
 - To connect: create an account in Kibana and use those creds in Python queries
+### cURL: Perform an Aggregation
+- Note: this is meant to be pasted into Bash terminal
+```
+curl -k --user username:password --header "Content-Type:application/json"      \
+-X GET https://123.45.67.89:9200/index_pattern/_search                         \
+--data "                                                                       \
+{                                                                              \
+  \"query\":{\"match_all\":{}},                                                \
+  \"aggs\":{\"cool\":{\"terms\":{\"field\":\"agent.name\", \"size\":1000}}}    \
+}"                                                                             \
+> output.json
+```
 ### Python: Stack Assessment
 ```
 # DEFINITION BLOCK
@@ -5779,9 +5796,6 @@ C++ pointer manipulation is very fast, so C++ might play a role in development.
 - `reload(coolutil)` Reload your imports (Uses: `from importlib import reload`)
 - `help(coolfunc)` or `print(coolfunc.__doc__)`: Read function's docstring
 - `if __name__ == '__main__': (code)` to run code when directly invoking script
-- `cool1, cool2 = sys.argv[1], sys.argv[2]` to store CMD args to variables
-    * Make sure to do input validation in the script! `len(sys.argv)`, etc
-    * Command line: `python cool.py 99 "hello"`, cool1 = 99, cool2 - "hello"
 - Look up character in unicode with Python: `ord('?')`
 - Get character using its unicode "code point" in Python: `chr(63)`
 - Variables: `dir()` ---> `x = 100` ---> `dir()` ---> `del x` ---> `dir()`
@@ -5829,8 +5843,8 @@ class CoolClass:
             return "Yup"
 cool1 = CoolClass(10)
 cool2 = CoolClass(15)
-print(cool1 < cool2)
-print(cool1)
+print(cool1 < cool2) # returns "Yup" (less-than is overloaded)
+print(cool1)         # returns "Cool Guy costs only $15.00." (str is overloaded)
 ```
 ```
 import unittest
@@ -5871,6 +5885,42 @@ if __name__ == "__main__":
             * `raise CoolError(...)`
     * Use `finally` after `except` statement to run code regardless of errors
         * EX: `finally: print("Terminated.")`
+### Python from Terminal
+- Capture passed args when calling python script from terminal
+```
+touch run.py; 
+echo """
+import sys
+vars = sys.argv             # capture args
+print('--- Args:', ', '.join(vars))
+if len(vars[1:]) == 2:      # input validation
+    cool1, cool2 = vars[1], vars[2]
+    if cool2.isnumeric(): 
+        print('----- 2 args; Add 42 to arg 2:', int(cool2) + 42)
+    else:
+        print(f'----- 2 args; "{cool1}", because arg 2 isn\'t an integer!')
+else:
+    print('----- Didn\'t pass 2 args to run.py')
+""" >> run.py;
+python3 run.py "yo";
+python3 run.py "yo" 21
+python3 run.py "yo" "sup"
+rm run.py
+```
+### Terminal from Python
+- Reach out over SSH and operate a specific terminal; output to LOCAL file
+```
+import subprocess
+pipe = subprocess.PIPE
+remote_terminal_command = """
+sshpass -f pass.txt ssh user@123.45.67.89;
+/bin/vbash -c "show config" > output.txt;
+"""
+subprocess.Popen(remote_terminal_command, shell=True, stdout=pipe, stderr=pipe)
+with open("output.txt", "r") as f:
+    config = f.read()
+print(config)
+```
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
