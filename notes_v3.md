@@ -302,6 +302,19 @@ call activate mighty
 code "" "%USERPROFILE%\zen" | exit
 jupyter notebook
 ```
+### Joining a Jupyter Hub
+- Jupyter Hub hosts a Jupyter workspace for each user on a single system/server
+- Great for multiple people working separately on a high-performance system
+- Each workspace is configurable using the console in that workspace
+```
+-- log into the jupyter hub and open a console; to create your conda env:
+conda create -n mighty ipykernel
+conda init bash
+conda activate mighty
+conda install <all required packages here>
+python -m ipykernel install --user --name mighty --display-name "mighty"
+-- log out, log back in, select new kernel called "mighty" - done
+```
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
@@ -5256,6 +5269,8 @@ Kibana is a user interface for accessing the data/pipelining in Elasticsearch.
 - To connect: create an account in Kibana and use those creds in Python queries
 ### cURL: Perform an Aggregation
 - Note: this is meant to be pasted into Bash terminal
+- In Kibana, you can draft/test your query JSON before you run it here
+    * Consider making script that reads JSON into cURL command "--data" argument
 ```
 curl -k --user username:password --header "Content-Type:application/json"      \
 -X GET https://123.45.67.89:9200/index_pattern/_search                         \
