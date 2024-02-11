@@ -5747,14 +5747,17 @@ PBI_visualize
 <!-- Needs work -->
 ## Tableau
 - Excellent software for interactive visualizations and dashboards
-- Tableau Public: No autosaves, sometimes-glitchy upload... save your work often
+- Regular Tableau requires a license, can save locally, autosaves enabled
+- Tableau Public is free, but all work gets posted to https://public.tableau.com
 ### Tableau Resources
 - The Superstore CSV is popular to learn and demo Tableau
-- Faith: https://public.tableau.com/app/profile/faith.kane
+- Faith Kane: https://public.tableau.com/app/profile/faith.kane
 - Sean Oslin: https://public.tableau.com/app/profile/sean.oslin
 ### Tableau Usage
 - Explore your data w/ Excel pivot tables first; exploration in Tableau is slow
+    * Tableau Prep can assist with this
 - Data Source: Used for changing files across the project
+    * Adjust field types; Tableau relies on correct typing for simplifying work
     * Hide unnecessary columns from project using drop-downs in each column
     * Filter results at top-right (intuitive)
 - Sheets: Used for building individual charts
