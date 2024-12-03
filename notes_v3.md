@@ -19,137 +19,137 @@
 -->
 
 # Table of Contents
-I.    [Environment Meta-Work         ](#environment-meta-work)
-1.    [Environment Setup             ](#environment-setup)
-1.    [Git Setup                     ](#git-setup)
-1.    [Git Work                      ](#git-work)
+I.    [Environment Meta-Work           ](#environment-meta-work)
+1.    [Environment Setup               ](#environment-setup)
+1.    [Git Setup                       ](#git-setup)
+1.    [Git Work                        ](#git-work)
 
-II.   [Dataset Reference             ](#dataset-reference)
-1.    [Links to Datasets             ](#links-to-datasets)
-1.    [REST APIs                     ](#rest-apis)
-1.    [Read Local Files              ](#read-local-files)
+II.   [Dataset Reference               ](#dataset-reference)
+1.    [Links to Datasets               ](#links-to-datasets)
+1.    [REST APIs                       ](#rest-apis)
+1.    [Read Local Files                ](#read-local-files)
 
-III.  [Regular Expressions           ](#regular-expressions)
-1.    [REGEX Syntax                  ](#regex-syntax)
-1.    [REGEX Find                    ](#regex-find)
-1.    [REGEX Capture                 ](#regex-capture)
+III.  [Regular Expressions             ](#regular-expressions)
+1.    [REGEX Syntax                    ](#regex-syntax)
+1.    [REGEX Find                      ](#regex-find)
+1.    [REGEX Capture                   ](#regex-capture)
 
-IV.   [Advanced Web Scraping         ](#advanced-web-scraping)
-1.    [Pandas Read-HTML              ](#pandas-read-html)
-1.    [Requests                      ](#requests)
-1.    [Selenium                      ](#selenium)
+IV.   [Advanced Web Scraping           ](#advanced-web-scraping)
+1.    [Pandas Read-HTML                ](#pandas-read-html)
+1.    [Requests                        ](#requests)
+1.    [Selenium                        ](#selenium)
 
-V.    [Building a Database           ](#building-a-database)
-1.    [SQLite                        ](#sqlite)
-1.    [SQLAlchemy                    ](#sqlalchemy)
-1.    [PostgreSQL                    ](#postgresql)
+V.    [Building a Database             ](#building-a-database)
+1.    [SQLite                          ](#sqlite)
+1.    [SQLAlchemy                      ](#sqlalchemy)
+1.    [PostgreSQL                      ](#postgresql)
 
-VI.   [Database Usage Mastery        ](#database-usage-mastery)
-1.    [SQL and Variants              ](#sql-and-variants)
-1.    [SQL Examples                  ](#sql-examples)
+VI.   [Database Usage Mastery          ](#database-usage-mastery)
+1.    [SQL and Variants                ](#sql-and-variants)
+1.    [SQL Examples                    ](#sql-examples)
 
-VII.  [Fixing Nulls                  ](#fixing-nulls)
-1.    [Basic Null Characterization   ](#basic-null-characterization)
-1.    [Null Pattern Characterization ](#null-pattern-characterization)
-1.    [Handling Nulls                ](#handling-nulls)
-1.    [Evaluation of Null Handling   ](#evaluation-of-null-handling)
+VII.  [Fixing Nulls                    ](#fixing-nulls)
+1.    [Basic Null Characterization     ](#basic-null-characterization)
+1.    [Null Pattern Characterization   ](#null-pattern-characterization)
+1.    [Handling Nulls                  ](#handling-nulls)
+1.    [Evaluation of Null Handling     ](#evaluation-of-null-handling)
 
-VIII. [Feature Transformation        ](#feature-transformation)
-1.    [Dataframe Normalization       ](#dataframe-normalization)
-1.    [Fixing Dataframes at Speed    ](#fixing-dataframes-at-speed)
-1.    [Feature Engineering           ](#feature-engineering)
+VIII. [Feature Transformation          ](#feature-transformation)
+1.    [Dataframe Normalization         ](#dataframe-normalization)
+1.    [Fixing Dataframes at Speed      ](#fixing-dataframes-at-speed)
+1.    [Feature Engineering             ](#feature-engineering)
 
-IX.   [Modeling Preparation          ](#modeling-preparation)
-1.    [Scaling                       ](#scaling)
-1.    [Feature Reduction             ](#feature-reduction)
-1.    [Resampling                    ](#resampling)
+IX.   [Modeling Preparation            ](#modeling-preparation)
+1.    [Scaling                         ](#scaling)
+1.    [Feature Reduction               ](#feature-reduction)
+1.    [Resampling                      ](#resampling)
 
-X.    [Algorithmic Clustering        ](#algorithmic-clustering)
-1.    [Selecting Number of Clusters  ](#selecting-number-of-clusters)
-1.    [Clustering Methods            ](#clustering-methods)
-1.    [Cluster Analysis              ](#cluster-analysis)
+X.    [Algorithmic Clustering          ](#algorithmic-clustering)
+1.    [Selecting Number of Clusters    ](#selecting-number-of-clusters)
+1.    [Clustering Methods              ](#clustering-methods)
+1.    [Cluster Analysis                ](#cluster-analysis)
 
-XI.   [Natural Language Processing   ](#natural-language-processing)
-1.    [Normalizing String Features   ](#normalizing-string-features)
-1.    [Keywords and Sentiment        ](#keywords-and-sentiment)
-1.    [NLP for Prediction            ](#nlp-for-prediction)
+XI.   [Natural Language Processing     ](#natural-language-processing)
+1.    [Normalizing String Features     ](#normalizing-string-features)
+1.    [Keywords and Sentiment          ](#keywords-and-sentiment)
+1.    [NLP for Prediction              ](#nlp-for-prediction)
 
-XII.  [Geospatial                    ](#geospatial)
-1.    [Geospatial Analysis           ](#geospatial-analysis)
+XII.  [Geospatial                      ](#geospatial)
+1.    [Geospatial Analysis             ](#geospatial-analysis)
 
-XIII. [Statistics                    ](#statistics)
-1.    [Probability                   ](#probability)
-1.    [Hypothesis Testing            ](#hypothesis-testing)
+XIII. [Statistics                      ](#statistics)
+1.    [Probability                     ](#probability)
+1.    [Hypothesis Testing              ](#hypothesis-testing)
 
-XIV.  [Insight Delivery              ](#insight-delivery)
-1.    [Visualizations                ](#visualizations)
-1.    [Magic in Jupyter              ](#magic-in-jupyter)
+XIV.  [Insight Delivery                ](#insight-delivery)
+1.    [Visualizations                  ](#visualizations)
+1.    [Magic in Jupyter                ](#magic-in-jupyter)
 
-XV.   [Classification                ](#classification)
-1.    [Features for Classification   ](#features-for-classification)
-1.    [Training Classifiers          ](#training-classifiers)
-1.    [Evaluating Classifiers        ](#evaluating-classifiers)
-1.    [Classification Shotgun        ](#classification-shotgun)
+XV.   [Classification                  ](#classification)
+1.    [Features for Classification     ](#features-for-classification)
+1.    [Training Classifiers            ](#training-classifiers)
+1.    [Evaluating Classifiers          ](#evaluating-classifiers)
+1.    [Classification Shotgun          ](#classification-shotgun)
 
-XVI.  [Regression                    ](#regression)
-1.    [Features for Regression       ](#features-for-regression)
-1.    [Training Regressors           ](#training-regressors)
-1.    [Evaluating Regressors         ](#evaluating-regressors)
-1.    [Regression Shotgun            ](#regression-shotgun)
+XVI.  [Regression                      ](#regression)
+1.    [Features for Regression         ](#features-for-regression)
+1.    [Training Regressors             ](#training-regressors)
+1.    [Evaluating Regressors           ](#evaluating-regressors)
+1.    [Regression Shotgun              ](#regression-shotgun)
 
-XVII. [Time Series                   ](#time-series)
-1.    [Timestamp Engineering         ](#timestamp-engineering)
-1.    [Metrics of Time Series        ](#metrics-of-time-series)
-1.    [Outcome Plotting              ](#outcome-plotting)
-1.    [Time Series Modeling          ](#time-series-modeling)
+XVII. [Time Series                     ](#time-series)
+1.    [Timestamp Engineering           ](#timestamp-engineering)
+1.    [Metrics of Time Series          ](#metrics-of-time-series)
+1.    [Outcome Plotting                ](#outcome-plotting)
+1.    [Time Series Modeling            ](#time-series-modeling)
 
-XVIII.[Anomaly Detection             ](#anomaly-detection)
-1.    [Anomalic Metrics              ](#anomalic-metrics)
-1.    [Getting to the Numbers        ](#getting-to-the-numbers)
-1.    [Baselines and Deviation       ](#baselines-and-deviation)
+XVIII.[Anomaly Detection               ](#anomaly-detection)
+1.    [Anomalic Metrics                ](#anomalic-metrics)
+1.    [Getting to the Numbers          ](#getting-to-the-numbers)
+1.    [Baselines and Deviation         ](#baselines-and-deviation)
 
-XIX.  [Neural Networks               ](#neural-networks)
-1.    [Establishing a Neural Network ](#establishing-a-neural-network)
-1.    [Image Classification          ](#image-classification)
-1.    [Deep Learning                 ](#deep-learning)
+XIX.  [Neural Networks                 ](#neural-networks)
+1.    [Establishing a Neural Network   ](#establishing-a-neural-network)
+1.    [Image Classification            ](#image-classification)
+1.    [Deep Learning                   ](#deep-learning)
 
-XX.   [Generative AI                 ](#generative-ai)
-1.    [Implementing LLMs             ](#implementing-llms)
-1.    [Implementing Image Generation ](#implementing-image-generation)
+XX.   [Generative AI                   ](#generative-ai)
+1.    [Implementing LLMs               ](#implementing-llms)
+1.    [Implementing Image Generation   ](#implementing-image-generation)
 
-XXI.  [Model Deployment              ](#model-deployment)
-1.    [Pipelining a Model            ](#pipelining-a-model)
-1.    [Building a Flask App          ](#building-a-flask-app)
-1.    [Building a Django App         ](#building-a-django-app)
-1.    [Deploying the Model           ](#deploying-the-model)
+XXI.  [Model Deployment                ](#model-deployment)
+1.    [Pipelining a Model              ](#pipelining-a-model)
+1.    [Building a Flask App            ](#building-a-flask-app)
+1.    [Building a Django App            ](#building-a-django-app)
+1.    [Deploying the Model             ](#deploying-the-model)
 
-XXII. [Application Scaling           ](#application-scaling)
-1.    [Kubernetes                    ](#kubernetes)
-1.    [Apache Kafka                  ](#apache-kafka)
+XXII. [Application Scaling             ](#application-scaling)
+1.    [Kubernetes                      ](#kubernetes)
+1.    [Apache Kafka                    ](#apache-kafka)
 
-XXIII.[PySpark                       ](#pyspark)
-1.    [Spark                         ](#spark)
-1.    [PySpark Commands              ](#pyspark-commands)
-1.    [PySpark Machine Learning      ](#pyspark-machine-learning)
+XXIII.[PySpark                         ](#pyspark)
+1.    [Spark                           ](#spark)
+1.    [PySpark Commands                ](#pyspark-commands)
+1.    [PySpark Machine Learning        ](#pyspark-machine-learning)
 
-XXIV. [ELK Stack                     ](#elk-stack)
-1.    [Elasticsearch                 ](#elasticsearch)
-1.    [Logstash                      ](#logstash)
-1.    [Kibana                        ](#kibana)
+XXIV. [Elastic APIs                    ](#elastic-apis)
+1.    [cURL vs Elasticsearch           ](#curl-vs-elasticsearch)
+1.    [Python vs Elasticsearch         ](#python-vs-elasticsearch)
+1.    [Kibana Console vs Elasticsearch ](#kibana-console-vs-elasticsearch)
 
-XXV.  [Project Management            ](#project-management)
-1.    [Planning a Project            ](#planning-a-project)
-1.    [Selecting the Framework       ](#selecting-the-framework)
+XXV.  [Project Management              ](#project-management)
+1.    [Planning a Project              ](#planning-a-project)
+1.    [Selecting the Framework         ](#selecting-the-framework)
 
-XXVI. [Business Tools                ](#tools-and-languages)
-1.    [Excel and Google Sheets       ](#excel-and-google-sheets)
-1.    [PowerBI                       ](#powerbi)
-1.    [Tableau                       ](#tableau)
+XXVI. [Business Tools                  ](#tools-and-languages)
+1.    [Excel and Google Sheets         ](#excel-and-google-sheets)
+1.    [PowerBI                         ](#powerbi)
+1.    [Tableau                         ](#tableau)
 
-XXVII.[Programming Languages         ](#programming-languages)
-1.    [Python Oddities               ](#python-oddities)
-1.    [R                             ](#r)
-1.    [C++                           ](#c)
+XXVII.[Programming Languages           ](#programming-languages)
+1.    [Python Oddities                 ](#python-oddities)
+1.    [R                               ](#r)
+1.    [C++                             ](#c)
 
 <br>
 
@@ -295,7 +295,7 @@ I might want to add a script to update packages...
 - Remove a package: `conda remove package_name`
 - Install an env-contained pip instance: `conda install pip` -> `pip install ..`
 ### Env Launch Script
-```
+```batch
 cd %USERPROFILE%\zen
 call activate mighty
 %SystemRoot%\explorer.exe "%USERPROFILE%\zen"
@@ -306,7 +306,7 @@ jupyter notebook
 - Jupyter Hub hosts a Jupyter workspace for each user on a single system/server
 - Great for multiple people working separately on a high-performance system
 - Each workspace is configurable using the console in that workspace
-```
+```batch
 -- log into the jupyter hub and open a console; to create your conda env:
 conda create -n mighty ipykernel
 conda init bash
@@ -513,7 +513,7 @@ The end state of both methods should be an initial dataframe pre-editing.
 ### RESTful JSON APIs
 - Interfacing is done through HTTP requests
 - Endpoints are typically: "/api/v1/items/1" with ["next_page"]/["max_page"]
-```
+```python
 import requests
 json_data = requests.get("https://swapi.dev/api/people/5").json()
 print(json_data["name"])
@@ -522,7 +522,7 @@ print(json_data["name"])
 --------------------------------------------------------------------------------
 <!-- Needs work -->
 ## Read Local Files
-```
+```python
 import os
 import pandas as pd
 def find_csvs(dir=None, match=None, folder_start=None, folder_end=None):
@@ -587,7 +587,7 @@ def read_csvs(filepaths, set_cols=False):
         df = df.sort_values(by="@timestamp").reset_index(drop=True)
     return df
 ```
-```
+```python
 import pandas as pd
 import read_csvs, find_csvs
 df = read_csvs(find_csvs(match="EID4624"), set_cols=False)
@@ -628,7 +628,7 @@ Capture is important and REGEX excels at this work.
 - REGEX by programming language: https://www.regular-expressions.info/tools.html
 - Test your REGEX: https://regex101.com/
 - Go deep learning REGEX: http://www.rexegg.com/regex-disambiguation.html
-```
+```re
 | Zero or more (optional): *  | One or more: +        | Optional: ?            |
 | Any character: .            | Choices: [a12qx]      | Anything-but: [^a12qx] |
 | Alphanumeric: \w \W         | Whitespace: \s \S     | Digit: \d \D           |
@@ -793,7 +793,7 @@ Draft an entity-relationship diagram first if crawling pages; save to dataframe
 ## Pandas Read-HTML
 - Use this method if you're working with *HTML tables*; it's easy and effective
 - Sample HTML tables (testing): https://www.w3schools.com/html/html_examples.asp
-```
+```python
 import pandas as pd
 # READ FROM URL
 url = "https://www.w3schools.com/html/tryit.asp?filename=tryhtml_table_headings"
@@ -814,7 +814,7 @@ df2 = pd.read_html(myhtml)[0] # read HTML tables from string, set first as df2
     * Note that any post-HTML loading (ex: Javascript) is not grabbed...
 - To build a dataframe: use a sequence of `request.get` calls and build each row
 - Beautiful Soup dive: https://www.crummy.com/software/BeautifulSoup/bs4/doc/
-```
+```python
 import requests
 from bs4 import BeautifulSoup
 import re
@@ -859,7 +859,7 @@ else:
 - Use this method if you need to scrape the contents of a *dynamic* page
 - Selenium stores all loaded page elements, BeautifulSoup does the tag scraping
     * You have to drive the browser through actions; a bit complicated, but good
-```
+```python
 from selenium import webdriver
 from selenium.webdriver.common.by import By               # allow By.ID, etc
 from selenium.webdriver.common.keys import Keys           # allow Keys.TAB, etc
@@ -884,7 +884,7 @@ elem2 = chrome.find_element_by_xpath('//*[@id="q_type"]/div[3]/div[2]')
 actions.move_to_element(elem2).click().perform()  # select an option in dropdown
 ```
 ### Walk Images
-```
+```python
 import os
 import shutil
 import requests
@@ -969,7 +969,7 @@ The end state of both explanations should be a "SELECT *"-style return (to DF).
 - UNSIGNED/SIGNED don't seem to do anything...
 - Referential Integrity Violation Constraints are supported!
 - There's no `TRUNCATE TABLE t1`; use this for SQLite: `DELETE FROM t1;`
-```
+```python
 # CREATE A DB
 import sqlite3
 con = sqlite3.connect("cool.db")
@@ -1030,7 +1030,7 @@ os.remove("cool.db")
 --------------------------------------------------------------------------------
 <!-- Needs work -->
 ## SQLAlchemy
-```
+```python
 import pandas as pd
 from sqlalchemy import create_engine
 engine = create_engine("sqlite:///MyDB.sqlite")
@@ -1043,7 +1043,7 @@ df2.columns = rs.keys()
 df3 = pd.DataFrame(rs.fetchmany(size=5))
 df3.columns = rs.keys()
 ```
-```
+```python
 username, database, host, port = "postgres", "sqlda", "localhost", 5432
 cnxn_string = f"postgresql+psycopg2://{username}"@{host}:{port}/{database}"
 engine = create_engine(cnxn_string)
@@ -1066,7 +1066,7 @@ vc.to_sql('top_cities_data', engine, index=False, if_exists='replace')   # WRITE
 pd.read_sql_table('top_cities_data', engine)               # READ FROM NEW TABLE
 ```
 ### Fast Write to DB via STDIN COPY
-```
+```python
 import csv
 from io import StringIO
 def gogo(table, conn, keys, data_iter):
@@ -1103,7 +1103,7 @@ vc.to_sql("top10_table", engine, index=False, if_exists='replace' method=gogo)
     * Get "data.dump" from here for CMD example
 - COPY operation: https://www.postgresql.org/docs/current/sql-copy.html
     * Consider doing CREATE VIEW before ETL then doing `COPY view_table TO...`
-```
+```sql
 >>>createuser -s postgres
 >>>createdb -U postgres sqlda
 >>>\l
@@ -1117,7 +1117,7 @@ vc.to_sql("top10_table", engine, index=False, if_exists='replace' method=gogo)
 >>>\copy (SELECT DISTINCT ON (col1) col1, col2 FROM t1) TO STDOUT;
 ```
 ### Create Stored Procedure
-```
+```sql
 CREATE OR REPLACE PROCEDURE procedure_name(IN val1 INT, IN val2 INT)
     BEGIN
         UPDATE col1 SET col1 = col1 + val1 WHERE col2 = val2;
@@ -1207,7 +1207,7 @@ The end state should be a dataframe that matches across query formats.
 <!-- Needs work -->
 ## SQL Examples
 ### SQL Simple Records Query
-```
+```sql
 SHOW DATABASES; 
 USE database_name; 
 SHOW TABLES; 
@@ -1242,7 +1242,7 @@ FROM t1;
 ### SQL Aggregation Query
 - `COUNT`, `MIN`, `MAX`, `RAND`
 - `SUM`, `AVG`, `ABS`, `LOG`, `POW(x, y)`, `ROUND(n, decimal_places)`, `SQRT(n)`
-```
+```sql
 SELECT SUM(x) + SUM(y) FROM t;     -- sum x, sum y, then sum totals; nulls fine
 SELECT SUM(x + y);                 -- rowwise sum; CAREFUL, NULL + 100 = NULL
 SELECT MAX(x);
@@ -1256,7 +1256,7 @@ SELECT a, b, c FROM t AS f WHERE c > ( -- Where c is higher than...
 ### SQL Subquery
 - Typically done with either an operator (`>`, `<`, `=`, etc), `IN`, or `EXISTS`
     * Consider these your three options for subqueries
-```
+```sql
 WITH d AS (SELECT * FROM t1 WHERE t1.a = 12)       -- create table "d" up front
 SELECT * FROM t2 JOIN d.a = t2.a;
 
@@ -1264,7 +1264,7 @@ SELECT concat(first_name, " ", last_name) AS Name
 FROM employees 
 WHERE 
     hire_date = (SELECT hire_date FROM employees WHERE emp_no = 101010) AND
-	emp_no IN (SELECT emp_no FROM dept_emp WHERE to_date > curdate()) AND
+    emp_no IN (SELECT emp_no FROM dept_emp WHERE to_date > curdate()) AND
     last_name IS NOT NULL;
 
 SELECT Name, CountryCode
@@ -1278,7 +1278,7 @@ WHERE EXISTS      -- Rows that match; use WHERE NOT EXISTS to find non-matches
 );
 ```
 ### SQL Temp Table Creation
-```
+```sql
 USE employees;
 CREATE TEMPORARY TABLE germain_1457.employees_with_departments AS
     SELECT first_name, last_name, departments.dept_name
@@ -1316,7 +1316,7 @@ In rare cases, we see patterns in nulls; so we do null pattern characterization.
 --------------------------------------------------------------------------------
 <!-- Needs work -->
 ## Basic Null Characterization
-```
+```python
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -1377,7 +1377,7 @@ plt.show()
 --------------------------------------------------------------------------------
 <!-- Needs work -->
 ## Null Pattern Characterization
-```
+```python
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -1427,7 +1427,7 @@ for p in sorted(regulars):
 <!-- Needs work -->
 ## Handling Nulls
 ### Null Removal
-```
+```python
 # DROP NULLS
 c_nulls = [(c, df[c].isna().sum(), df[c].isna().sum()*100//len(df)) for c in df]
 drop_cols = [c[0] for c in c_nulls if c[1] > 20]
@@ -1437,7 +1437,7 @@ nonnull_minimum = int(r_nulls["avg"])  # thresh is minimum number of NON-NULL
 df = df.dropna(axis=1, thresh=nonnull_minimum, subset=df.columns[3:6])
 ```
 ### Basic Null Imputation
-```
+```python
 from sklearnex import patch_sklearn
 patch_sklearn()
 # SAMPLE DATA
@@ -1458,7 +1458,7 @@ imps["knn"] = KNN().fit(X_train)
 imps["mice"] = IterativeImputer().fit(X_train)
 ```
 ### Custom Null Imputation
-```
+```python
 def make_impute_recipe(df, subcats, impute_for):
     np.random.seed(42)
     subcats = [subcats] if type(subcats) is str else subcats
@@ -1508,7 +1508,7 @@ def use_impute_recipe(df, recipes):
                 df.loc[null_idx, col] = df.loc[null_idx].apply(func, axis=1)
     return df
 ```
-```
+```python
 # SAMPLE DATA
 import numpy as np
 import pandas as pd
@@ -1534,7 +1534,7 @@ impXtest = use_impute_recipe(impXtest, recipes)   # use X_train imp
 --------------------------------------------------------------------------------
 <!-- Needs work -->
 ## Evaluation of Null Handling
-```
+```python
 # SET VARIABLES FOR NULL HANDLING EVALUAITON
 label_type = "cat"     # or, "cont"
 col = "embark_town"
@@ -1602,7 +1602,7 @@ Explanations here shouldn't go any further than feature engineering.
 <!-- Needs work -->
 ## Dataframe Normalization
 ### Explode, Melt, Merge, ETC
-```
+```python
 # SPLIT A STRING COLUMN INTO MULTIPLE COLUMNS
 df[["newcol1","newcol2"]] = df["col"].str.split(":", expand=True)
 # MELT "WIDE" COLUMNS
@@ -1612,7 +1612,7 @@ melted = pd.melt(df, id_vars="cat", value_vars=[c for c in df if c != "cat"])
 df1.merge(df2, left_on="df1c1", right_on="df2c1", how="outer", indicator=True)
 ```
 ### "Apply" examples
-```
+```python
 import numpy as np
 import pandas as pd
 # SAMPLE DATA
@@ -1635,7 +1635,7 @@ row_calc = lambda row: row["good1"] * row["sup"]
 df["number"] = df.apply(row_calc, axis=1)
 ```
 ### Nested JSON in DF column, explode to new columns
-```
+```python
 import pandas as pd
 from util import flatten_json
 json_breakouts = pd.DataFrame(df[json_col].apply(flatten_json).tolist())
@@ -1644,7 +1644,7 @@ df = pd.concat([df, json_breakouts], axis=1)
 ### Nested XML in DF column, explode to new columns
 - Note: you can render XML to HTML using its <xsl:stylesheet> with XSLT/xsltproc
     * EX: `xsltproc myXMLfile.xml -o HTMLoutput.html`
-```
+```python
 import pandas as pd
 import json
 import xmltodict
@@ -1661,7 +1661,7 @@ df = pd.concat([df, xml_breakouts], axis=1)
 - Most numpy/pandas methods are NOT vectorized!!
 - Non-numerical DF description: `df.describe(exclude="number")`
 - Find duplicates: `df.duplicated(subset=["col1","col2",...], keep="first")`
-```
+```python
 import time
 import numpy as np
 import pandas as pd
@@ -1705,7 +1705,7 @@ best_feats = [c for (i, c) in enumerate(m.feature_names_in_) if i in best_idx]
 <!-- Needs work -->
 ## Feature Engineering
 - `.pipe(func)` df-wise, `.apply(func)` col/rowwise, `.applymap(func)` cellwise
-```
+```python
 import numpy as np
 import pandas as pd
 # FIX NUMERICAL FEATURES
@@ -1731,7 +1731,7 @@ dummy_df = pd.get_dummies(df["cats1", "cats2"], drop_first=[True, True])
 - Leverage: how extreme an outlier is
 - Influence: what happens to the model when an outlier is removed
     * Cook's Distance is a measure of influence
-```
+```python
 summary = sm_model.get_influence().summary_frame()
 df["leverage"] = summary["hat_diag"]
 df["cooks_dist"] = summary["cooks_d"]
@@ -1791,7 +1791,7 @@ In classification problems, we might face imbalanced classes; use resampling.
     * Get ECDF line -> discretize to uniform dist -> plot on dist
     * Complex; if you really want your data to be normal, then use this
 - Not shown (yet): MaxAbsScaler, Normalizer
-```
+```python
 import numpy as np
 import pandas as pd
 # SCALING
@@ -1820,7 +1820,7 @@ plt.legend(["original", "normalized", "uniform minus 1.0", "inversed plus 1.0"])
 plt.show()
 ```
 ### Example of Why Scaling is Important: KNN (Without Actually Training KNN!)
-```
+```python
 # GENERATE DATA: TRUCK VS CAR, VEHICLE WEIGHT AND TIRE SIZE METRICS
 np.random.seed(0)
 trucks_ts = np.abs(np.random.normal(loc=6, scale=4, size=100)) + 22
@@ -1925,7 +1925,7 @@ print(f"Scaled data, votes for truck: {s_votes_truck}/{k} correct")
     * use val of `sum(lcvmask)` to set `n_features_to_select` in RFE
 - `votes = np.sum([lcvmask, rfmask, gbmask], axis=0)`
     * `mask = votes >= 2` -> `reduced_X = x.loc[:,mask]`
-```
+```python
 # SET UP SAMPLE DATASET
 from sklearn.datasets import make_classification as MC
 X, y = MC(n_samples=10_000, n_features=20, n_classes=2, 
@@ -1978,7 +1978,7 @@ print(f"Columns dropped: {len(dropped_cols)}\n- " + "\n- ".join(dropped_cols))
 - Real world example: plane flying along known flight path (fixed height/path)
     * Variance is small in height/path, but huge in the plane's forward movement
     * PCA will "identify" forward movement as containing significant information
-```
+```python
 # SAMPLE DATA FOR MODEL TESTING
 import numpy as np
 import pandas as pd
@@ -2002,7 +2002,7 @@ plt.ylabel("Explained Variance")
 plt.grid()
 plt.show()
 ```
-```
+```python
 # ELBOW METHOD: USE FIVE COMPONENTS, CUMSUM > 90% EXPLAINED VARIANCE
 pca5 = PCA(n_components=5)
 pca_df = pca5.fit_transform(X_train)
@@ -2017,7 +2017,7 @@ components_df = pd.DataFrame(pca5.components_, columns=X_train.columns)
     * Fit each class's data values, generate more rows for minority class
 - Tomek Links
     * Delete from majority class the records that majority/minority overlap on
-```
+```python
 from imblearn.combine import SMOTETomek
 def resampler(X_train, y_train):
     """ Use SMOTE+Tomek to eliminate class imbalances for train split """
@@ -2100,7 +2100,7 @@ Popular clustering methods: K-Means, Hierarchical, and DBSCAN.
 - Visualize multidimensional clustering in a 2D (default) or 3D plot
 - Stochastically modifies the dataset to spread tight data, condense sparse data
 - Will sequence differently with new data... not useful for preparation/modeling
-```
+```python
 # t-SNE: EXPLORE POTENTIAL CLUSTERS FROM 3+ DIMENSIONS IN 2D PLOT
 tsne = TSNE(learning_rate=50)
 transformed = tsne.fit_transform(X_train)
@@ -2114,7 +2114,7 @@ plt.show()  # try different params on TSNE for different clustering!
 - KMeans: Use euclidian distances, select cluster count subjectively
 - Domain knowledge ("3 types"), exploration ("looks like 3"), intertia (elbow)
     * Inertia: sum([distance(x,center) ** 2 for x in cluster])
-```
+```python
 from sklearnex import patch_sklearn
 patch_sklearn()
 # SAMPLE DATA FOR MODEL TESTING
@@ -2151,7 +2151,7 @@ plt.ylabel("Inertia")
 plt.grid()
 plt.show()
 ```
-```
+```python
 # SELECT CLUSTER COUNT FROM SCREE PLOT AND GET CLUSTER ASSIGNMENTS
 selected_count = 3  # selected from elbow method
 kmeans, clusterings, inertia = results[f"kmeans{selected_count}"]
@@ -2182,7 +2182,7 @@ plt.show()
     * Draw horizontal line at base of longest-unmerged line, count intersections
     * Count of horizontal line's vertical intersections is the cluster count.
 - Divisive (not shown) is opposite of agglomerative: single cluster -> many
-```
+```python
 # SAMPLE DATA FOR MODEL TESTING
 import numpy as np
 import pandas as pd
@@ -2204,7 +2204,7 @@ mergings = lnk(X_train, method="ward")  # makes the hierarchy clusters
 dend = dnd(mergings, leaf_rotation=90, leaf_font_size=6)
 plt.show()
 ```
-```
+```python
 # SET HYPERPARAMETERS FROM DENDROGRAM
 height = 12
 n_clust = 3
@@ -2229,7 +2229,7 @@ plt.show()
 ### DBSCAN
 - DBSCAN: Overlaps of proximity boundaries; great at finding weird data shapes
 - Computationally-expensive
-```
+```python
 # DBSCAN
 from sklearn.cluster import DBSCAN
 dbsc = DBSCAN(eps=.1, min_samples=20).fit(X_train_scaled)
@@ -2299,7 +2299,7 @@ NLP's "bag of words" works nicely in conjunction with classification.
 ### Normalizing for Keyword Analysis
 - NEED: Vectorized method for performing this cleaning work
     * NOTE: Add ngram compilation to this
-```
+```python
 # DOWNLOAD DATASETS FOR WORD PLAY
 import nltk
 nltk.download('stopwords')
@@ -2308,7 +2308,7 @@ nltk.download('punkt')
 nltk.download('wordnet')
 nltk.download('omw-1.4')
 ```
-```
+```python
 import nltk
 import unicodedata as UNICODE
 import re
@@ -2346,7 +2346,7 @@ clean_stemmed = s.apply(lambda txt: cleanup(txt, tokenizer, stopwords, ps=ps))
 ## Keywords and Sentiment
 ### Keyword Analysis
 - Cool: https://github.com/amueller/word_cloud/blob/master/examples/parrot.py
-```
+```python
 import pandas as pd
 import my_util         # import "cleanup" function from normalize-string section
 word_array = np.random.choice(["red.","the?","happy's","$big times$"],size=5000)
@@ -2408,7 +2408,7 @@ plt.show()
 ### Sentiment Analysis
 - Afinn and Vader are sentiment analysis tools based on social media
 - Sentiment is best analyzed without normalization
-```
+```python
 # SINGULAR SENTIMENT ANALYSIS
 import nltk
 from nltk.sentiment import SentimentIntensityAnalyzer
@@ -2438,7 +2438,7 @@ df
     * Each column is a word, each row is an record, each value is a **weight**
     * TF is how often a word shows; IDF is how unique the word is in all records
     * Calculation identifies word importance (weight) and filters out stopwords
-```
+```python
 # PERFORM PREP AND SPLIT BEFORE FOLLOWING THE STEPS
 do_CV = False
 if do_CV:
@@ -2460,7 +2460,7 @@ y_train_preds = tree.predict(bow)
 features = dict(zip(vectorizer.get_feature_names(), tree.feature_importances_))
 print(pd.Series(features).sort_values().tail(5))            # top-5 features
 ```
-```
+```python
 from sklearn.decomposition import TruncatedSVD
 model = TruncatedSVD(n_components=3)
 model.fit(documents)  # documents is scipy csr_matrix
@@ -2477,7 +2477,7 @@ transformed = model.transform(documents)
     * H matrix: runs (activates) W matrix; each column is "weights" or "gains"
     * All three matrices must have non-negative values
 - The math is complicated, and technically, you can't solve for smallest W and H
-```
+```python
 # SILENCE CONVERGENCE WARNING FOR LIMIT ON ITERATIONS
 import warnings
 from sklearn.exceptions import ConvergenceWarning as CW
@@ -2564,7 +2564,7 @@ Latitudes, longitudes, coordinates, and trends.
 - `geopandas` is an excellent library for geospatial work
 - A cell in a row can contain a point, line, or polygon; `geo_df.loc[0, 'poly']`
     * Printing the cell will result in object with coord array for ex: line
-```
+```python
 import folium
 district1_map = folium.Map(location=[48.858373,2.292292], zoom_start=12)
 folium.GeoJson(district_one.geometry).add_to(district1_map)
@@ -2590,7 +2590,7 @@ schools["polygon_area"] = schools.geometry.area            # calc on each row
 schools["polygon_center"] = schools.geometry.centroid      # calc on each row
 schools["distance_from_other"] = schools.geometry.distance(other)  # each row
 ```
-```
+```python
 import geopandas as gpd
 # initialize two geodataframes and join the plots
 d1 = gpd.sjoin(gdf1, gdf2, op="contains")  # gdf2 entirely inside gdf1 boundary
@@ -2598,7 +2598,7 @@ d2 = gpd.sjoin(gdf1, gdf2, op="intersect") # gdf2 is inside or on gdf1 boundary
 d3 = gpd.sjoin(gdf2, gdf1, op="within")    # backwards "contains"
 print(len(d1))                             # number of gdf2 things inside gdf1
 ```
-```
+```python
 import folium
 nashville = [36.1636, -86.7823]
 m = folium.Map(location=nashville, zoom_start=10)
@@ -2733,7 +2733,7 @@ We can run hypothesis tests to understand whether our findings are significant.
 ### Likelihood from Probabilities
 - Probability: probability, given the model, that a datapoint is predicted
 - Likelihood: probability, given the data, that a model could output the data
-```
+```python
 # HOW MODELS SELECT BEST FIT LINE
 mu_guess = np.mean(sample_distances)
 sigma_guess = np.std(sample_distances)
@@ -2756,7 +2756,7 @@ max_loglikelihood = np.max(loglikelihoods)
 best_mu = mu_guesses[loglikelihoods == max_loglikelihood]
 ```
 ### Probabilities for KDE line, where KDE is built from numerical observations
-```
+```python
 # SET RANGE TO CALCULATE PROBABILITY FOR
 left = -3
 right = 7
@@ -2806,7 +2806,7 @@ print(f"Probability of {left}: {prob_left}")
 - ERRORS: Type I (falsely-reject null), Type II (falsely-accept null)
     * False Positive Rate: probability of a Type I error
     * False Negative Rate: probability of a Type II error
-```
+```python
 import pandas as pd
 from scipy import stats
 # SINGLE COLUMN METRICS
@@ -2845,7 +2845,7 @@ corr, p = stats.spearmanr(col1, col2)    # corr between ord/monotonic-cont cols
 chi2, p, degf, expected = stats.chi2_contingency(observed_crosstab)
 ```
 ### Marketing
-```
+```python
 import scikitplot as skplt
 import matplotlib.pyplot as plt
 # CUMULATIVE GAINS: HOW MANY SAMPLES TO GET A CERTAIN AMOUNT OF PREDICTION 1
@@ -2857,7 +2857,7 @@ plt.show()
 # PER-GROUP OUTCOMES (INCIDENCE): % OF TARGETS IN EACH GROUP (CAT/CONT GROUPS!)
 ```
 ### Do Statistics!!
-```
+```python
 import pandas as pd
 from scipy import stats
 def test_normality(s):
@@ -2932,7 +2932,7 @@ def do_stats(df, y=None, chi2s=None, ttests=None, corrs=None, pearsonr=False):
         print("Please select column labels for tests!")
     print("Tests complete! All significant results are shown; none may show!")
 ```
-```
+```python
 import numpy as np
 s1 = np.random.choice(list("gattaca"), size=70000)
 s2 = pd.Series(list("agttatg")*10000)
@@ -2994,7 +2994,7 @@ Jupyter notebooks are optimal for report delivery and should be mastered.
     * `regplot` uses `line_kws={'color':'red'}`
 - Normality: `statsmodels.api.qqplot`; x: theoretical quants, y: observed quants
 - Residuals: Scale-Location plot (deviation is change in largeness), `residplot`
-```
+```python
 # GRAB THE ORANGE COLOR FROM SEABORN'S DEFAULT PALETTE
 import seaborn as sns
 d = sns.color_palette()[1]     # (1.0, 0.4980392156862745, 0.054901960784313725)
@@ -3003,7 +3003,7 @@ x = '#%02x%02x%02x' % tuple([int(255 * i) for i in d])           # "#ff7f0e"
 # HEX TO DECIMAL
 d = tuple([(int(f"0x{x[i:i+2]}", 16) / 255) for i in range(1, len(x), 2)])
 ```
-```
+```python
 # HEATMAP WITH A SPECIFIED COLOR FOR THE LOWEST VALUE
 rblugrn = plt.get_cmap("BuGn_r")
 num_colors = crosstab.max().max()
@@ -3012,7 +3012,7 @@ cmap = LinearSegmentedColormap.from_list('', colors, num_colors)
 sns.heatmap(crosstab, cmap=cmap, cbar=False, 
     vmin=low_threshold, vmax=high_threshold, center=center, annot=True, fmt="d")
 ```
-```
+```python
 # SCALE-LOCATION PLOT
 resids = sm_model.get_influence().resid_studentized_internal
 abs_sqrt_resids = np.sqrt(np.abs(resids))
@@ -3020,7 +3020,7 @@ sns.regplot(x=sm_model.fittedvalues, y=abs_sqrt_resids, ci=None, lowess=None)
 plt.xlabel("fittedvalues")
 plt.ylabel("SQRT of ABS of STDized Residuals")
 ```
-```
+```python
 # HISTOGRAM WITH OVERLAPPING ECDF (COOL!)
 import seaborn as sns
 import pandas as pd
@@ -3039,7 +3039,7 @@ plt.show()
 ### Dataframe Styling
 - `df.style` is used for changing data presentation (not changing the data)
 - `df.plot` is only really useful for lightweight/few-line df plotting
-```
+```python
 # STYLE DF: FORMAT/BAR NUMBERS, COLOR LEVELS, FORMAT STRINGS; PRINT TO HTML FILE
 from IPython.display import display, HTML
 import numpy as np
@@ -3066,7 +3066,7 @@ display(HTML(html))
 ### Chart Approaches
 - For interactivity, check out plotly: https://plotly.com/python/plotly-express/
     * `import plotly.express as px`
-```
+```python
 plt.figure(figsize=(14,5))
 bar_color = (0.0, 0.267, 0.106) # dark green, hint of blue
 splot = sns.barplot(x=x, y=y, color=bar_color, alpha=0.9)  # splot for bar annot
@@ -3078,7 +3078,7 @@ plt.xticks(rotation=x_rot)
 plt.bar_label(bar_height, bar_labels)
 plt.show()
 ```
-```
+```python
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -3113,7 +3113,7 @@ plt.subplots_adjust(wspace=0.2)
 # plt.savefig('chart_customs.png')
 plt.show()
 ```
-```
+```python
 # PLOT DF: USING DF METHODS FOR FAST PLOTTING
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -3140,7 +3140,7 @@ plt.legend(shadow=True, loc="upper right")
 plt.text(0.8, 10, "hi")
 plt.show()
 ```
-```
+```python
 # SEVERAL CHARTS IN ONE
 from mpl_toolkits.axes_grid1 import host_subplot
 from mpl_toolkits import axisartist
@@ -3181,7 +3181,7 @@ plt.show()
     * I think the commands depend on what terminal program is running Jupyter
 - Run ipython commands with `%` like this: `%ls`
 ### iPyWidgets
-```
+```python
 from IPython.display import display
 import ipywidgets
 from datetime import date
@@ -3232,7 +3232,7 @@ Test (hold-out set) is used for checking the best model's performance.
     * Multicollinearity reduces model performance
     * Reduce multicollinearity by thresholding variance inflation factor (VIF)
 - You can always train a model first and evaluate which features were best!
-```
+```python
 from sklearnex import patch_sklearn
 patch_sklearn()
 # SAMPLE DATA FOR MODEL TESTING
@@ -3320,7 +3320,7 @@ X_train_RFE, X_val_RFE, X_test_RFE = X_train[best], X_val[best], X_test[best]
 - **Support Vector Machine**
 - **One Vs Rest**
     * Breakdown of multiclass problem into several binary class problems
-```
+```python
 # SAMPLE DATA FOR MODEL TESTING
 import pandas as pd
 from sklearn.datasets import make_classification as MC
@@ -3373,7 +3373,7 @@ print(bc2.oob_score_)  # out of bag score; essentially score on cross-validation
 - If error on CV is similar to train, but still too high: high bias / underfit
     * Increase model complexity (ex: more max_depth, more min_samples)
     * Gather more features
-```
+```python
 # K-FOLDS CROSS VALIDATION
 from sklearn.model_selection import cross_val_score as CVS
 from sklearn.metrics import precision_score, make_scorer
@@ -3389,7 +3389,7 @@ precision = CVS(model, X, y, cv=5, scoring=e3, n_jobs=-1).mean()
 - Set `n_jobs = -1` to use multi-core processing! Speed gains!
 - For even more speed gains: try `RandomizedSearchCV`
     * Doesn't try out the entire grid; "hones in" on the best, faster
-```
+```python
 # GRID SEARCH
 import numpy as np
 from sklearn.model_selection import GridSearchCV
@@ -3408,7 +3408,7 @@ accuracy = (grid.best_estimator_.predict(X_train) == y_train).mean()
 #### Randomized Grid Search Cross Validation
 - Grid Search, but randomly selecting hyperparameters, not trying all of them
 - Pretty good performance, less computationally expensive than full grid search
-```
+```python
 # RANDOMIZED GRID SEARCH
 import numpy as np
 from sklearn.ensemble import RandomForestRegressor as RFR
@@ -3448,7 +3448,7 @@ joblib.dump(rfr, "rfr_best.pkl")
 - **Receiver Operating Characteristic:** False Positive Rate, True Positive Rate
     * Model performance at different decision thresholds
     * The model with best ROC AUC is best across decision thresholds
-```
+```python
 # SAMPLE DATA FOR MODEL TESTING
 import pandas as pd
 from sklearn.datasets import make_classification as MC
@@ -3503,7 +3503,7 @@ plt.show()
 - Train a bunch of classifiers on a given dataset
 - Various classification algorithms with various parameter sets
 - Meant for MVP work; tune more precisely, reduce/increase params, etc later
-```
+```python
 # IMPORT EVERYTHING
 import pandas as pd
 from sklearn.tree import DecisionTreeClassifier as TREE
@@ -3645,7 +3645,7 @@ def xgboosts(X_train, y_train, X_out, y_out):
         y_out[model_name] = xgb.predict(X_out)
     return y_train, y_out    # return DATAFRAMES with new preds columns
 ```
-```
+```python
 # SAMPLE DATA FOR MODEL TESTING
 from sklearn.datasets import make_classification as MC
 X, y = MC(n_samples=10_000, n_features=20, n_classes=2, 
@@ -3702,7 +3702,7 @@ Test (hold-out set) is used for checking the best model's performance.
 - Scatterplots can show outliers; consider removing outlier datapoints
     * Removing outliers can improve model performance
 - You can always train a model first and evaluate which features were best!
-```
+```python
 from sklearnex import patch_sklearn
 patch_sklearn()
 # SAMPLE DATA FOR MODEL TESTING
@@ -3788,7 +3788,7 @@ X_train_RFE, X_val_RFE, X_test_RFE = X_train[best], X_val[best], X_test[best]
     * Really just feature engineering to make polynomial features
     * Use number of curves from exploration as hyperparameter
 - **Gradient Boosting Regressor**
-```
+```python
 # SAMPLE DATA FOR MODEL TESTING
 import pandas as pd
 from sklearn.datasets import load_wine
@@ -3831,7 +3831,7 @@ ols2.summary()
 - **Heteroscedasticity**
     * Trend in residual plot, unaccounted-for drivers remain
     * Fix heteroscedasticity by removing outliers or log/expon/etc transform
-```
+```python
 # SAMPLE DATA FOR MODEL TESTING
 import pandas as pd
 from sklearn.datasets import load_wine
@@ -3881,7 +3881,7 @@ plot_residuals("OLS", y_val, val_res["err"])
 - Train a bunch of regressors on a given dataset
 - Various regression algorithms with various parameter sets
 - Meant for MVP work; tune more precisely, reduce/increase params, etc later
-```
+```python
 # IMPORT EVERYTHING
 import pandas as pd
 from sklearn.linear_model import LinearRegression as OLS  # need simplicity
@@ -3998,7 +3998,7 @@ def gradboost(X_train, y_train, X_out, y_out):
     y_out['gbr'] = gbr.predict(X_out)
     return y_train, y_out   # return DATAFRAMES with new preds columns
 ```
-```
+```python
 # SAMPLE DATA FOR MODEL TESTING
 import pandas as pd
 from sklearn.datasets import make_regression as MR
@@ -4053,7 +4053,7 @@ Modeling varies from using past data with adjustment to actual trainable models.
     * Options: "linear","quadratic","nearest"
     * `df["col1"].plot(title="figtitle",marker="o",figsize=(30,5))`
     * `quadr_interp["col1"].plot(color="red",marker="o",linestyle="dotted")`
-```
+```python
 with open(r"C:\Users\Jake\sample_linux_authlog.txt") as f: text_data = f.read()
 regexp = "^(.{15})\s+(\S+)\s+([^\s\[:]+)(\[\d*\])*:\s+(.+)$"
 cols = ["timestamp", "hostname", "reporter", "pid", "message"]
@@ -4064,14 +4064,14 @@ df["day"] = df["ts"].dt.strftime("%Y-%m-%d")
 df["hour"] = df["ts"].dt.strftime("%Y-%m-%d %H:00:00")
 df["minute"] = df["ts"].dt.strftime("%Y-%m-%d %H:%M:00")
 ```
-```
+```python
 interpolations = {"Linear Interpolation": linear_interp, ...} # do imputes too!!
 for ax, df_key in zip(axes, interpolations):
     interpolations[df_key]["col"].plot(color="red", marker="o",
                                        linestyle="dotted", ax=ax)
     df["col"].plot(title=f"{df_key} - col", marker="o", ax=ax)
 ```
-```
+```python
 def get_holidays(selected_year):
     """
     Gather US holidays for a given year.
@@ -4195,7 +4195,7 @@ def determine_best_time_aggregation(datetime_series):
 <!-- Needs work -->
 ## Metrics of Time Series
 - 
-```
+```python
 date1 = pd.to_datetime(single_date, format='%b:%d:%Y')
 date2 = pd.Timedelta('14d') + pd.to_datetime('2017-11-07')
 s1 = pd.to_datetime(df.date, format='%b:%d:%Y')
@@ -4219,13 +4219,13 @@ df2 = by_day.assign(bfill=lambda df: df.coffee_consumption.bfill())
 <!-- Needs work -->
 ## Outcome Plotting
 - 
-```
+```python
 df.resample('W').sum().colname.plot()  # lineplot of weekly sum
 plt.vlines(up_out.index, *plt.ylim(), color='black', ls='--', label='Ups')
 df[['high', 'low']].plot(color='black', alpha=.6, ls=':', figsize=(16, 6))
 df["mid"].plot(color='black', alpha=.6, ls='--')
 ```
-```
+```python
 def bollinger_band_outliers(y, n, k, group_avgs=pd.Series(dtype="int")):
     """
     Calculate the Bollinger bands and outliers for a time-index pandas Series.
@@ -4292,7 +4292,7 @@ def bollinger_band_outliers(y, n, k, group_avgs=pd.Series(dtype="int")):
     * Predict test using train
 1. Evaluate each model's RMSE, best model has lowest RMSE
 1. Use best model for future forecasting
-```
+```python
 # basic diff and shift plotting
 ax = df.resample('M').mean().diff().plot()                    # diff MM averages
 df.resample('M').mean().plot(ax=ax, label='Monthly Average')  # MM average
@@ -4346,7 +4346,7 @@ Baselining a dataset to find anomalies in unseen data requires a careful hand.
 <!-- Needs work -->
 ## Anomalic Metrics
 - Calculate many time-based metrics and do clustering!
-```
+```python
 # SETUP
 import pandas as pd
 from numpy.random import seed, choice
@@ -4364,7 +4364,7 @@ c2 = pd.Series(choice(["uncool","cool"], p=[.8,.2], size=10_000), name="tude")
 df = pd.concat([t, c1, c2], axis=1).sort_values(by="ts").reset_index(drop=True)
 df["cash"] = (df["cat"] == "a") & (df["tude"] == "cool")
 ```
-```
+```python
 # ACTION ANOMALIES
 # DETECT SPECIFIC EVENTS
 df["bad"] = df["cat"].isin(["b","c","d"])
@@ -4384,7 +4384,7 @@ df.loc[list(detected_i) + [i + 1 for i in detected_i]].sort_index()
 # CHART: COUNTS OF CATEGORY GIVEN CATEGORY
 df[["cat","tude"]].value_counts().unstack().plot.barh()
 ```
-```
+```python
 # TIME ANOMALIES
 # OUTSIDE BUSINESS HOURS
 off_hours = (df.ts.dt.time < time(9,0)) & (df.ts.dt.time > time(17,0))
@@ -4414,7 +4414,7 @@ plt.vlines(upper_outliers.index, *plt.ylim(), alpha=0.3, ls="--", color="red")
 plt.vlines(lower_outliers.index, *plt.ylim(), alpha=0.4, ls=":", color="gray")
 ```
 ### Actions: Overlapping Sessions
-```
+```python
 # Example:
 # [start,   end, start,   end, start, start,   end,   end]  # Series
 # [    1,    -1,     1,    -1,     1,     1,    -1,    -1]  # Map to 1 and -1
@@ -4445,7 +4445,7 @@ pd.concat([s, pd.Series(start_end_series)], axis=1)
 - Distance-based clustering is powerful, but needs continuous values to work
 - Creating a ton of features with continuous values is a great approach!
 - Fast plot of numerical interactions: `sns.pairplot`
-```
+```python
 # ID by bins
 binned = pd.cut(s, bins=[0,2,5], labels=['low','high'], right=False)
 # ID by inter-quantile rule
@@ -4457,7 +4457,7 @@ upper_bound = q3 + k * iqr
 # ID by z-score
 stats.zscore(col)
 ```
-```
+```python
 # TIME SERIES NUMERICALS HERE
 ```
 
@@ -4487,7 +4487,7 @@ stats.zscore(col)
     * Decide what makes an account old manually or through probabilities
     * Get last-login information for all accounts
     * Check login information against reporting criteria
-```
+```python
 # HOW TO BASELINE
 ```
 
@@ -4547,7 +4547,7 @@ Deep learning leverages multiple neural networks; I might explain it, IDK yet.
 - Gradient Descent: seeking the minimum loss
     * Distance-based, optimizing connections to reach an answer
     * Backpropogation against feedforward
-```
+```python
 # NEURAL NETWORK WALKTHROUGH
 ```
 
@@ -4555,10 +4555,10 @@ Deep learning leverages multiple neural networks; I might explain it, IDK yet.
 <!-- Needs work -->
 ## Image Classification
 - 
-```
+```python
 # PYTORCH EXAMPLE
 ```
-```
+```python
 from tensorflow import keras     # TensorFlow is frontend, Keras is backend
 from keras import models, layers
 from keras.datasets import mnist # very popular image classification dataset
@@ -4584,7 +4584,7 @@ print(f'accuracy of network on test set: {test_acc}')
 <!-- Needs work -->
 ## Deep Learning
 - Similar methodology to NNs, but the network structure for learning is flexible
-```
+```python
 # ADD COMPUTER VISION EXAMPLE
 ```
 
@@ -4663,7 +4663,7 @@ Docker, Kubernetes, and Kafka have handling considerations that should be noted.
 --------------------------------------------------------------------------------
 <!-- Needs work -->
 ## Pipelining a Model
-```
+```python
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 from skelarn.pipeline import Pipeline
@@ -4692,7 +4692,7 @@ print(pipe.score(X_test, y_test)) # hopefully we did well!!
 - Web interfacing framework that uses Python; pretty neato stuff
 - Tutorial: search "Flask mega tutorial miguen grinberg"
 - Links for all things Flask: https://www.fullstackpython.com/flask.html
-```
+```python
 # Import all the packages you need for your model below
 import pickle
 import numpy as np
@@ -4739,7 +4739,7 @@ if __name__ == '__main__':
 - `@app.errorhandler(404)` Run function for HTTP error codes
 ### Flask Post-Route Functions
 - Overall: Generate page template, Provide response, or Redirect the user
-```
+```python
 # global variables
 from flask import g
 g.key_name = "value"
@@ -4764,7 +4764,7 @@ request.headers
 --------------------------------------------------------------------------------
 <!-- Needs work -->
 ## Building a Django App
-```
+```python
 # CREATE DJANGO EXAMPLE
 ```
 
@@ -4801,7 +4801,7 @@ request.headers
     * Often used with ENTRYPOINT
         * ENTRYPOINT is great for selecting a kernel ("python3") to run a script
     * With `ENTRYPOINT ["python3"]`, use: `CMD ["image_runtime_script.py"]`
-```
+```docker
 FROM ubuntu:latest
 RUN apt-get update -y
 RUN apt-get install -y python3-pip python3-dev build-essential
@@ -4864,13 +4864,13 @@ Apache Kafka is another popular choice for serving data via scaled architecture.
 - Events: `kubectl get events -A`
     * `kubectl get events --sort-by=<JSONPath>` or `kubectl get events -o wide`
 ### Wipe Kubernetes
-```
+```bash
 kubectl delete -f <file>
 kubectl delete pod,service <name1> <name2>  # if pods/services have same names
 kubectl delete pods,services -l <label_name>=<label_value>  # delete by label
 ```
 ### Kubernetes Configuration
-```
+```bash
 kubectl config view
 KUBECONFIG=~/.kube/config1:~/.kube/config2:~/.kube/config3
 kubectl config view -o jsonpath='{.users[*].name}'
@@ -4888,7 +4888,7 @@ kubectl config set-context gce --user=cluster-admin --namespace=foo \
     && kubectl config use-context gce
 ```
 ### Pods
-```
+```bash
 kubectl explain pod
 kubectl get pods -A
 kubectl get pods -n <namespace>
@@ -4901,7 +4901,7 @@ kubectl get pods -o custom-columns='DATA:spec.containers[*].image'
 kubectl get pods -o custom-columns='DATA:spec.containers[*].volumeMounts'
 kubectl get pods -o custom-columns='DATA:metadata'
 ```
-```
+```bash
 kubectl run <pod> --generator=run-pod/v1 --image=<image>
 kubectl run nginx --generator=run-pod/v1 --image=nginx
 kubectl run busybox --generator=run-pod/v1 --image=busybox
@@ -4922,7 +4922,7 @@ kubectl patch pod valid-pod --type='json' -p='[{
     "value":"new image"
 }]'
 ```
-```
+```bash
 kubectl create -f pod.yaml
 cat <<EOF | kubectl create -f -
 apiVersion: v1
@@ -4935,7 +4935,7 @@ spec:
       image: ngingx:latest
 EOF
 ```
-```
+```bash
 cat <<EOF | kubectl create -f -
 apiVersion: v1
 kind: Pod
@@ -4959,16 +4959,16 @@ spec:
       - "100"
 EOF
 ```
-```
+```bash
 kubectl run nginx --generator=run-pod/v1 --image=nginx -n <namespace>
 kubectl create -f pod.yaml -n <namespace>
 ```
-```
+```bash
 kubectl delete pod <pod>
 kubectl delete -f pod.yaml   # if pod was created from pod.yaml
 kubectl delete pod <pod> --grace-period=0 --force
 ```
-```
+```bash
 kubectl logs <pod>
 kubectl logs <pod> -c <container>
 kubectl logs -f <pod>        # read tail of logs
@@ -4982,7 +4982,7 @@ kubectl top pod <pod>
 kubectl top pod <pod> --containers
 ```
 ### Deployments
-```
+```bash
 kubectl run <deployment> --image=<image>
 kubectl create deployment <deployment> --image=<image>
 kubectl run <deployment> --image=<image> --replicas=<replicas> --port=<port>
@@ -5003,7 +5003,7 @@ kubectl scale --replicas=5 deploy/<deployment>
 kubectl run nginx --image=nginx --replicas=2 --port=80 --dry-run -o yaml
 kubectl apply -f deployment.yaml
 ```
-```
+```bash
 kubectl port-forward deployment <deployment> <localhost-port>:<deployment-port>
 kubectl port-forward pod <pod> <localhost-port>:<pod-port>
 kubectl port-forward redis 8090:6379
@@ -5014,7 +5014,7 @@ kubectl port-forward pod nginx :80
 kubectl port-forward --address localhost,123.45.67.89 pod redis 8000:6379
 kubectl port-forward --address 0.0.0.0 pod <pod> <hosts-port>:<pod-port>
 ```
-```
+```bash
 kubectl edit deployment/<deployment>
 kubectl rollout undo deployment <deployment>
 kubectl rollout history deployment <deployment>
@@ -5025,7 +5025,7 @@ kubectl rollout pause deployment <deployment>
 kubectl rollout resume deployment <deployment>
 ```
 ### Namespaces
-```
+```bash
 kubectl get namespaces
 kubectl get ns
 kubectl get namespace <namespace>
@@ -5036,7 +5036,7 @@ kubectl -n <namespace> delete pods,services --all
 kubectl delete namespace <namespace>
 kubectl delete -f namespace.yaml
 ```
-```
+```bash
 cat <<EOF | kubectl create -f -
 apiVersion: v1
 kind: Namespace
@@ -5045,7 +5045,7 @@ metadata:
 EOF
 ```
 ### Nodes
-```
+```bash
 kubectl describe nodes
 kubectl get nodes
 kubectl get nodes <node>
@@ -5061,7 +5061,7 @@ kubectl drain <node>      # "drain" a node for maintenance
 kubectl uncordon <node>   # mark node as schedulable
 ```
 ### Clusters
-```
+```bash
 kubectl cluster-info
 kubectl cluster-info dump
 kubectl cluster-info dump --output-directory=</file/path>
@@ -5069,7 +5069,7 @@ kubectl diff -f ./my-manifest.yaml  # compare cluster state to next edited state
 kubectl get pods -A -o custom-columns='DATA:spec.containers[*].image'
 ```
 ### Services
-```
+```bash
 kubectl explain service
 kubectl create service clusterip myclusterip --tcp=5678:8080
 kubectl create service loadbalancer myloadbalancer --tcp=80
@@ -5081,7 +5081,7 @@ kubectl delete svc myloadbalancer
 kubectl delete service myclusterip myloadbalancer
 ```
 ### Service Accounts
-```
+```bash
 kubectl get serviceaccounts
 kubectl get sa
 kubectl get serviceaccount <serviceaccount>
@@ -5156,7 +5156,7 @@ kubectl describe serviceaccount <serviceaccount>
 - Build schema: `schema = StructType([(StructField(...), StructField(...)),])`
     * StructField syntax: `Structfield("col1", StringType())`
 ### PySpark Wrangling Example
-```
+```python
 # SETUP
 import pyspark
 from pyspark.sql.functions import *
@@ -5205,7 +5205,7 @@ val.write.format("csv").mode("overwrite").option("header", "true").save("val")
 test.write.format("csv").mode("overwrite").option("header", "true").save("test")
 ```
 ### PySpark Aggregation Example
-```
+```python
 # COLUMN CALCULATION
 x_y = df.select(sum(df.x)), df.select(mean(df.x))
 # VALUE COUNT TWO COLUMNS, WITH PROPORTIONS COLUMN
@@ -5222,7 +5222,7 @@ mean_x_given_g1_g2 = df.groupBy('g1').pivot('g2').agg(mean('x'))
 --------------------------------------------------------------------------------
 <!-- Needs work -->
 ## PySpark Machine Learning
-```
+```python
 from pyspark.ml.stat import ...    # chi square / correlation testing
 from pyspark.ml.feature import ... # imputation, encoding, scaling, vectorize...
 from pyspark.ml.classification import ... # modeling
@@ -5241,213 +5241,121 @@ from pyspark.ml.evaluation import ...     # model evaluation
 
 
 <!--
-####### #       #    #     #####                             
-#       #       #   #     #     # #####   ##    ####  #    # 
-#       #       #  #      #         #    #  #  #    # #   #  
-#####   #       ###        #####    #   #    # #      ####   
-#       #       #  #            #   #   ###### #      #  #   
-#       #       #   #     #     #   #   #    # #    # #   #  
-####### ####### #    #     #####    #   #    #  ####  #    # 
+#######                                           #    ######  ###        
+#       #        ##    ####  ##### #  ####       # #   #     #  #   ####  
+#       #       #  #  #        #   # #    #     #   #  #     #  #  #      
+#####   #      #    #  ####    #   # #         #     # ######   #   ####  
+#       #      ######      #   #   # #         ####### #        #       # 
+#       #      #    # #    #   #   # #    #    #     # #        #  #    # 
+####### ###### #    #  ####    #   #  ####     #     # #       ###  ####  
 -->
 
-# ELK Stack
+# Elastic APIs
 ```
-Elasticsearch, Logstash, Kibana. Otherwise known as the ELK stack.
-Elasticsearch is a storage architecture.
-Logstash is a pipelining architecture.
-Kibana is a user interface for accessing the data/pipelining in Elasticsearch.
+The Elastic suite is very powerful for data transform/storage and analytics.
+The suite is extremely well-documented and has many useful APIs.
+I focus on Elasticsearch's APIs because it's the database in the stack.
+Kibana is the user interface for this data and has various useful features.
+We have many approaches for these APIs, like Kibana Console, cURL, and Python.
 ```
 
 --------------------------------------------------------------------------------
-<!-- Needs work -->
-## Elasticsearch
-- Popular SIEM system with querying and visualizations/dashboards (Kibana/API)
-- Can use Kibana's UI to perform simple tasks, queries, and visualization
-- Can use the console in Kibana Dev Tools to run powerful queries/indexing/etc
-    * Painless scripting (Java-based language) overcomes KQL shortcomings
-- Python interacts with the Elasticsearch REST API on port 9200 (default)
-- To connect: create an account in Kibana and use those creds in Python queries
-### cURL: Perform an Aggregation
-- Note: this is meant to be pasted into Bash terminal
-- In Kibana, you can draft/test your query JSON before you run it here
-    * Consider making script that reads JSON into cURL command "--data" argument
+<!-- Polished -->
+## cURL vs Elasticsearch
+- cURL is on practically every system, making it great for compatibility
+- Can call every Elasticsearch API and store the results of each call
+- Certain APIs are easier to work with in Python with `elasticsearch-py` library
+### cURL via Shell Script
+```sh
+# SAVE THIS INTO A .sh FILE AND RUN IT (BASH/ZSHELL) #
+rm -rf mycooltestspace
+mkdir mycooltestspace
+cd mycooltestspace
+echo '--user elastic:elastic' > c.txt
+echo '"Content-Type: application/json"' > h1.txt
+echo '"Content-Type: application/x-ndjson"' > h2.txt
+echo '{"mappings": {"properties": {"hi": {"type": "keyword"}}}}' > m.json
+echo '{"query": {"match_all": {}}}' > q.json
+echo '
+{"index":{}}
+{"event": {"code": 1}, "process": {"executable": "C:\\Users\\asc\\hi.exe"}}
+{"index":{}}
+{"event": {"code": 1}, "process": {"executable": "C:\\Users\\asc\\hello.exe"}}
+{"index":{}}
+{"event": {"code": 1}, "process": {"executable": "C:\\Users\\asc\\yo.exe"}}
+{"index":{}}
+{"event": {"code": 1}, "process": {"executable": "C:\\Users\\asc\\sup.exe"}}
+' > u.json
+curl -k -K c.txt -XGET "https://localhost:9200/_cat/indices?expand_wildcards=all" > r1.json
+curl -k -K c.txt -H @h1.txt -XPUT "https://localhost:9200/my-cool-index" -d m.json > r2.json
+curl -k -K c.txt -H @h1.txt -XGET "https://localhost:9200/_search" -d @q.json > r3.json
+curl -k -K c.txt -H @h2.txt -XPOST "https://localhost:9200/my-cool-index/_bulk" --data-binary @u.json > r4.json
+curl -k -K c.txt -XDELETE "https://localhost:9200/my-cool-index" > r5.json
+read -p "Press enter to continue"
 ```
-curl -k --user username:password --header "Content-Type:application/json"      \
--X GET https://123.45.67.89:9200/index_pattern/_search                         \
---data "                                                                       \
-{                                                                              \
-  \"query\":{\"match_all\":{}},                                                \
-  \"aggs\":{\"cool\":{\"terms\":{\"field\":\"agent.name\", \"size\":1000}}}    \
-}"                                                                             \
-> output.json
-```
-### Python: Stack Assessment
-```
-# DEFINITION BLOCK
-def gather_fields_from_index(properties):
-    output_list = []
-    def walk_down(current, name=""):
-        keys = list(current.keys())
-        for key in keys:
-            if "properties" in current[key].keys():
-                walk_down(current[key]["properties"], f"{name}{key}.")
-            else:
-                output_list.append(f"{name}{key}")
-    walk_down(properties)
-    return set(output_list)
-def gather_field_pnids(search_context, all_fields,\
-                       pn_field="winlog.provider_name",\
-                       eid_field="winlog.event_id", range_kwargs=None):
-    field_count = len(all_fields)
-    print(f"Getting all PN_ID options for {field_count} fields...",
-          end="\r", flush=True)
-    capture_dict = {}
-    j = 0.0
-    for i, new_field in enumerate(all_fields):
-        if round((i / field_count) * 100) > j:
-            j = round((i / field_count) * 100)
-            print(f"Getting all PN_ID options for {field_count} fields: {j}%",
-                  end="\r", flush=True)
-        sc2 = search_context.query("exists", field=new_field)
-        if type(range_kwargs) is dict:
-            sc2 = sc2.filter("range", **range_kwargs)
-        sc2.aggs.bucket("pn",  "terms", field=pn_field,  size=10_000)\
-                .metric("eid", "terms", field=eid_field, size=10_000)
-        response = sc2.execute()
-        my_aggs = response.aggregations.to_dict()
-        for pn_bucket in my_aggs["pn"]["buckets"]:
-            pn = pn_bucket["key"]
-            for eid_bucket in pn_bucket["eid"]["buckets"]:
-                eid = eid_bucket["key"]
-                pn_id = f"{pn}_{eid}"
-                if pn_id not in capture_dict.keys():
-                    capture_dict[pn_id] = {"event_cols":{"all":[]}}
-                capture_dict[pn_id]["event_cols"]["all"].append(new_field)
-    print(f"Parsed all {field_count} fields! Count of discovered PN_IDs:",
-          len(capture_dict.keys()))
-    output_dict = {}
-    for key in sorted(list(capture_dict.keys())):
-        col_list = sorted(capture_dict[key]["event_cols"]["all"])
-        output_dict[key] = {"event_cols": {"all":col_list}}
-    return output_dict
-```
-```
-# EXECUTION BLOCK
-output_findings_to_json = True
-ip, user, password = "https://192.168.0.1:9200", "coolguy", "coolpassword"
-index_pattern = "so-beats-*"
-import warnings
-warnings.filterwarnings("ignore")
-from elasticsearch import Elasticsearch as ES
-from elasticsearch_dsl import Search
-client = ES([ip], ca_certs=False, verify_certs=False, http_auth=(user,password))
-indices = sorted(list(client.indices.get_alias(index_pattern).keys()))
-index_count = len(indices)
-for i, ind in enumerate(indices):
-    if round((i / index_count) * 100) > j:
-        j = round((i / index_count) * 100)
-        print(f"Checking indices: {j}%", end="\r", flush=True)
-    try:
-        maps = client.indices.get_mapping(ind)[ind]["mappings"]["properties"]
-        new_set = gather_fields_from_index(index_fields)
-        all_fields.update(new_set)
-    except Exception as error:
-        print(ind, "---", error)
-        print(f"Checking indices: {j}%", end="\r", flush=True)
-all_fields = sorted(list(all_fields))
-print("Check complete! Number of observed fields:", len(all_fields))
-search_context = Search(using=client, index=index_pattern, doc_type="doc")
-field_pnids = gather_field_pnids(
-    search_context, all_fields, pn_field, eid_field, mission_window)
-providers = {pn_id.split("_")[0] for pn_id in field_pnids.keys()}
-provider_printout = "\n".join(sorted(list(providers)))
-print(f"\nDiscovered Providers:\n{provider_printout}\n")
-sample_val = "Microsoft-Windows-Security-Auditing_4624"
-if sample_val in field_pnids.keys():
-    print(f"Fields for sample: {sample_val}\n{field_pnids[sample_val]}\n")
-if output_findings_to_json:
-    with open("kb_specific.json", "w") as f:
-        f.write(json.dumps(output_pnids, indent=2))
-```
+
+--------------------------------------------------------------------------------
+<!-- Polished -->
+## Python vs Elasticsearch
+- The Elastic team maintains useful Python libraries, like: `elasticsearch-py`
+- Python offers additional libraries that simplify data processing/analysis
+- In combination, Python is a highly effective tool for Elasticsearch work
 ### Python: Record Pull
-```
-# DEFINITION BLOCK
-def flatten_json(json_input, splitout_lists=False):
-    output_dict = {}
-    def flatten(current_structure, name=""):
-        if type(current_structure) is dict:
-            # loop vertically (key -> value)
-            for element in current_structure:
-                flatten(current_structure[element], name + element + ".")
-        elif type(current_structure) is list:
-            if splitout_lists in [True, "True", "true", "Yes", "yes", "sure"]:
-                for i, element in enumerate(current_structure):
-                    flatten(element, name + str(i) + "_")
-            else: output_dict[name[:-1]] = current_structure
-        else: output_dict[name[:-1]] = current_structure
-    flatten(json_input)
-    return output_dict
-def print_progress(i):
-    if i < 1_000_000 and i % 1_000 == 0 and i != 0:
-        print(f"{i // 1_000}k records found...", end="\r", flush=True)
-    elif i % 10_000 == 0 and i != 0:
-        print(f"{i / 1_000_000}mil records found...", end="\r", flush=True)
-def use_es_response(response, return_count=10, use_es_id=False):
-    hits = response.__dict__["_d_"]["hits"]["hits"]
-    rows = []
-    for hit in hits[:return_count]:
-        obj = hit["_source"]
-        if use_es_id:
-            obj["_id"] = d.meta.id
-        row = flatten_json(obj)
-        rows.append(row)
-    if len(rows) == 0:
-        return None
-    df = pd.DataFrame(rows)
-    return df
-def query_the_stack(query_object, return_count=None):
+```python
+# -- DEFINITION BLOCK -- #
+def pull_records(query_object, pullcount_limit=None, shh=False, add_id=False):
     response = query_object.execute()
-    if not response.success(): 
+    if not response.success():
         print("Connection failed!")
         return None
-    under10records = len(response.__dict__["_d_"]["hits"]["hits"]) < 10
-    if return_count in range(1,11) or under10records:
-        df = use_es_response(response, return_count, use_es_id)
-        return df
-    rows = []
+    rows, i = [], 0
     try:
-        for i, d in enumerate(query_object.scan()):
-            if i == return_count:
+        for i, record in enumerate(query_object.scan()):
+            if i == pullcount_limit:
+                i = i - 1
                 break
-            if shh is False:
+            if shh is False and i % 1_000 == 0:
                 print_progress(i)
-            obj = d.to_dict()
-            if use_es_id:
-                obj["_id"] = d.meta.id
+            obj = record.to_dict()
+            if add_id:
+                obj["_id"] = record.meta.id
             row = flatten_json(obj)
             del obj
             rows.append(row)
             del row
     except Exception as error:
-        print("Something went wrong!! The query probably didn't complete.")
-        print(f"Here's the error:\n{error}")
-    try:
-        if shh is False:
-            print("Total records found:", "{:,}".format(i))
-    except:
-        pass
+        print(f"Something went wrong! The query likely failed. Error:\n{error}")
+    if shh is False:
+        print(f"Total records pulled: {i + 1}")
     if len(rows) == 0:
         return None
     df = pd.DataFrame(rows)
     del rows
     return df
-```
-```
-# EXECUTION BLOCK
+def flatten_json(json_input, keyout_lists=False):
+    output_dict = {}
+    def flatten(current_structure, name=""):
+        if type(current_structure) is dict:
+            for element in current_structure:
+                flatten(current_structure[element], name + element + ".")
+        elif type(current_structure) is list:
+            if keyout_lists:
+                for i, element in enumerate(current_structure):
+                    flatten(element, name + str(i) + "_")
+            else:
+                output_dict[name[:-1]] = current_structure
+        else:
+            output_dict[name[:-1]] = current_structure
+    flatten(json_input)
+    return output_dict
+def print_progress(i):
+    if i < 1_000_000 and i % 1_000 == 0 and i != 0:
+        print(f"{i // 1_000}k records pulled...", end="\r", flush=True)
+    elif i % 10_000 == 0 and i != 0:
+        print(f"{i / 1_000_000}mil records pulled...", end="\r", flush=True)
+# -- EXECUTION BLOCK -- #
 ip, user, password = "https://192.168.0.1:9200", "coolguy", "coolpassword"
-index_pattern = "so-beats-*"
-import warnings
-warnings.filterwarnings("ignore")
+index_pattern = "winlogbeat-*"
 import pandas as pd
 from elasticsearch import Elasticsearch as ES
 from elasticsearch_dsl import Search
@@ -5457,139 +5365,210 @@ s1 = search_context\
     .query("match", winlog__event_id=4624)\
     .filter("range", **{"@timestamp": {"gte": "now-1d"}})\
     .source(fields=["winlog.provider_name","winlog.event_id"])
-df1 = elk_basics.query_the_stack(s1, 10_000)
-s2 = search_context.query("exists", field="winlog.event_data.LogonType")
-df2 = elk_basics.query_the_stack(s2, 10_000)
+df1 = pull_records(s1, 21_000)
+s2 = search_context.extra(**{
+    "query": {"match": {"event.code": 4624}},
+    "fields": ["event.code", "winlog.event_data.LogonType", "related.user"]})
+df2 = pull_records(s2, 192_168_010)
 ```
-### Python: Advanced Querying
-```
-# DEFINITION BLOCK: NO DEFINITIONS!
-```
-```
-# EXECUTION BLOCK
-ip, user, password = "https://192.168.0.1:9200", "coolguy", "coolpassword"
-index_pattern = "so-zeek-*"
-import warnings
-warnings.filterwarnings("ignore")
+### Python: Index Operations
+```python
+# IMPORTS
+from elasticsearch import Elasticsearch as ES, helpers
 import pandas as pd
-from elasticsearch import Elasticsearch as ES
-from elasticsearch_dsl import Search
-client = ES([ip], ca_certs=False, verify_certs=False, http_auth=(user,password))
-search_context = Search(using=client, index=index_pattern, doc_type="doc")
-painless = """
-boolean x = false;
-def src_regex = /181\.18\.120\.\d{1,3}/.matcher(doc["source.ip"].value);
-if (src_regex.matches()) {
-    x = doc["client.ip_bytes"].value > doc["server.ip_bytes"].value;
-}
-return x;
-"""
-fields = ["source.ip","destination.ip","client.ip_bytes","server.ip_bytes"]
-s = search_context\
-    .query("bool", **{"must": [{"match": {"source.ip":"123.45.67.0/24"}}],
-                      "filter": {"script": {"script": {"source": painless}}}})\
-    .params(request_timeout=90)
-s.aggs.bucket("src", "terms", field="source.ip", size=10_000)\
-      .metric("dst", "terms", field="destination.ip", size=10_000)
-print("Executing... please hold for a few seconds...", end="\r", flush=True)
-response = s.execute()
-print("Done!" + " "*100)
-results = response.aggregations.to_dict()
-output_set = set()
-for bucket in results["src"]["buckets"]:
-    src = bucket["key"]
-    dsts = {bkt["key"] for bkt in bucket["dst"]["buckets"]}
-    rows = {(src, dst) for dst in dsts}
-    output_set.update(rows)
-df = pd.DataFrame([{"source":os[0], "destination":os[1]} for os in output_set])
+import json
+import random
+from time import sleep
+# SET UP CONNECTION TO ELASTICSEARCH
+elastic_backend = "https://localhost:9200"
+ssl_cert = "C:\\Users\\asc\\ELKstack\\7.16.2\\certs\\ca.crt"
+login_creds = ("elastic", "elastic")
+client = ES([elastic_backend], ca_certs=ssl_cert, http_auth=login_creds)
+# CHOOSE SOURCE INDEX FOR MAPPINGS/SETTINGS, AND NAME THE NEW CUSTOM INDEX
+existing_index = "winlogbeat-*"
+custom_index_name = "my-custom-index"
+# CHECK EXISTING INDICES
+indices = sorted(list(client.indices.get_alias(index_pattern).keys()))
+print("# of indices:", len(indices))
+# PULL EXISTING MAPPINGS/SETTINGS AND SAVE THEM TO A FILE
+def pull_index_config(client, alias="winlogbeat-*"):
+    """Grab mappings/settings from index in pattern for the new custom index"""
+    mappings = client.indices.get_mapping(index=alias) # GRAB INDEX MAPPINGS
+    ind_name = list(mappings.keys())[-1]        # CHOOSE NEWEST INDEX IN PATTERN
+    put_body = mappings[ind_name]               # SAVE NEWEST INDEX'S MAPPINGS
+    ind_sets = client.indices.get_settings(index=ind_name) # GRAB INDEX SETTINGS
+    settings = ind_sets[ind_name]["settings"]   # ISOLATE NEWEST INDEX SETTINGS
+    del settings["index"]["uuid"]               # DELETE TO PREVENT CONFLICT
+    del settings["index"]["creation_date"]      # DELETE TO PREVENT CONFLICT
+    del settings["index"]["provided_name"]      # DELETE TO PREVENT CONFLICT
+    del settings["index"]["version"]["created"] # DELETE TO PREVENT CONFLICT
+    put_body["settings"] = settings             # SAVE NEWEST INDEX'S SETTINGS
+    return put_body                             # CUSTOM INDEX'S FULL 'PUT' BODY
+winlogbeat_index_definition = pull_index_config(client, existing_index)
+with open("put_body.json", "w") as f:
+    f.write(json.dumps(winlogbeat_index_definition))
+# LOAD EXISTING MAPPINGS/SETTINGS FROM A FILE, CREATE A CUSTOM INDEX WITH THEM
+with open("put_body.json", "r") as f:
+    put_body = json.loads(f.read())
+response = client.indices.create(index=custom_index_name, body=put_body)
+print(f"INDEX CREATION:\n{response}\n------------")
+sleep(3)    # GIVE ELASTICSEARCH TIME TO REGISTER THE CREATED INDEX
+# GENERATE RANDOM DUMMY DATA THAT WE CAN UPLOAD (CREATES CSV FILE)
+colors = ["red","orange","yellow","green","blue","purple"]
+attitudes = ["caring","chillax","optimistic","pessimistic","punctual","serious"]
+trends = ["upward", "downward", "steady"]
+new_data = []
+for i in range(25_000):                  # GENERATE 25,000 SYNTHETIC RECORDS
+    new_record = {
+        "favorite_color": random.choice(colors), 
+        "attitude.style": random.choice(attitudes), 
+        "attitude.positivity.score": random.choice(range(100)) / 100,
+        "attitude.positivity.trend": random.choice(trends),
+        "is_available": random.choice([True, False])}
+    new_data.append(new_record)
+df = pd.DataFrame(new_data)              # ASSEMBLE DATA AS DATAFRAME
+df.to_csv("dummy_data.csv", index=None)  # OUTPUT DATAFRAME TO dummy_data.csv
+# IMPORT DATA FROM CSV, PREP DATA FOR INGEST, THEN INGEST TO OUR CUSTOM INDEX
+df = pd.read_csv("dummy_data.csv")
+data_to_ingest = [dict(row[1]) for row in df.iterrows()]
+ingest_target = {"index":custom_index_name}
+response = helpers.bulk(client, actions=data_to_ingest, params=ingest_target)
+print(f"INGEST DATA:\n{response}\n------------")
+sleep(3)    # GIVE ELASTICSEARCH TIME TO REGISTER THE INGESTED RECORDS
+# TRUNCATE INDEX (REMOVE ALL RECORDS BUT PRESERVE INDEX STRUCTURE/DEFINITIONS)
+delete_by_query = {"query": {"match_all": {}}}
+response = client.delete_by_query(custom_index_name, delete_by_query)
+print(f"TRUNCATE INDEX:\n{response}\n------------")
+sleep(3)    # GIVE ELASTICSEARCH TIME TO REGISTER THE TRUNCATED INDEX
+# DELETE INDEX (REMOVE INDEX STRUCTURE/DEFINITIONS AND ANY CONTAINED DATA)
+response = client.indices.delete(index=custom_index_name)
+print(f"DELETE INDEX:\n{response}\n------------")
+sleep(3)    # GIVE ELASTICSEARCH TIME TO REGISTER THE DELETED INDEX
 ```
 
 --------------------------------------------------------------------------------
-<!-- Needs work -->
-## Logstash
-- 
-
---------------------------------------------------------------------------------
-<!-- Needs work -->
-## Kibana
-### Kibana Dev Tools: Print to Console
-```
-# UNIQUE COMBINATIONS OF SOURCE IP FIRST-TWO OCTETS
-# RUNTIME MAPPINGS ARE TEMPORARY FIELDS ADDED TO RECORDS
-# WE CAN AGGREGATE THESE TEMPORARY FIELDS FOR COOL OUTCOMES
-GET so-zeek-*/_search
+<!-- Polished -->
+## Kibana Console vs Elasticsearch
+- Kibana's "Dev Tools" includes a Console that can send Elasticsearch API calls
+- Kibana users can jump into Console and quickly call any Elasticsearch API
+    * Kibana ties directly to the Elasticsearch database (guaranteed connection)
+- Console simplifies syntax for API calls, ex: no credentials or certs required
+    * This is nice for one-off actions and testing/drafting before scripting
+### Kibana Console: _search API
+```json
+GET filebeat-*/_search
 {
-"size": 0,   // Focusing on aggregations, so, show zero individual records
-"runtime_mappings": {"srcip_firsttwo_octets": {
-    "type": "keyword",
-    "script": {"source": """
-        boolean requiredfields_exist;
-        String ip;
-        String firsttwo_octets = '';
-        requiredfields_exist = (
-            doc.containsKey('source.ip') && !doc['source.ip'].empty;
-        )
-        if (requiredfields_exist) {
-            ip = doc['source.ip'].value.toString();
-            def octets = ip.splitOnToken('.');
-            for (int i = 0; i < 2 && octets.length == 4; i++) {
-                firsttwo_octets = firsttwo_octets + octets[i] + '.';
-            }
-            emit(firsttwo_octets);
-        }
-    """
-}}},
-"fields": ["source.ip", "srcip_firsttwo_octets"],
-"_source": false,
-"aggs": {
-    "firsttwo": {"terms": {"field": "srcip_firsttwo_octets", "size": 10000}
-}}}
+  "size": 0,
+  "query": {"bool": {
+    "must": [
+        {"exists": {"field": "source.ip"}},
+        {"query_string": {"query": "network.transport: (tcp OR udp)"}}
+    ],
+    "must_not": [
+      {"match": {"source.ip": "123.45.67.89"}}
+    ],
+    "filter": [
+      {"range": {"@timestamp": {"gte":"2001-01-01T00:00:00", "lte":"now-3d"}}},
+      {"script": {"script": {"source": "return doc['first2'].value != '0.0';"}}}
+    ]
+  }},
+  "runtime_mappings": {
+    "first2": {"type": "keyword", "script": """
+    String ip_address = doc['source.ip'].value.toString();
+    String firsttwo_octets = '';
+    def octets = ip_address.splitOnToken('.');
+    for (int i = 0; i < 2 && octets.length == 4; i++) {
+      firsttwo_octets = firsttwo_octets + octets[i] + '.';
+    }
+    if (firsttwo_octets != '') { emit(firsttwo_octets); }
+    """},
+    "sentmore_192_168": {"type": "boolean", "script": """
+    String srcip = doc['source.ip'].value;
+    int total_sent = doc['source.bytes'].value;
+    int total_rcvd = doc['destination.bytes'].value;
+    def myregex = /192\\.168\\.\\d{1,3}\\.\\d{1,3}/.matcher(srcip);
+    if (myregex.matches()) {emit(total_sent > total_rcvd) && (total_rcvd > 0);}
+    """}
+  },
+  "aggs": {
+    "unique_first2": {"terms": {"field": "first2", "size": 1000}},
+    "rare_first2": {"rare_terms": {"field": "first2"}},
+    "most_sent"
+  }
+}
 ```
-### Kibana Dev Tools: Reindexing (ETL-like operation)
-```
-# CLONE MAPPINGS; CLOSE THE SOURCE INDEX FIRST! USE AN INDEX WITH LITTLE DATA!
-POST so-beats-2023.10.15/_clone/my-exploration-index
-# CLEAR THE IRRELEVANT DATA, LEAVING JUST THE MAPPINGS THAT WE NEED
-POST my-exploration-index/_delete_by_query
-{"query": {"match_all": {}}}
-# RUN REINDEXING OPERATION
+### Kibana Console: One-Off API Calls
+```json
+# CHECK ALL INDICES
+GET _cat/indices?h=index&expand_wildcards=all
+
+# ADD CUSTOM INDEX (WITH MAPPINGS!)
+PUT /my-cool-index
+{
+  "mappings": {"properties": {
+    "event": {"properties": {
+      "code": {
+        "type": "keyword", 
+        "ignore_above": 20
+      }
+    }},
+    "process": {"properties": {
+      "executable": {
+        "type": "keyword", 
+        "ignore_above": 555,
+        "fields": {"text": {"type": "match_only_text"}}
+      }
+    }}
+  }}
+}
+
+# GET MAPPINGS OR SETTINGS OF A INDEX
+GET my-cool-index/_mapping
+GET my-cool-index/_setting
+
+# ADD DATA IN BULK
+POST my-cool-index/_bulk?refresh=true
+{"index":{}}
+{"event": {"code": 1}, "process": {"executable": "C:\\Users\\asc\\hi.exe"}}
+{"index":{}}
+{"event": {"code": 1}, "process": {"executable": "C:\\Users\\asc\\hello.exe"}}
+{"index":{}}
+{"event": {"code": 1}, "process": {"executable": "C:\\Users\\asc\\yo.exe"}}
+{"index":{}}
+{"event": {"code": 1}, "process": {"executable": "C:\\Users\\asc\\sup.exe"}}
+
+# REINDEX DATA (COPY AND TRANSFORM) FROM ONE INDEX INTO ANOTHER INDEX
 POST _reindex
 {
-"max_docs": 100,
-"source": {
-    "index": "so-beats-*",
-    "query": {"bool": {
-        "must": {"exists": {"field": "process.executable"}},
-        "filter": {"script": {"script": {"source": """
-            String col = 'process.executable';
-            String cmd = '\\cmd.exe';
-            boolean fp_cmd = doc[col].value.endsWith(cmd);
-            return fp_cmd;
-            """
-        }}}}
-    },
-    "_source": ["@timestamp","agent.name","process.executable"]
-},
-"script": {"source": """
+  "max_docs": 100000,
+  "source": {
+    "index": "winlogbeat-*",
+    "query": {"match_all": {}},
+    "_source": ["@timestamp","agent.name","event.code","process.executable"]
+  },
+  "script": {"source": """
     ctx._source.investigation = 'early-1';
     ctx._source.norm_exec = ctx._source.process.executable.toLowerCase();
-"""
-},
-"dest": {
-    "index": "my-exploration-index"
-}}
+  """},
+  "dest": {"index": "my-cool-index"}
+}
+
 # IF _REINDEX TIMES OUT, YOU CAN CHECK RUNNING REINDEXING OPERATIONS...
 GET _tasks?detailed=true&actions=*reindex
+
 # ...THEN, CHECK THAT SPECIFIC TASK'S PROGRESS...
 GET _tasks/Ovbg8nVuREaqV3INCO13Og:361012073
+
 # ...AND IF YOU NEED, YOU CAN CANCEL THAT SPECIFIC TASK...
 # NOTE: COPIED RECORDS REMAIN IN THE TARGET INDEX (PROCESSED RECORDS NOT UNDONE)
 POST _tasks/Ovbg8nVuREaqV3INCO13Og:361012073/_cancel
+
 # ...THEN YOU CAN DELETE THE RECORDS OUT IF NECESSARY...
-POST my-exploration-index/_delete_by_query
+POST my-cool-index/_delete_by_query
 {"query": {"match_all": {}}}
+
 # ...OR, DELETE THE ENTIRE INDEX AND MAPPINGS!
-DELETE my-exploration-index
+DELETE my-cool-index
 ```
 
 [[Return to Top]](#table-of-contents)
@@ -5693,7 +5672,7 @@ Tableau is popular for its interactive visualizations.
 ## Excel and Google Sheets
 - Absolute reference using hold_clickdrag + fn + F4
 - Doubleclick bottomright of function cell to affect all rows in selected col(s)
-```
+```python
 # count
 =COUNT(cells)
 # conditions
@@ -5721,7 +5700,7 @@ Tableau is popular for its interactive visualizations.
 <!-- Needs work -->
 ## PowerBI
 - Can do reports in Jupyter! And you should!!
-```
+```python
 from powerbiclient import Report, models
 # Import the DeviceCodeLoginAuthentication class to authenticate with Power BI
 from powerbiclient.authentication import DeviceCodeLoginAuthentication
@@ -5732,7 +5711,7 @@ report_id=""
 report = Report(group_id=group_id, report_id=report_id, auth=device_auth)
 report
 ```
-```
+```python
 from powerbiclient import QuickVisualize, get_dataset_config, Report
 from powerbiclient.authentication import DeviceCodeLoginAuthentication
 import pandas as pd
@@ -5849,7 +5828,7 @@ C++ pointer manipulation is very fast, so C++ might play a role in development.
 ### Class Oddities
 - Class methods alter the class itself, ex: `Cool1.name_me("Cool Guy")`
 - Operator overloading
-```
+```python
 class CoolClass:
     def __init__(self, x):
         self.name = "Cool Guy"
@@ -5864,7 +5843,7 @@ cool2 = CoolClass(15)
 print(cool1 < cool2) # returns "Yup" (less-than is overloaded)
 print(cool1)         # returns "Cool Guy costs only $15.00." (str is overloaded)
 ```
-```
+```python
 import unittest
 class Circle:
     def __init__(self, radius):
@@ -5905,7 +5884,7 @@ if __name__ == "__main__":
         * EX: `finally: print("Terminated.")`
 ### Python from Terminal
 - Capture passed args when calling python script from terminal
-```
+```bash
 touch run.py; 
 echo """
 import sys
@@ -5927,7 +5906,7 @@ rm run.py
 ```
 ### Terminal from Python
 - Reach out over SSH and operate a specific terminal; output to LOCAL file
-```
+```python
 import subprocess
 pipe = subprocess.PIPE
 remote_terminal_command = """
@@ -6008,13 +5987,13 @@ print(config)
 - `by(df$col1, df$col2, func)` apply func on col1 by unique value in col2
     * EX: `by(df$friend_count, df$gender, summary)` friend_count stats by gender
 ### (R)andom Code Blocks
-```
+```r
 # Take Gapminder then select cols then filter for Kenya
 gapminder %>%
     select(country, lifeExp, gdpPercap) %>%
     filter(country=="Kenya")
 ```
-```
+```r
 `if (val == 123) {
     for (i in 1:10) {print("hi")}
 } else if (val == 321) {
@@ -6023,13 +6002,13 @@ gapminder %>%
     print("no")
 }
 ```
-```
+```r
 coolfunc = function(x=10, y=4) {
     cool = x * y
     return(cool)
 }
 ```
-```
+```r
 ggplot(aes(x=age, y=friend_count), data=pf) +
     xlim(13, 90) +
     geom_point(alpha=0.05,
@@ -6162,7 +6141,7 @@ ggplot(aes(x=age, y=friend_count), data=pf) +
     * `.back()` (return last element), `.pop_back()` (pop last element)
     * `newVector = origVector;` (copy), `v1 == v2` (comparison)
 ### C++ Examples
-```
+```cpp
 #include <iostream>
 #include <string>
 #include "roster.h"
