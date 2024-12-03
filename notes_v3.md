@@ -1113,8 +1113,10 @@ vc.to_sql("top10_table", engine, index=False, if_exists='replace' method=gogo)
 >>>\d
 >>>\dt
 >>>\q
->>>\copy table1 TO 'filepath/file.csv' WITH DELIMITER ',' CSV;
+>>>\copy table1 TO 'fp/file1.csv' WITH DELIMITER ',' CSV;
 >>>\copy (SELECT DISTINCT ON (col1) col1, col2 FROM t1) TO STDOUT;
+>>>\copy table2 (f1, f2) FROM 'fp/file2.csv' DELIMITER ',' CSV HEADER 
+    ENCODING 'UTF8' QUOTE '\"' ESCAPE '''';
 ```
 ### Create Stored Procedure
 ```sql
@@ -1688,10 +1690,15 @@ for combo in combos:
 array = np.array([1,2,3,4,5,6])  # 6x1 array
 array.reshape((2,3))             # 2x3 array
 # ZIP TWO NUMPY ARRAYS
-zipped = np.column_stack((m.feature_names_in_, m.coef_))
+a1 = np.random.randint(low=10, high=20, size=1_000)
+a2 = np.random.normal(loc=3, scale=200, size=1_000)
+zipped = np.column_stack((a1, a2))
+# zipped = np.column_stack((m.feature_names_in_, m.coef_))
 # FIND TOP {x} VALUES OF NUMPY ARRAY
-best_idx = np.argpartition(m.feature_importances_, n_feats * -1)[n_feats * -1:]
-best_feats = [c for (i, c) in enumerate(m.feature_names_in_) if i in best_idx]
+best_idx = np.argpartition(a1, 999)[999 * -1:]
+best_feats = [c for (i, c) in enumerate(a1) if i in best_idx]
+# best_idx = np.argpartition(m.feature_importances_, n_cols * -1)[n_cols * -1:]
+# best_feats = [c for (i, c) in enumerate(m.feature_names_in_) if i in best_idx]
 ```
 ### Bounties
 - Memory efficient dataframe write from list of dict
@@ -1706,25 +1713,41 @@ best_feats = [c for (i, c) in enumerate(m.feature_names_in_) if i in best_idx]
 ## Feature Engineering
 - `.pipe(func)` df-wise, `.apply(func)` col/rowwise, `.applymap(func)` cellwise
 ```python
-import numpy as np
 import pandas as pd
+import numpy as np
+# GENERATE DUMMY DATA
+cols = dict()
+cols["col1"] = np.random.normal(loc=21, scale=5, size=1_000)
+cols["col2"] = np.random.poisson(lam=4, size=1_000)
+cols["col3"] = np.random.randint(low=1, high=6, size=1_000)
+cols["col4"] = cols["col3"] ** 2
+strings1 = ["hi", "yo", "bye"]
+strings2 = ["good morning", "terrible morning", "good afternoon", "goodnight"]
+strings3 = ["it's nice out", "it's too cold", "it's scorching hot outside"]
+cols["string"] = np.random.choice(strings1 + strings2 + strings3, size=1_000)
+cols["height"] = np.abs(np.random.normal(loc=175, scale=10, size=1_000))
+cols["weight"] = np.abs(np.random.normal(loc=80, scale=20, size=1_000))
+cols["bmi"] = np.random.normal(loc=0.3, scale=0.05, size=1_000)
+cols["hat_style"] = np.random.choice(["baseball","beanie","cowboy"], size=1_000)
+df = pd.DataFrame(cols)
 # FIX NUMERICAL FEATURES
 log_unskewed = df[["col1","col2","col3"]].apply(lambda x: np.log(x + 1))
 df["sqrt_col4"] = df["col4"] ** 0.5  # get to line for linear regression
 # SET STRINGS TO NEW CATEGORIES
-df["cats"] = df["string"].map({"hi":"greet","yo":"greet","bye":"dismiss"})
+df["cats"] = df["string"].replace({"hi|yo":"in","bye":"out"})
 df["is_good"] = df["string"].str.startswith("good")
 df["is_hot"] = df["string"].str.contains("hot|scalding|scorching|searing")
 # CONTINUOUS TO CATEGORICAL
 df["ht_cats"] = pd.cut(df["height"], bins=[0,160,190,300], labels=["s","n","t"])
-df["spt_cats"] = pd.cut(df["split"], bins=np.arange(0,101,50), labels=["s","l"])
-df["wt_cats"] = pd.cut(df["weight"], bins=np.linspace(0,100,3),labels=["l","h"])
+df["w1_cats"] = pd.cut(df["weight"], bins=np.arange(0,201,100), labels=["s","f"])
+df["w2_cats"] = pd.cut(df["weight"], bins=np.linspace(0,200,3),labels=["l","h"])
 df["versus_avg"] = np.where(df["height"] > 175, "Above Avg", "Below Avg")
-df["quartiles"] = pd.qcut(df["bmi"], q=4, labels["low","normal","high","obese"])
+df["quartile"] = pd.qcut(df["bmi"], q=4, labels=["low","normal","high","obese"])
 # ENCODING
-df["c1_enc"] = df["col1"].map({"lowest":0,"low-mid":1,"high-mid":2,"highest":3})
-df["hat_style"] = pd.get_dummies(df["hat_style"], prefix="hat", drop_first=True)
-dummy_df = pd.get_dummies(df["cats1", "cats2"], drop_first=[True, True])
+df["c1_enc"] = df["quartile"].map({"low":0, "normal":1, "high":2, "obese":3})
+df2 = pd.get_dummies(df["hat_style"], prefix="hat", drop_first=True)
+df = pd.concat([df.drop(columns=["hat_style"]), df2], axis=1)
+dummy_df = pd.get_dummies(df, drop_first=[True, True])
 ```
 ### Outliers
 - Defined in various ways, ex: z-score, percentage, fixed threshold
@@ -1821,6 +1844,9 @@ plt.show()
 ```
 ### Example of Why Scaling is Important: KNN (Without Actually Training KNN!)
 ```python
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
 # GENERATE DATA: TRUCK VS CAR, VEHICLE WEIGHT AND TIRE SIZE METRICS
 np.random.seed(0)
 trucks_ts = np.abs(np.random.normal(loc=6, scale=4, size=100)) + 22
@@ -1903,8 +1929,8 @@ for i in range(100):
     scaled_res.extend([euc_s_car,euc_s_truck])       # even is car, odd is truck
 # SET K FOR KNN, FIND NEAREST K NEIGHBORS
 k = 5
-euc_uns_k_nearest_idx = np.argpartition(unscaled_results, (0,k))[:k]
-euc_s_k_nearest_idx = np.argpartition(scaled_results, (0,k))[:k]
+euc_uns_k_nearest_idx = np.argpartition(unscaled_res, (0,k))[:k]
+euc_s_k_nearest_idx = np.argpartition(scaled_res, (0,k))[:k]
 uns_votes_truck = len([x for x in euc_uns_k_nearest_idx if x % 2 != 0])
 s_votes_truck = len([x for x in euc_s_k_nearest_idx if x % 2 != 0])
 print(f"Unscaled data, votes for truck: {uns_votes_truck}/{k} correct")
@@ -1926,6 +1952,7 @@ print(f"Scaled data, votes for truck: {s_votes_truck}/{k} correct")
 - `votes = np.sum([lcvmask, rfmask, gbmask], axis=0)`
     * `mask = votes >= 2` -> `reduced_X = x.loc[:,mask]`
 ```python
+import pandas as pd
 # SET UP SAMPLE DATASET
 from sklearn.datasets import make_classification as MC
 X, y = MC(n_samples=10_000, n_features=20, n_classes=2, 
@@ -1990,9 +2017,15 @@ X.columns = [str(col) for col in X.columns]
 from sklearn.model_selection import train_test_split as SPLIT
 X1, X_test, y1, y_test = SPLIT(X, y, test_size=0.2, random_state=42)
 X_train, X_val, y_train, y_val = SPLIT(X1, y1, test_size=0.25, random_state=42)
-# RUN PCA, PLOT CUMULATIVE EXPLAINED VARIANCE
+# COVARIANCE MATRIX, EIGENVALUES, EIGENVECTORS
+zscore_Xtrain = (X_train - X_train.mean()) / X_train.std()
+cov_matrix = np.dot(zscore_Xtrain.T, zscore_Xtrain) / X_train.shape[0]
+eigenvalues, eigenvectors = np.linalg.eig(cov_matrix)
+# RUN PCA
 from sklearn.decomposition import PCA
+import matplotlib.pyplot as plt
 pca = PCA().fit(X_train)
+# PLOT CUMULATIVE EXPLAINED VARIANCE
 explained_variance_ratios = np.concatenate([[0], pca.explained_variance_ratio_])
 print("Explained variance ratios:\n", explained_variance_ratios)
 plt.plot(explained_variance_ratios.cumsum())
@@ -2006,7 +2039,8 @@ plt.show()
 # ELBOW METHOD: USE FIVE COMPONENTS, CUMSUM > 90% EXPLAINED VARIANCE
 pca5 = PCA(n_components=5)
 pca_df = pca5.fit_transform(X_train)
-components_df = pd.DataFrame(pca5.components_, columns=X_train.columns)
+cols = [f"PC{n+1}" for n in range(len(pca_df.columns))]
+loadings = pd.DataFrame(pca5.components_.T, columns=cols, index=X_train.columns)
 ```
 
 --------------------------------------------------------------------------------
