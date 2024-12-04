@@ -3050,9 +3050,10 @@ sns.heatmap(crosstab, cmap=cmap, cbar=False,
 # SCALE-LOCATION PLOT
 resids = sm_model.get_influence().resid_studentized_internal
 abs_sqrt_resids = np.sqrt(np.abs(resids))
-sns.regplot(x=sm_model.fittedvalues, y=abs_sqrt_resids, ci=None, lowess=None)
+sns.regplot(x=sm_model.fittedvalues, y=abs_sqrt_resids)
 plt.xlabel("fittedvalues")
 plt.ylabel("SQRT of ABS of STDized Residuals")
+plt.show()
 ```
 ```python
 # HISTOGRAM WITH OVERLAPPING ECDF (COOL!)
@@ -3100,18 +3101,6 @@ display(HTML(html))
 ### Chart Approaches
 - For interactivity, check out plotly: https://plotly.com/python/plotly-express/
     * `import plotly.express as px`
-```python
-plt.figure(figsize=(14,5))
-bar_color = (0.0, 0.267, 0.106) # dark green, hint of blue
-splot = sns.barplot(x=x, y=y, color=bar_color, alpha=0.9)  # splot for bar annot
-bar_height = splot.containers[0]  # containers[0] contains each bar's height
-plt.title(title)
-plt.xlabel(xlabel)
-plt.ylabel(ylabel)
-plt.xticks(rotation=x_rot)
-plt.bar_label(bar_height, bar_labels)
-plt.show()
-```
 ```python
 import pandas as pd
 import seaborn as sns
@@ -3197,6 +3186,63 @@ host.axis["left"].label.set_color(p1.get_color())     # acqure, use color
 par1.axis["right"].label.set_color(p2.get_color())    # acqure, use color
 par2.axis["left"].label.set_color(p3.get_color())     # acqure, use color
 plt.show() 
+```
+```python
+# VARIABLE NUMBER OF CHARTS IN THREE COLUMNS
+import warnings
+warnings.filterwarnings("ignore")
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from math import ceil
+# GET DATA
+from pydataset import data
+df = data("mpg")
+cats = ["manufacturer","trans","drv","fl","class"]
+conts = ["displ","year","cyl"]
+tgt = "hwy"
+cols = cats + conts + [tgt]
+df = df[cols]
+# UNIVARIATE CHARTS
+viz_rowcount = ceil(len(df.columns) / 3)  # calc # of rows for three-column viz
+fig, axes = plt.subplots(viz_rowcount, 3, figsize=(12, 2 * viz_rowcount))
+for i, col in enumerate(df.columns):
+    s = df[col].sort_values()
+    row_pos = i // 3  # row # in output viz; step row once every three values
+    col_pos = i % 3   # column # in output viz; bounce betwen column 0, 1, 2
+    ax = axes[row_pos][col_pos]
+    ax.set_title(col)
+    sns.histplot(s, ax=ax)  # histplot will do histograms and barplots
+    ax.set_xlabel("")
+    many_ticks = len(df[col].unique()) > 4 and df[col].dtype.type == np.object_
+    if many_ticks:  # rotate xticks on multi-category cols
+        ax.set_xticklabels(s.unique(), rotation=45)
+plt.tight_layout()
+plt.show()
+# BIVARIATE CHARTS (ALL VS CONTINUOUS TARGET)
+rowcount = ceil(len(cols[:-1]) / 3)  # calc # of rows for three-column viz
+fig, axes = plt.subplots(rowcount, 3, figsize=(12, 2 * rowcount), sharey=True)
+for i, col in enumerate(cols[:-1]):
+    temp = df[[col,tgt]].sort_values(by=col)
+    row_pos = i // 3  # row # in output viz; step row once every three values
+    col_pos = i % 3   # column # in output viz; bounce betwen column 0, 1, 2
+    ax = axes[row_pos][col_pos]
+    ax.set_title(f"{col} vs Highway MPG")
+    if col in conts:  # plot continuous columns against target with scatterplot
+        sns.regplot(data=temp, x=col, y=tgt, ax=ax, line_kws={"color":"red"})
+    else:             # plot categorical cols against target with boxplot
+        sns.violinplot(data=temp, x=col, y=tgt, ax=ax)
+    ax.set_xlabel("")
+    many_ticks = len(df[col].unique()) > 4 and df[col].dtype.type == np.object_
+    if many_ticks:  # rotate xticks on multi-category cols
+        ax.set_xticklabels(temp[col].unique(), rotation=45)
+    if col_pos == 0:
+        ax.set_ylabel("Highway MPG")
+    else:
+        ax.set_ylabel("")
+plt.tight_layout()
+plt.show()
 ```
 
 --------------------------------------------------------------------------------
