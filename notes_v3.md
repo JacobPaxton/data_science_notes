@@ -3027,7 +3027,6 @@ Jupyter notebooks are optimal for report delivery and should be mastered.
     * `pairplot` charts can be accessed/modified with `.axes`
     * `regplot` uses `line_kws={'color':'red'}`
 - Normality: `statsmodels.api.qqplot`; x: theoretical quants, y: observed quants
-- Residuals: Scale-Location plot (deviation is change in largeness), `residplot`
 ```python
 # GRAB THE ORANGE COLOR FROM SEABORN'S DEFAULT PALETTE
 import seaborn as sns
@@ -3039,26 +3038,24 @@ d = tuple([(int(f"0x{x[i:i+2]}", 16) / 255) for i in range(1, len(x), 2)])
 ```
 ```python
 # HEATMAP WITH A SPECIFIED COLOR FOR THE LOWEST VALUE
-rblugrn = plt.get_cmap("BuGn_r")
-num_colors = crosstab.max().max()
-colors = ["whitesmoke"] + [rblugrn(i / num_colors) for i in range(2,num_colors)]
-cmap = LinearSegmentedColormap.from_list('', colors, num_colors)
-sns.heatmap(crosstab, cmap=cmap, cbar=False, 
-    vmin=low_threshold, vmax=high_threshold, center=center, annot=True, fmt="d")
-```
-```python
-# SCALE-LOCATION PLOT
-resids = sm_model.get_influence().resid_studentized_internal
-abs_sqrt_resids = np.sqrt(np.abs(resids))
-sns.regplot(x=sm_model.fittedvalues, y=abs_sqrt_resids)
-plt.xlabel("fittedvalues")
-plt.ylabel("SQRT of ABS of STDized Residuals")
+import numpy as np, pandas as pd, matplotlib.pyplot as plt, seaborn as sns
+from matplotlib.colors import LinearSegmentedColormap
+from pydataset import data
+df = data("mpg")[["class","hwy"]]
+crosstab = pd.crosstab(df["class"], df["hwy"])
+rblugrn = plt.get_cmap("BuGn_r")   # THE COLORMAP TO START WITH
+n = crosstab.max().max()           # TOTAL NUM OF COLORS THAT COLORMAP WILL HAVE
+colors = ["whitesmoke"] + [rblugrn(i / n) for i in range(2,n)]  # ADD zero COLOR
+cmap = LinearSegmentedColormap.from_list('', colors, n)     # CREATE CUSTOM CMAP
+sns.heatmap(crosstab, cmap=cmap, cbar=False, annot=True, fmt="d")   # APPLY CMAP
+plt.title("Heatmap, heat on low values while ignoring zeroes")
 plt.show()
 ```
 ```python
 # HISTOGRAM WITH OVERLAPPING ECDF (COOL!)
-import seaborn as sns
 import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
 df = sns.load_dataset("penguins").reset_index(drop=True)
 species_list = df["species"].unique()
 fig, axes = plt.subplots(1, 3, figsize=(8,4), sharey=True)
@@ -3164,7 +3161,7 @@ plt.text(0.8, 10, "hi")
 plt.show()
 ```
 ```python
-# SEVERAL CHARTS IN ONE
+# ONE VARIABLE VS MANY VARIABLES IN SHARED CHART
 from mpl_toolkits.axes_grid1 import host_subplot
 from mpl_toolkits import axisartist
 import matplotlib.pyplot as plt
@@ -3191,10 +3188,7 @@ plt.show()
 # VARIABLE NUMBER OF CHARTS IN THREE COLUMNS
 import warnings
 warnings.filterwarnings("ignore")
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
+import numpy as np, pandas as pd, matplotlib.pyplot as plt, seaborn as sns
 from math import ceil
 # GET DATA
 from pydataset import data
@@ -3913,7 +3907,7 @@ ols2.summary()
     * Fix heteroscedasticity by removing outliers or log/expon/etc transform
 ```python
 # SAMPLE DATA FOR MODEL TESTING
-import pandas as pd
+import numpy as np, pandas as pd
 from sklearn.datasets import load_wine
 from sklearn.model_selection import train_test_split as SPLIT
 df = pd.DataFrame(load_wine()["data"], columns=load_wine()["feature_names"])
@@ -3933,12 +3927,19 @@ def regression_results(actuals, preds):
     d = {"MSE":mse,"RMSE":rmse,"SSE":sse,"ESS":ess,"TSS":tss,"err":res,"r2":r2}
     return d
 # SINGLE MODEL: PLOT RESIDUALS
-def plot_residuals(model_name, actuals, residuals):
+def plot_residuals(model_name, preds, actuals, residuals):
     sns.relplot(x=actuals, y=residuals, kind='scatter')
     plt.axhline(y=0, c='gray', alpha=.3)
     plt.title(f"Residual Plot for Model: {model_name}")
     plt.xlabel("Actual Values")
     plt.ylabel("Residuals")
+    plt.show()
+    standardized_resids = residuals / np.std(residuals)
+    sqrt_abs_resids = np.sqrt((np.abs(standardized_resids)))
+    sns.regplot(x=preds, y=sqrt_abs_resids, line_kws={"color":"red"})
+    plt.title("Scale-Location Plot (Checking Heteroscedasticity)")
+    plt.xlabel("Predicted Value")
+    plt.ylabel("$\\frac{\\sqrt{|(pred - actual)|}}{stdev(preds - actuals)}$")
     plt.show()
 # CREATE OLS MODEL
 from sklearn.linear_model import LinearRegression as OLS
@@ -3952,7 +3953,7 @@ train_res = regression_results(y_train, y_train_preds)
 val_res = regression_results(y_val, y_val_preds)
 print(f"TRAIN OLS: RMSE: {train_res['RMSE']:0.2f}, r2: {train_res['r2']:0.2f}")
 print(f"VAL OLS: RMSE: {val_res['RMSE']:0.2f}, r2: {val_res['r2']:0.2f}")
-plot_residuals("OLS", y_val, val_res["err"])
+plot_residuals("OLS", y_val_preds, y_val, val_res["err"])
 ```
 
 --------------------------------------------------------------------------------
