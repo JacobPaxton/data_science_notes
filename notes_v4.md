@@ -839,7 +839,7 @@ Explanations here shouldn't go any further than feature engineering.
 - Logic to adjust field: `df["num_col"].apply(lambda x: x - 1)`
 - Logic to explode field: `df["x"].apply(lambda x: pd.Series({"y":1,"z":2}))`
 - Logic to combine fields: `df.apply(lambda row: row["a"] + row["b"], axis=1)`
-- Logic to extract via REGEX: `df["text"].str.extract("\w+\s(\w+)")`
+- Logic to extract text via REGEX: `df["text"].str.extract("\w+\s(\w+)")`
 - Logic to flag text: `df["text"].str.contains("hi|yo")`, `.startswith()`, ...
 ### Null Pattern Characterization
 - Scenario: five data sources in a dataset, many nulls across several columns
@@ -930,41 +930,19 @@ In classification problems, we might face imbalanced classes; use resampling.
 
 --------------------------------------------------------------------------------
 <!-- Polished -->
-## General Preprocessing
+## Data Reduction
 ### Feature Reduction
-- Get rid of features without variance (ex: only one unique value)
-- Get rid of features with high null count
-- Get rid of features that correlate with another feature (multicollinearity)
+- Get rid of features that contain only one unique value
+- Get rid of features that are duplicates or otherwise match other features
+- Get rid of features that have nulls not worth handling (or drop rows)
+    * Python: `df.dropna(axis=1, thresh=(len(df.columns)*0.9))`
+- Get rid of features that strongly correlate with others (multicollinearity)
+    * Variance Inflation Factor (VIF); features with >10 VIF should be dropped
 - Select features using linear regression coefficients (furthest vals from zero)
 - Select features using SelectKBest or Recursive Feature Engineering
-- Can do feature reduction with LASSO regularization (increases bias/underfit)
-    * `LassoCV()` does cross-validation to tune regularization to best one
-    * `lcv = LassoCV()`, `lcv.fit(X_train, y_train)`, `lcvmask = lcv.coef_ != 0`
-    * use val of `sum(lcvmask)` to set `n_features_to_select` in RFE
-- `votes = np.sum([lcvmask, rfmask, gbmask], axis=0)`
-    * `mask = votes >= 2` -> `reduced_X = x.loc[:,mask]`
-### Encoding
-- Change string values to one-hot representation, ex: `x="cat"` -> `is_cat=True`
-    * Python: `pd.get_dummies(df[["col1","col2]], drop_first=True)`
-- Change string values to ordinal values, ex: `cold,warm,hot` -> `0,1,2`
-    * Python: `df["col3"].replace({"cold":0, "warm":1, "hot": 2})`
-### Scaling
-- Making 1-10 mean the same to a machine learning model as 1-1000
-    * "Equalizes density of continuous features for machine learning"
-    * Normalizes Euclidian Distance calcs: `d = sqrt((x1 - x2)^2 + (y1 - y2)^2)`
-    * Always use for KNN and K-Means (distance-based); no need for tree-based
-    * Split data before scaling; fit on train; transform all splits
-- **MinMaxScaler**
-    * General use, compresses all values between 0 and 1, sensitive to outliers
-- **StandardScaler**
-    * Used when data distribution is normal, centers on 0 and limits range
-- **RobustScaler**
-    * Same as StandardScaler but de-weighs outliers using IQR
-- **QuantileTransformer**
-    * Transform features into uniform or normal dist; de-weighs outliers
-    * Get ECDF line -> discretize to uniform dist -> plot on dist
-    * Complex; if you really want your data to be normal, then use this
-- Not shown (yet): MaxAbsScaler, Normalizer
+- Can do feature reduction with LassoCV regularization (increases bias/underfit)
+    * Pass `sum(lcv.coef_ != 0)` as n_features parameter for SelectKBest or RFE
+- Get rid of features that have no analytic value (ex: observation identifiers)
 ### Principal Component Analysis (PCA) Dimensionality Reduction
 - A dataset has "intrinsic dimension" that can be approximated by feature subset
 - Reducing physical dataset size without significant loss of information
@@ -990,6 +968,37 @@ In classification problems, we might face imbalanced classes; use resampling.
 - Real world example: plane flying along known flight path (fixed height/path)
     * Variance is small in height/path, but huge in the plane's forward movement
     * PCA will "identify" forward movement as containing significant information
+- X-axis: Component Count
+- Y-axis: Cumulative Explained Variance (as components increase, more explained)
+- Only use PCA if need data reduction; component expression obfuscates insights
+- Choose component # based on elbow method or a explained variance threshold
+
+--------------------------------------------------------------------------------
+<!-- Polished -->
+## Model Training
+### Encoding
+- Change string values to one-hot representation, ex: `x="cat"` -> `is_cat=True`
+    * Python: `pd.get_dummies(df[["col1","col2]], drop_first=True)`
+- Change string values to ordinal values, ex: `cold, warm, hot` -> `0, 1, 2`
+    * Python: `df["col3"].replace({"cold":0, "warm":1, "hot": 2})`
+### Scaling
+- Making 1-10 mean the same to a machine learning model as 1-1000
+    * "Equalizes density of continuous features for machine learning"
+    * Normalizes Euclidian Distance calcs: `d = sqrt((x1 - x2)^2 + (y1 - y2)^2)`
+    * Always use for KNN and K-Means (distance-based); no need for tree-based
+    * Split data before scaling; fit on train; transform all splits
+- **MinMaxScaler**
+    * General use, compresses all values between 0 and 1, sensitive to outliers
+- **StandardScaler**
+    * Used when data distribution is normal, centers on 0 and limits range
+- **RobustScaler**
+    * Same as StandardScaler but de-weighs outliers using IQR
+- **QuantileTransformer**
+    * Transform features into uniform or normal dist; de-weighs outliers
+    * Get ECDF line -> discretize to uniform dist -> plot on dist
+    * Complex; if you really want your data to be normal, then use this
+- Not shown (yet): MaxAbsScaler, Normalizer
+- Python: `from sklearn.preprocessing import RobustScaler`
 ### Resampling Classes for Model Training
 - Classifiers have trouble modeling imbalanced-class datasets; so, resample!!
 - Can oversample the minority class and undersample the majority class
@@ -999,64 +1008,7 @@ In classification problems, we might face imbalanced classes; use resampling.
 - Remove rows with Tomek Links
     * Delete from majority class the records that majority/minority overlap on
 - Result is balanced classes in the training split, model may perform better
-
---------------------------------------------------------------------------------
-<!-- Polished -->
-## Python Preprocessing
-- It's common for enterprises to use some Python in model pre-processing
-- Use `sklearn.pipeline` to create a Pipeline that holds transforms and model!
-### Feature Reduction
-```python
-import pandas as pd
-from sklearn.datasets import make_classification as MC
-from sklearn.model_selection import train_test_split as SPLIT
-from pandas.api.types import is_numeric_dtype as ISNUMERIC
-from statsmodels.stats.outliers_influence import variance_inflation_factor as VF
-from sklearn.decomposition import PCA
-import matplotlib.pyplot as plt
-from sklearn.preprocessing import StandardScaler
-# SET UP SAMPLE DATASET
-X, y = MC(n_samples=10_000, n_features=20, n_classes=2, 
-          n_informative=6, n_redundant=10, random_state=42)
-X, y = pd.DataFrame(X), pd.Series(y, name="target")
-X.columns = [str(col) for col in X.columns]
-X1, X_test, y1, y_test = SPLIT(X, y, test_size=0.2, random_state=42)
-X_train, X_val, y_train, y_val = SPLIT(X1, y1, test_size=0.25, random_state=42)
-df = X_train.copy(deep=True) # expensive copy; you might not want to use this
-# STANDARD FEATURE REDUCTION: NUNIQUE, NULLS
-col_nonnull = 0.9           # each column that is at least {value*100}% non-null
-row_nonnull = 0.9           # each row that is at least {value*100}% non-null
-df = df[[col for col in df if df[col].nunique() > 1]]   # cols w/ 2+ unique vals
-df = df.dropna(axis=1, thresh=len(df) * col_nonnull)           # col null thresh
-df = df.dropna(axis=0, thresh=len(df.columns) * row_nonnull)   # row null thresh
-# VARIANCE INFLATION FACTOR (MULTICOLLINEARITY REDUCTION)
-vif = 10
-temp = df[[col for col in df if ISNUMERIC(df[col])]]  # VIF needs numerical cols
-highvif_cols = [col for (i, col) in enumerate(temp) if VF(temp.values, i) > vif]
-df = df.drop(columns=highvif_cols)                    # drop cols with > 10 VIF
-dropped_cols = set(X_train.columns).symmetric_difference(set(df.columns))
-dropped_cols = sorted(list(dropped_cols), key=lambda x: int(x))  # numeric cols
-print(f"Columns dropped: {len(dropped_cols)}\n- " + "\n- ".join(dropped_cols))
-# RUN INITIAL PCA
-pca = PCA().fit(X_train)
-explained_variance_ratios = np.concatenate([[0], pca.explained_variance_ratio_])
-print("Explained variance ratios:\n", explained_variance_ratios)
-plt.plot(explained_variance_ratios.cumsum())
-plt.title("Cumulative Explained Variance")
-plt.xlabel("Component Count")
-plt.ylabel("Explained Variance")
-plt.grid()
-plt.show()
-# ELBOW METHOD; CHOOSING FIVE COMPONENTS, CUMSUM > 90% EXPLAINED VARIANCE
-pca5 = PCA(n_components=5)
-pca_df = pca5.fit_transform(X_train)
-cols = [f"PC{n+1}" for n in range(len(pca_df.columns))]
-loadings = pd.DataFrame(pca5.components_.T, columns=cols, index=X_train.columns)
-# SCALING
-scaler = StandardScaler().fit(loadings)
-scaled_df = scaler.transform(loadings)
-```
-### Resampling
+- Can do this in Python with SMOTETomek from imbalanced-learn library
 ```python
 from imblearn.combine import SMOTETomek
 def resampler(X_train, y_train):
@@ -1066,6 +1018,382 @@ def resampler(X_train, y_train):
     print("Before SMOTE+Tomek applied:", X_train.shape, y_train.shape)
     print("After SMOTE+Tomek applied:", X_train_res.shape, y_train_res.shape)
     return X_train_res, y_train_res    # return resampled train data
+```
+
+[[Return to Top]]()
+
+
+
+
+
+
+
+<!-- 
+   #                                                               
+  # #   #       ####   ####  #####  # ##### #    # #    # #  ####  
+ #   #  #      #    # #    # #    # #   #   #    # ##  ## # #    # 
+#     # #      #      #    # #    # #   #   ###### # ## # # #      
+####### #      #  ### #    # #####  #   #   #    # #    # # #      
+#     # #      #    # #    # #   #  #   #   #    # #    # # #    # 
+#     # ######  ####   ####  #    # #   #   #    # #    # #  ####  
+                                                                   
+ #####                                                           
+#     # #      #    #  ####  ##### ###### #####  # #    #  ####  
+#       #      #    # #        #   #      #    # # ##   # #    # 
+#       #      #    #  ####    #   #####  #    # # # #  # #      
+#       #      #    #      #   #   #      #####  # #  # # #  ### 
+#     # #      #    # #    #   #   #      #   #  # #   ## #    # 
+ #####  ######  ####   ####    #   ###### #    # # #    #  ####  
+-->
+
+# Algorithmic Clustering
+```
+Engineered features can go through clustering to establish new features.
+The number of clusters is determined through three main methods:
+- Domain Knowledge (three classes)
+- Elbow Method (compare inertias for a range of cluster numbers)
+- PCA (find clusters and "explainer" features using signal-noise ratio)
+Popular clustering methods: K-Means, Hierarchical, and DBSCAN.
+```
+
+--------------------------------------------------------------------------------
+<!-- Polished -->
+## Clustering in General
+- Cluster for Exploration: discover groupings in data in multi-dimensional space
+- Cluster for Feature engineering: combine features into a brand new feature
+- Cluster for Classification: predict if an observation belongs to a grouping
+- Cluster for Anomaly detection: find datapoints outside of main clusters
+- Cluster for Sub-modeling: subset data by cluster, train model on each subset
+### Considerations
+- Should only involve continuous features (don't include categorical features)
+    * There's no such thing as numerical distance between "red" and "blue"
+    * There's no such thing as numerical distance between "cold", "warm", "hot"
+    * We should use category features to subset data then cluster inside subsets
+- Requires careful decisions on how to handle outliers
+    * Clustering with data that contains unaddressed outliers lowers performance
+    * If goal is anomaly detection, keep outliers in the validation/test split
+    * If goal is classification/regression, create pipeline to remove outliers
+- Requires careful decisions on how to scale data
+    * Scaling is practically required for distance-based clustering approaches
+    * Some scaling approaches may be rendered ineffective if outliers are kept
+    * Other scaling approaches account for outliers but may weaken prediction
+        * Example: using RobustScaler when MinMaxScaler would've marked outliers
+    * Scaling with RobustScaler is usually a safe option to scale with outliers
+### Real-World Examples of Clustering
+- Text: Document classification, summarization, topic modeling, recommendations
+    * Hierarchical using Cosine Similarity
+- Geographic: Distance from store, crime zones, housing prices
+- Marketing: Customer segmentation, market research
+- Anomaly Detection: Account takeover, security risk, fraud
+- Image Processing: Radiology, security
+
+--------------------------------------------------------------------------------
+<!-- Polished -->
+## Clustering Approaches
+### t-SNE
+- **Purely for visualization use (not modeling)**, helps show potential clusters
+- Transforms multi-dimensional data into a 2D representation (easily plotted)
+- Stochastically modifies the dataset to spread tight data, condense sparse data
+    * Set hyperparameters for learning-rate, number of iterations, metric, etc
+- Stochastic nature means unseen data will be changed differently than training
+    * This is why t-SNE should not be used as a preprocessing step for modeling
+- Python: `from sklearn.manifold import TSNE`
+### KMeans
+- Using euclidean distances (straight lines) to group points into n clusters
+- ML plots centroids randomly, assigns nearest points, calcs inertia, moves plot
+    * Inertia (one cluster): `sum([distance(xy,centroid)**2 for xy in cluster])`
+    * Sum all cluster inertia values to get the total inertia metric for a model
+- Cluster into target classes: choose cluster count matching target class count
+    * Typical classification metrics apply to the result of this assignment
+- Cluster into feature: try multiple cluster-count numbers, select the best one
+    * Choose a range of cluster counts using domain knowledge, visualizations
+    * Loop: Pick a cluster count, fit KMeans for it, calculate resulting inertia
+    * After loop: Plot cluster-count selection (x-axis) versus inertia (y-axis)
+    * Use elbow method to choose a balance of low-cluster-count and low-inertia
+    * ANOVA test can check if clusters are statistically distinguishable
+- Python: `from sklearn.cluster import KMeans`
+### Hierarchical (Agglomerative)
+- Group datapoints into clusters by plotting a dendrogram and choosing a cutoff
+    * Dendrogram: represents distances between datapoints as vertical lines
+    * Typical cutoff: draw horizontal line at base of longest-unmerged line
+    * Intersections of cutoff line and vertical lines are the cluster result
+- https://stackabuse.com/hierarchical-clustering-with-python-and-scikit-learn
+    * Each record is a cluster; group clusters until only one cluster remains
+    * Agglomerative moves closest two clusters into one cluster, repeatedly
+    * This operation walks vertically; long-unmerged clusters become candidates
+    * Draw horizontal line at base of longest-unmerged line, count intersections
+    * Count of horizontal line's vertical intersections is the cluster count.
+- Python: `from scipy.cluster.hierarchy import linkage, dendrogram, fcluster`
+    * Linkage performs clustering, dendrogram visualizes it, fcluster is cutoff
+    * For pipelining, use: `from sklearn.cluster import AgglomerativeClustering`
+### DBSCAN
+- Set a proximity on all datapoints, cluster the chain of overlapping proximity
+- Excellent at mapping shapes in data; search "DBSCAN visualization" online
+- Excellent at finding anomalies because non-overlapping points get reported
+- Computationally-expensive compared to other clustering methods, but effective
+- Python: `from sklearn.cluster import DBSCAN`
+    * For anomalies, look for values assigned to cluster `-1`
+
+[[Return to Top]]()
+
+
+
+
+
+
+
+<!-- 
+#     #                                          
+##    #   ##   ##### #    # #####    ##   #      
+# #   #  #  #    #   #    # #    #  #  #  #      
+#  #  # #    #   #   #    # #    # #    # #      
+#   # # ######   #   #    # #####  ###### #      
+#    ## #    #   #   #    # #   #  #    # #      
+#     # #    #   #    ####  #    # #    # ###### 
+                                                 
+#                                                        
+#         ##   #    #  ####  #    #   ##    ####  ###### 
+#        #  #  ##   # #    # #    #  #  #  #    # #      
+#       #    # # #  # #      #    # #    # #      #####  
+#       ###### #  # # #  ### #    # ###### #  ### #      
+#       #    # #   ## #    # #    # #    # #    # #      
+####### #    # #    #  ####   ####  #    #  ####  ###### 
+                                                         
+######                                                            
+#     # #####   ####   ####  ######  ####   ####  # #    #  ####  
+#     # #    # #    # #    # #      #      #      # ##   # #    # 
+######  #    # #    # #      #####   ####   ####  # # #  # #      
+#       #####  #    # #      #           #      # # #  # # #  ### 
+#       #   #  #    # #    # #      #    # #    # # #   ## #    # 
+#       #    #  ####   ####  ######  ####   ####  # #    #  ####  
+-->
+
+# Natural Language Processing
+```
+String-type fields can be normalized to identify trends in words.
+This is largely pipelined via tokenization and stem/lemmatization.
+The results of NLP can be used to identify keywords and sentiment.
+NLP's "bag of words" works nicely in conjunction with classification.
+```
+- NEED: Bring in notes from https://github.com/lets-talk-codeup/github-guesser
+- NEED: Add PCA example for TruncatedSVD
+- Natural Language Toolkit (NLTK): https://www.nltk.org/index.html
+- Fuzzy matching: `thefuzz.process.extract("matchme", listlikehere, limit=None)`
+    * Return list of match score tuples like: [(string1, score, rank), ...]
+- NEED: Vectorized method for performing this cleaning work
+- Add ngram compilation to this
+
+--------------------------------------------------------------------------------
+<!-- Needs work -->
+## Normalizing String Features
+1. Perform Unicode normalization with one of the following: NFD, NFC, NFKD, NFKC
+1. Encode from normalized text into ASCII
+1. Decode from ASCII into UTF-8
+1. Remove special characters using REGEX: replace /[^a-z0-9'\s]/ with ""
+1. Perform tokenization using a tokenizer
+1. Delete stopwords (words that need to be deleted or that aren't useful)
+1. Perform stemming or lemmatization to reduce word variations to their root
+1. Rejoin the resulting roots into a single document and/or corpus (if required)
+```python
+import nltk
+for dataset in ["stopwords","vader_lexicon","punkt","wordnet","omw-1.4"]:
+    nltk.download(dataset)
+def cleanup(doc, tokenizer, stopword_list, lemmatizer=None, stemmer=None):
+    doc = doc.lower()
+    doc = UNICODE.normalize('NFKD',doc).encode('ascii','ignore').decode('utf-8')
+    doc = re.sub(r"[^a-z0-9'\s]","",doc)          # remove special characters
+    words = tokenizer.tokenize(doc)               # tokenize words
+    filtered = [word for word in words if word not in stopwords]
+    if wnl is not None:  chopped = [wnl.lemmatize(word) for word in filtered]
+    elif ps is not None: chopped = [ps.stem(word) for word in filtered]
+    else:                chopped = filtered
+    clean_text = " ".join(chopped)
+    return clean_text
+tokenizer = nltk.tokenize.TweetTokenizer()
+stemmer = nltk.porter.PorterStemmer()
+lemmatizer = nltk.stem.WordNetLemmatizer()
+stopword_list = nltk.corpus.stopwords.words("english")
+```
+
+--------------------------------------------------------------------------------
+<!-- Needs work -->
+## Keywords and Sentiment
+### Keyword Analysis
+- Cool: https://github.com/amueller/word_cloud/blob/master/examples/parrot.py
+```python
+import pandas as pd
+import my_util         # import "cleanup" function from normalize-string section
+word_array = np.random.choice(["red.","the?","happy's","$big times$"],size=5000)
+s = pd.DataFrame(word_array.reshape(1000,5)).apply(lambda x: " ".join(x),axis=1)
+tgt = pd.Series(np.random.choice(["spam","ham"], size=1000, p=[0.2,0.8]))
+s.name, tgt.name = "text", "target"
+df = pd.concat([s, tgt], axis=1)
+# SCATTERPLOT OF EACH ROW'S CHARACTER COUNT BY WORD COUNT
+df["content_length"] = df["text"].apply(len)
+df["word_count"] = df["text"].str.split(" ").apply(len)
+sns.relplot(x=df["content_length"], y=df["word_count"], hue=df["target"])
+plt.title("Word Count vs Char Count, by Class")
+plt.show()
+# STACKED BAR CHART OF CLASS PROPORTIONS BY WORD (PERFORM NORMALIZATION FIRST)
+tok = nltk.tokenize.TweetTokenizer()
+ps = nltk.porter.PorterStemmer()
+wnl = nltk.stem.WordNetLemmatizer()
+stops = nltk.corpus.stopwords.words("english")
+df["clean"] = df["text"].apply(lambda t: my_util.cleanup(t,tok,stops,wnl=wnl))
+all_words  = df["clean"].str.cat(sep=" ")
+spam_words = df[df["target"] == "spam"]["clean"].str.cat(sep=" ")
+ham_words  = df[df["target"] == "ham"]["clean"].str.cat(sep=" ")
+all_cts  = pd.Series(all_words.split(" ")).value_counts().rename("all")
+spam_cts = pd.Series(spam_words.split(" ")).value_counts().rename("spam")
+ham_cts  = pd.Series(ham_words.split(" ")).value_counts().rename("ham")
+word_cts = pd.concat([all_cts, spam_cts, ham_cts], axis=1)
+word_cts['p_spam'] = word_cts["spam"] / word_cts["all"]
+word_cts['p_ham'] = word_cts["ham"] / word_cts["all"]
+word_cts[['p_spam','p_ham']].tail().sort_values('p_ham').plot.barh(stacked=True)
+plt.title("Class Proportion by Word")
+plt.show()
+# PLOT A WORDCLOUD
+from os import path
+from PIL import Image
+import numpy as np
+import matplotlib.pyplot as plt
+import os
+from wordcloud import WordCloud, STOPWORDS
+# BUILD THE WORDCLOUD AND SAVE TO FILE
+mask = np.array(Image.open("blackwhite.png")) # white-black img, words in black
+wc = WordCloud(
+    background_color="white",    # set the color behind the words
+    max_words=2000,              # set max words in wordcloud
+    mask=mask,                   # choose image to use as wordcloud mask
+    contour_width=3,             # make background thicker (think: thin lines)
+    colormap="Blues",            # set words to Matplotlib colormap
+    # color_func=lambda *args, **kwargs: "black",   # set all words to one color
+    contour_color='steelblue',   # background: white -> steelblue
+    collocations=False           # True: show a bigram if see enough of it
+)
+wc.generate(df["clean"].dropna().str.cat(sep=" ").replace("'s",""))  # gen cloud
+# wc.to_file("output.png")                    # store to file
+# SHOW THE WORDCLOUD
+plt.imshow(wc, interpolation='bilinear')
+plt.axis("off")
+plt.title("Wordcloud, Unique Words")
+plt.show()
+```
+### Sentiment Analysis
+- Afinn and Vader are sentiment analysis tools based on social media
+- Sentiment is best analyzed without normalization
+```python
+# SINGULAR SENTIMENT ANALYSIS
+import nltk
+from nltk.sentiment import SentimentIntensityAnalyzer
+sia = SentimentIntensityAnalyzer()
+text = "Hello my name is Bob. You look great!"
+sentences = nltk.sent_tokenize(text)
+for sentence in sentences:
+    score = sia.polarity_scores(sentence)
+    print(f"--SCORE: {score} for SENTENCE:--\n", sentence)
+# VECTORIZED SENTIMENT ANALYSIS
+records = ["Hello, I'm Bob. You look great!", "I'm Bob too! How weird..."]
+s1 = pd.Series(records, name="text").apply(nltk.sent_tokenize).explode()
+df = s1.reset_index().rename(columns={"index":"step"})
+df = pd.concat([df, pd.json_normalize(s1.apply(sia.polarity_scores))], axis=1)
+df
+```
+
+--------------------------------------------------------------------------------
+<!-- Needs work -->
+## NLP for Prediction
+- NEED: Sparse matrices (bag of words) efficiently: `scipy.sparse.csr_matrix`
+    * Not compatible with PCA
+- NEED: Apply SelectKBest or RFE to select most-predictive words for outcomes
+- Count Vectorization: 
+    * Each column is a word, each row is an record, each value is a **count**
+- TFIDF Vectorization (Term Frequency * Inverse Document Frequency): 
+    * Each column is a word, each row is an record, each value is a **weight**
+    * TF is how often a word shows; IDF is how unique the word is in all records
+    * Calculation identifies word importance (weight) and filters out stopwords
+```python
+# PERFORM PREP AND SPLIT BEFORE FOLLOWING THE STEPS
+do_CV = False
+if do_CV:
+    # COUNT VECTORIZATION
+    vectorizer = sklearn.feature_extraction.text.CountVectorizer()
+    bow = vectorizer.fit_transform(train.clean_text)        # use y_train
+    print(vectorizer.vocabulary_)                           # show word counts
+else:
+    # TFIDF VECTORIZATION
+    vectorizer = sklearn.feature_extraction.text.TfidfVectorizer()
+    bow = vectorizer.fit_transform(train["clean_text"])     # use y_train
+    bow = pd.DataFrame(bow.todense(), columns=vectorizer.get_feature_names())
+    word_imps = dict(zip(vectorizer.get_feature_names(), vectorizer.idf_))
+    print(pd.Series(word_importances).sort_values())        # show importances
+# DECISION TREE
+tree = DecisionTreeClassifier(max_depth=5)
+tree.fit(bow, y_train)
+y_train_preds = tree.predict(bow)
+features = dict(zip(vectorizer.get_feature_names(), tree.feature_importances_))
+print(pd.Series(features).sort_values().tail(5))            # top-5 features
+```
+```python
+from sklearn.decomposition import TruncatedSVD
+model = TruncatedSVD(n_components=3)
+model.fit(documents)  # documents is scipy csr_matrix
+transformed = model.transform(documents)
+```
+### Non-Negative Matrix Factorization (NMF)
+- Break down a matrix into "metafeatures" describing the matrix
+- Better than PCA for NLP because it handles sparse non-negative matrices better
+    * A bag of words has extremely low variance and most values are already zero
+    * NMF retains the data structure but reduces the dataset
+- NMF approximates a V matrix by two smaller matrices, W and H
+    * V matrix: original data; each column is observation, each row is feature
+    * W matrix: approximates data; each column is basis vector
+    * H matrix: runs (activates) W matrix; each column is "weights" or "gains"
+    * All three matrices must have non-negative values
+- The math is complicated, and technically, you can't solve for smallest W and H
+```python
+# SILENCE CONVERGENCE WARNING FOR LIMIT ON ITERATIONS
+import warnings
+from sklearn.exceptions import ConvergenceWarning as CW
+warnings.filterwarnings("ignore", category=CW)
+# GRAB DATASET
+from sklearn.datasets import fetch_20newsgroups
+cats = ['alt.atheism','soc.religion.christian','comp.graphics','sci.med']
+kws = {"categories":cats,"shuffle":True,"random_state":42}
+twenty_train = fetch_20newsgroups(subset="train", **kws)
+twenty_test = fetch_20newsgroups(subset="test", **kws)
+# CREATE TFIDF-VECTORIZED BAG OF WORDS
+from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
+count_vect = CountVectorizer()
+X_train_counts = count_vect.fit_transform(twenty_train.data)
+X_test_counts = count_vect.transform(twenty_test.data)
+go_tfidf = TfidfTransformer()
+X_train_tfidf = go_tfidf.fit_transform(X_train_counts)
+X_test_tfidf = go_tfidf.transform(X_test_counts)
+# PERFORM NON-NEGATIVE MATRIX FACTORIZATION (NMF)
+from sklearn.decomposition import NMF
+from sklearn.preprocessing import normalize
+nmf = NMF(n_components=4, random_state=42).fit(X_train_tfidf)
+n_comps = int(nmf.reconstruction_err_)   # number of topics; consider manual num
+nmf = NMF(n_components=n_comps, random_state=42).fit(X_train_tfidf)
+nmf_train = normalize(nmf.transform(X_train_tfidf))
+nmf_test = normalize(nmf.transform(X_test_tfidf))
+# TRAIN CLASSIFIER
+from sklearn.naive_bayes import MultinomialNB
+clf = MultinomialNB().fit(nmf_train, twenty_train.target)
+train_preds = clf.predict(nmf_train)
+accuracy = (train_preds == twenty_train.target).mean()
+print(f"Model accuracy after CV, TFIDF, NMF, MNB: {accuracy:0.3f}\n\n" + "-"*30)
+# COSINE SIMILARITY OF ONE RECORD TO ALL OTHER RECORDS
+import numpy as np
+record_num = 23
+record_row = nmf_train[record_num,:]
+record_class = twenty_train.target_names[twenty_train.target[record_num]]
+similarities = nmf_train.dot(record_row)
+best10idx = np.argpartition(similarities, -10)[-10:]
+print(twenty_train.data[record_num], "\n"*3 + "-"*30 + "\n"*3)
+for i in best10idx:
+    print(twenty_train.data[i], "\n"*3 + "-"*30 + "\n"*3)
 ```
 
 [[Return to Top]](#table-of-contents)
