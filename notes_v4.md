@@ -1185,7 +1185,52 @@ NLP's "bag of words" works nicely in conjunction with classification.
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
-## Normalizing String Features
+## Natural Language Processing
+- Designed for normalizing, analyzing, and modeling bodies of text
+- Useful for keyword and sentiment analysis, classification, anomaly detection
+- 
+### Bag of Words (BoW)
+- Sparse matrix for each document (index) and a vector of each word (column)
+- Mainly used in machine learning applications (specifically features)
+- Count Vectorization
+    * Fast and simple to explain/interpret, but doesn't consider word importance
+    * Each column is a word, each row is a record, each value is a **count**
+- TFIDF Vectorization (Term Frequency * Inverse Document Frequency)
+    * Slower and hard to interpret, but incorporates word importance (valuable)
+    * Each column is a word, each row is a record, each value is a **weight**
+    * TF is how often a word shows; IDF is how unique the word is in all records
+        * TF = specificword_count / allwords_count
+        * IDF = log(alldocuments_count / docswithspecificword_count)
+        * TFIDF = TF * IDF
+    * Calculation gets word importance (weight) and naturally filters stopwords
+### Non-Negative Matrix Factorization (NMF)
+- Feature reduction; break matrix down into "metafeatures" describing the matrix
+- Better than PCA for NLP because it handles sparse non-negative matrices better
+    * A bag of words has extremely low variance and most values are already zero
+    * NMF retains the data structure but reduces the dataset
+- NMF approximates a V matrix by two smaller matrices, W and H
+    * V matrix: original data; each column is observation, each row is feature
+    * W matrix: approximates data; each column is basis vector
+    * H matrix: runs (activates) W matrix; each column is "weights" or "gains"
+    * All three matrices must have non-negative values
+- The math is complicated, and technically, you can't solve for smallest W and H
+### Truncated Singular Value Decomposition (TruncatedSVD)
+- Feature reduction; break matrix down into "metafeatures" describing the matrix
+
+--------------------------------------------------------------------------------
+<!-- Needs work -->
+## Performing NLP
+- Python Unicode normalization: `doc = UNICODE.normalize().encode().decode()`
+- Python NLTK: `from nltk import tokenize, porter, stem, corpus.stopwords`
+    * Choose a specific method under each of these, ex: TweetTokenizer
+    * Use `sent_tokenize` instead of `tokenize` for sentence tokenization
+- Python text sentiment: `from nltk.sentiment import SentimentIntensityAnalyzer`
+    * Score: `SentimentIntensityAnalyzer().polarity_scores(sentence_token)`
+- Python Wordclouds: `import wordcloud.WordCloud, PIL.Image, matplotlib.pyplot`
+    * See: https://github.com/amueller/word_cloud/blob/master/examples/parrot.py
+- Python bag of words: `import sklearn.feature_extraction.text`
+    * Count Vectorization and TF-IDF Vectorization
+### Normalizing String Features
 1. Perform Unicode normalization with one of the following: NFD, NFC, NFKD, NFKC
 1. Encode from normalized text into ASCII
 1. Decode from ASCII into UTF-8
@@ -1194,111 +1239,23 @@ NLP's "bag of words" works nicely in conjunction with classification.
 1. Delete stopwords (words that need to be deleted or that aren't useful)
 1. Perform stemming or lemmatization to reduce word variations to their root
 1. Rejoin the resulting roots into a single document and/or corpus (if required)
-```python
-import nltk
-for dataset in ["stopwords","vader_lexicon","punkt","wordnet","omw-1.4"]:
-    nltk.download(dataset)
-def cleanup(doc, tokenizer, stopword_list, lemmatizer=None, stemmer=None):
-    doc = doc.lower()
-    doc = UNICODE.normalize('NFKD',doc).encode('ascii','ignore').decode('utf-8')
-    doc = re.sub(r"[^a-z0-9'\s]","",doc)          # remove special characters
-    words = tokenizer.tokenize(doc)               # tokenize words
-    filtered = [word for word in words if word not in stopwords]
-    if wnl is not None:  chopped = [wnl.lemmatize(word) for word in filtered]
-    elif ps is not None: chopped = [ps.stem(word) for word in filtered]
-    else:                chopped = filtered
-    clean_text = " ".join(chopped)
-    return clean_text
-tokenizer = nltk.tokenize.TweetTokenizer()
-stemmer = nltk.porter.PorterStemmer()
-lemmatizer = nltk.stem.WordNetLemmatizer()
-stopword_list = nltk.corpus.stopwords.words("english")
-```
-
---------------------------------------------------------------------------------
-<!-- Needs work -->
-## Keywords and Sentiment
 ### Keyword Analysis
-- Cool: https://github.com/amueller/word_cloud/blob/master/examples/parrot.py
-```python
-import pandas as pd
-import my_util         # import "cleanup" function from normalize-string section
-word_array = np.random.choice(["red.","the?","happy's","$big times$"],size=5000)
-s = pd.DataFrame(word_array.reshape(1000,5)).apply(lambda x: " ".join(x),axis=1)
-tgt = pd.Series(np.random.choice(["spam","ham"], size=1000, p=[0.2,0.8]))
-s.name, tgt.name = "text", "target"
-df = pd.concat([s, tgt], axis=1)
-# SCATTERPLOT OF EACH ROW'S CHARACTER COUNT BY WORD COUNT
-df["content_length"] = df["text"].apply(len)
-df["word_count"] = df["text"].str.split(" ").apply(len)
-sns.relplot(x=df["content_length"], y=df["word_count"], hue=df["target"])
-plt.title("Word Count vs Char Count, by Class")
-plt.show()
-# STACKED BAR CHART OF CLASS PROPORTIONS BY WORD (PERFORM NORMALIZATION FIRST)
-tok = nltk.tokenize.TweetTokenizer()
-ps = nltk.porter.PorterStemmer()
-wnl = nltk.stem.WordNetLemmatizer()
-stops = nltk.corpus.stopwords.words("english")
-df["clean"] = df["text"].apply(lambda t: my_util.cleanup(t,tok,stops,wnl=wnl))
-all_words  = df["clean"].str.cat(sep=" ")
-spam_words = df[df["target"] == "spam"]["clean"].str.cat(sep=" ")
-ham_words  = df[df["target"] == "ham"]["clean"].str.cat(sep=" ")
-all_cts  = pd.Series(all_words.split(" ")).value_counts().rename("all")
-spam_cts = pd.Series(spam_words.split(" ")).value_counts().rename("spam")
-ham_cts  = pd.Series(ham_words.split(" ")).value_counts().rename("ham")
-word_cts = pd.concat([all_cts, spam_cts, ham_cts], axis=1)
-word_cts['p_spam'] = word_cts["spam"] / word_cts["all"]
-word_cts['p_ham'] = word_cts["ham"] / word_cts["all"]
-word_cts[['p_spam','p_ham']].tail().sort_values('p_ham').plot.barh(stacked=True)
-plt.title("Class Proportion by Word")
-plt.show()
-# PLOT A WORDCLOUD
-from os import path
-from PIL import Image
-import numpy as np
-import matplotlib.pyplot as plt
-import os
-from wordcloud import WordCloud, STOPWORDS
-# BUILD THE WORDCLOUD AND SAVE TO FILE
-mask = np.array(Image.open("blackwhite.png")) # white-black img, words in black
-wc = WordCloud(
-    background_color="white",    # set the color behind the words
-    max_words=2000,              # set max words in wordcloud
-    mask=mask,                   # choose image to use as wordcloud mask
-    contour_width=3,             # make background thicker (think: thin lines)
-    colormap="Blues",            # set words to Matplotlib colormap
-    # color_func=lambda *args, **kwargs: "black",   # set all words to one color
-    contour_color='steelblue',   # background: white -> steelblue
-    collocations=False           # True: show a bigram if see enough of it
-)
-wc.generate(df["clean"].dropna().str.cat(sep=" ").replace("'s",""))  # gen cloud
-# wc.to_file("output.png")                    # store to file
-# SHOW THE WORDCLOUD
-plt.imshow(wc, interpolation='bilinear')
-plt.axis("off")
-plt.title("Wordcloud, Unique Words")
-plt.show()
-```
+1. Perform cleaning steps from before (tokenize on words)
+1. Calculate character count and word count for every document
+1. Plot scatterplot of charcount vs wordcount (Classification: color by target)
+1. Create a corpus of all cleaned documents
+1. (Classification) Also split docs by class and create a corpus for each subset
+1. Get word counts per corpus (index is each word, cols are counts per corpus)
+1. (Classification) Add cols for class-wise, word-wise proportions
+1. (Classification) Sort data by proportion, plot stacked barchart (ex: best 25)
+1. Plot a wordcloud with an optional black-white picture mask
 ### Sentiment Analysis
-- Afinn and Vader are sentiment analysis tools based on social media
-- Sentiment is best analyzed without normalization
-```python
-# SINGULAR SENTIMENT ANALYSIS
-import nltk
-from nltk.sentiment import SentimentIntensityAnalyzer
-sia = SentimentIntensityAnalyzer()
-text = "Hello my name is Bob. You look great!"
-sentences = nltk.sent_tokenize(text)
-for sentence in sentences:
-    score = sia.polarity_scores(sentence)
-    print(f"--SCORE: {score} for SENTENCE:--\n", sentence)
-# VECTORIZED SENTIMENT ANALYSIS
-records = ["Hello, I'm Bob. You look great!", "I'm Bob too! How weird..."]
-s1 = pd.Series(records, name="text").apply(nltk.sent_tokenize).explode()
-df = s1.reset_index().rename(columns={"index":"step"})
-df = pd.concat([df, pd.json_normalize(s1.apply(sia.polarity_scores))], axis=1)
-df
-```
+1. Perform cleaning steps from before (tokenize on sentences)
+1. Instantiate a pre-trained sentiment analyzer
+1. Calculate sentiment score per sentence, calc average sentiment across scores
+1. (Classification) Group sentiment score averages by target class
+### Bag of Words Preprocessing
+1. Choose either count vectorization or TF-IDF vectorization
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
@@ -1306,12 +1263,7 @@ df
 - NEED: Sparse matrices (bag of words) efficiently: `scipy.sparse.csr_matrix`
     * Not compatible with PCA
 - NEED: Apply SelectKBest or RFE to select most-predictive words for outcomes
-- Count Vectorization: 
-    * Each column is a word, each row is an record, each value is a **count**
-- TFIDF Vectorization (Term Frequency * Inverse Document Frequency): 
-    * Each column is a word, each row is an record, each value is a **weight**
-    * TF is how often a word shows; IDF is how unique the word is in all records
-    * Calculation identifies word importance (weight) and filters out stopwords
+
 ```python
 # PERFORM PREP AND SPLIT BEFORE FOLLOWING THE STEPS
 do_CV = False
@@ -1340,17 +1292,7 @@ model = TruncatedSVD(n_components=3)
 model.fit(documents)  # documents is scipy csr_matrix
 transformed = model.transform(documents)
 ```
-### Non-Negative Matrix Factorization (NMF)
-- Break down a matrix into "metafeatures" describing the matrix
-- Better than PCA for NLP because it handles sparse non-negative matrices better
-    * A bag of words has extremely low variance and most values are already zero
-    * NMF retains the data structure but reduces the dataset
-- NMF approximates a V matrix by two smaller matrices, W and H
-    * V matrix: original data; each column is observation, each row is feature
-    * W matrix: approximates data; each column is basis vector
-    * H matrix: runs (activates) W matrix; each column is "weights" or "gains"
-    * All three matrices must have non-negative values
-- The math is complicated, and technically, you can't solve for smallest W and H
+
 ```python
 # SILENCE CONVERGENCE WARNING FOR LIMIT ON ITERATIONS
 import warnings
