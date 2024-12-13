@@ -930,8 +930,7 @@ In classification problems, we might face imbalanced classes; use resampling.
 
 --------------------------------------------------------------------------------
 <!-- Polished -->
-## Data Reduction
-### Feature Reduction
+## Feature Reduction
 - Get rid of features that contain only one unique value
 - Get rid of features that are duplicates or otherwise match other features
 - Get rid of features that have nulls not worth handling (or drop rows)
@@ -943,35 +942,66 @@ In classification problems, we might face imbalanced classes; use resampling.
 - Can do feature reduction with LassoCV regularization (increases bias/underfit)
     * Pass `sum(lcv.coef_ != 0)` as n_features parameter for SelectKBest or RFE
 - Get rid of features that have no analytic value (ex: observation identifiers)
-### Principal Component Analysis (PCA) Dimensionality Reduction
-- A dataset has "intrinsic dimension" that can be approximated by feature subset
-- Reducing physical dataset size without significant loss of information
-    * Use PCA if your dataset has a lot of features (many dozens, hundreds, etc)
-    * PCA also de-correlates features by its non-linear feature transformation
-- Principal components (PCs) are eigenvectors of the dataset's covariance matrix
-    * Covariance: correlation, but in original units (not simply from -1 to +1)
-    * Cov matrix: `cov_matrix = np.cov(df, rowvar=False)`
-        * 2D: [[COVxx,COVxy],[COVxy,COVyy]], a 2x2 matrix; 3D is 3x3 matrix
-    * Eigenvectors/eigenvalues: `eigs = np.linalg.eig(cov_matrix, rowvar=False)`
-- Order PCs highest to lowest by their associated eigenvalue (their variance)
-    * Solve for lambda: determinant(cov_matrix_2d - lambda[[1,0],[0,1]]) = 0
-        * D([[7,3],[3,-1]]) --> ((7-y) * (-1-y)) - ((3-0) * (3-0)) --> y=8, y=-2
-        * 3D EX: determinant(cov_matrix_3d - lambda[[1,0,0],[0,1,0],[0,0,1]])
-    * Calculate/order PCs: `pca = sklearn.decomposition.PCA().fit_transform(df)`
-- Calculate cumulative sum of explained variance ratio for descending-order PCs
-    * PC explained variance ratio: PC_eigenvalue / total_variance; between 0-1
-- Select PCs by setting a cutoff threshold for this cumulative sum
-    * Plot cumulative sum of PC explained variance ratios against count of PCs
-    * EX1: Use 11 PCs when cumsum of 11 PCs (723 total PCs) explains 95% of info
-    * EX2: Use 20 PCs when cumsum of 20 PCs (165 total PCs) explains 90% of info
-- The selected PCs are your dataset, reduced, while still retaining information
-- Real world example: plane flying along known flight path (fixed height/path)
-    * Variance is small in height/path, but huge in the plane's forward movement
-    * PCA will "identify" forward movement as containing significant information
-- X-axis: Component Count
-- Y-axis: Cumulative Explained Variance (as components increase, more explained)
-- Only use PCA if need data reduction; component expression obfuscates insights
-- Choose component # based on elbow method or a explained variance threshold
+- Apply matrix factorization like PCA, TruncatedSVD, or NMF
+    * Matrix factorization: decompose a matrix, use results for approximation
+    * Matrix decomposition: express one matrix as multiple smaller matrices
+    * Matrix approximation: use small imprecise matrices to predict large matrix
+### Linear Algebra for Feature Reduction
+- Vector: one-dimensional array describing an observation in multiple dimensions
+- Vector Space: a collection of vectors that can be added/multiplied, with rules
+- Rank: dimensions of the vectors in a vector space (describes rows and columns)
+- Matrix: two-dimensional array that maps actions on vectors or vector spaces
+- Inverse Matrix: multiplying this and a matrix results in the identity matrix
+    * Not all matrices are "invertible" like this
+- System of Linear Equations: grouping of equations like `2x + y = 5; x - y = 3`
+    * Explicitly not polynomial, should only have one solution for variable vals
+- Linear Transformations: a function that linearly maps one matrix to another
+- Eigenvalues/Eigenvectors: scaling one matrix to another using scalar/vector
+    * Explained variance ratio: `eigenvalue / total_variance` (between 0 and 1)
+- Determinant: getting the area of a 2D matrix, the volume of a 3D matrix, etc
+- Inner Product Space: describing shape (length, angles, etc) of a vector matrix
+- Orthogonality: where two vectors have an inner product of zero
+- Diagonalization: convert original matrix to a diagonal matrix: `[[5,0],[0,3]]`
+    * Diagonal matrix is eigenvalues; apply to eigenvector matrix
+- Singular Value Decomposition (SVD): decompose matrix into eigen vectors/values
+    * This reveals the "intrinsic dimension" / "information" of a matrix
+- Covariance: how two vectors change together (checking linear correlation)
+- Covariance Matrix: how every vector changes with every vector in a matrix
+    * 3D version: [[COVxx,COVxy,COVxz],[COVyx,COVyy,COVyz],[COVzx,COVzy,COVzz]]
+### Principal Component Analysis (PCA)
+- Feature reduction strategy, designed for wide non-sparse datasets
+    * Also useful for de-correlating features due to non-linear transformation
+- Involves eigenvectors/eigenvalues of a dataset's covariance matrix
+    * Principal Component (PCs) are eigenvectors; original data becomes this
+    * Eigenvalues describe how valuable a PC is (larger eigenvalue is better)
+- Select some of the eigenvectors based on eigenvalue (how much they contribute)
+    * Descending-sort eigenvectors by their eigenvalue, scree plot, elbow method
+    * Calc each's explained variance ratio, cumsum, plot, choose using threshold
+### Truncated Singular Value Decomposition (TruncatedSVD)
+- Feature reduction strategy, especially designed for sparse matrices
+    * PCA starts with calculating a covariance matrix, destroying "sparsity"
+    * SVD multiplies the original data, preserving "sparsity" and zeroing data
+- SVD itself is not a data reduction strategy; TruncatedSVD uses SVD for that
+    * SVD exactly-decomposes the original matrix into three smaller matrices
+    * Original Matrix = Column Eigenvectors * Eigenvalues * Row Eigenvectors
+- TruncatedSVD follows the same eigenvalue/eigenvector selection process as PCA
+    * Cumulative explained variance threshold or elbow method to reduce features
+    * You can also use the count of nonzero eigenvalues for component count
+### Non-Negative Matrix Factorization (NMF)
+- Feature reduction strategy, meant for **non-negative** sparse matrices
+    * Like TruncatedSVD, also better than PCA due to PCA's flaws with "sparsity"
+    * Outperforms TruncatedSVD on non-negative data (explicit non-negative rule)
+    * Slower than TruncatedSVD due to use of loss function and training steps
+- Decomposes to parts-based "metafeatures" matrix and an activation-mask matrix
+    * Imagery: *parts* of a face, *activated* for smile, *deactivated* for frown
+    * Text: *parts* of sentences, *activated* for happy, *deactivated* for angry
+- NMF approximates a V matrix by two smaller matrices, W and H; V ~= W * H
+    * V matrix: original data; each column is observation, each row is feature
+    * W matrix: key parts of original data; each column is "basis vector"
+    * H matrix: activation mask for W matrix; each column is "weights"/"gains"
+    * All three matrices must have non-negative values
+- NMF follows the same eigenvalue/eigenvector selection process as PCA
+    * Cumulative explained variance threshold or elbow method to reduce features
 
 --------------------------------------------------------------------------------
 <!-- Polished -->
@@ -1175,6 +1205,24 @@ This is largely pipelined via tokenization and stem/lemmatization.
 The results of NLP can be used to identify keywords and sentiment.
 NLP's "bag of words" works nicely in conjunction with classification.
 ```
+
+--------------------------------------------------------------------------------
+<!-- Needs work -->
+## Natural Language Processing
+- Designed for normalizing, analyzing, and modeling bodies of text
+- Useful for keyword and sentiment analysis, classification, anomaly detection
+- Often involves factorization of sparse matrices (decompose then approximate)
+### Bag of Words (BoW)
+- NLP preprocessing; turn words into numerical values for model training
+- Sparse matrix for each document (index) and a vector of each word (column)
+- Count Vectorization (CV); Term Frequency * Inverse Document Frequency (TFIDF)
+    * CV: fast/explainable; word counts; doesn't consider word importance
+    * TFIDF: slow/complex; word weights; keeps importance and filters stopwords
+### Cosine Similarity
+- Compare one document's similarity to another using a mathematical measure
+    * `dot_product(doc1, doc2) / (sqrt(sum(doc1 ** 2)) * sqrt(sum(doc2 ** 2)))`
+- Result is between -1 and 1; 1 means identical, -1 means entirely opposite
+### WORK-IN-PROGRESS
 - NEED: Bring in notes from https://github.com/lets-talk-codeup/github-guesser
 - NEED: Add PCA example for TruncatedSVD
 - Natural Language Toolkit (NLTK): https://www.nltk.org/index.html
@@ -1184,41 +1232,7 @@ NLP's "bag of words" works nicely in conjunction with classification.
 - Add ngram compilation to this
 
 --------------------------------------------------------------------------------
-<!-- Needs work -->
-## Natural Language Processing
-- Designed for normalizing, analyzing, and modeling bodies of text
-- Useful for keyword and sentiment analysis, classification, anomaly detection
-- 
-### Bag of Words (BoW)
-- Sparse matrix for each document (index) and a vector of each word (column)
-- Mainly used in machine learning applications (specifically features)
-- Count Vectorization
-    * Fast and simple to explain/interpret, but doesn't consider word importance
-    * Each column is a word, each row is a record, each value is a **count**
-- TFIDF Vectorization (Term Frequency * Inverse Document Frequency)
-    * Slower and hard to interpret, but incorporates word importance (valuable)
-    * Each column is a word, each row is a record, each value is a **weight**
-    * TF is how often a word shows; IDF is how unique the word is in all records
-        * TF = specificword_count / allwords_count
-        * IDF = log(alldocuments_count / docswithspecificword_count)
-        * TFIDF = TF * IDF
-    * Calculation gets word importance (weight) and naturally filters stopwords
-### Non-Negative Matrix Factorization (NMF)
-- Feature reduction; break matrix down into "metafeatures" describing the matrix
-- Better than PCA for NLP because it handles sparse non-negative matrices better
-    * A bag of words has extremely low variance and most values are already zero
-    * NMF retains the data structure but reduces the dataset
-- NMF approximates a V matrix by two smaller matrices, W and H
-    * V matrix: original data; each column is observation, each row is feature
-    * W matrix: approximates data; each column is basis vector
-    * H matrix: runs (activates) W matrix; each column is "weights" or "gains"
-    * All three matrices must have non-negative values
-- The math is complicated, and technically, you can't solve for smallest W and H
-### Truncated Singular Value Decomposition (TruncatedSVD)
-- Feature reduction; break matrix down into "metafeatures" describing the matrix
-
---------------------------------------------------------------------------------
-<!-- Needs work -->
+<!-- Polished -->
 ## Performing NLP
 - Python Unicode normalization: `doc = UNICODE.normalize().encode().decode()`
 - Python NLTK: `from nltk import tokenize, porter, stem, corpus.stopwords`
@@ -1254,88 +1268,5 @@ NLP's "bag of words" works nicely in conjunction with classification.
 1. Instantiate a pre-trained sentiment analyzer
 1. Calculate sentiment score per sentence, calc average sentiment across scores
 1. (Classification) Group sentiment score averages by target class
-### Bag of Words Preprocessing
-1. Choose either count vectorization or TF-IDF vectorization
-
---------------------------------------------------------------------------------
-<!-- Needs work -->
-## NLP for Prediction
-- NEED: Sparse matrices (bag of words) efficiently: `scipy.sparse.csr_matrix`
-    * Not compatible with PCA
-- NEED: Apply SelectKBest or RFE to select most-predictive words for outcomes
-
-```python
-# PERFORM PREP AND SPLIT BEFORE FOLLOWING THE STEPS
-do_CV = False
-if do_CV:
-    # COUNT VECTORIZATION
-    vectorizer = sklearn.feature_extraction.text.CountVectorizer()
-    bow = vectorizer.fit_transform(train.clean_text)        # use y_train
-    print(vectorizer.vocabulary_)                           # show word counts
-else:
-    # TFIDF VECTORIZATION
-    vectorizer = sklearn.feature_extraction.text.TfidfVectorizer()
-    bow = vectorizer.fit_transform(train["clean_text"])     # use y_train
-    bow = pd.DataFrame(bow.todense(), columns=vectorizer.get_feature_names())
-    word_imps = dict(zip(vectorizer.get_feature_names(), vectorizer.idf_))
-    print(pd.Series(word_importances).sort_values())        # show importances
-# DECISION TREE
-tree = DecisionTreeClassifier(max_depth=5)
-tree.fit(bow, y_train)
-y_train_preds = tree.predict(bow)
-features = dict(zip(vectorizer.get_feature_names(), tree.feature_importances_))
-print(pd.Series(features).sort_values().tail(5))            # top-5 features
-```
-```python
-from sklearn.decomposition import TruncatedSVD
-model = TruncatedSVD(n_components=3)
-model.fit(documents)  # documents is scipy csr_matrix
-transformed = model.transform(documents)
-```
-
-```python
-# SILENCE CONVERGENCE WARNING FOR LIMIT ON ITERATIONS
-import warnings
-from sklearn.exceptions import ConvergenceWarning as CW
-warnings.filterwarnings("ignore", category=CW)
-# GRAB DATASET
-from sklearn.datasets import fetch_20newsgroups
-cats = ['alt.atheism','soc.religion.christian','comp.graphics','sci.med']
-kws = {"categories":cats,"shuffle":True,"random_state":42}
-twenty_train = fetch_20newsgroups(subset="train", **kws)
-twenty_test = fetch_20newsgroups(subset="test", **kws)
-# CREATE TFIDF-VECTORIZED BAG OF WORDS
-from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
-count_vect = CountVectorizer()
-X_train_counts = count_vect.fit_transform(twenty_train.data)
-X_test_counts = count_vect.transform(twenty_test.data)
-go_tfidf = TfidfTransformer()
-X_train_tfidf = go_tfidf.fit_transform(X_train_counts)
-X_test_tfidf = go_tfidf.transform(X_test_counts)
-# PERFORM NON-NEGATIVE MATRIX FACTORIZATION (NMF)
-from sklearn.decomposition import NMF
-from sklearn.preprocessing import normalize
-nmf = NMF(n_components=4, random_state=42).fit(X_train_tfidf)
-n_comps = int(nmf.reconstruction_err_)   # number of topics; consider manual num
-nmf = NMF(n_components=n_comps, random_state=42).fit(X_train_tfidf)
-nmf_train = normalize(nmf.transform(X_train_tfidf))
-nmf_test = normalize(nmf.transform(X_test_tfidf))
-# TRAIN CLASSIFIER
-from sklearn.naive_bayes import MultinomialNB
-clf = MultinomialNB().fit(nmf_train, twenty_train.target)
-train_preds = clf.predict(nmf_train)
-accuracy = (train_preds == twenty_train.target).mean()
-print(f"Model accuracy after CV, TFIDF, NMF, MNB: {accuracy:0.3f}\n\n" + "-"*30)
-# COSINE SIMILARITY OF ONE RECORD TO ALL OTHER RECORDS
-import numpy as np
-record_num = 23
-record_row = nmf_train[record_num,:]
-record_class = twenty_train.target_names[twenty_train.target[record_num]]
-similarities = nmf_train.dot(record_row)
-best10idx = np.argpartition(similarities, -10)[-10:]
-print(twenty_train.data[record_num], "\n"*3 + "-"*30 + "\n"*3)
-for i in best10idx:
-    print(twenty_train.data[i], "\n"*3 + "-"*30 + "\n"*3)
-```
 
 [[Return to Top]](#table-of-contents)
