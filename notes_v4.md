@@ -1,4 +1,96 @@
+--------------------------------------------------------------------------------
+<!-- Needs Work -->
+### Marketing
+```python
+import scikitplot as skplt
+import matplotlib.pyplot as plt
+# CUMULATIVE GAINS: HOW MANY SAMPLES TO GET A CERTAIN AMOUNT OF PREDICTION 1
+skplt.metrics.plot_cumulative_gain(actuals, preds) # preds are 0 or 1
+plt.show()
+# LIFT CURVE: MODEL'S PERFORMANCE ABOVE AVG TO TARGET PREDICTION 1 BY THRESH
+skplt.metrics.plot_lift_curve(actuals, preds)
+plt.show()
+# PER-GROUP OUTCOMES (INCIDENCE): % OF TARGETS IN EACH GROUP (CAT/CONT GROUPS!)
+```
 
+# Geospatial
+```
+Latitudes, longitudes, coordinates, and trends.
+```
+
+--------------------------------------------------------------------------------
+<!-- Needs Work -->
+## Geospatial Analysis
+### Geospatial Data
+- Coord Reference System (CRS) baselines the coordinates for plotting
+    * EPSG:4326 in decimal degrees; used by Google Earth
+    * EPSG:3857 in meters; used by Google Maps, Bing Maps, Open Street Maps
+- RASTER file: grid; great at doing semi-3D plotting like topographical map
+- VECTOR file: points, lines, polygons; great for drawing
+- Shapefiles contain geospatial geometry that we can plot
+    * SHP contains geometry, DBF holds attrs, SHX links attrs and geometry
+- GeoJSON is a modern version that combines SHP, DBF, SHX into one file
+- Fiona: API between Python and OpenGIS Simple Features Reference, is VECTORs
+- GDAL: Geospatial Data Abstraction Library, is RASTERs
+- Chloropleth: Thematic map with color variation to differentiate regions
+### Geospatials in Geopandas
+- `geopandas` is an excellent library for geospatial work
+- A cell in a row can contain a point, line, or polygon; `geo_df.loc[0, 'poly']`
+    * Printing the cell will result in object with coord array for ex: line
+```python
+import folium
+district1_map = folium.Map(location=[48.858373,2.292292], zoom_start=12)
+folium.GeoJson(district_one.geometry).add_to(district1_map)
+for row in df.iterrows():
+    location, popup = [row["lat"], vals["lng"]], row["popup"]
+    marker = folium.Marker(location=location, popup=popup)
+    marker.add_to(district1_map)
+display(district1_map)
+import geopandas as gpd
+from shapely.geometry import Point
+geo_df1 = gpd.read_file('my_map.shp')
+geo_df2 = gpd.read_file('geo.geojson')
+schools["geoms"] = schools.apply(lambda x: Point((x.lng, x.lat)), axis=1)
+schools_crs = {"init": "epsg:4326"}
+geo_df3 = gpd.GeoDataFrame(schools, src=schools_crs, geometry=schools.geoms)
+geo_df3.changed_crs = geo_df3.geoms.to_crs(epsg="3857")
+leg_kwds = {"title":"District Number", "loc":"upper left", 
+            "bbox_to_anchor":(1,1.03), "n_col":3}
+geo_df1.plot(column="district", cmap="Set3", legend=True, legend_kws=leg_kwds)
+plt.title("Council Districts")
+plt.show()
+schools["polygon_area"] = schools.geometry.area            # calc on each row
+schools["polygon_center"] = schools.geometry.centroid      # calc on each row
+schools["distance_from_other"] = schools.geometry.distance(other)  # each row
+```
+```python
+import geopandas as gpd
+# initialize two geodataframes and join the plots
+d1 = gpd.sjoin(gdf1, gdf2, op="contains")  # gdf2 entirely inside gdf1 boundary
+d2 = gpd.sjoin(gdf1, gdf2, op="intersect") # gdf2 is inside or on gdf1 boundary
+d3 = gpd.sjoin(gdf2, gdf1, op="within")    # backwards "contains"
+print(len(d1))                             # number of gdf2 things inside gdf1
+```
+```python
+import folium
+nashville = [36.1636, -86.7823]
+m = folium.Map(location=nashville, zoom_start=10)
+folium.Cloropleth(
+    geo_data=districts_with_counts,
+    name="geometry",
+    data=districts_with_counts,
+    columns=["district","school_density"],
+    key_on="feature_properties.district",
+    fill_color="YlGn",
+    fill_opacity=0.75,
+    line_opacity=0.5,
+    legend_name="Schools per km squared by School District"
+).add_to(m)
+```
+### Shapely
+- Set correct coord reference system for Geopandas for max accuracy
+
+[[Return to Top]](#table-of-contents)
 
 
 
@@ -1268,5 +1360,163 @@ NLP's "bag of words" works nicely in conjunction with classification.
 1. Instantiate a pre-trained sentiment analyzer
 1. Calculate sentiment score per sentence, calc average sentiment across scores
 1. (Classification) Group sentiment score averages by target class
+
+[[Return to Top]]()
+
+
+
+
+
+
+
+<!-- 
+ #####                                                    
+#     # #####   ##   ##### #  ####  ##### #  ####   ####  
+#         #    #  #    #   # #        #   # #    # #      
+ #####    #   #    #   #   #  ####    #   # #       ####  
+      #   #   ######   #   #      #   #   # #           # 
+#     #   #   #    #   #   # #    #   #   # #    # #    # 
+ #####    #   #    #   #   #  ####    #   #  ####   ####  
+-->
+
+# Statistics
+```
+Statistical analysis is vital for verifying our work.
+We can calculate probabilities to see whether outcomes are rare or common.
+We can run hypothesis tests to understand whether our findings are significant.
+```
+
+--------------------------------------------------------------------------------
+<!-- Needs work -->
+## Probability
+- Chances and rates
+- Probability of outcome: P(outcome) = (count_get_outcome) / (count_get_any)
+    * P(heads flip) = (1) / (2) -> (1) / (2) -> ... (independent events)
+    * P(name drawn) = (1) / (4) -> (1) / (3) -> ... (dependent events)
+- Total Probability Law: For a given event in separate samples, sum probability
+    * Batch1: 50% of product; Batch2: 25% of product; Batch3: 25% of product
+    * Batch1: 1% defect rate; Batch2: 2% defect rate; Batch3: 3% defect rate
+    * Total defect probability: (1% * 50%) + (2% * 25%) + (3% * 25%) = 1.75%
+- Bayes Theorem: P(A|B) = (P(B|A) * P(A)) / P(B)
+    * Probability that A is true given B is true: P(A|B)
+    * Probability that you survived if you had a gun: P(lived|gun)
+    * Probability that you had a gun if you survived: P(gun|lived)
+    * Observed numbers: P(lived) = 6/10, P(gun) = 3/10, P(gun|lived) = 2/6
+    * Bayes: P(lived|gun) = ((2/6) * (6/10)) / (3/10) -> (2/10) / (3/10) -> 2/3
+- Get P(A|B) of dataset: `(df["A"] & df["B"]).sum() / (df["B"].sum() / len(df))`
+    * Get P(A) given 2+ cols: `(df["A"] & mask).sum() / (mask.sum() / len(df))`
+    * Low probability here indicates "A" outcomes are anomalous!
+### Building Distributions
+- "Law of Large Numbers": larger sample brings sample mean closer to theoretical
+- Probability distribution: chart of outcomes and their chances
+- Probability from distribution: area
+    * Chance of rolling 1 or 2 from 6: 2/6 of the distribution (1/3)
+- Theoretical distribution: `dist = stats.recipe(params)`
+    * Probability from distribution: `dist.method()`
+- Rolls from theoretical distribution: `dist = stats.recipe(params).rvs(size=x)`
+    * Set size to array (`(3,4)`) instead of `x` to do `(simulations, trials)`
+    * Alternate: `np.random.choice(avail_options, size=rolls, p=[p1, p2, ...])`
+### Theoretical Distributions from Parameters
+- **Uniform**: equal likelihood of all outcomes (dice rolls)
+    * Not very useful for our purposes
+    * Recipe: `stats.randint.rvs(gte_val, lt_val, size=(10,10))`
+    * P(A) = 1 / len(Options)
+- **Binomial**: two outcomes (coin flips)
+    * Not very useful for our purposes
+    * Recipe: `stats.binom.rvs(tries, chance_to_win, size=(10,10))`
+    * P(A) = `stats.binom.pmf(wintarget, tries, chance_to_win)` (discrete)
+- **Normal**: outcomes congregating on one value (bell curve)
+    * Very useful if we expect a normal distribution for something
+    * Recipe: `stats.norm.rvs(center, size_one_stdev, size=(10,10))`
+    * P(A) = `stats.norm.pdf(mark, center, size_one_stdev)` (continuous)
+    * Between points: `stats.norm.cdf(0) - stats.norm.cdf(-1)` (AUC)
+    * Strategy: Identify mean and stdev, build distribution
+    * Central Limit Theorem: increase sample size, stats metrics get more normal
+- **Poisson**: events over time (probability of an outcome in a time interval)
+    * Useful for time-related events; mu is average events per time interval
+        * With Poisson, lambda and mu are the same value
+    * Recipe: `stats.poisson.rvs(mu, size=(10,10))`
+    * P(A) = `stats.poisson.pmf(x, mu)` (discrete)
+    * Between counts: `stats.poisson.cdf(5, 2) - stats.poisson.cdf(3, 2)` (AUC)
+        * "3 to 5 events when the average is 2 events for that time interval"
+    * Strategy: Identify avg event count for time interval, build distribution
+    * Peak of distribution is always the lambda value (average count)
+- **Exponential**: probability of wait time for Poisson event (time between events)
+    * Useful for time-related events; lambda is average events per time interval
+    * Recipe: `stats.expon.rvs(scale=events_per_interval, size=(10,10))`
+    * P(A) = `stats.expon.pdf(x, scale=events_per_interval)` (continuous)
+    * Between times: `stats.expon.cdf(4, scale=2) - stats.expon.cdf(1, scale=2)`
+        * "Between minute 1 and minute 4 when events are (avg) twice per minute"
+    * Strategy: Identify avg event count for time interval, build distribution
+- **Geometric**: probability of consecutive failures (failed attempts)
+    * Useful when calculating probability of failing x times (CDF)
+    * Recipe: `stats.geom.rvs(success_chance, size=(10,10))`
+    * P(A): `stats.geom.pmf(attempt_when_successful, fail_chance)`
+    * Between attempts: `stats.geom.cdf(4, 0.3) - stats.geom.cdf(2, 0.3)`
+        * "2 to 4 attempts when the success chance is 30%"
+    * Strategy: Groupby each actor, avg successful attempt #, build distribution
+- **t-Distribution**: Wider normal distribution (sharper peak, wider flanges)
+    * Increasing degrees of freedom makes it look more like normal distribution
+- **Log-Normal**: right-skewed for normal (0 to infinite, normal)
+    * When you can't go below a number, but the distribution is basically normal
+    * Lots of real-world examples for this
+- Lots more distributions... check scipy documentation for stats module
+### Methods for Distributions
+- Probability from theoretical distribution: `dist.method()`
+    * Chance of specific outcome: `dist.pmf(discrete)`, `dist.pdf(continuous)`
+    * Area larger than a mark: `dist.sf(num)`, `dist.isf(proportion)`
+    * Area less than or equal to a mark: `dist.cdf(num)`, `dist.ppf(proportion)`
+- Probability from discrete records: `vc = s.value_counts(normalize=True)`
+    * Chance of specific outcome: `vc.loc[x] if x in vc.index else "Not found"`
+    * CDF and SF: `cdf = vc.loc[(vc.index <= x)].sum()`, `sf = 1 - cdf`
+    * P(Between Marks): `vc.loc[(vc.index > left) & (vc.index < right)].sum()`
+- Probability from continuous records: `t = s.rank(method='average', pct=True)`
+    * Chance of specific outcome: draw density and plot point? hmm. thinking...
+    * Compare to value: `cdf = (s <= x).mean()`, `sf = 1 - cdf`
+- Proportions of outcomes: `vc = df[["A","B"]].value_counts(normalize=True)`
+    * `vc.loc[("lived","gun")]` (previous step orders multi-index as "A","B")
+
+--------------------------------------------------------------------------------
+<!-- Needs Work -->
+## Hypothesis Testing
+- X categoricals against y categorical: chi2; independent cells, cells are > 5
+    * Degree of Freedom: `(num_cols - 1) * (num_rows - 1)`
+- X categoricals against y continuous: t-test; 1samp/2samp, normality, variance
+    * One-sample t-test: when comparing a sample to a general population mean
+    * Two-sample t-test: when comparing a distinct sample to another sample
+- X conts against X conts or the y cont: corr; linearity, normality / monotonic
+    * Correlation statistic: strength and direction of correlation (-1.0 to 1.0)
+    * Strength indicators: similar rate of change, both monotonic / polytonic
+    * Always plot correlations to check for linearity
+    * Can transform one or both: logarithmic, square root, inverse (1/col), more
+- ERRORS: Type I (falsely-reject null), Type II (falsely-accept null)
+    * False Positive Rate: probability of a Type I error
+    * False Negative Rate: probability of a Type II error
+### Metrics
+- Consider applying all of the following in a metrics pivot table
+- Sum of Squares: `sum((col - col.mean()) ** 2)`
+- Variance: `(Sum of Squares) / col.count()`
+- Standard Deviation (STD): `(Variance) ** 0.5`
+- Mean Absolute Deviation (MAD): `mean(abs(col - col.mean()))`
+- Z-Scores: `(col - col.mean()) / (Standard Deviation)`
+- Quartiles: `index = 0.25 * (len(col) - 1); col[index]`
+    * First, second, third quartiles (cutpoints): 0.25 (Q1), 0.5 (Q2), 0.75 (Q3)
+    * Use interpolation if index not an int; 1.25 is 25% of the diff between 1,2
+- Interquartile Range (IQR): `Q3 - Q1`
+- IQR Outliers: `(col < (Q1 - (1.5 * IQR))) | (col > (Q3 + (1.5 * IQR)))`
+### Tests
+- The following tests come from Python's stats library, `from stats import ...`
+- Anderson-Darling: test normality, `anderson(col)`
+- Chi Square: independence of samples, `chi2_contingency(observedvals_crosstab)`
+- One-Way ANOVA: compare samples for mean, `f_oneway(samp1.y, samp2.y, ...)`
+    * Non-parametric: Kruskal-Wallis H test, `kruskal(samp1.y, samp2.y, ...)`
+- T-Test: compare means of independent samples, `ttest_ind(samp1.y, samp2.y)`
+    * Non-parametric: Mann-Whitney U test, `mannwhitneyu(samp1.y, samp2.y)`
+- T-Test: compare means of sample vs population, `ttest_1samp(samp.y, pop.y)`
+    * Non-parametric: Mann-Whitney U test, `mannwhitneyu(samp1.y, samp2.y)`
+- T-Test: compare means of sample before vs after, `ttest_rel(past.y, future.y)`
+    * Non-parametric: Wilcoxon signed-rank, `wilcoxon(past.y, future.y)`
+- Pearson Correlation: correlation coefficient of linear vars, `pearsonr(x, y)`
+    * Non-parametric: Spearman Correlation, `spearmanr(x, y)`
 
 [[Return to Top]](#table-of-contents)
