@@ -1,122 +1,148 @@
-## Thoughts
-- Generate many features, use factorization to slim back down onto useful ones
-- Generative AI section
-- Kubernetes section
+# <center><strong>Data Science Notes, v4</strong></center>
 
-<!-- Needs Work -->
-### Marketing
-```python
-import scikitplot as skplt
-import matplotlib.pyplot as plt
-# CUMULATIVE GAINS: HOW MANY SAMPLES TO GET A CERTAIN AMOUNT OF PREDICTION 1
-skplt.metrics.plot_cumulative_gain(actuals, preds) # preds are 0 or 1
-plt.show()
-# LIFT CURVE: MODEL'S PERFORMANCE ABOVE AVG TO TARGET PREDICTION 1 BY THRESH
-skplt.metrics.plot_lift_curve(actuals, preds)
-plt.show()
-# PER-GROUP OUTCOMES (INCIDENCE): % OF TARGETS IN EACH GROUP (CAT/CONT GROUPS!)
-```
+<!-- 
+#######                                              
+   #      ##   #####  #      ######     ####  ###### 
+   #     #  #  #    # #      #         #    # #      
+   #    #    # #####  #      #####     #    # #####  
+   #    ###### #    # #      #         #    # #      
+   #    #    # #    # #      #         #    # #      
+   #    #    # #####  ###### ######     ####  #      
+                                                     
+ #####                                                 
+#     #  ####  #    # ##### ###### #    # #####  ####  
+#       #    # ##   #   #   #      ##   #   #   #      
+#       #    # # #  #   #   #####  # #  #   #    ####  
+#       #    # #  # #   #   #      #  # #   #        # 
+#     # #    # #   ##   #   #      #   ##   #   #    # 
+ #####   ####  #    #   #   ###### #    #   #    ####  
+-->
 
---------------------------------------------------------------------------------
-<!-- Needs Work -->
-## Geospatial Analysis
-### Geospatial Data
-- Coord Reference System (CRS) baselines the coordinates for plotting
-    * EPSG:4326 in decimal degrees; used by Google Earth
-    * EPSG:3857 in meters; used by Google Maps, Bing Maps, Open Street Maps
-- RASTER file: grid; great at doing semi-3D plotting like topographical map
-- VECTOR file: points, lines, polygons; great for drawing
-- Shapefiles contain geospatial geometry that we can plot
-    * SHP contains geometry, DBF holds attrs, SHX links attrs and geometry
-- GeoJSON is a modern version that combines SHP, DBF, SHX into one file
-- Fiona: API between Python and OpenGIS Simple Features Reference, is VECTORs
-- GDAL: Geospatial Data Abstraction Library, is RASTERs
-- Chloropleth: Thematic map with color variation to differentiate regions
-### Geospatials in Geopandas
-- `geopandas` is an excellent library for geospatial work
-- A cell in a row can contain a point, line, or polygon; `geo_df.loc[0, 'poly']`
-    * Printing the cell will result in object with coord array for ex: line
-```python
-import folium
-district1_map = folium.Map(location=[48.858373,2.292292], zoom_start=12)
-folium.GeoJson(district_one.geometry).add_to(district1_map)
-for row in df.iterrows():
-    location, popup = [row["lat"], vals["lng"]], row["popup"]
-    marker = folium.Marker(location=location, popup=popup)
-    marker.add_to(district1_map)
-display(district1_map)
-import geopandas as gpd
-from shapely.geometry import Point
-geo_df1 = gpd.read_file('my_map.shp')
-geo_df2 = gpd.read_file('geo.geojson')
-schools["geoms"] = schools.apply(lambda x: Point((x.lng, x.lat)), axis=1)
-schools_crs = {"init": "epsg:4326"}
-geo_df3 = gpd.GeoDataFrame(schools, src=schools_crs, geometry=schools.geoms)
-geo_df3.changed_crs = geo_df3.geoms.to_crs(epsg="3857")
-leg_kwds = {"title":"District Number", "loc":"upper left", 
-            "bbox_to_anchor":(1,1.03), "n_col":3}
-geo_df1.plot(column="district", cmap="Set3", legend=True, legend_kws=leg_kwds)
-plt.title("Council Districts")
-plt.show()
-schools["polygon_area"] = schools.geometry.area            # calc on each row
-schools["polygon_center"] = schools.geometry.centroid      # calc on each row
-schools["distance_from_other"] = schools.geometry.distance(other)  # each row
-```
-```python
-import geopandas as gpd
-# initialize two geodataframes and join the plots
-d1 = gpd.sjoin(gdf1, gdf2, op="contains")  # gdf2 entirely inside gdf1 boundary
-d2 = gpd.sjoin(gdf1, gdf2, op="intersect") # gdf2 is inside or on gdf1 boundary
-d3 = gpd.sjoin(gdf2, gdf1, op="within")    # backwards "contains"
-print(len(d1))                             # number of gdf2 things inside gdf1
-```
-```python
-import folium
-nashville = [36.1636, -86.7823]
-m = folium.Map(location=nashville, zoom_start=10)
-folium.Cloropleth(
-    geo_data=districts_with_counts,
-    name="geometry",
-    data=districts_with_counts,
-    columns=["district","school_density"],
-    key_on="feature_properties.district",
-    fill_color="YlGn",
-    fill_opacity=0.75,
-    line_opacity=0.5,
-    legend_name="Schools per km squared by School District"
-).add_to(m)
-```
-### Shapely
-- Set correct coord reference system for Geopandas for max accuracy
+# Table of Contents
+I.    [Tools                           ](#tools)
+1.    [Environment Setup               ](#environment-setup)
+1.    [Jupyter Notebooks               ](#jupyter-notebooks)
+1.    [Enterprise Tools                ](#enterprise-tools)
+1.    [Git Workflow                    ](#git-workflow)
 
---------------------------------------------------------------------------------
-<!-- Needs work -->
-## Model Evaluation
-### Cross-Validation (CV)
-- Remove bias from selection of train split's records for model generalization
-- The training split itself is split into K folds; K=3 and K=5 are common
-    * Leave-One-Out: `K=len(df)`, useful for small datasets
-- With K=5, a model is trained using 4 folds for "train" and 1 fold for "test"
-- With K=5, five models are trained, each with a different fold as "test"
-- We select an evaluation metric, evaluate all 5 models, and calculate the mean
-    * Options: https://scikit-learn.org/stable/modules/model_evaluation.html
-- The mean value across models is what we'd expect on out-of-sample data!
-- If more errors on CV than on full training split: high variance / overfit
-    * Decrease model complexity (ex: less max_depth, more min samples)
-    * Gather more data so CV performs better
-- If error on CV is similar to train, but still too high: high bias / underfit
-    * Increase model complexity (ex: more max_depth, more min_samples)
-    * Gather more features
-### Grid Search CV
-- Grid Search mixes cross validation with your hyperparameter tuning
-- We pass the hyperparameter grid and K folds, and it trains/evals each model
-- Set `n_jobs = -1` to use multi-core processing! Speed gains!
-- For even more speed gains: try `RandomizedSearchCV`
-    * Doesn't try out the entire grid; "hones in" on the best, faster
+II.   [Projects                        ](#projects)
+1.    [Project Frameworks              ](#project-frameworks)
+1.    [Stakeholders                    ](#stakeholders)
+1.    [Project Planning                ](#project-planning)
+1.    [Project Delivery                ](#project-delivery)
+
+III.  [Computer Science                ](#computer-science)
+1.    [Data Structures                 ](#data-structures)
+1.    [Search and Sort Algorithms      ](#search-and-sort-algorithms)
+
+IV.   [Databases                       ](#databases)
+1.    [Databasing Overview             ](#databasing-overview)
+1.    [Database Documentation          ](#database-documentation)
+1.    [Database Operations             ](#database-operations)
+1.    [Relational Databases            ](#relational-databases)
+1.    [Managing a SQL Database         ](#managing-a-sql-database)
+
+V.    [Query                           ](#query)
+1.    [SQL                             ](#sql)
+1.    [Spark                           ](#spark)
+1.    [Elastic Suite                   ](#elastic-suite)
+
+VI.   [Acquire                         ](#acquire)
+1.    [Dataset Sources                 ](#dataset-sources)
+1.    [Regular Expressions             ](#regular-expressions)
+1.    [Python Web Scraping             ](#python-web-scraping)
+1.    [Data Structure Normalization    ](#data-structure-normalization)
+
+VII.  [Explore                         ](#explore)
+1.    [Probabilities & Distributions   ](#probabilities-and-distributions)
+1.    [Hypothesis Testing              ](#hypothesis-testing)
+1.    [Geospatial                      ](#geospatial-analysis)
+1.    [Clustering                      ](#clustering)
+1.    [Anomaly Detection               ](#anomaly-detection)
+1.    [Natural Language Processing     ](#natural-language-processing)
+
+VIII. [Model                           ](#model)
+1.    [Feature Reduction               ](#feature-reduction)
+1.    [Model Training                  ](#model-training)
+1.    [Classification                  ](#classification)
+1.    [Regression                      ](#regression)
+1.    [Time Series                     ](#time-series)
+1.    [Neural Networks                 ](#neural-networks)
+
+IX.   [Deploy                          ](#deploy)
+1.    [Exports & Pipelines             ](#exports-and-pipelines)
+1.    [Containers                      ](#containers)
+1.    [Local Deployment                ](#local-deployment)
+1.    [Scalable Deployment             ](#scalable-deployment)
+
+X.    [Generate                        ](#generate)
+1.    [Generative AI Resources         ](#generative-ai-resources)
+1.    [Large Language Models           ](#large-language-models-llms)
+1.    [Retrieval Augmented Generation  ](#retrieval-augmented-generation-rag)
+1.    [Image Generation                ](#image-generation)
+1.    [Audio Generation                ](#audio-generation)
+1.    [Video Generation                ](#video-generation)
+
+<br>
+
+<br>
+
+
+
+
+
+
+
+<!-- 
+ #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #  
+  # #     # #     # #     # #     # #     # #     # #     # #     # #     # #   
+####### ####### ####### ####### ####### ####### ####### ####### ####### ####### 
+  # #     # #     # #     # #     # #     # #     # #     # #     # #     # #   
+ #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #  
+                                                                                
+                                                                                
+                    ####### ####### ####### #        #####  
+                       #    #     # #     # #       #     # 
+                       #    #     # #     # #       #       
+                       #    #     # #     # #        #####  
+                       #    #     # #     # #             # 
+                       #    #     # #     # #       #     # 
+                       #    ####### ####### #######  #####  
+                                        
+                                                                                
+ #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #  
+  # #     # #     # #     # #     # #     # #     # #     # #     # #     # #   
+####### ####### ####### ####### ####### ####### ####### ####### ####### ####### 
+  # #     # #     # #     # #     # #     # #     # #     # #     # #     # #   
+ #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #  
+-->
+
+
+# TOOLS
+
+
+<!--
+#######                                                                 
+#       #    # #    # # #####   ####  #    # #    # ###### #    # ##### 
+#       ##   # #    # # #    # #    # ##   # ##  ## #      ##   #   #   
+#####   # #  # #    # # #    # #    # # #  # # ## # #####  # #  #   #   
+#       #  # # #    # # #####  #    # #  # # #    # #      #  # #   #   
+#       #   ##  #  #  # #   #  #    # #   ## #    # #      #   ##   #   
+####### #    #   ##   # #    #  ####  #    # #    # ###### #    #   #   
+                                                                        
+ #####                             
+#     # ###### ##### #    # #####  
+#       #        #   #    # #    # 
+ #####  #####    #   #    # #    # 
+      # #        #   #    # #####  
+#     # #        #   #    # #      
+ #####  ######   #    ####  #      
+-->
 
 --------------------------------------------------------------------------------
 <!-- Polished -->
 ## Environment Setup
+- Python is managed by "pip" (PyPi), and optionally Anaconda, Mamba, VENV, etc
 ### Environment Setup on Windows
 1. Regedit: `Computer\HKEY_CLASSES_ROOT\Directory\Background\shell\cmd`
     * Change reg key owner to Administrators and add Full Control in principals
@@ -225,6 +251,187 @@ jupyter notebook
 1. Log out and log back in
 1. Select the new Python kernel called "ENV1" and proceed as normal
 
+[[Return to Top]](#table-of-contents)
+
+
+<!--
+      #                                         
+      # #    # #####  #   # ##### ###### #####  
+      # #    # #    #  # #    #   #      #    # 
+      # #    # #    #   #     #   #####  #    # 
+#     # #    # #####    #     #   #      #####  
+#     # #    # #        #     #   #      #   #  
+ #####   ####  #        #     #   ###### #    # 
+                                                
+#     #                                                        
+##    #  ####  ##### ###### #####   ####   ####  #    #  ####  
+# #   # #    #   #   #      #    # #    # #    # #   #  #      
+#  #  # #    #   #   #####  #####  #    # #    # ####    ####  
+#   # # #    #   #   #      #    # #    # #    # #  #        # 
+#    ## #    #   #   #      #    # #    # #    # #   #  #    # 
+#     #  ####    #   ###### #####   ####   ####  #    #  ####  
+-->
+
+--------------------------------------------------------------------------------
+<!-- Polished -->
+## Jupyter Notebooks
+### Notebook Niceties
+- Command mode: dd for cell deletion, y for code cell, m for markdown cell
+- TAB for autocomplete, Shift TAB for full context at cursor location
+- Option Shift - to split cell into two cells at cursor
+- Option Dragclick to drag multi-line cursor
+- Run shell commands with `!` like this: `!echo "hi"`
+    * I think the commands depend on what terminal program is running Jupyter
+- Run ipython commands with `%` like this: `%ls`
+- MD LaTeX: `$H_0$`, see: https://www.caam.rice.edu/~heinken/latex/symbols.pdf
+- PLT LaTeX: https://matplotlib.org/stable/tutorials/text/mathtext.html
+### iPyWidgets
+```python
+from IPython.display import display
+import ipywidgets
+from datetime import date
+mydate = date(2023,1,1)
+dateobject = ipywidgets.widgets.DatePicker(value=mydate)
+display(dateobject)
+# RUNNING NEXT CODE UPDATES ALL DISPLAYED OBJECTS IN REAL TIME
+dateobject.value = date(2023,5,20)
+```
+### Python Chart Choices
+- Inspiration: https://www.python-graph-gallery.com/all-charts
+- Custom: https://matplotlib.org/stable/tutorials/introductory/customizing.html
+    * Check out lines_bars_and_markers/bar_label_demo.html (one chart guide)
+    * Check out lines_bars_and_markers/categorical_variables.html (multi-chart)
+- Cheatsheet: "Python Seaborn Cheat Sheet PDF" on Google
+- Use colorblind palettes as often as possible
+- `import matplotlib.pyplot as plt, seaborn as sns, plotly.express as px`
+- Figure-level plots for multiple sub-charts; axis-level plot for a single chart
+- Continuous x-axis: `displot` (hist, kde, ecdf) or `relplot` (line, scatter)
+    * ECDF is awesome! Plot it overlapping a histogram for very cool plots
+- Categorical x-axis: `catplot` w/ `kind`: count,bar,box,violin,swarm,strip,more
+- `pairplot`, `heatmap`, `regplot`(scatter+reg), `jointplot`(scatter+edge hists)
+    * `pairplot` charts can be accessed/modified with `.axes`
+    * `regplot` uses `line_kws={'color':'red'}`
+- Normality: `statsmodels.api.qqplot`; x: theoretical quants, y: observed quants
+### Python Pandas Dataframe Styling
+```python
+# STYLE DF: FORMAT/BAR NUMBERS, COLOR LEVELS, FORMAT STRINGS; PRINT TO HTML FILE
+styler = df.head(10).style\
+    .format({"money":"${:,.0f}", "category":str.upper})\
+    .hide(axis="index")\
+    .background_gradient(cmap="Oranges")\
+    .highlight_max(subset="money", color="green")\
+    .highlight_min(subset="money", color="red")\
+    .bar(subset="money", color="#1f77b4")\
+    .export()
+html = df.head(10).style.use(styler).to_html()
+display(HTML(html))
+```
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!--
+#######                                                          
+#       #    # ##### ###### #####  #####  #####  #  ####  ###### 
+#       ##   #   #   #      #    # #    # #    # # #      #      
+#####   # #  #   #   #####  #    # #    # #    # #  ####  #####  
+#       #  # #   #   #      #####  #####  #####  #      # #      
+#       #   ##   #   #      #   #  #      #   #  # #    # #      
+####### #    #   #   ###### #    # #      #    # #  ####  ###### 
+                                                                 
+#######                             
+   #     ####   ####  #       ####  
+   #    #    # #    # #      #      
+   #    #    # #    # #       ####  
+   #    #    # #    # #           # 
+   #    #    # #    # #      #    # 
+   #     ####   ####  ######  ####  
+-->
+
+--------------------------------------------------------------------------------
+<!-- Needs work -->
+## Enterprise Tools
+- Excel and Google Sheets: fast initial exploration
+- PowerBI: if your company uses it already, use Jupyter with `powerbiclient`
+- Tableau: if your company uses it already, or, if you have license/experience
+### Excel
+- Absolute reference using hold_clickdrag + fn + F4
+- Doubleclick bottomright of function cell to affect all rows in selected col(s)
+```excel
+# count
+=COUNT(cells)
+# conditions
+=IF(AND(cond1, OR(cond2, cond3)), truth_value, false_value)
+=COUNTIF(cells, cellwise_condition) | =SUMIF(cells, cellwise_condition)
+=INDEX(range, MATCH(string_to_match, range)) | =IFERROR(value, truth_value)
+# numbers
+=B2-B3 | =B9+B12
+=MOD(cells, 3) | =POWER(cells, 2) | =SUM(cells, cells) | =AVERAGE(cells, cells)
+# strings
+=CEILING(cells) | =FLOOR(cells)
+=CONCATENATE(cells, cells, " ", cells, " ") | =SPLIT(cells, ",") | =LEN(cells)
+=REPLACE(cells, index, length, new_text) | =SUBSTITUTE(cells, match, sub, times)
+=LEFT(cells, numchars) | =MID(cells, start, steps) | =RIGHT(cells, numchars)
+=UPPER(cells) | =LOWER(cells) | =PROPER(cells)
+# times
+=NOW() | =TODAY() | =TIME(HHcells, MMcells, SScells) | =DATEDIF(s1, s2, step)
+# VLOOKUP: read columns vertically to discover match then return the column
+=VLOOKUP(key, range_to_search(use fn+f4 to 'lock' it), col_to_return, FALSE)
+# advanced features
+=SPARKLINE(range, {'charttype','bar';'color','red';'max',max(range); etc})
+```
+### PowerBI
+- 
+### Tableau
+- Excellent software for interactive visualizations and dashboards
+- Regular Tableau requires a license, can save locally, autosaves enabled
+- Tableau Public is free, but all work gets posted to https://public.tableau.com
+    * Faith Kane: https://public.tableau.com/app/profile/faith.kane
+    * Sean Oslin: https://public.tableau.com/app/profile/sean.oslin
+    * The Superstore CSV is popular to learn and demo Tableau
+- Explore your data w/ Excel pivot tables first; exploration in Tableau is slow
+    * Tableau Prep can assist with this
+- Data Source: Used for changing files across the project
+    * Adjust field types; Tableau relies on correct typing for simplifying work
+    * Hide unnecessary columns from project using drop-downs in each column
+    * Filter results at top-right (intuitive)
+- Sheets: Used for building individual charts
+    * Plot by rows and columns, use Marks for conditional formatting / tooltips
+    * Set chart type in top right, change chart dimensions via top-mid dropdown
+    * Adjust display options for numbers, add trend lines, annotations, and more
+        * Everything-formatting: Context Menu > Format
+    * Create: calculated fields for agg, level of detail (LOD) calculations, etc
+    * Can build new file using Python/Pandas and add the new file to new sheet
+- Dashboard: Show multiple sheets in one place
+    * Add non-sheet elements from bottom left
+    * Create multi-sheet filters
+- Story: Used for presentation of sheets and dashboards
+### ArcGIS
+- 
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
+ #####             #     #                                                  
+#     # # #####    #  #  #  ####  #####  #    # ###### #       ####  #    # 
+#       #   #      #  #  # #    # #    # #   #  #      #      #    # #    # 
+#  #### #   #      #  #  # #    # #    # ####   #####  #      #    # #    # 
+#     # #   #      #  #  # #    # #####  #  #   #      #      #    # # ## # 
+#     # #   #      #  #  # #    # #   #  #   #  #      #      #    # ##  ## 
+ #####  #   #       ## ##   ####  #    # #    # #      ######  ####  #    # 
+-->
+
 --------------------------------------------------------------------------------
 <!-- Polished -->
 ## Git Workflow
@@ -277,265 +484,1062 @@ jupyter notebook
 - Stash: `git stash save "stash1"`, `git stash list`, `git stash pop stash@{1}`
     * `git stash apply stash@{3}`, `git stash drop stash@{3}`, `git stash clear`
 
---------------------------------------------------------------------------------
-<!-- Polished -->
-## ***Datasets***
-- Massive list: https://github.com/awesomedata/awesome-public-datasets
-- Massive list: https://www.data-is-plural.com/archive/
-- Search US Gov data: https://www.data.gov
-- Search EU data: https://data.europa.eu/en
-- Search research paper data: https://paperswithcode.com/datasets
-- Search various: https://huggingface.co/datasets
-- Search various: https://datasetsearch.research.google.com
-- NLP: https://machinelearningmastery.com/datasets-natural-language-processing/
-- Computer vision (CV): https://visualdata.io/discovery
-- Satellite CV: https://github.com/chrieke/awesome-satellite-imagery-datasets
-### Python-Importable Datasets
-- `openml`: Many datasets; keyword search on https://www.openml.org and use IDs
-- `tensorflow_datasets`: Many datasets; `mnist`, `imdb`, `boston_housing`
-    * Or just use `tensorflow.keras.datasets` for various NN datasets
-- `torchvision.datasets`: Image datasets; `MNIST`, `CIFAR10`, `FashionMNIST`
-- `ucimlrepo.fetch_ucirepo`: UCI data; https://github.com/uci-ml-repo/ucimlrepo
-- `sklearn.datasets`: Common datasets; `iris`, `digits`, `wine`
-- `statsmodels.api`: Stats-related datasets; `adni`, `fair`, `flight`
-- Other noteworthy imports for dataets: `pydataset`, `vega_datasets`
-### ***Data Formats***
-- CSV
-- XLSX
-- SAS
-- Stata
-- Parquet
-- HDF5
-- MATLAB
-### ***REST APIs***
-- Application Programming Interface: a way to interact with 'owned' data
-    * There's rules and defined mathods for interacting with APIs
-    * Scraping is still possible, but APIs may be better in some cases
-- REST, RESTful: a standardized structure for URLs
-- RESTful JSON API: URLs follow REST comms w/ server are in JSON format
-### RESTful JSON APIs
-- Interfacing is done through HTTP requests
-- Endpoints are typically: "/api/v1/items/1" with ["next_page"]/["max_page"]
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
+ #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #  
+  # #     # #     # #     # #     # #     # #     # #     # #     # #     # #   
+####### ####### ####### ####### ####### ####### ####### ####### ####### ####### 
+  # #     # #     # #     # #     # #     # #     # #     # #     # #     # #   
+ #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #  
+                                                                                
+                                                                                
+        ######  ######  #######       # #######  #####  #######  #####  
+        #     # #     # #     #       # #       #     #    #    #     # 
+        #     # #     # #     #       # #       #          #    #       
+        ######  ######  #     #       # #####   #          #     #####  
+        #       #   #   #     # #     # #       #          #          # 
+        #       #    #  #     # #     # #       #     #    #    #     # 
+        #       #     # #######  #####  #######  #####     #     #####  
+                                
+                                                                                
+ #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #  
+  # #     # #     # #     # #     # #     # #     # #     # #     # #     # #   
+####### ####### ####### ####### ####### ####### ####### ####### ####### ####### 
+  # #     # #     # #     # #     # #     # #     # #     # #     # #     # #   
+ #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #  
+-->
+
+
+# PROJECTS
+
+
+<!--
+######                                           
+#     # #####   ####       # ######  ####  ##### 
+#     # #    # #    #      # #      #    #   #   
+######  #    # #    #      # #####  #        #   
+#       #####  #    #      # #      #        #   
+#       #   #  #    # #    # #      #    #   #   
+#       #    #  ####   ####  ######  ####    #   
+                                                 
+#######                                                                
+#       #####    ##   #    # ###### #    #  ####  #####  #    #  ####  
+#       #    #  #  #  ##  ## #      #    # #    # #    # #   #  #      
+#####   #    # #    # # ## # #####  #    # #    # #    # ####    ####  
+#       #####  ###### #    # #      # ## # #    # #####  #  #        # 
+#       #   #  #    # #    # #      ##  ## #    # #   #  #   #  #    # 
+#       #    # #    # #    # ###### #    #  ####  #    # #    #  ####  
+-->
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
-## REGEX Metacharacters
-- Language for parsing and slicing strings to capture substrings
-- Uses a mixture of string literals and metacharacters for multiple objectives
-- REGEX varies depending on the programming language you're using
-    * REGEX by language: https://www.regular-expressions.info/tools.html
-    * Test your REGEX in a specific language: https://regex101.com/
-- Go deep into learning REGEX: http://www.rexegg.com/regex-disambiguation.html
-- Flags: IGNORECASE, MULTILINE (run line-by-line), VERBOSE (ignore whitespace)
-```re
-| Zero or more (optional): *  | One or more: +        | Optional: ?            |
-| Any character: .            | Choices: [a12qx]      | Anything-but: [^a12qx] |
-| Alphanumeric: \w \W         | Whitespace: \s \S     | Digit: \d \D           |
-| {5} Repeat exactly 5 times  | {3,6} Min 3, Max 6    | {3,} At least 3 times  |
-| Anchor front: ^             | Anchor back: $        | Word boundary: \b      |
-| Capture group: So (cool)!   | Match group: (?:yooo) |
-| Case insensitive: (?i)(?-i) | Ignore spaces: (?x)   | Single line mode: (?s) |
-```
-### REGEX Metacharacter Explanation
-- `\.`: a period; the backslash escapes the metacharacter so it is just "."
-- `.+`: infinite amount of characters in sequence, but at least one: "?q9 -aAr!"
-- `.+?`: same as above, but not greedy
-- `.*`: infinite amount of characters in sequence, can be none (optional): "?q9"
-- `.*?`: same as above, but not greedy
-- `\w+`: infinite alphanumerical characters in sequence, but at least one: "hhh"
-- `\W\w`: a non-alphanumerical followed by an alphanumerical in sequence: "?q"
-- `\s\w`: a whitespace followed by an alphanumerical in sequence: " f"
-- `\S+`: infinite amount of non-whitespace in sequence, but at least one: "Hey"
-- `\d\d\d\d-\d\d-\d\d`: digits following YYYY-MM-DD format, ex: "2022-09-22"
-- `\d{4}-\d{2}-\d{2}`: digits following YYYY-MM-DD format, ex: "2022-09-22"
-- `\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}`: IP address format, ex: "10.3.127.5"
-- `\D+`: infinite amount of anything except digits in sequence, ex: "Hi there!!"
-- `\w(\w)\w`: capture the second alphanumerical character in a sequence of three
-- `[abc123]`: pick one, ex: `F[uiae]ll` matches "Full", "Fill", "Fall", "Fell"
-- `[a-z]+`: infinite amount of any lowercase letter in sequence, ex: "fnjd"
-- `(?i)[a-z]+(?-i)`: case-insensitive version of above, ex: "fNjD"
-- `[a-zA-Z]+`: infinite amount of any lower/uppercase letter in sequence: "fNjD"
-- `[^a-z]+`: infinite amount of anything but lowercase letters in sequence: "A7"
-- `(?i)HELLO(?-i)HELLO`: any-case "hello" followed by all-caps, ex: "hELLoHELLO"
-- `(?x) q r s t u v`: ignore whitespace; matches "qrstuv" but NOT "q r s t u v"
-- `^yo[a-z]*$`: entire line must match; matches "yo" and "yodawg", but NOT "yo!"
-- `(?:ho)+`: match a repeating sequence of "ho", "hoho", "hohoho", "hohohoho"...
+## Project Frameworks
+- Requirements Stage: Talk with stakeholders about their requirements/timeline
+- Decision Stage: Decide which requirements you will be able to complete
+    * Goal is to complete *all* user requirements for this "sprint" (a timeline)
+    * You choose how in-depth to go for each requirement
+### Selecting the Framework
+- Waterfall: takes it one step at a time, fully-complete each step then move on
+    * All requirements defined ahead of time
+    * Inflexible for new requirements/issues, must start over; finish is clear
+- AGILE: deliver minimums, expand minimums with features iteratively
+    * An iterations is a "spiral"; spiraling with new features
+    * Flexible for new requirements/issues, but may be hard to say it's finished
+### Selecting the Tools
+- JIRA
+- Trello
+### Systems Development Lifecycle (SDLC)
+- Framework for delivering software
+- Waterfall and AGILE both still in use; each follows same steps; AGILE repeats
+- Step 1: Analysis - Selecting requirements to fulfill (final ones are in SRS)
+    * UML: Use case diagram; user choices, choice result
+- Step 2: Design - choosing the solutions to solve those requirements
+    * UML: Class diagram; classes with vars, inheritance; "unfilled diamond"
+- Step 3: Implementation - building the chosen solutions
+    * UML: Activity diagram; typically a program's flowchart with actual code
+- Step 4: Testing - ensuring the solutions are functional + satisfy requirements
+    * UML: Sequence diagram; example is client-server communication sequence
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
+ #####                                                                              
+#     # #####   ##   #    # ##### #   #  ####  #     #####  ###### #####   ####  
+#         #    #  #  #   #  #     #   # #    # #     #    # #      #    # #      
+ #####    #   #    # ####   ####  ##### #    # #     #    # #####  #    #  ####  
+      #   #   ###### #  #   #     #   # #    # #     #    # #      #####       # 
+#     #   #   #    # #   #  #     #   # #    # #     #    # #      #   #  #    # 
+ #####    #   #    # #    # ##### #   #  ####  ##### #####  ###### #    #  ####  
+-->
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
-## REGEX Examples
-- Maybe the best way to learn REGEX is to see a bunch examples of it in action!
-### REGEX Capture Group Examples
-- `Hello,\s(.+)!` -- *Everything between "Hello, " and final-found "!" (greedy)*
-    * "Hello,Sam!" --------------> []
-    * "Hello, Sam!" -------------> ["Sam"]
-    * "Hello, Sam!!!" -----------> ["Sam!!"] (notice in the REGEX: greedy "+")
-    * "Hello, Sam Witwicky!!!" --> ["Sam Witwicky!!"] (one string for full name)
-    * "Hello, saFBO43Ef$51bf!" --> ["saFBO43Ef$51bf"]
-- `Hello,\s(.+?)!` -- *Everything between "Hello, " and first-found "!"*
-    * "Hello, Sam!!!" -----------> ["Sam"] (".+?" makes it not greedy!)
-    * "Hello, Sam Witwicky!!!": -> ["Sam Witwicky"] (one string for full name)
-    * "Hello, saFBO43Ef$51bf!" --> ["saFBO43Ef$51bf"]
-- `Hello,\s(\w+)!` -- *Alphanumerics between "Hello, " and "!" (greedy)*
-    * "Hello, Sam!" -------------> ["Sam"]
-    * "Hello, Sam!!!" -----------> ["Sam"] ("\w" only captures alphanumerics)
-    * "Hello, Sam Witwicky!!!": -> [] (must be continuous alphanumerics)
-    * "Hello, 12345!" -----------> ["12345"]
-- `Hello,\s([a-zA-Z]+)!` *Alphabet characters between "Hello, " and "!"*
-    * "Hello, Sam!" -------------> ["Sam"]
-    * "Hello, Sam Witwicky!!!" --> []
-- `^.+(\S+)!$` *Line ends with non-whitespace and "!" in sequence (greedy)*
-    * "Hello, Sam!" -------------> ["m"]
-    * "Hello, Sam Witwicky!" ----> ["y"]
-- `^.+?(\S+)!$` *Line ends with earliest non-whitespace -> "!" in sequence*
-    * "Hello, Sam!" -------------> ["Sam"]
-    * "Hello, Sam Witwicky!!!" --> ["Witwicky"]
-    * "f7g?3.rb3%79h&2398dh!" ---> ["f7g?3.rb3%79h&2398dh"]
-- `([a-zA-Z]+)(?:\s([a-zA-Z]+))*!` *Two capture groups, second is optional*
-    * "Hello, Sam!" -------------> [("Sam", "")] (two capture groups -> tuple)
-    * "Hello, Sam Witwicky!" ----> [("Sam", "Witwicky")]
-    * "Hello!" ------------------> [("Hello", "")]
-- `Hello,\s([a-zA-Z]+)(?:\s([a-zA-Z]+))*!` *Best solution of above*
-    * Same as above example but with "Hello,\s" at the beginning
-    * "Hello, Sam!" -------------> [("Sam", "")]
-    * "Hello, Sam Witwicky!" ----> [("Sam", "Witwicky")]
-    * "Hello!" ------------------> []
+## Stakeholders
+### Storytelling
+- Data requires velocity to be useful
+- Finding relationships and stories in data, documenting is and isn'ts
+- Goal is to remove redundant/unimportant variables for the story
+- Hypothesize/visualize loop, and if that isn't enough, run statistical tests
+- Understand the overall environment
+    * Available data sources
+    * Customer behaviors
+    * Current outreach efforts/approaches
+- "What is our observation???"
+    * titanic_db observations are... people on the titanic.
+### Stakeholders Considerations
+- Move functions and analysis to separate .ipynb as required for stakeholders
+    * Stakeholders want just the end product: give them it
+    * Stakeholders want the models and end product: give them it
+    * Stakeholders want everything: give them everything
+### Visualization Considerations
+- Expert-level visualizations != presentation-level visualization
+    * The pivot tables are more appropriate for Appendix
+    * If the audience has to read it, don't include it
+- Serve the "why" first, then follow with the specifics
+    * Leading with specifics will lose your audience
+- Give the "why" some amplifying/relative information to help seat your audience
+    * Avoid cluttering the "why" with too much amplification
+- Design the velocity with your audience in mind
+- Prepare to Create; Talk and Listen; Sketch; Prototype
+    * Clear physical/mental room; Know your data; Understand audience, Big Idea
+    * Determine which framework to use (persuasive, man-in-hole, story)
+    * Determine context, challenge, and solution
+    * Understand your audience and use an appropriate approach
+    * A topic isn't a big idea... use your chances to express the big idea
+    * Explain out loud what your project is
+    * Take notes of feedback, make corrections
+        * I'm working on... I'm trying to show... Why...
+    * Use everything so far to sketch out your ideas (brainstorm)
+    * Refine the sketches into presentation material
+- A non-correlation can be more important than a correlation
+- Start with overview in presentation, dissect the focus later
+    * Start with churn v not churned, then dive into churn data
+- Relate the problem to the audience's interests and focus for maximum effect
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
+######                                           
+#     # #####   ####       # ######  ####  ##### 
+#     # #    # #    #      # #      #    #   #   
+######  #    # #    #      # #####  #        #   
+#       #####  #    #      # #      #        #   
+#       #   #  #    # #    # #      #    #   #   
+#       #    #  ####   ####  ######  ####    #   
+                                                 
+######                                              
+#     # #        ##   #    # #    # # #    #  ####  
+#     # #       #  #  ##   # ##   # # ##   # #    # 
+######  #      #    # # #  # # #  # # # #  # #      
+#       #      ###### #  # # #  # # # #  # # #  ### 
+#       #      #    # #   ## #   ## # #   ## #    # 
+#       ###### #    # #    # #    # # #    #  ####  
+-->
+
+--------------------------------------------------------------------------------
+<!-- Needs work -->
+## Project Planning
+### Planning Documents
+- 
+### Risk Management
+- Critical path
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
+######                                           
+#     # #####   ####       # ######  ####  ##### 
+#     # #    # #    #      # #      #    #   #   
+######  #    # #    #      # #####  #        #   
+#       #####  #    #      # #      #        #   
+#       #   #  #    # #    # #      #    #   #   
+#       #    #  ####   ####  ######  ####    #   
+                                                 
+######                                             
+#     # ###### #      # #    # ###### #####  #   # 
+#     # #      #      # #    # #      #    #  # #  
+#     # #####  #      # #    # #####  #    #   #   
+#     # #      #      # #    # #      #####    #   
+#     # #      #      #  #  #  #      #   #    #   
+######  ###### ###### #   ##   ###### #    #   #   
+-->
+
+--------------------------------------------------------------------------------
+<!-- Needs work -->
+## Project Delivery
+### Kickoff
+- 
+### Tracking Project Milestones
+- Burn-down charts
+### Delivery
+- 
+### Long Term Agreements
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
+ #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #  
+  # #     # #     # #     # #     # #     # #     # #     # #     # #     # #   
+####### ####### ####### ####### ####### ####### ####### ####### ####### ####### 
+  # #     # #     # #     # #     # #     # #     # #     # #     # #     # #   
+ #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #  
+                                                                                
+                                                                                
+              #####  ####### #     # ######   #####   #####  ### 
+             #     # #     # ##   ## #     # #     # #     #  #  
+             #       #     # # # # # #     # #       #        #  
+             #       #     # #  #  # ######   #####  #        #  
+             #       #     # #     # #             # #        #  
+             #     # #     # #     # #       #     # #     #  #  
+              #####  ####### #     # #        #####   #####  ### 
+                                                    
+                                                                                
+ #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #  
+  # #     # #     # #     # #     # #     # #     # #     # #     # #     # #   
+####### ####### ####### ####### ####### ####### ####### ####### ####### ####### 
+  # #     # #     # #     # #     # #     # #     # #     # #     # #     # #   
+ #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #  
+-->
+
+
+# COMPUTER SCIENCE
+
+
+<!-- 
+######                      
+#     #   ##   #####   ##   
+#     #  #  #    #    #  #  
+#     # #    #   #   #    # 
+#     # ######   #   ###### 
+#     # #    #   #   #    # 
+######  #    #   #   #    # 
+                            
+ #####                                                               
+#     # ##### #####  #    #  ####  ##### #    # #####  ######  ####  
+#         #   #    # #    # #    #   #   #    # #    # #      #      
+ #####    #   #    # #    # #        #   #    # #    # #####   ####  
+      #   #   #####  #    # #        #   #    # #####  #           # 
+#     #   #   #   #  #    # #    #   #   #    # #   #  #      #    # 
+ #####    #   #    #  ####   ####    #    ####  #    # ######  ####  
+-->
+
 
 --------------------------------------------------------------------------------
 <!-- Polished -->
-## Pandas Read-HTML
-- Use this method if you're working with *HTML tables*; it's easy and effective
-- Sample HTML tables (testing): https://www.w3schools.com/html/html_examples.asp
-```python
-import pandas as pd
-# READ FROM URL
-url = "https://www.w3schools.com/html/tryit.asp?filename=tryhtml_table_headings"
-df1 = pd.read_html(url)[0] # read HTML tables from URL, set first table as df1
-# READ FROM STRING
-myhtml = "<table><tr><th>hi</th></tr><tr><td>12</td></tr></table>"
-df2 = pd.read_html(myhtml)[0] # read HTML tables from string, set first as df2
-```
-### Secret Method
-- Sometimes the fastest solution is the best.
-- `df = pd.read_clipboard()` makes a dataframe from your clipboard's content
+## Data Structures
+- Linear data structures: Array, Stack, Queue, Linked list, Hash table
+- Non-linear data structures: Class, Graph, Tree, Heap
+### Linked List
+- Linear data structure
+- Many element+pointer combos where a combo's pointers reference prev/next combo
+- Excellent at handling problemsets involving sorting long arrays
+    * Just update two neighbor combos' pointers; no need to update entire array
+- Compiled languages ex: C++ incorporate pointers natively, easy linked list
+- Interpreted languages ex: Python don't incorporate pointers, avoid linked list
+- The element+pointer combo (one item in the linked list) is a "head"
+- The "head" is split into the data (a la payload) and the pointer(s)
+- A linked list's pointers can be simply-linked, doubly-linked, and/or circular
+    * Singly: link next, doubly: link next & prev, circular: last link to first
+- Because there's no structure, a linked list is usually deleted by a function
+### Hash Table
+- A mapping of keys (hashes) to values
+- Uses hashing function(s) to create the key for the value, ex: modulo
+- Hashing functions range from very simple/DIY to highly complex/academic
+- The key (the hashed value) is used as the index for the value
+    * No collisions: "perfect hash function" (not really useful)
+    * Two different values with same hashed key: a "collision"
+- Collision resolution approach: store many values in one bucket, in array
+    * This is one approach to handling collisions; it's called "chaining"
+- Another approach: "Open addressing"/"Linear probing"; use next open bucket
+    * These buckets use "empty since start" and "empty after removal" flags
+    * Reason-why-empty flags are important for how the algorithm "walks" buckets
+    * Finding an empty-since-start flag during a removal walk: done
+    * Finding an empty-after-removal flag during a removal walk: keep going
+- Another approach: "Quadratic probing"; if collision, use function to find spot
+    * Function: `(hash_value + (c1 * i) + (c2 * i^2)) % table_size`
+        * "Double hashing": `(hash1 + (hash2 * i)) % table_size`, two hashes!!
+    * `i` is increased by 1 after each attempt; increasing/trying `i`: "probing"
+    * Uses same empty-since-start and empty-after-removal flags as before
+    * Table size of 16: hash value is `16 % 16 = 0`, try to place value at 0
+    * Collision at 0: `(0 + (1 * 1) + (1 * 1)) % 16 = 2`, try placing at 2
+    * Collision at 2: `(0 + (1 * 2) + (1 * 4)) % 16 = 6`, try placing at 6
+    * Collision at 6: `(0 + (1 * 3) + (1 * 9)) % 16 = 12`, try placing at 12
+    * Collision at 12: `(0 + (1 * 4) + (1 * 16)) % 16 = 4`, try placing at 4
+    * Collision at 4: `(0 + (1 * 5) + (1 * 25)) % 16 = 14`, try placing at 14
+- Buckets are fast!! Much faster to find values this way
+    * No buckets: find the 3/8" wrench in a *pile* of wrenches, hammers, drills
+    * Buckets: find the 3/8" wrench in the wrench bucket, ignoring other buckets
+- Finding the value involves: hashing it -> going to the matching hash (bucket)
+- Buckets are implemented efficiently via ["linked lists"](#linked-list)
+    * Each bucket contains a linked list; linked lists have speedy appends/sorts
+    * Create a linked list for each bucket, then append nodes to it (can sort!!)
+#### Hash Functions
+- Hash key: the parameter passed to a hash function, determines bucket choice
+- Hash function: computes the bucket containing the row from the hash key
+- Dynamic hash function: hash function but doesn't let buckets get too deep
+- Modulo: 
+    1. Convert the hash key by interpreting the key's bits as an integer value.
+    2. Divide the integer by the number of buckets.
+    3. Interpret the division remainder as the bucket number.
+    4. Convert bucket number to physical address of the block that has the row.
+- Mid-square hash:
+    1. Square the (numeric) key
+    2. Extracts R digits from the result's middle (R=2 for 205936: 59)
+        * This is done using substrings when the key is variable-size
+    3. Calculate `extracted_digits % table_size`
+    * Note: For N buckets, this must be true: `R >= log(N)` to index all buckets
+    * Note: "Mid-square hash base-2" uses `R >= log-base-2(N)` instead
+        * Base-2 only requires a few shift and bitwise AND operations (faster!!)
+- Multiplicative string hash:
+    1. Start with initial value (academic value used is 5381)
+    2. Loop each character in str: 
+        * `new_value = (previous_value * multiplier) + ascii_of_current_char`
+        * Academic multiplier value is 33 (performant??........)
+    3. Calculate `final_value % 1000`
+### Hash Tables and Linked Lists
+- Hash tables are fast... especially with linked lists
+- Each hash "bucket" contains a linked list
+- Linked lists are appended to / sorted extremely quickly
+- p1 EX: Buckets are [0,1,2,...] based on the alphabet (a = 0, b = 1, ...)
+- p2 EX: Choose the bucket you know the value to be in ("a" are in bucket 0)
+- p3 EX: `a[0] = ("A1", n1)`, `n1 = ("A2", n2)` --- `x[1] = ("B1", n3)`, ...
+### Class
+- The blueprints of an object
+- Contains attributes (descriptors) and methods (functions)
+- Blueprint is outlined in a class definition; classes are typically capitalized
+- Is only a blueprint until the program "instantiates" it (creates an object)
+- Instantiation creates the object and sets the default attributes and methods
+- Defaults are set by the class's "constructor" on instantiation
+- After creation, the object is modified using "attribute reference operators"
+    * In Python, object modification looks like this: `book1.title = "Walden"`
+- An object is highly flexible and its methods can instantiate other objects
+- An object can also inherit attributes from another class
+- A "derived class" inherits attributes from a "base class"
+### Binary Tree
+- Similar to linked list, but one node can point to TWO nodes (binary)
+- "Parent" and "child" nodes here, with "root" node as topmost node in tree
+    * Left child is less than parent; right child is greater than parent
+    * Left child itself and its children are less than its parent
+    * Right child itself and its children are greater than its parent
+- Leaf: node with no children
+- Internal node: node with one child
+- Edge: Link between parent and child
+- Depth: Edge count to root
+- Level: Grouping of nodes all at a certain depth
+- Height: Largest depth in tree
+- Full tree: All nodes have zero or two children
+- Complete tree: All levels "full" except maybe the last level
+    * Last level must at least be fully-shifted left
+- Perfect tree: All internal nodes have two children, all leaf nodes same level
+- Printing a binary tree: descend left to end, print from end in left-cur-right
+- Adding to a binary tree: navigate to right spot, do linked list things
+- Deleting nodes: find next-highest node, replace node to be deleted, delete
+### Heap
+- Like a binary tree BUT parent node has larger or smaller value than its childs
+    * It can be *any* tree, but it is typically a "complete" binary tree
+    * Parent larger than childs: "max heap"; smaller: "min-heap"
+- Typically stored using arrays (not pointers like a binary tree
+    * [root, left, right, leftleft, leftright, rightleft, ...]
+    * Percolate: append to array, swap index with parent if needed
+    * Find parent's index for percolation: `parent_i = floor((i - 1) / 2)`
+    * Child's index for percolation: `i = 2 * i + 1` or `i = 2 * i + 2`
+- Turn array into a heap: "heapify"
+    * Start with "internal node" having largest index (last internal node)
+        * Largest node's index: `i = floor(len(array) / 2) - 1`
+    * Swap with largest child if a child is larger
+        * After, if child node is an internal node, repeat evaluation on it
+    * Move to next internal node (the one having next-largest index)
+    * Follow same swap procedure; swap with largest child if a child is larger
+    * Continue evaluating internal nodes in this way
+    * Finally, evaluate the root in this way; done!
+#### Max Heap
+- Insertion: maintain "complete" tree, add node at bottom, "percolate" upward
+    * EX: value of 99 added to last layer, swap with parent having key of 21, ..
+- Removal: heaps work with the largest value, so ROOT is the only node removed
+    * Replace root with the last node in last layer (maintain complete tree)
+    * Swap the rulebreaking root with its greatest child until rules met
+#### Min Heap
+- Same exact thing as max heap but parent is smaller than children
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
+ ####                                        ##        ####                      
+#    # #####   ##   #####   ####  #   #     #  #      #    #  ####  #####  #####
+#      #      #  #  #    # #    # #   #      ##       #      #    # #    #   #   
+ ####  ####  #    # #    # #      #####     ###        ####  #    # #    #   #   
+     # #     ###### #####  #      #   #    #   # #         # #    # #####    #   
+#    # #     #    # #   #  #    # #   #    #    #     #    # #    # #   #    #   
+ ####  ##### #    # #    #  ####  #   #     ###  #     ####   ####  #    #   #   
+                                                                                     
+   #                                                             
+  # #   #       ####   ####  #####  # ##### #    # #    #  ####  
+ #   #  #      #    # #    # #    # #   #   #    # ##  ## #      
+#     # #      #      #    # #    # #   #   ###### # ## #  ####  
+####### #      #  ### #    # #####  #   #   #    # #    #      # 
+#     # #      #    # #    # #   #  #   #   #    # #    # #    # 
+#     # ######  ####   ####  #    # #   #   #    # #    #  ####  
+-->
 
 --------------------------------------------------------------------------------
 <!-- Polished -->
-## Requests
-- Use this method if you need to scrape the contents of *static* HTML tags
-- Requests grabs the page HTML, BeautifulSoup does the tag scraping
-    * Note that any post-HTML loading (ex: Javascript) is not grabbed...
-- To build a dataframe: use a sequence of `request.get` calls and build each row
-- Beautiful Soup dive: https://www.crummy.com/software/BeautifulSoup/bs4/doc/
-```python
-import requests
-from bs4 import BeautifulSoup
-import re
-def has_class_but_no_id(tag):
-    """Get elements with class attribute but no ID attribute"""
-    return tag.has_attr('class') and not tag.has_attr('id')
-response = requests.get('https://www.duckduckgo.com', verify=True)
-if not response.ok:
-    print("Bad response; status code:", response.status_code)
-else:
-    soup = BeautifulSoup(response.text)
-    print(soup.prettify())
-    # SELECT TAGS
-    all_tags = soup.find_all(True)
-    all_tags_with_id = soup.find_all(id=True)
-    a0 = soup.title
-    a1 = soup.a.span              # <span> anywhere within <a>
-    a2 = soup.select("a > span")  # <span> directly inside <a>
-    a3 = soup.find_all("div", class_="header--aside")
-    a4 = soup.find_all(attrs={"class": "search"})
-    a5 = soup.find_all(class_=re.compile("logo"))
-    a6 = soup.select("div.tag-home.tag-home--slide")                 # AND logic
-    a7 = soup.find_all("div", class_=["tag-home.tag","home--slide"]) # OR logic
-    a8 = soup.select(".content--home .cw--c .logo-wrap--home a")     # chain dig
-    # RUN FUNCTION TO SELECT TAGS
-    b0 = soup.select(has_class_but_no_id)
-    # GRAB TAG ATTRIBUTES
-    c0 = soup.a.span["class"]
-    c1 = soup.find("link", {"rel":"canonical"})["href"]
-    c2 = [ele["class"] for ele in soup.select("span", class_=True)]
-    # GRAB CONTENTS OF TAG
-    d0 = soup.title.text
-    d1 = [ele.text for ele in soup.find_all("span")]
-```
+## Search and Sort Algorithms
+- Efficient computing can make or break the user experience
+- Speedy searches and sorts can make a world of difference across all processing
+    * Sorting is crucial for all storytelling; max/min values, large/small, etc
+    * Searching is crucial for all analysis; find the data you need
+    * Simple changes to slow code can speed it up immensely
+- Knowing where algorithms are great / are useless informs excellent code design
+    - Goal: decrease "computational complexity"; lower runtime + memory use
+    - Goal: decrease "space complexity" lower memory use by itself
+    - Goal: decrease "auxiliary space complexity"; lower data overhead
+- Knowing where to be perfect / where to cut corners can secure victory
+    * Heuristic algorithms: imperfect but good enough, much faster than perfect
+- Runtime complexity and space complexity help distinguish algorithm performance
+    * Runtime (in seconds) is different from runtime complexity (Big O)
+### Runtime Complexity
+- Runtime complexity: where input values change, how does program change?
+    * Uses "Big O Notation", ex: `O(n)`, `O(1)`, `O(n^2)`
+- Computation count is constant regardless of input values: `O(1)`
+- Each computation divides & conquers the input values: `O(logn)`
+    * "Time increases linearly while n increases exponentially"
+    * EX: 1min does 10 values, 2min does 20 values, 3min does 40 values, ...
+- Each new value requires a new calculation: `O(n)`
+- Each new value requires a new calculation *and* divide & conquer: `O(n*logn)`
+- Each new value requires a new calculation on *all other values*: `(n^2)`
+- The number of total values is used for the loop count on all values: `O(n^n)`
+### Recursion
+- Function calling itself until goal achieved / no more work remains
+    * Special term: "Base case", what is executed to end recursion
+- Especially good at all-possible-outcomes problems
+    * EX: Scramble words using string indexing/splits recursively
+### Heuristic Algorithms
+- Heuristic algorithms don't perfectly solve problems but are FAST
+    * Being perfect and slow is sometimes necessary (sorting)
+    * Being imperfect and speedy is sometimes preferred (solving problems)
+    * Being imperfect and speedy is sometimes necessary (rounding decimals)
+    * Accuracy requirements steer heuristic choices
+- Knapsack problem is great example of where heuristic algorithms are useful
+    * Goal: fit max amount of defined-size objects into bag
+    * Perfect tries all possible combinations to get max (very slow, perfect)
+    * Heuristic repeatedly chooses largest that fits (extremely fast, decent)
+### Selection sort - Average speed of O(n^2)
+- 1. Search the *entire* array for the smallest value and move it to the start
+    * [4,2,9,7,6,3,1,8,5,0,10] -> [1,4,2,9,7,6,3,8,5,0,10]
+- 2. The "start" moves forward as the smallest values are moved to the beginning
+    * [1,4,2,9,7,6,3,8,5,0,10] -> [1,2,4,9,7,6,3,8,5,0,10]
+- 3. Repeat until 100% sorted; this is easy to implement in code!
+- Perfect sort, always O(n^2) (read all for each value)
+### Insertion sort - Average speed of O(n^2)
+- 1. Compare two values, swap them if second value is larger than first
+    * [1,5,4,6,2,3] -> [1,4,5,6,2,3] (5 > 4, so swap occurs)
+- 2. On a swap, comparison moves backward; second value compared to before-first
+    * [1,4,5,6,2,3] (1 < 4, so no swap occurs)
+- 3. On no swap (or index 0 reached when moving backward), compare moves forward
+    * [1,4,5,6,2,3] -> [1,4,5,2,6,3] (move forward until find 6 > 2, swap)
+- 4. Repeat insertion sorting until array is 100% sorted
+    * [1,4,2,5,6,3] -> [1,2,4,6,5,3] (move backwards, swapping until find 1 < 2)
+    * [1,2,4,6,5,3] -> [1,2,4,5,6,3] -> [1,2,4,5,3,6] -> 4,3,5 -> [1,2,3,4,5,6]
+- Perfect sort, nearly-sorted list improve speed to `O(n)` (just reads each val)
+### Shell sort - Average speed of O(n^1.5)
+- Interleaved insertion sorts with a final regular insertion sort
+- 1. Choose gap values for your array, ex: array with 15 values, use [5,3,1]
+    * Gap value chooses based on index; 0-10 is [0,5,10],[1,6],[2,7],[3,8],[4,9]
+- 2. Iterate gap values; for each value, use the value to split/sort the array
+    * Gap value 5: [4,2,9,7,6,3,1,8,5,0,10] -> [4,3,10],[2,1],[9,8],[7,5],[6,0]
+    * Insertion-sort each "interleaved list"; ex: [4,3,10] -> [3,4,10]
+        * Insertion sort uses `i + gap_value` instead of `i + 1`, sort in-place
+    * After gap value 5 shell sort: [3,1,8,5,0,4,2,9,7,6,10]
+    * Gap value 3: [3,1,8,5,0,4,2,9,7,6,10] -> [3,5,2,6],[1,0,9,10],[8,4,7]
+    * Insertion-sort each "interleaved list"; ex: [3,5,2,6] -> [2,3,5,6]
+    * After gap value 3 shell sort: [2,0,4,3,1,7,5,9,7,6,10]
+    * Gap value 1: just insertion sort here, but it's much faster now!!
+        * Insertion sort works backwards; gapvalue 3 sort means only move back 3
+    * After gap value 1 shell sort: [0,1,2,3,4,5,6,7,8,9,10]
+- **Note: must use a gap value of 1 at some point to clean up the other sorts!**
+- Worst-case is `O(n^(3/2))` (better than `O(n^2)`)
+### Quicksort - Average speed of O(n*logn)
+- From a midpoint index, split array in two, sort across the two parts
+- 1. Select midpoint: [4,2,9,7,6,3,1,8,5,0,10] -> [3]
+- 2. Move midpoint value to end of array temporarily: [4,2,9,7,6,1,8,5,0,10,3]
+- 2. From left, find a value larger than the midpoint value: [4]
+- 3. From right, find a value smaller than the midpoint value: [0]
+- 4. Swap these two: [4,2,9,7,6,1,8,5,0,10,3] -> [0,2,9,7,6,1,8,5,4,10,3]
+- 5. Repeat until fromleft has higher index than fromright
+    * [0,2,9,7,6,1,8,5,4,10,3] -> [9],[1] -> [0,2,1,7,6,9,8,5,4,10,3]
+    * [0,2,1,7,6,9,8,5,4,10,3] -> fromleft[7] is higher index than fromright[1]
+    * Place midpoint between fromright and fromleft: [0,2,1,3,7,6,9,8,5,4,10]
+- 6. First partitioning is done, midpoint is in correct spot now
+    * Low partition: [0,2,1], high partition: [7,6,9,8,5,4,10]
+- 7. Pick one partition, then repeat the process until that partition is sorted
+    * [0,2,1] midpoint is [2], -> [0,1,2], no values higher than midpoint, done
+- 8. Go to the other partition and start the partitioning process on that one
+    * [7,6,9,8,5,4,10] midpoint is [8], -> [7,6,9,5,4,10,8]
+    * [7,6,9,5,4,10,8] -> [9],[4] -> [7,6,4,5,9,10,8]
+    * [7,6,4,5,9,10,8] -> fromleft[9] is higher index than fromright[5]
+    * Place midpoint between fromright and fromleft: [7,6,4,5,8,9,10]
+    * Second partitioning is done, midpoint is in correct spot
+    * New partitions: [7,6,4],[8,9,10]; repeat the sorts on these
+- Re-combine all sorted pieces; final array is [0,1,2,3,4,5,6,7,8,9,10]
+- Perfect sort, worst case is O(n^2) but this is rare
+### Merge sort - Average speed of O(n*logn)
+- 1. Halve array repeatedly until all values are isolated
+    * 1. [4,2,9,7,6,3,1,8,5,0,10]
+    * 2. [4,2,9,7,6,3]                      ||| [1,8,5,0,10]
+    * 3. [4,2,9]       || [7,6,3]           ||| [1,8,5]         || [0,10]
+    * 4. [4,2]   | [9] || [7,6]   | [3]     ||| [1,8]   | [5]   || [0] | [10]
+    * 5. [4],[2] | [9] || [7],[6] | [3]     ||| [1],[8] | [5]   || [0] | [10]
+- 2. Work backwards in same order, sorting as you combine things back together
+    * 5. [4],[2] | [9] || [7],[6] | [3]     ||| [1],[8] | [5]   || [0] | [10]
+    * 4. [2,4]   | [9] || [6,7]   | [3]     ||| [1,8]   | [5]   || [0] | [10]
+    * 3. [2,4,9]       || [3,6,7]           ||| [1,5,8]         || [0,10]
+    * 2. [2,3,4,6,7,9]                      ||| [0,1,5,8,10]
+    * 1. [0,1,2,3,4,5,6,7,8,9,10]
+- Each recombine operation compares leftmost indices; append lower value to list
+    * EX: [1,8],[5] -> (1 < 5) -> append [1] -> (5 < 8) -> append 5 -> append 8
+- After halves sorted, take combined array and compare to another combined one
+    * EX: recombine-sort [1,8],[5] ----> recombine-sort [1,5,8],[0,10]
+- Perfect sort, slightly faster than the above sorts
+### Bucket sort - DEPENDS!
+- Intelligent split of array into buckets, sort each bucket, then recombine
+    * Integer bucket sorting is called "radix sort"; sort 1s, then 10s, then ...
+    * Signed radix sorting sorts as usual, then splits out negatives/reverses
+    * Radix sort has average speed of O(n)!!!!!
+- Many approaches for bucket choices; the choice makes/breaks the sort speed
+    * Values between zero and one: 10 buckets (0.1xx, 0.2xx, 0.3xx, ...)
+    * Alphabetical: 26 buckets (Axx, Bxx, Cxx, ...)
+- Too many buckets is too slow; too few buckets is also too slow (careful!)
+    * Elbow method to determine best combo?...
+- Best choice for bucket internals is the [linked list](#linked-list)
+### Heapsort
+- Sorting an array, ASC; heapify array into max heap, then "remove" root node
+- Remember, removing a root node involves putting the last node as root
+- "Removing" the root here actually means setting last index of array as root
+    * Last index is no longer considered available to the sort when "removed"
+- When last node is moved to root, it is percolated down as necessary
+    * Max-Heap rules are still in place
+- Keep going until entire array sorted
+### Quickselect - Average speed of O(n^1.5)
+- Find the kth-smallest number using a modified Quicksort
+### Linear Search - O(n)
+- From the first value, iterate forward until the value is found
+- No requirements except for data to be iterable in some way
+- Traditional way to search; boring and slow
+### Binary Search - O(log n)
+- Split in half repeatedly while playing marco polo
+- Requires data to already be sorted
+### Hash Table - O(n)
+- Look for values using its hash
+### Other Algorithms
+- Longest common substring
+- Dijkstra's shortest path
+### NP-Complete (lacking algorithms)
+- NP-Complete: impossible to "solve" via algorithm
+    * "Cliques", finding any subset of vertices where each is connected to every
+- Knowing NP-complete problems saves mental cycles trying to find a solution
+- Use heuristic algorithms for best-possible solution at speed to "solve"!
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
+ #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #  
+  # #     # #     # #     # #     # #     # #     # #     # #     # #     # #   
+####### ####### ####### ####### ####### ####### ####### ####### ####### ####### 
+  # #     # #     # #     # #     # #     # #     # #     # #     # #     # #   
+ #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #  
+                                                                                
+                                                                                
+    ######     #    #######    #    ######     #     #####  #######  #####  
+    #     #   # #      #      # #   #     #   # #   #     # #       #     # 
+    #     #  #   #     #     #   #  #     #  #   #  #       #       #       
+    #     # #     #    #    #     # ######  #     #  #####  #####    #####  
+    #     # #######    #    ####### #     # #######       # #             # 
+    #     # #     #    #    #     # #     # #     # #     # #       #     # 
+    ######  #     #    #    #     # ######  #     #  #####  #######  #####  
+                                                                        
+                                                                                
+ #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #  
+  # #     # #     # #     # #     # #     # #     # #     # #     # #     # #   
+####### ####### ####### ####### ####### ####### ####### ####### ####### ####### 
+  # #     # #     # #     # #     # #     # #     # #     # #     # #     # #   
+ #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #  
+-->
+
+
+# DATABASES
+
+
+<!-- 
+######                                                           
+#     #   ##   #####   ##   #####    ##    ####  # #    #  ####  
+#     #  #  #    #    #  #  #    #  #  #  #      # ##   # #    # 
+#     # #    #   #   #    # #####  #    #  ####  # # #  # #      
+#     # ######   #   ###### #    # ######      # # #  # # #  ### 
+#     # #    #   #   #    # #    # #    # #    # # #   ## #    # 
+######  #    #   #   #    # #####  #    #  ####  # #    #  ####  
+                                                                 
+#######                                             
+#     # #    # ###### #####  #    # # ###### #    # 
+#     # #    # #      #    # #    # # #      #    # 
+#     # #    # #####  #    # #    # # #####  #    # 
+#     # #    # #      #####  #    # # #      # ## # 
+#     #  #  #  #      #   #   #  #  # #      ##  ## 
+#######   ##   ###### #    #   ##   # ###### #    # 
+-->
 
 --------------------------------------------------------------------------------
 <!-- Polished -->
-## Selenium
-- Use this method if you need to scrape the contents of a *dynamic* page
-- Selenium drives a browser that executes Javascript which affects page content
-    * Running GET commands gets content before Javascript is run (before loaded)
-    * Need to download the relevant webdriver like chromedriver.exe
-- Selenium stores all loaded page elements, BeautifulSoup does the tag scraping
-```python
-from selenium import webdriver
-from selenium.webdriver.common.by import By               # allow By.ID, etc
-from selenium.webdriver.common.keys import Keys           # allow Keys.TAB, etc
-from selenium.webdriver.support import expected_conditions as EC # detect tag
-from selenium.webdriver.support.ui import WebDriverWait   # wait until tag loads
-from selenium.webdriver.common.action_chains import ActionChains # script action
-# BASIC PAGE PULL
-chromepath = "C:\\Users\\CoolGuy\\chromedriver.exe"
-chrome = webdriver.Chrome(chromepath)
-url = "https://imgur.com"
-chrome.get(url)
-soup = BeautifulSoup(chrome.page_source)
-# WAIT FOR ELEMENT TO LOAD
-myElem = WebDriverWait(chrome, 1)\
-  .until(EC.presence_of_element_located((By.ID, 'IdOfMyElement')))
-elements = chrome.find_elements_by_xpath('//*[@id="q_all"]')
-# RUN ACTIONS
-actions = ActionChains(chrome)
-elem1 = chrome.find_element_by_xpath('//*[@id="q_type"]/div[1]')
-actions.move_to_element(elem1).click().perform()  # open dropdown box
-elem2 = chrome.find_element_by_xpath('//*[@id="q_type"]/div[3]/div[2]')
-actions.move_to_element(elem2).click().perform()  # select an option in dropdown
-```
-### Walk Images
-```python
-import os
-import shutil
-import requests
-from bs4 import BeautifulSoup as SOUP
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait as WDW
-dest = "C:\\Users\\CoolGuy\\CoolImages\\"
-if not os.path.exists(dest):
-    os.mkdir(dest)
-gallery_urls = ["gallery1 img1 url", "gallery2 img1 url", "gallery3 img1 url"]
-ffx = webdriver.Firefox()
-i = 0
-for gallery_url in gallery_urls:
-    url = gallery_url
-    while True:
-        i += 1
-        ffx.get(url)
-        elem = WDW(ffx, 1).until(EC.presence_of_element_located(By.ID, "img"))
-        soup = SOUP(ffx.page_source)
-        img = soup.select("img#img")[-1]["src"]
-        extension = re.findall("^.+(\..+?)$", img)[-1]
-        imgnum = "%05d" % i                  # ex: 00001, 00002, ..., 05914, ...
-        imgname = imgnum + extension         # ex: 00001.png, 00002.png, ...
-        r = requests.get(img, stream=True)   # stream file to cache
-        r.raw.decode_content = True          # ensure binary is decoded on write
-        with open(dest + imgname, "wb") as f:   # write from binary
-            shutil.copyfileobj(r.raw, f)        # shutil writes to image.jpeg
-        nexturl = soup.select("a#next")[0]["href"]   # grab URL of next image
-        if url == nexturl:     # if next image is current image (end of gallery)
-            i -= 1
-            break
-        url = nexturl
-```
+## Databasing Overview
+- Database: file system with query engine, generally structured or unstructured
+- Most structured databases use relational database management systems (RDBMS)
+- Relational databases follow set theory and handle tabular data
+- Most unstructured databases use NoSQL, or "not only SQL"
+- NoSQL databases handle "big data" - Veracity, Volume, Velocity, Variety
+- Info about databases, database rankings: https://db-engines.com/en/
+### Database Roles
+- Database Administrator: specifically securing databases, making them available
+- Database Designer: focused on database structure and staying within limits
+- Database Programmer: scripting queries using general purpose programming langs
+- Database User: query runner (allowed by DB admin, aided by DB programmer)
+### Database Architecture
+- Query processor: interpret/streamline queries for the storage manager
+- Storage manager: translate queries into low-level filesystem commands
+- File system: the simple storage of data, coordinated by storage manager
+- Transaction manager: handles sets of queries, deconflicts overlaps
+- Log: complete record of every processed insert/update/delete (ignoring reads)
+    * Used for database recovery (ex: mid-transaction quits, complete DB loss)
+- Catalog: directory of tables, columns, indexes, and other database objects
+### Database Design Process
+- Three phases of database design: Analysis, Logical Design, and Physical Design
+- Often expressed via entity-relationship (ER) diagrams and table diagrams
+    * Analysis uses ER diagrams, Logical Design uses table diagrams
+- Analysis: define requirements for entity/attributes/relationships
+    * 1- Discover entities, relationships, and attributes (investigation)
+    * 2- Determine cardinality (aspects of relations, ex: many-to-one, min-zero)
+    * 3- Distinguish independent/dependent entities (room depends on building)
+    * 4- Create supertype/subtype entities (building has foyer, rooms, closets)
+- Logical Design: implement the discovered requirements as a database
+    * 1- Implement entities (create tables in the database)
+    * 2- Implement relationships (connect tables using foreign keys/etc)
+    * 3- Implement attributes (add columns to the tables)
+    * 4- Normalize tables (reduce/remove redundancy, etc)
+- Physical Design: add indexes to tables (indexes speed up queries)
+    * 1- Use the database systems to do this
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
+#####                                                  
+#    #   ##   #####   ##   #####    ##    ####  ###### 
+#    #  #  #    #    #  #  #    #  #  #  #      #      
+#    # #    #   #   #    # #####  #    #  ####  #####  
+#    # ######   #   ###### #    # ######      # #      
+#    # #    #   #   #    # #    # #    # #    # #      
+#####  #    #   #   #    # #####  #    #  ####  ###### 
+                                                        
+#####                                                                               
+#    #  ####   ###  #   # #    # ##### #    # #####   ##   ##### #  ####  #    # 
+#    # #    # #   # #   # ##  ## #     ##   #   #    #  #    #   # #    # ##   # 
+#    # #    # #     #   # # ## # ####  # #  #   #   #    #   #   # #    # # #  # 
+#    # #    # #     #   # #    # #     #  # #   #   ######   #   # #    # #  # # 
+#    # #    # #   # #   # #    # #     #   ##   #   #    #   #   # #    # #   ## 
+#####   ####   ###   ###  #    # ##### #    #   #   #    #   #   #  ####  #    # 
+-->
 
 --------------------------------------------------------------------------------
 <!-- Polished -->
-## SQL General
+## Database Documentation
+- Two main kinds: Entity-Relationship (ER) diagram and table diagram
+- ER diagrams show requirements, table diagrams show requirement implementation
+- ER diagrams map easily to table diagrams; Analysis maps to Logical Design
+- ER diagrams have entities, their attributes, and entity-entity relationships
+- Table diagrams have database tables, their columns, and table-table relations
+### ER Diagram
+- Charting entities, their attributes, and entity-entity relationships
+    * E/A/R types (blueprint) and instances (created)
+- This typically precedes database design; it helps structure requirements
+- Usually combined with a glossary (elaborates on entity/attribute/relationship)
+- Entity: one "thing", even entity names follow this non-plural rule
+- Attributes: descriptive aspects of an element, ex: thing's name, date, etc
+- Entity relationships: a truck (thing) relates to the truck depot (thing)
+- Cardinality: maxima, minima (modality), and require (applies to entity/attr)
+### Entities
+- The building block of ER diagrams, and the future tables of a database
+- An entity is singular (even in name) and contains attributes and/or entities
+- Supertype entity: an entity containing other entities (Car: DieselCar/GasCar)
+- Subtype entity: an entity contained by another entity (DieselCar)
+- Super/Sub relationships are called "IsA relationships" (DieselCar-IsA-Car)
+- Subtype entity pri-key must match supertype's pri-key and be foreign key to it
+- Partition: a grouping of subtypes linked to a supertype's attribute
+    * Subtypes inside a partition must be mutually-exclusive (no double dipping)
+    * Subtypes of one partition can share values w/ subtype of another partition
+    * EX: Card: TypeAttr:[CreditCard/DebitCard], CompanyAttr:[VISA/Mastercard]
+### Attributes
+- The descriptive elements of an entity
+- Attributes are singular and names are clearly expressed in the glossary
+    * For car entity's "FuelType" attribute, "Type" is defined in dictionary
+- Attributes have maxima/minima/require cardinality in both ER & table diagrams
+- EX: [Employee] FullName M-1(1), PassportNumber 1-M(0), SkillCode M-M(0)
+### Relationships
+- The link between entities
+- Relationships are named as Entity-Relationship-Entity, ex: "Person-Owns-Car"
+- Relationships happen between entities including supertype/subtype entities
+- Super/Sub have dependent relationship; regular entities may be independent
+- Dependence: one thing only exists when another thing does, ex: person - nose
+    * Dependence is expressed via arrows/diamonds; "A depends on B" is B -> A
+    * Dependent entities usually have composite primary key (foreign + primary)
+- Independence: either thing can exist or not, ex: car, garage
+- Dependence can be "existence dependence" (ER) or "functional dependence" (R)
+- Relationships have maxima/minima/require cardinality; format is max(min)
+    * Other formats use symbols; crow's foot is many, dash is one, o is zero
+- EX: [Flight] 1(1) --Includes-- M(0) [Booking] exactly one flight, any bookings
+### Table Diagram
+- Converted version of the ER diagram
+- Entity -> Table; Attribute -> Column; Relationship -> Foreign Key
+- Much more specific than ER diagrams, meant to directly describe DB schema
+- Attributes now have type declarations, ex: VARCHAR(100)
+- Foreign keys now have a line directly connecting them to their primary key
+### Glossary
+- Glossary: data dictionary/repository, explains ER/table diagram words
+#### Example Glossary Entry
+```
+* [entity/relationship/attribute] Name: [name] 
+* Synonyms: [syn1], [syn2]
+* Description: A [name] is ... [name] includes... but excludes...
+```
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
+######                                                  
+#     #   ##   #####   ##   #####    ##    ####  ###### 
+#     #  #  #    #    #  #  #    #  #  #  #      #      
+#     # #    #   #   #    # #####  #    #  ####  #####  
+#     # ######   #   ###### #    # ######      # #      
+#     # #    #   #   #    # #    # #    # #    # #      
+######  #    #   #   #    # #####  #    #  ####  ###### 
+                                                        
+#######                                                          
+#     # #####  ###### #####    ##   ##### #  ####  #    #  ####  
+#     # #    # #      #    #  #  #    #   # #    # ##   # #      
+#     # #    # #####  #    # #    #   #   # #    # # #  #  ####  
+#     # #####  #      #####  ######   #   # #    # #  # #      # 
+#     # #      #      #   #  #    #   #   # #    # #   ## #    # 
+####### #      ###### #    # #    #   #   #  ####  #    #  ####  
+-->
+
+--------------------------------------------------------------------------------
+<!-- Polished -->
+## Database Operations
+### Primary Key
+- Primary key: the column(s) that uniquely identify each row in a table
+- Can be simple (one column) or composite (multiple columns)
+- Primary key must be minimal-complexity (least columns)
+    * Choose a car's VIN instead of the composite of year/make/model/owner/plate
+- Each entry in the primary key must be unique, and no single value can be null
+- Primary keys should be as simple as possible
+    * Choose auto-incrementing integers instead of 256-bit hash
+- Can create an artificial key if primary key assembly is complex/not possible
+    * Artificial key is generally auto-incrementing integers
+### Queries
+- Query: a database operation, includes data retrieval and insert/update/delete
+- Queries are CRUD operations; Create, Read, Update, and Delete data
+- "Create" queries add brand new table(s) to a database
+- "Read" queries display data from a database
+- "Update" queries modify existing table(s) in a database
+- "Delete" queries remove table(s) from a database
+- Queries can be grouped into multi-query "transactions"
+- Funds transfer is a transaction; remove money from one account, add to other
+- Transactions are *not* allowed to partially-execute, ex: only removing money
+    * Database systems ensure either entire or none of transaction is performed
+### Joins
+- Join: bringing tables together into one table
+- Many types of joins; inner/outer, equijoin/non-equijoin, self-join, cross-join
+- "Outer" join: bring tables together while allowing unmatched rows
+- "Inner" join: bring tables together while dropping unmatched rows
+- "Equijoin": using a matching key to join tables
+- "Non-equijoin": use conditional evaluation to join tables
+- "Self-join": join the same table onto a copy of itself
+- "Cross-join": all possible row combinations of two or more tables
+### Storage
+- Speed: measured as access time and transfer rate
+    * Access time: time to access the first byte in a read or write operation
+    * Transfer rate: read/write speed following initial access
+- Block: chunk of data in standardized size, ex: 2kb, for storage
+    * Standardized size is enforced; partial-fill is still sent as a full block
+    * Typical range for block size is 2kb to 64kb
+- Magnetic disk: disk drives, use "sectors", 512 bytes to 4 kb per sector
+- Flash memory: solid state, use "pages", 2 kb to 16 kb per page
+- Storage controller: converts data from main memory (RAM) to magnetic/flash
+- Table clusters: interleave rows of two or more tables in the same storage area
+    * Cluster key: common key from all tables, determines order
+#### Row-Oriented Storage
+- Row-oriented storage: packaging row-wise for storage on disks or flash memory
+- Most common storage form for relational databases
+- Iterates rows and reads all cells in the row (fast at row's attributes)
+- Great when individual cells have small data, not documents/images/etc
+- Heap table: unordered rows; track open space in blocks; linked list refill
+- Sorted table: ordered rows; pure linked list work to keep order in changes
+- Hash table: buckets of linked blocks; hash key is column(s); fast changes
+#### Column-Oriented Storage
+- Column-oriented storage: packaging column-wise for storage on disks/flash
+- Reads all cells in column (fast at a column's values)
+- Great for column-based work + compression, terrible at multi-column
+- Used by: PostgreSQL, Vertica, NoSQL
+### Index
+- I am so bored by database indices
+- They are copies of one or more columns from one or more tables
+- They are sorted
+- They don't have to be unique
+- They have pointers that point to the specific rows they refer to
+- You can use table scans (reading tables) or index scans (reading indices)
+    * Decision made from "hit ratio"; high hit ratio -> table scan, low -> index
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
+######                                                           
+#     # ###### #        ##   ##### #  ####  #    #   ##   #      
+#     # #      #       #  #    #   # #    # ##   #  #  #  #      
+######  #####  #      #    #   #   # #    # # #  # #    # #      
+#   #   #      #      ######   #   # #    # #  # # ###### #      
+#    #  #      #      #    #   #   # #    # #   ## #    # #      
+#     # ###### ###### #    #   #   #  ####  #    # #    # ###### 
+                                                                 
+######                                                         
+#     #   ##   #####   ##   #####    ##    ####  ######  ####  
+#     #  #  #    #    #  #  #    #  #  #  #      #      #      
+#     # #    #   #   #    # #####  #    #  ####  #####   ####  
+#     # ######   #   ###### #    # ######      # #           # 
+#     # #    #   #   #    # #    # #    # #    # #      #    # 
+######  #    #   #   #    # #####  #    #  ####  ######  ####  
+-->
+
+--------------------------------------------------------------------------------
+<!-- Polished -->
+## Relational Databases
+- Two-dimensional tables, connected, queryable
+### Relational DB Model Basics
+- Domain: named **set** of possible database values, ex: integers, strings, ...
+- Tuple: collection of domains, ex: `(Integers, DictionaryWords, LogicalValues)`
+- Relation: named **set** of tuples (each tuple must have the same sequence)
+- Relational rules: general term for structural, business, ref. integrity rules
+- Structural rules: governs data universally for all databases
+    * Unique primary key, unique column names / rows, only one value in a cell
+- Business rules: "local rules" enforced by the database system / requirements
+    * Unique column values, no missing values, deletion cascade
+- Referential integrity rules: foreign key constraints
+    * Must match a value in primary key, if composite can't be partially null
+- Constraints: Column-level (one column) vs Table-level (more than one column)
+### Foreign Key
+- Column of one table referencing another table's primary key
+- Foreign key typically adopts the name of the primary key it references
+- Values in foreign key must exist in the referred-primary key (ref. integrity)
+- Values in foreign key can be null unless the primary key is marked "required"
+    * If all foreign key values are null, then zero connections to pri-key (bad)
+- Values in foreign key can be duplicates unless reference to pri-key is 1-to-1
+    * Foreign key may also be marked "unique" to disallow duplicates
+- 1-to-1 / 1-to-M has foreign key; M-to-M has new table w/ composite foreign key
+    * Use CASCADE/RESTRICT constraints to assist DB management during CRUD ops
+### Relational Algebra
+- Relational algebra is table operations (uses set theory)
+- Select: selects a subset of rows of a table
+- Project: eliminates one or more columns of a table
+- Product: lists all possible combinations of rows of two tables
+- Join: a product operation followed by a select operation
+- Union: combines two tables by selecting all rows of both tables
+- Intersect: combines two tables by selecting only rows common to both tables
+- Difference: combines two tables by selecting not-in-common rows
+- Query optimizers rely on relational algebra
+    * Convert query to rel. algebra expressions and create alternate expressions
+    * Compare processing times of all rel. algebra expressions, pick fastest
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
+#     #                                                       
+##   ##   ##   #    #   ##    ####  # #    #  ####       ##   
+# # # #  #  #  ##   #  #  #  #    # # ##   # #    #     #  #  
+#  #  # #    # # #  # #    # #      # # #  # #         #    # 
+#     # ###### #  # # ###### #  ### # #  # # #  ###    ###### 
+#     # #    # #   ## #    # #    # # #   ## #    #    #    # 
+#     # #    # #    # #    #  ####  # #    #  ####     #    # 
+                                                              
+ #####   #####  #         ######                                                
+#     # #     # #         #     #   ##   #####   ##   #####    ##    ####  #####
+#       #     # #         #     #  #  #    #    #  #  #    #  #  #  #      #    
+ #####  #     # #         #     # #    #   #   #    # #####  #    #  ####  #### 
+      # #   # # #         #     # ######   #   ###### #    # ######      # #     
+#     # #    #  #         #     # #    #   #   #    # #    # #    # #    # #    
+ #####   #### # ######    ######  #    #   #   #    # #####  #    #  ####  #####
+-->
+
+--------------------------------------------------------------------------------
+<!-- Polished -->
+## Managing a SQL Database
+### SQL Data Types
+- DATE (YYYY-MM-DD), TIME (hh:mm:ss), DATETIME (YYYY-MM-DD hh:mm:ss), TIMESTAMP
+- TINYINT(255), SMALLINT(65_535), MEDIUMINT(16_777_215), 
+- INT/INTEGER(4_294_967_295), BIGINT(2e64 - 1)
+- DECIMAL(digits,decimalplaces), FLOAT (6.8e38), DOUBLE (1.8e308)
+- CHAR (255), VARCHAR (65_535)
+- BLOB, BINARY, VARBINARY, IMAGE (0101011101)
+- POLYGON, POINT, GEOMETRY (coordinate-related; POINT is a tuple (x,y))
+- XML, JSON (documents)
+- Any of the above column data types can have: NULL
+### SQL Constraints
+- Either follows this syntax: `..., ColName INTEGER constraint_here, ...`
+- Or this syntax: `constraint_here (ColName)` / `constraint_here (C1, C2, ...)`
+- Or this syntax: `CONSTRAINT name_here AS constraint_here (ColName, ...)`
+- Primary key (unique, non-null): `PRIMARY KEY (c1)`
+    * See also: `c1 INTEGER PRIMARY KEY AUTO_INCREMENT` (ignore c1 on insert)
+- Foreign key (choose vals from pri key): `FOREIGN KEY (c1) REFERENCES t1 (c1)`
+- No duplicates: `UNIQUE (c1)`
+- Handle nulls: `c1 INTEGER NOT NULL` / `c1 INTEGER DEFAULT 42`
+- Positive/Negative: `SIGNED` (positive or negative), `UNSIGNED` (positive only)
+- Match condition: `CHECK (cond1)` / `CHECK (cond1, cond2)` / `CHECK (a > 100)`
+#### SQL Referential Integrity Violation Constraints
+- Used for handling updates to a primary key being referenced by foreign key(s)
+    * EX: `... FOREIGN KEY c1 REFERENCES t1(c1) ON DELETE CASCADE` / `ON UPDATE`
+- Reject key changes: `RESTRICT` 
+- Allow key changes, set foreign keys' changed values to null: `SET NULL`
+- Allow key changes, set default for foreign keys' changed values: `SET DEFAULT`
+- Allow key changes, pass them on to foreign keys' changed values: `CASCADE`
+### SQL Database Architecture Work
+- `CREATE DATABASE db_name;`
+- `CREATE TABLE Employee (ID INT, Name VARCHAR(60) NOT NULL, PRIMARY KEY (ID));`
+    * `DROP TABLE Employee` (if other table references Employee, this fails)
+- `ALTER TABLE Employee...` (specifically column-based changes)
+    * `... ADD ColumnName DataType;`
+    * `... CHANGE CurrentColumnName NewColumnName NewDataType;`
+    * `... DROP ColumnName;`
+- `CREATE INDEX index_name ON table (column)` / `... ON table (c1, c2, c3, ...)`
+- `CREATE VIEW viewtable AS SELECT ...`
+    * Views are convenient versions of raw tables and can protect sensitive info
+    * Restrict certain changes to view: `WITH CHECK OPTION (a > 0);`
+### SQL Database Content Work
+- `INSERT INTO account VALUES (290, 'Ethan Carr', 5000);`
+- `INSERT INTO names VALUES (1, 'John'), (2, 'Joan'), ...;`
+- `UPDATE Account SET Balance = 4500 WHERE ID = 831;`
+- `DELETE FROM Account WHERE ID = 572;`
+- `TRUNCATE TABLE Account` (drop all rows and reset auto-increment)
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
+ #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #  
+  # #     # #     # #     # #     # #     # #     # #     # #     # #     # #   
+####### ####### ####### ####### ####### ####### ####### ####### ####### ####### 
+  # #     # #     # #     # #     # #     # #     # #     # #     # #     # #   
+ #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #  
+                                                                                
+                                                                                
+                      #####  #     # ####### ######  #     # 
+                     #     # #     # #       #     #  #   #  
+                     #     # #     # #       #     #   # #   
+                     #     # #     # #####   ######     #    
+                     #   # # #     # #       #   #      #    
+                     #    #  #     # #       #    #     #    
+                      #### #  #####  ####### #     #    #    
+                                        
+                                                                                
+ #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #  
+  # #     # #     # #     # #     # #     # #     # #     # #     # #     # #   
+####### ####### ####### ####### ####### ####### ####### ####### ####### ####### 
+  # #     # #     # #     # #     # #     # #     # #     # #     # #     # #   
+ #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #  
+-->
+
+
+# QUERY
+
+
+<!--
+ #####   #####  #       
+#     # #     # #       
+#       #     # #       
+ #####  #     # #       
+      # #   # # #       
+#     # #    #  #       
+ #####   #### # ####### 
+-->
+
+--------------------------------------------------------------------------------
+<!-- Polished -->
+## SQL
 - SQL is maybe the most important programming language in the world
     * Decades-old, used everywhere, most systems support some SQL commands
 - SQL databases are usually hosted on beefy systems; use SQL as much as possible
@@ -552,8 +1556,13 @@ for gallery_url in gallery_urls:
     * Use PRAGMA to find table indices
 - PostgreSQL: Powerful SQL database; https://www.postgresql.org/
     * PGAdmin is awesome; view and manage everything, can generate your commands
-    * `SHOW` is `\l`, `USE` is `psql -d mydb`, `DESCRIBE` is `\d` or `\dt`
+    * `SHOW`:`\l`, `USE`: `psql -d mydb`, `DESCRIBE`: `\d` or `\dt`, quit: `\q`
+        * `SHOW`, `USE`, and `DESCRIBE` don't work
+    * Select distinct: `SELECT DISTINCT ON (c1) c1, c2, c3 FROM t ORDER BY c1;`
+    * `CREATE OR REPLACE PROCEDURE p(IN a, ..) BEGIN .. END; $ LANGUAGE plpgsql`
     * Invoke a stored procedure: `CALL procedure_name(10000, 429);`
+    * `\copy` used with ETL copy instructs, ex: `\copy (SELECT * FROM table)...`
+    * `pg_dump` to export a table as SQL; `pg_dumpall` exports all tables as SQL
 - Sequel ACE: Excellent GUI for SQL database reads and querying
 - SQLAlchemy: Python library for interaction with SQL databases
 ### SQL Column Operations
@@ -664,9 +1673,660 @@ CREATE TEMPORARY TABLE germain_1457.employees_with_departments AS
     JOIN departments USING(dept_no);
 ```
 
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
+ #####                              
+#     # #####    ##   #####  #    # 
+#       #    #  #  #  #    # #   #  
+ #####  #    # #    # #    # ####   
+      # #####  ###### #####  #  #   
+#     # #      #    # #   #  #   #  
+ #####  #      #    # #    # #    # 
+-->
+
 --------------------------------------------------------------------------------
 <!-- Polished -->
-## Normalization Concepts
+## Spark
+- Computational clustering for big data processing
+    * Velocity (fast gathering, lots of data, streaming)
+    * Volume (large data, bigger than memory or bigger than storage)
+    * Veracity (reliability of data, esp. missing data)
+    * Variety (different sources, unstructured data, data isn't uniform)
+- Java Virtual Machine (JVM) coordinates clusters using Scala
+- The 'pyspark' library translates Python to Scala and operates the JVM
+- Can run 100% locally; it will coordinates computer cores
+    * This is often overkill for one-computer tasks
+- Is 'lazy'- adds to / optimizes queries until the execution order is given
+- Alternatives: Hadoop, Dask
+### PySpark
+- Check Spark's intentions before query: `df.explain()`
+    * Used for diagnosing performance issues; operation order from bottom-upward
+- Switch to SQL: `df.createOrReplaceTempView('df')`
+    * Run SQL statements: `spark.sql(''' SELECT * FROM df ''')`
+- Build schema: `schema = StructType([(StructField(...), StructField(...)),])`
+    * StructField syntax: `Structfield("col1", StringType())`
+```python
+import pyspark
+from pyspark.sql.functions import *
+spark = pyspark.sql.SparkSession.builder.getOrCreate()  # CONNECT TOY INSTANCE
+df = spark.read.csv('filepath', header=True, schema=schema_struct) # INGEST CSV
+# WRANGLING
+df = df.join(df2, "joincol", "left").drop(df.joincol).drop(df2.joincol)  # JOIN
+df.select(
+    [count(when(isnan(c) | col(c).isNull(), c)).alias(c) for c in df.columns]
+).show(vertical=True)  # PRINT NULL COUNTS
+df = df.na.fill(0, subset=['x', 'y']).na.drop()  # FILL, DROP NULLS
+df.printSchema()  # CHECK DTYPES
+df = df.withColumn('cool', df.x.cast('string')).withColumnRenamed("b4", "aftr")
+df = df.withColumn("ts_to_month", month(to_timestamp("col1", "M/d/yy H:mm")))
+df = df.withColumn("datediff", datediff(current_timestamp(), "datecol"))
+df = df.withColumn('repl', regexp_replace(df.x, re, repl))   # REGEX REPLACE
+df = df.withColumn('substr', regexp_extract(df.col, re, g))  # REGEX SUBSTR
+df = df.withColumn("c1", trim(lower(df.c1)))  # LOWERCASE AND TRIM
+df = df.withColumn("c1", format_string("%03d", col("c1").cast("int")),) # FORMAT
+df = df.withColumn('c2', concat(lit('x:', df.x)))  # CONCAT STRINGS
+df = df.select(*, expr(df.x + df.y).alias('z'))  # ADD X + Y AS COLUMN Z
+df = df.selectExpr('*', 'x + y as z')            # ADD X + Y AS COLUMN Z
+df = df.withColumn('ten', when(df.x > 10, '>10').otherwise('<=10'))  # IF/ELSE
+df = df.where((df.x > 5) | (df.y < 5)).where(df.z ==7)  # WHERE, OR + AND
+df = df.sample(fraction=0.01, seed=42)  # SMALL SAMPLE
+trn, val, test = df.randomSplit([0.6, 0.2, 0.2], seed=42) # SPLIT FOR MODELING
+# RUN ALL, SAVE LOCALLY
+df.write.json("df_json", mode="overwrite")
+trn.write.format("csv").mode("overwrite").option("header", "true").save("train")
+val.write.format("csv").mode("overwrite").option("header", "true").save("val")
+test.write.format("csv").mode("overwrite").option("header", "true").save("test")
+# EXPLORATION
+x_y = df.select(sum(df.x)), df.select(mean(df.x))  # COLUMN MATH
+mean_min = df.groupBy('gb').agg(mean(df.x), min(df.y))  # AGG GROUPBY
+crosstab = df.crosstab('g1', 'g2')  # CROSSTAB
+mean_x_given_g1_g2 = df.groupBy('g1').pivot('g2').agg(mean('x'))  # PIVOT TABLE
+value_counts = df.groupBy('col','target').count().sort('count',ascending=False)\
+.withColumn('proportion', round(col('count') / df.count(), 2)) # COUNTS/NORMALS
+# MODELING
+from pyspark.ml.stat import ...    # chi square / correlation testing
+from pyspark.ml.feature import ... # imputation, encoding, scaling, vectorize...
+from pyspark.ml.classification import ... # modeling
+from pyspark.ml.regression import ...     # modeling
+from pyspark.ml.clustering import ...     # modeling
+from pyspark.ml.tuning import ...         # model cross-validation
+from pyspark.ml.evaluation import ...     # model evaluation
+```
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
+#######                                         #####                        
+#       #        ##    ####  ##### #  ####     #     # #    # # ##### ###### 
+#       #       #  #  #        #   # #    #    #       #    # #   #   #      
+#####   #      #    #  ####    #   # #          #####  #    # #   #   #####  
+#       #      ######      #   #   # #               # #    # #   #   #      
+#       #      #    # #    #   #   # #    #    #     # #    # #   #   #      
+####### ###### #    #  ####    #   #  ####      #####   ####  #   #   ###### 
+-->
+
+--------------------------------------------------------------------------------
+<!-- Polished -->
+## Elastic Suite
+- The Elastic suite is a powerful solution for data transform/storage, analytics
+    * Elasticsearch: database; directly accessible, can use inbuilt pipelines
+    * Kibana: user interface; insights/viz, database management, task runner
+    * Beats: ingest agents; many preconfigured agents, can build custom agents
+    * Logstash: optional ingest pipeline layer with full customization
+- Elasticsearch database is extremely well-documented and has many useful APIs.
+    * Uses typical HTTP requests, ex: `PUT url/new-index`, `DELETE url/goodbye`
+    * `_search`: Querying records, allows aggregation and temp field creation
+    * `_delete_by_query`: Deleting records, uses a query to select for deletion
+    * `_reindex`: Copy records from one index to another, can transform the copy
+    * `_bulk`: Perform a bulk of actions including ingest, delete, change, etc
+### API Calls
+- Use Kibana's console to draft API calls for scripting, run one-off tasks
+    * Guaranteed connection to Elasticsearch, no worries about creds/network/etc
+    * Simplifies API syntax, ex: `GET _cat/indices?h=index&expand_wildcards=all`
+- Use cURL to run the API calls from a command line interface or script
+    * `curl -k --user U:P -H ... -XGET "url/index/_search" -d @q.json > o.json`
+    * JSON use `-H "Content-Type: application/json" -d @q.json`
+    * NDJSON use `-H "Content-Type: application/x-ndjson" --data-binary @q.json`
+- Use Python to parse JSON to CSV, or, perform scan, index management, etc
+    * `elasticsearch-py` and `elasticsearch-dsl` libraries simplify tasks
+### Example _search API Request Body
+```json
+{
+  "size": 0,
+  "query": {"bool": {
+    "must": [
+        {"exists": {"field": "source.ip"}},
+        {"query_string": {"query": "network.transport: (tcp OR udp)"}}
+    ],
+    "must_not": [
+      {"match": {"source.ip": "123.45.67.89"}}
+    ],
+    "filter": [
+      {"range": {"@timestamp": {"gte":"2001-01-01T00:00:00", "lte":"now-3d"}}},
+      {"script": {"script": {"source": "return doc['first2'].value != '0.0';"}}}
+    ]
+  }},
+  "runtime_mappings": {
+    "first2": {"type": "keyword", "script": """
+    String ip_address = doc['source.ip'].value.toString();
+    String firsttwo_octets = '';
+    def octets = ip_address.splitOnToken('.');
+    for (int i = 0; i < 2 && octets.length == 4; i++) {
+      firsttwo_octets = firsttwo_octets + octets[i] + '.';
+    }
+    if (firsttwo_octets != '') { emit(firsttwo_octets); }
+    """},
+    "sentmore_192_168": {"type": "boolean", "script": """
+    String srcip = doc['source.ip'].value;
+    int total_sent = doc['source.bytes'].value;
+    int total_rcvd = doc['destination.bytes'].value;
+    def myregex = /192\\.168\\.\\d{1,3}\\.\\d{1,3}/.matcher(srcip);
+    if (myregex.matches()) {emit(total_sent > total_rcvd) && (total_rcvd > 0);}
+    """}
+  },
+  "aggs": {
+    "unique_first2": {"terms": {"field": "first2", "size": 1000}},
+    "rare_first2": {"rare_terms": {"field": "first2"}},
+    "most_sent"
+  }
+}
+```
+### Scan Records in Python
+```python
+# -- DEFINITION BLOCK -- #
+def pull_records(query_object, pullcount_limit=None, shh=False, add_id=False):
+    response = query_object.execute()
+    if not response.success():
+        print("Connection failed!")
+        return None
+    rows, i = [], 0
+    try:
+        for i, record in enumerate(query_object.scan()):
+            if i == pullcount_limit:
+                i = i - 1
+                break
+            if shh is False and i % 1_000 == 0:
+                print_progress(i)
+            obj = record.to_dict()
+            if add_id:
+                obj["_id"] = record.meta.id
+            row = flatten_json(obj)
+            del obj
+            rows.append(row)
+            del row
+    except Exception as error:
+        print(f"Something went wrong! The query likely failed. Error:\n{error}")
+    if shh is False:
+        print(f"Total records pulled: {i + 1}")
+    if len(rows) == 0:
+        return None
+    df = pd.DataFrame(rows)
+    del rows
+    return df
+def flatten_json(json_input, keyout_lists=False):
+    output_dict = {}
+    def flatten(current_structure, name=""):
+        if type(current_structure) is dict:
+            for element in current_structure:
+                flatten(current_structure[element], name + element + ".")
+        elif type(current_structure) is list:
+            if keyout_lists:
+                for i, element in enumerate(current_structure):
+                    flatten(element, name + str(i) + "_")
+            else:
+                output_dict[name[:-1]] = current_structure
+        else:
+            output_dict[name[:-1]] = current_structure
+    flatten(json_input)
+    return output_dict
+def print_progress(i):
+    if i < 1_000_000 and i % 1_000 == 0 and i != 0:
+        print(f"{i // 1_000}k records pulled...", end="\r", flush=True)
+    elif i % 10_000 == 0 and i != 0:
+        print(f"{i / 1_000_000}mil records pulled...", end="\r", flush=True)
+# -- EXECUTION BLOCK -- #
+ip, user, password = "https://192.168.0.1:9200", "coolguy", "coolpassword"
+index_pattern = "winlogbeat-*"
+import pandas as pd
+from elasticsearch import Elasticsearch as ES
+from elasticsearch_dsl import Search
+client = ES([ip], ca_certs=False, verify_certs=False, http_auth=(user,password))
+search_context = Search(using=client, index=index_pattern, doc_type="doc")
+s1 = search_context\
+    .query("match", winlog__event_id=4624)\
+    .filter("range", **{"@timestamp": {"gte": "now-1d"}})\
+    .source(fields=["winlog.provider_name","winlog.event_id"])
+df1 = pull_records(s1, 21_000)
+s2 = search_context.extra(**{
+    "query": {"match": {"event.code": 4624}},
+    "fields": ["event.code", "winlog.event_data.LogonType", "related.user"]})
+df2 = pull_records(s2, 192_168_010)
+```
+### Copy Existing Index's Config for Use in New Index
+```python
+def copy_existing_index_config(client, alias="winlogbeat-*"):
+    """Grab mappings/settings from index in pattern for the new custom index"""
+    mappings = client.indices.get_mapping(index=alias) # GRAB INDEX MAPPINGS
+    ind_name = list(mappings.keys())[-1]        # CHOOSE NEWEST INDEX IN PATTERN
+    put_body = mappings[ind_name]               # SAVE NEWEST INDEX'S MAPPINGS
+    ind_sets = client.indices.get_settings(index=ind_name) # GRAB INDEX SETTINGS
+    settings = ind_sets[ind_name]["settings"]   # ISOLATE NEWEST INDEX SETTINGS
+    del settings["index"]["uuid"]               # DELETE TO PREVENT CONFLICT
+    del settings["index"]["creation_date"]      # DELETE TO PREVENT CONFLICT
+    del settings["index"]["provided_name"]      # DELETE TO PREVENT CONFLICT
+    del settings["index"]["version"]["created"] # DELETE TO PREVENT CONFLICT
+    put_body["settings"] = settings             # SAVE NEWEST INDEX'S SETTINGS
+    return put_body                             # CUSTOM INDEX'S FULL 'PUT' BODY
+elastic_backend = "https://localhost:9200"
+ssl_cert = "C:\\Users\\coolguy\\ca.crt"
+login_creds = ("elastic", "elastic")
+client = ES([elastic_backend], ca_certs=ssl_cert, http_auth=login_creds)
+winlogbeat_index_definition = copy_existing_index_config(client)
+response = client.indices.create(index="new", body=winlogbeat_index_definition)
+print(f"INDEX CREATION:\n{response}\n------------")
+```
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
+ #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #  
+  # #     # #     # #     # #     # #     # #     # #     # #     # #     # #   
+####### ####### ####### ####### ####### ####### ####### ####### ####### ####### 
+  # #     # #     # #     # #     # #     # #     # #     # #     # #     # #   
+ #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #  
+                                                                                
+                                                                                
+                 #     #####   #####  #     # ### ######  ####### 
+                # #   #     # #     # #     #  #  #     # #       
+               #   #  #       #     # #     #  #  #     # #       
+              #     # #       #     # #     #  #  ######  #####   
+              ####### #       #   # # #     #  #  #   #   #       
+              #     # #     # #    #  #     #  #  #    #  #       
+              #     #  #####   #### #  #####  ### #     # ####### 
+                                                    
+                                                                                
+ #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #  
+  # #     # #     # #     # #     # #     # #     # #     # #     # #     # #   
+####### ####### ####### ####### ####### ####### ####### ####### ####### ####### 
+  # #     # #     # #     # #     # #     # #     # #     # #     # #     # #   
+ #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #  
+-->
+
+
+# Acquire
+
+
+<!--
+######                                          
+#     #   ##   #####   ##    ####  ###### ##### 
+#     #  #  #    #    #  #  #      #        #   
+#     # #    #   #   #    #  ####  #####    #   
+#     # ######   #   ######      # #        #   
+#     # #    #   #   #    # #    # #        #   
+######  #    #   #   #    #  ####  ######   #   
+                                                
+ #####                                            
+#     #  ####  #    # #####   ####  ######  ####  
+#       #    # #    # #    # #    # #      #      
+ #####  #    # #    # #    # #      #####   ####  
+      # #    # #    # #####  #      #           # 
+#     # #    # #    # #   #  #    # #      #    # 
+ #####   ####   ####  #    #  ####  ######  ####  
+-->
+
+--------------------------------------------------------------------------------
+<!-- Polished -->
+## Dataset Sources
+- Massive list: https://github.com/awesomedata/awesome-public-datasets
+- Massive list: https://www.data-is-plural.com/archive/
+- Search US Gov data: https://www.data.gov
+- Search EU data: https://data.europa.eu/en
+- Search research paper data: https://paperswithcode.com/datasets
+- Search various: https://huggingface.co/datasets
+- Search various: https://datasetsearch.research.google.com
+- NLP: https://machinelearningmastery.com/datasets-natural-language-processing/
+- Computer vision (CV): https://visualdata.io/discovery
+- Satellite CV: https://github.com/chrieke/awesome-satellite-imagery-datasets
+### Python-Importable Datasets
+- `openml`: Many datasets; keyword search on https://www.openml.org and use IDs
+- `tensorflow_datasets`: Many datasets; `mnist`, `imdb`, `boston_housing`
+    * Or just use `tensorflow.keras.datasets` for various NN datasets
+- `torchvision.datasets`: Image datasets; `MNIST`, `CIFAR10`, `FashionMNIST`
+- `ucimlrepo.fetch_ucirepo`: UCI data; https://github.com/uci-ml-repo/ucimlrepo
+- `sklearn.datasets`: Common datasets; `iris`, `digits`, `wine`
+- `statsmodels.api`: Stats-related datasets; `adni`, `fair`, `flight`
+- Other noteworthy imports for dataets: `pydataset`, `vega_datasets`
+### Data Formats
+- CSV
+- XLSX
+- SAS
+- Stata
+- Parquet
+- HDF5
+- MATLAB
+### REST APIs
+- Application Programming Interface: a way to interact with 'owned' data
+    * There's rules and defined mathods for interacting with APIs
+    * Scraping is still possible, but APIs may be better in some cases
+- REST, RESTful: a standardized structure for URLs
+    * Interfacing is done through HTTP requests
+- RESTful JSON API: URLs follow REST, comms w/ server are in JSON format
+    * Endpoints are typically: "/api/v1/items/1" with ["next_page"]/["max_page"]
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
+######                                            
+#     # ######  ####  #    # #        ##   #####  
+#     # #      #    # #    # #       #  #  #    # 
+######  #####  #      #    # #      #    # #    # 
+#   #   #      #  ### #    # #      ###### #####  
+#    #  #      #    # #    # #      #    # #   #  
+#     # ######  ####   ####  ###### #    # #    # 
+                                                  
+#######                                                                  
+#       #    # #####  #####  ######  ####   ####  #  ####  #    #  ####  
+#        #  #  #    # #    # #      #      #      # #    # ##   # #      
+#####     ##   #    # #    # #####   ####   ####  # #    # # #  #  ####  
+#         ##   #####  #####  #           #      # # #    # #  # #      # 
+#        #  #  #      #   #  #      #    # #    # # #    # #   ## #    # 
+####### #    # #      #    # ######  ####   ####  #  ####  #    #  ####  
+-->
+
+--------------------------------------------------------------------------------
+<!-- Polished -->
+## Regular Expressions
+- Language for parsing and slicing strings to capture substrings
+- Uses a mixture of string literals and metacharacters for multiple objectives
+- REGEX varies depending on the programming language you're using
+    * REGEX by language: https://www.regular-expressions.info/tools.html
+    * Test your REGEX in a specific language: https://regex101.com/
+- Go deep into learning REGEX: http://www.rexegg.com/regex-disambiguation.html
+- Flags: IGNORECASE, MULTILINE (run line-by-line), VERBOSE (ignore whitespace)
+```re
+| Zero or more (optional): *  | One or more: +        | Optional: ?            |
+| Any character: .            | Choices: [a12qx]      | Anything-but: [^a12qx] |
+| Alphanumeric: \w \W         | Whitespace: \s \S     | Digit: \d \D           |
+| {5} Repeat exactly 5 times  | {3,6} Min 3, Max 6    | {3,} At least 3 times  |
+| Anchor front: ^             | Anchor back: $        | Word boundary: \b      |
+| Capture group: So (cool)!   | Match group: (?:yooo) |
+| Case insensitive: (?i)(?-i) | Ignore spaces: (?x)   | Single line mode: (?s) |
+```
+### REGEX Metacharacter Explanation
+- `\.`: a period; the backslash escapes the metacharacter so it is just "."
+- `.+`: infinite amount of characters in sequence, but at least one: "?q9 -aAr!"
+- `.+?`: same as above, but not greedy
+- `.*`: infinite amount of characters in sequence, can be none (optional): "?q9"
+- `.*?`: same as above, but not greedy
+- `\w+`: infinite alphanumerical characters in sequence, but at least one: "hhh"
+- `\W\w`: a non-alphanumerical followed by an alphanumerical in sequence: "?q"
+- `\s\w`: a whitespace followed by an alphanumerical in sequence: " f"
+- `\S+`: infinite amount of non-whitespace in sequence, but at least one: "Hey"
+- `\d\d\d\d-\d\d-\d\d`: digits following YYYY-MM-DD format, ex: "2022-09-22"
+- `\d{4}-\d{2}-\d{2}`: digits following YYYY-MM-DD format, ex: "2022-09-22"
+- `\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}`: IP address format, ex: "10.3.127.5"
+- `\D+`: infinite amount of anything except digits in sequence, ex: "Hi there!!"
+- `\w(\w)\w`: capture the second alphanumerical character in a sequence of three
+- `[abc123]`: pick one, ex: `F[uiae]ll` matches "Full", "Fill", "Fall", "Fell"
+- `[a-z]+`: infinite amount of any lowercase letter in sequence, ex: "fnjd"
+- `(?i)[a-z]+(?-i)`: case-insensitive version of above, ex: "fNjD"
+- `[a-zA-Z]+`: infinite amount of any lower/uppercase letter in sequence: "fNjD"
+- `[^a-z]+`: infinite amount of anything but lowercase letters in sequence: "A7"
+- `(?i)HELLO(?-i)HELLO`: any-case "hello" followed by all-caps, ex: "hELLoHELLO"
+- `(?x) q r s t u v`: ignore whitespace; matches "qrstuv" but NOT "q r s t u v"
+- `^yo[a-z]*$`: entire line must match; matches "yo" and "yodawg", but NOT "yo!"
+- `(?:ho)+`: match a repeating sequence of "ho", "hoho", "hohoho", "hohohoho"...
+### REGEX Capture Group Examples
+- `Hello,\s(.+)!` -- *Everything between "Hello, " and final-found "!" (greedy)*
+    * "Hello,Sam!" --------------> []
+    * "Hello, Sam!" -------------> ["Sam"]
+    * "Hello, Sam!!!" -----------> ["Sam!!"] (notice in the REGEX: greedy "+")
+    * "Hello, Sam Witwicky!!!" --> ["Sam Witwicky!!"] (one string for full name)
+    * "Hello, saFBO43Ef$51bf!" --> ["saFBO43Ef$51bf"]
+- `Hello,\s(.+?)!` -- *Everything between "Hello, " and first-found "!"*
+    * "Hello, Sam!!!" -----------> ["Sam"] (".+?" makes it not greedy!)
+    * "Hello, Sam Witwicky!!!": -> ["Sam Witwicky"] (one string for full name)
+    * "Hello, saFBO43Ef$51bf!" --> ["saFBO43Ef$51bf"]
+- `Hello,\s(\w+)!` -- *Alphanumerics between "Hello, " and "!" (greedy)*
+    * "Hello, Sam!" -------------> ["Sam"]
+    * "Hello, Sam!!!" -----------> ["Sam"] ("\w" only captures alphanumerics)
+    * "Hello, Sam Witwicky!!!": -> [] (must be continuous alphanumerics)
+    * "Hello, 12345!" -----------> ["12345"]
+- `Hello,\s([a-zA-Z]+)!` *Alphabet characters between "Hello, " and "!"*
+    * "Hello, Sam!" -------------> ["Sam"]
+    * "Hello, Sam Witwicky!!!" --> []
+- `^.+(\S+)!$` *Line ends with non-whitespace and "!" in sequence (greedy)*
+    * "Hello, Sam!" -------------> ["m"]
+    * "Hello, Sam Witwicky!" ----> ["y"]
+- `^.+?(\S+)!$` *Line ends with earliest non-whitespace -> "!" in sequence*
+    * "Hello, Sam!" -------------> ["Sam"]
+    * "Hello, Sam Witwicky!!!" --> ["Witwicky"]
+    * "f7g?3.rb3%79h&2398dh!" ---> ["f7g?3.rb3%79h&2398dh"]
+- `([a-zA-Z]+)(?:\s([a-zA-Z]+))*!` *Two capture groups, second is optional*
+    * "Hello, Sam!" -------------> [("Sam", "")] (two capture groups -> tuple)
+    * "Hello, Sam Witwicky!" ----> [("Sam", "Witwicky")]
+    * "Hello!" ------------------> [("Hello", "")]
+- `Hello,\s([a-zA-Z]+)(?:\s([a-zA-Z]+))*!` *Best solution of above*
+    * Same as above example but with "Hello,\s" at the beginning
+    * "Hello, Sam!" -------------> [("Sam", "")]
+    * "Hello, Sam Witwicky!" ----> [("Sam", "Witwicky")]
+    * "Hello!" ------------------> []
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
+######                                   
+#     # #   # ##### #    #  ####  #    # 
+#     #  # #    #   #    # #    # ##   # 
+######    #     #   ###### #    # # #  # 
+#         #     #   #    # #    # #  # # 
+#         #     #   #    # #    # #   ## 
+#         #     #   #    #  ####  #    # 
+                                         
+#     #                   #####                                              
+#  #  # ###### #####     #     #  ####  #####    ##   #####  # #    #  ####  
+#  #  # #      #    #    #       #    # #    #  #  #  #    # # ##   # #    # 
+#  #  # #####  #####      #####  #      #    # #    # #    # # # #  # #      
+#  #  # #      #    #          # #      #####  ###### #####  # #  # # #  ### 
+#  #  # #      #    #    #     # #    # #   #  #    # #      # #   ## #    # 
+ ## ##  ###### #####      #####   ####  #    # #    # #      # #    #  ####  
+-->
+
+--------------------------------------------------------------------------------
+<!-- Polished -->
+## Python Web Scraping
+- `[url].com/robots.txt` ----- see if a site is OK with scraping or not
+- Keep timestamps on your work, websites change!!
+### Python Pandas Direct-Read
+- Use this method if you're working with *HTML tables*; it's easy and effective
+- Sample HTML tables (testing): https://www.w3schools.com/html/html_examples.asp
+- `df = pd.read_clipboard()` makes a dataframe from your clipboard's content
+    * Sometimes the fastest solution is the best!!
+```python
+import pandas as pd
+url = "https://www.w3schools.com/html/tryit.asp?filename=tryhtml_table_headings"
+df1 = pd.read_html(url)[0] # read HTML tables from URL, set first table as df1
+myhtml = "<table><tr><th>hi</th></tr><tr><td>12</td></tr></table>"
+df2 = pd.read_html(myhtml)[0] # read HTML tables from string, set first as df2
+```
+### Python Requests
+- Use this method if you need to scrape the contents of *static* HTML tags
+- Requests grabs the page HTML, BeautifulSoup does the tag scraping
+    * Note that any post-HTML loading (ex: Javascript) is not grabbed...
+- To build a dataframe: use a sequence of `request.get` calls and build each row
+- Beautiful Soup dive: https://www.crummy.com/software/BeautifulSoup/bs4/doc/
+    * Consider: `BeautifulSoup(df.loc["page", 1318], "html.parser")`
+```python
+import requests
+from bs4 import BeautifulSoup
+import re
+def has_class_but_no_id(tag):
+    """Get elements with class attribute but no ID attribute"""
+    return tag.has_attr('class') and not tag.has_attr('id')
+response = requests.get('https://www.duckduckgo.com', verify=True)
+if not response.ok:
+    print("Bad response; status code:", response.status_code)
+else:
+    soup = BeautifulSoup(response.text)
+    print(soup.prettify())
+    # SELECT TAGS
+    all_tags = soup.find_all(True)
+    all_tags_with_id = soup.find_all(id=True)
+    a0 = soup.title
+    a1 = soup.a.span              # <span> anywhere within <a>
+    a2 = soup.select("a > span")  # <span> directly inside <a>
+    a3 = soup.find_all("div", class_="header--aside")
+    a4 = soup.find_all(attrs={"class": "search"})
+    a5 = soup.find_all(class_=re.compile("logo"))
+    a6 = soup.select("div.tag-home.tag-home--slide")                 # AND logic
+    a7 = soup.find_all("div", class_=["tag-home.tag","home--slide"]) # OR logic
+    a8 = soup.select(".content--home .cw--c .logo-wrap--home a")     # chain dig
+    # RUN FUNCTION TO SELECT TAGS
+    b0 = soup.select(has_class_but_no_id)
+    # GRAB TAG ATTRIBUTES
+    c0 = soup.a.span["class"]
+    c1 = soup.find("link", {"rel":"canonical"})["href"]
+    c2 = [ele["class"] for ele in soup.select("span", class_=True)]
+    # GRAB CONTENTS OF TAG
+    d0 = soup.title.text
+    d1 = [ele.text for ele in soup.find_all("span")]
+```
+### Python Selenium
+- Use this method if you need to scrape the contents of a *dynamic* page
+- Selenium drives a browser that executes Javascript which affects page content
+    * Running GET commands gets content before Javascript is run (before loaded)
+    * Need to download the relevant webdriver like chromedriver.exe
+- Selenium stores all loaded page elements, BeautifulSoup does the tag scraping
+```python
+from selenium import webdriver
+from selenium.webdriver.common.by import By               # allow By.ID, etc
+from selenium.webdriver.common.keys import Keys           # allow Keys.TAB, etc
+from selenium.webdriver.support import expected_conditions as EC # detect tag
+from selenium.webdriver.support.ui import WebDriverWait   # wait until tag loads
+from selenium.webdriver.common.action_chains import ActionChains # script action
+# BASIC PAGE PULL
+chromepath = "C:\\Users\\CoolGuy\\chromedriver.exe"
+chrome = webdriver.Chrome(chromepath)
+url = "https://imgur.com"
+chrome.get(url)
+soup = BeautifulSoup(chrome.page_source)
+# WAIT FOR ELEMENT TO LOAD
+myElem = WebDriverWait(chrome, 1)\
+  .until(EC.presence_of_element_located((By.ID, 'IdOfMyElement')))
+elements = chrome.find_elements_by_xpath('//*[@id="q_all"]')
+# RUN ACTIONS
+actions = ActionChains(chrome)
+elem1 = chrome.find_element_by_xpath('//*[@id="q_type"]/div[1]')
+actions.move_to_element(elem1).click().perform()  # open dropdown box
+elem2 = chrome.find_element_by_xpath('//*[@id="q_type"]/div[3]/div[2]')
+actions.move_to_element(elem2).click().perform()  # select an option in dropdown
+```
+### Python Walk Images
+```python
+import os
+import shutil
+import requests
+from bs4 import BeautifulSoup as SOUP
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait as WDW
+dest = "C:\\Users\\CoolGuy\\CoolImages\\"
+if not os.path.exists(dest):
+    os.mkdir(dest)
+gallery_urls = ["gallery1 img1 url", "gallery2 img1 url", "gallery3 img1 url"]
+ffx = webdriver.Firefox()
+i = 0
+for gallery_url in gallery_urls:
+    url = gallery_url
+    while True:
+        i += 1
+        ffx.get(url)
+        elem = WDW(ffx, 1).until(EC.presence_of_element_located(By.ID, "img"))
+        soup = SOUP(ffx.page_source)
+        img = soup.select("img#img")[-1]["src"]
+        extension = re.findall("^.+(\..+?)$", img)[-1]
+        imgnum = "%05d" % i                  # ex: 00001, 00002, ..., 05914, ...
+        imgname = imgnum + extension         # ex: 00001.png, 00002.png, ...
+        r = requests.get(img, stream=True)   # stream file to cache
+        r.raw.decode_content = True          # ensure binary is decoded on write
+        with open(dest + imgname, "wb") as f:   # write from binary
+            shutil.copyfileobj(r.raw, f)        # shutil writes to image.jpeg
+        nexturl = soup.select("a#next")[0]["href"]   # grab URL of next image
+        if url == nexturl:     # if next image is current image (end of gallery)
+            i -= 1
+            break
+        url = nexturl
+```
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
+######                      
+#     #   ##   #####   ##   
+#     #  #  #    #    #  #  
+#     # #    #   #   #    # 
+#     # ######   #   ###### 
+#     # #    #   #   #    # 
+######  #    #   #   #    # 
+                            
+ #####                                                        
+#     # ##### #####  #    #  ####  ##### #    # #####  ###### 
+#         #   #    # #    # #    #   #   #    # #    # #      
+ #####    #   #    # #    # #        #   #    # #    # #####  
+      #   #   #####  #    # #        #   #    # #####  #      
+#     #   #   #   #  #    # #    #   #   #    # #   #  #      
+ #####    #   #    #  ####   ####    #    ####  #    # ###### 
+                                                              
+#     #                                                                          
+##    #  ####  #####  #    #   ##   #      # ######   ##   ##### #  ####  #    # 
+# #   # #    # #    # ##  ##  #  #  #      #     #   #  #    #   # #    # ##   # 
+#  #  # #    # #    # # ## # #    # #      #    #   #    #   #   # #    # # #  # 
+#   # # #    # #####  #    # ###### #      #   #    ######   #   # #    # #  # # 
+#    ## #    # #   #  #    # #    # #      #  #     #    #   #   # #    # #   ## 
+#     #  ####  #    # #    # #    # ###### # ###### #    #   #   #  ####  #    # 
+-->
+
+--------------------------------------------------------------------------------
+<!-- Polished -->
+## Data Structure Normalization
 ### Database Normal Forms
 - Goal is to represent data in a non-redundant, clear, and simple architecture
 - Zero Normal Form (0NF): Data has not been normalized
@@ -703,10 +2363,7 @@ CREATE TEMPORARY TABLE germain_1457.employees_with_departments AS
     * Python: can use `msno` library for null heatmaps, dendrograms, matrices
 - Evaluate the effects of your chosen imputation method on value distributions
     * Python: can use `sklearn.impute` and `fancyimpute` (KNN, MICE) libraries
-
---------------------------------------------------------------------------------
-<!-- Polished -->
-## Normalization Drafting
+### Normalization Drafting
 - Subset the data if required and get it into a `pandas` DataFrame
 - Initial values: `df.describe()`, `df.describe(exclude="number")`
 - Initial duplicates: `df.duplicated(subset=["col1","col2",...], keep="first")`
@@ -770,275 +2427,63 @@ for p in sorted(regulars):
     display(HTML(dets.replace("x",x)))
 ```
 
---------------------------------------------------------------------------------
-<!-- Polished -->
-## Feature Reduction
-- Get rid of features that contain only one unique value
-- Get rid of features that are duplicates or otherwise match other features
-- Get rid of features that have nulls not worth handling (or drop rows)
-    * Python: `df.dropna(axis=1, thresh=(len(df.columns)*0.9))`
-- Get rid of features that strongly correlate with others (multicollinearity)
-    * Variance Inflation Factor (VIF); features with >10 VIF should be dropped
-- Select features using linear regression coefficients (furthest vals from zero)
-- Select features using SelectKBest, Recursive Feature Engineering (RFE), RFECV
-    * SelectKBest: evaluate estimator once with n features
-    * RFE: evaluate estimator, drop worst feature, repeat until n features left
-    * RFECV: same as RFE but also with crossvalidation (best across row subsets)
-- Can do feature reduction with LassoCV regularization (increases bias/underfit)
-    * Pass `sum(lcv.coef_ != 0)` as n_features parameter for SelectKBest or RFE
-- Get rid of features that have no analytic value (ex: observation identifiers)
-- Apply matrix factorization like PCA, TruncatedSVD, or NMF
-    * Matrix factorization: decompose a matrix, use results for approximation
-    * Matrix decomposition: express one matrix as multiple smaller matrices
-    * Matrix approximation: use small imprecise matrices to predict large matrix
-### Linear Algebra for Feature Reduction
-- Vector: one-dimensional array describing an observation in multiple dimensions
-- Vector Space: a collection of vectors that can be added/multiplied, with rules
-- Rank: dimensions of the vectors in a vector space (describes rows and columns)
-- Matrix: two-dimensional array that maps actions on vectors or vector spaces
-- Inverse Matrix: multiplying this and a matrix results in the identity matrix
-    * Not all matrices are "invertible" like this
-- System of Linear Equations: grouping of equations like `2x + y = 5; x - y = 3`
-    * Explicitly not polynomial, should only have one solution for variable vals
-- Linear Transformations: a function that linearly maps one matrix to another
-- Eigenvalues/Eigenvectors: scaling one matrix to another using scalar/vector
-    * Explained variance ratio: `eigenvalue / total_variance` (between 0 and 1)
-- Determinant: getting the area of a 2D matrix, the volume of a 3D matrix, etc
-- Inner Product Space: describing shape (length, angles, etc) of a vector matrix
-- Orthogonality: where two vectors have an inner product of zero
-- Diagonalization: convert original matrix to a diagonal matrix: `[[5,0],[0,3]]`
-    * Diagonal matrix is eigenvalues; apply to eigenvector matrix
-- Singular Value Decomposition (SVD): decompose matrix into eigen vectors/values
-    * This reveals the "intrinsic dimension" / "information" of a matrix
-- Covariance: how two vectors change together (checking linear correlation)
-- Covariance Matrix: how every vector changes with every vector in a matrix
-    * 3D version: [[COVxx,COVxy,COVxz],[COVyx,COVyy,COVyz],[COVzx,COVzy,COVzz]]
-### Principal Component Analysis (PCA)
-- Feature reduction strategy, designed for wide non-sparse datasets
-    * Also useful for de-correlating features due to non-linear transformation
-- Involves eigenvectors/eigenvalues of a dataset's covariance matrix
-    * Principal Component (PCs) are eigenvectors; original data becomes this
-    * Eigenvalues describe how valuable a PC is (larger eigenvalue is better)
-- Select some of the eigenvectors based on eigenvalue (how much they contribute)
-    * Descending-sort eigenvectors by their eigenvalue, scree plot, elbow method
-    * Calc each's explained variance ratio, cumsum, plot, choose using threshold
-### Truncated Singular Value Decomposition (TruncatedSVD)
-- Feature reduction strategy, especially designed for sparse matrices
-    * PCA starts with calculating a covariance matrix, destroying "sparsity"
-    * SVD multiplies the original data, preserving "sparsity" and zeroing data
-- SVD itself is not a data reduction strategy; TruncatedSVD uses SVD for that
-    * SVD exactly-decomposes the original matrix into three smaller matrices
-    * Original Matrix = Column Eigenvectors * Eigenvalues * Row Eigenvectors
-- TruncatedSVD follows the same eigenvalue/eigenvector selection process as PCA
-    * Cumulative explained variance threshold or elbow method to reduce features
-    * You can also use the count of nonzero eigenvalues for component count
-### Non-Negative Matrix Factorization (NMF)
-- Feature reduction strategy, meant for **non-negative** sparse matrices
-    * Like TruncatedSVD, also better than PCA due to PCA's flaws with "sparsity"
-    * Outperforms TruncatedSVD on non-negative data (explicit non-negative rule)
-    * Slower than TruncatedSVD due to use of loss function and training steps
-- Decomposes to parts-based "metafeatures" matrix and an activation-mask matrix
-    * Imagery: *parts* of a face, *activated* for smile, *deactivated* for frown
-    * Text: *parts* of sentences, *activated* for happy, *deactivated* for angry
-- NMF approximates a V matrix by two smaller matrices, W and H; V ~= W * H
-    * V matrix: original data; each column is observation, each row is feature
-    * W matrix: key parts of original data; each column is "basis vector"
-    * H matrix: activation mask for W matrix; each column is "weights"/"gains"
-    * All three matrices must have non-negative values
-- NMF follows the same eigenvalue/eigenvector selection process as PCA
-    * Cumulative explained variance threshold or elbow method to reduce features
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
+ #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #  
+  # #     # #     # #     # #     # #     # #     # #     # #     # #     # #   
+####### ####### ####### ####### ####### ####### ####### ####### ####### ####### 
+  # #     # #     # #     # #     # #     # #     # #     # #     # #     # #   
+ #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #  
+                                                                                
+                                                                                
+            ####### #     # ######  #       ####### ######  ####### 
+            #        #   #  #     # #       #     # #     # #       
+            #         # #   #     # #       #     # #     # #       
+            #####      #    ######  #       #     # ######  #####   
+            #         # #   #       #       #     # #   #   #       
+            #        #   #  #       #       #     # #    #  #       
+            ####### #     # #       ####### ####### #     # ####### 
+                                                        
+                                                                                
+ #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #  
+  # #     # #     # #     # #     # #     # #     # #     # #     # #     # #   
+####### ####### ####### ####### ####### ####### ####### ####### ####### ####### 
+  # #     # #     # #     # #     # #     # #     # #     # #     # #     # #   
+ #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #  
+-->
+
+
+# EXPLORE
+
+
+<!--
+######                                                                 ##    
+#     # #####   ####  #####    ##   #####  # #      # ##### #   #     #  #   
+#     # #    # #    # #    #  #  #  #    # # #      #   #    # #       ##    
+######  #    # #    # #####  #    # #####  # #      #   #     #       ###    
+#       #####  #    # #    # ###### #    # # #      #   #     #      #   # # 
+#       #   #  #    # #    # #    # #    # # #      #   #     #      #    #  
+#       #    #  ####  #####  #    # #####  # ###### #   #     #       ###  # 
+                                                                             
+######                                                                     
+#     # #  ####  ##### #####  # #####  #    # ##### #  ####  #    #  ####  
+#     # # #        #   #    # # #    # #    #   #   # #    # ##   # #      
+#     # #  ####    #   #    # # #####  #    #   #   # #    # # #  #  ####  
+#     # #      #   #   #####  # #    # #    #   #   # #    # #  # #      # 
+#     # # #    #   #   #   #  # #    # #    #   #   # #    # #   ## #    # 
+######  #  ####    #   #    # # #####   ####    #   #  ####  #    #  ####  
+-->
 
 --------------------------------------------------------------------------------
 <!-- Polished -->
-## Model Training
-### Encoding
-- Change string values to one-hot representation, ex: `x="cat"` -> `is_cat=True`
-    * Python: `pd.get_dummies(df[["col1","col2]], drop_first=True)`
-- Change string values to ordinal values, ex: `cold, warm, hot` -> `0, 1, 2`
-    * Python: `df["col3"].replace({"cold":0, "warm":1, "hot": 2})`
-### Scaling
-- Making 1-10 mean the same to a machine learning model as 1-1000
-    * "Equalizes density of continuous features for machine learning"
-    * Normalizes Euclidian Distance calcs: `d = sqrt((x1 - x2)^2 + (y1 - y2)^2)`
-    * Always use for KNN and K-Means (distance-based); no need for tree-based
-    * Split data before scaling; fit on train; transform all splits
-- **MinMaxScaler**
-    * General use, compresses all values between 0 and 1, sensitive to outliers
-- **StandardScaler**
-    * Used when data distribution is normal, centers on 0 and limits range
-- **RobustScaler**
-    * Same as StandardScaler but de-weighs outliers using IQR
-- **QuantileTransformer**
-    * Transform features into uniform or normal dist; de-weighs outliers
-    * Get ECDF line -> discretize to uniform dist -> plot on dist
-    * Complex; if you really want your data to be normal, then use this
-- Not shown (yet): MaxAbsScaler, Normalizer
-- Python: `from sklearn.preprocessing import RobustScaler`
-### Resampling Classes for Model Training
-- Classifiers have trouble modeling imbalanced-class datasets; so, resample!!
-- Can oversample the minority class and undersample the majority class
-    * AKA: Add artificial rows to smaller class, remove rows from larger class
-    * This is only performed on the training split for model training
-- Add rows with SMOTE (Synthetic Minority Oversampling TEchnique)
-- Remove rows with Tomek Links
-    * Delete from majority class the records that majority/minority overlap on
-- Result is balanced classes in the training split, model may perform better
-- Can do this in Python with SMOTETomek from imbalanced-learn library
-```python
-from imblearn.combine import SMOTETomek
-def resampler(X_train, y_train):
-    """ Use SMOTE+Tomek to eliminate class imbalances for train split """
-    smtom = SMOTETomek(random_state=42)
-    X_train_res, y_train_res = smtom.fit_resample(X_train, y_train)
-    print("Before SMOTE+Tomek applied:", X_train.shape, y_train.shape)
-    print("After SMOTE+Tomek applied:", X_train_res.shape, y_train_res.shape)
-    return X_train_res, y_train_res    # return resampled train data
-```
-
---------------------------------------------------------------------------------
-<!-- Polished -->
-## Clustering in General
-- Cluster for Exploration: discover groupings in data in multi-dimensional space
-- Cluster for Feature engineering: combine features into a brand new feature
-- Cluster for Classification: predict if an observation belongs to a grouping
-- Cluster for Anomaly detection: find datapoints outside of main clusters
-- Cluster for Sub-modeling: subset data by cluster, train model on each subset
-### Considerations
-- Should only involve continuous features (don't include categorical features)
-    * There's no such thing as numerical distance between "red" and "blue"
-    * There's no such thing as numerical distance between "cold", "warm", "hot"
-    * We should use category features to subset data then cluster inside subsets
-- Requires careful decisions on how to handle outliers
-    * Clustering with data that contains unaddressed outliers lowers performance
-    * If goal is anomaly detection, keep outliers in the validation/test split
-    * If goal is classification/regression, create pipeline to remove outliers
-- Requires careful decisions on how to scale data
-    * Scaling is practically required for distance-based clustering approaches
-    * Some scaling approaches may be rendered ineffective if outliers are kept
-    * Other scaling approaches account for outliers but may weaken prediction
-        * Example: using RobustScaler when MinMaxScaler would've marked outliers
-    * Scaling with RobustScaler is usually a safe option to scale with outliers
-### Real-World Examples of Clustering
-- Text: Document classification, summarization, topic modeling, recommendations
-    * Hierarchical using Cosine Similarity
-- Geographic: Distance from store, crime zones, housing prices
-- Marketing: Customer segmentation, market research
-- Anomaly Detection: Account takeover, security risk, fraud
-- Image Processing: Radiology, security
-
---------------------------------------------------------------------------------
-<!-- Polished -->
-## Clustering Approaches
-### t-SNE
-- **Purely for visualization use (not modeling)**, helps show potential clusters
-- Transforms multi-dimensional data into a 2D representation (easily plotted)
-- Stochastically modifies the dataset to spread tight data, condense sparse data
-    * Set hyperparameters for learning-rate, number of iterations, metric, etc
-- Stochastic nature means unseen data will be changed differently than training
-    * This is why t-SNE should not be used as a preprocessing step for modeling
-- Python: `from sklearn.manifold import TSNE`
-### KMeans
-- Using euclidean distances (straight lines) to group points into n clusters
-- ML plots centroids randomly, assigns nearest points, calcs inertia, moves plot
-    * Inertia (one cluster): `sum([distance(xy,centroid)**2 for xy in cluster])`
-    * Sum all cluster inertia values to get the total inertia metric for a model
-- Cluster into target classes: choose cluster count matching target class count
-    * Typical classification metrics apply to the result of this assignment
-- Cluster into feature: try multiple cluster-count numbers, select the best one
-    * Choose a range of cluster counts using domain knowledge, visualizations
-    * Loop: Pick a cluster count, fit KMeans for it, calculate resulting inertia
-    * After loop: Plot cluster-count selection (x-axis) versus inertia (y-axis)
-    * Use elbow method to choose a balance of low-cluster-count and low-inertia
-    * ANOVA test can check if clusters are statistically distinguishable
-- Python: `from sklearn.cluster import KMeans`
-### Hierarchical (Agglomerative)
-- Group datapoints into clusters by plotting a dendrogram and choosing a cutoff
-    * Dendrogram: represents distances between datapoints as vertical lines
-    * Typical cutoff: draw horizontal line at base of longest-unmerged line
-    * Intersections of cutoff line and vertical lines are the cluster result
-- https://stackabuse.com/hierarchical-clustering-with-python-and-scikit-learn
-    * Each record is a cluster; group clusters until only one cluster remains
-    * Agglomerative moves closest two clusters into one cluster, repeatedly
-    * This operation walks vertically; long-unmerged clusters become candidates
-    * Draw horizontal line at base of longest-unmerged line, count intersections
-    * Count of horizontal line's vertical intersections is the cluster count.
-- Python: `from scipy.cluster.hierarchy import linkage, dendrogram, fcluster`
-    * Linkage performs clustering, dendrogram visualizes it, fcluster is cutoff
-    * For pipelining, use: `from sklearn.cluster import AgglomerativeClustering`
-### DBSCAN
-- Set a proximity on all datapoints, cluster the chain of overlapping proximity
-- Excellent at mapping shapes in data; search "DBSCAN visualization" online
-- Excellent at finding anomalies because non-overlapping points get reported
-- Computationally-expensive compared to other clustering methods, but effective
-- Python: `from sklearn.cluster import DBSCAN`
-    * For anomalies, look for values assigned to cluster `-1`
-
---------------------------------------------------------------------------------
-<!-- Needs work -->
-## Natural Language Processing
-- Designed for normalizing, analyzing, and modeling bodies of text
-- Useful for keyword and sentiment analysis, classification, anomaly detection
-- Often involves factorization of sparse matrices (decompose then approximate)
-### Bag of Words (BoW)
-- NLP preprocessing; turn words into numerical values for model training
-- Sparse matrix for each document (index) and a vector of each word (column)
-- Count Vectorization (CV); Term Frequency * Inverse Document Frequency (TFIDF)
-    * CV: fast/explainable; word counts; doesn't consider word importance
-    * TFIDF: slow/complex; word weights; keeps importance and filters stopwords
-### Cosine Similarity
-- Compare one document's similarity to another using a mathematical measure
-    * `dot_product(doc1, doc2) / (sqrt(sum(doc1 ** 2)) * sqrt(sum(doc2 ** 2)))`
-- Result is between -1 and 1; 1 means identical, -1 means entirely opposite
-### WORK-IN-PROGRESS
-- NEED: Bring in notes from https://github.com/lets-talk-codeup/github-guesser
-- NEED: Add PCA example for TruncatedSVD
-- Natural Language Toolkit (NLTK): https://www.nltk.org/index.html
-- Fuzzy matching: `thefuzz.process.extract("matchme", listlikehere, limit=None)`
-    * Return list of match score tuples like: [(string1, score, rank), ...]
-- NEED: Vectorized method for performing this cleaning work
-- Add ngram compilation to this
-
---------------------------------------------------------------------------------
-<!-- Polished -->
-## Performing NLP
-- Python Unicode normalization: `doc = UNICODE.normalize().encode().decode()`
-- Python NLTK: `from nltk import tokenize, porter, stem, corpus.stopwords`
-    * Choose a specific method under each of these, ex: TweetTokenizer
-    * Use `sent_tokenize` instead of `tokenize` for sentence tokenization
-- Python text sentiment: `from nltk.sentiment import SentimentIntensityAnalyzer`
-    * Score: `SentimentIntensityAnalyzer().polarity_scores(sentence_token)`
-- Python Wordclouds: `import wordcloud.WordCloud, PIL.Image, matplotlib.pyplot`
-    * See: https://github.com/amueller/word_cloud/blob/master/examples/parrot.py
-- Python bag of words: `import sklearn.feature_extraction.text`
-    * Count Vectorization and TF-IDF Vectorization
-### Normalizing String Features
-1. Perform Unicode normalization with one of the following: NFD, NFC, NFKD, NFKC
-1. Encode from normalized text into ASCII
-1. Decode from ASCII into UTF-8
-1. Remove special characters using REGEX: replace /[^a-z0-9'\s]/ with ""
-1. Perform tokenization using a tokenizer
-1. Delete stopwords (words that need to be deleted or that aren't useful)
-1. Perform stemming or lemmatization to reduce word variations to their root
-1. Rejoin the resulting roots into a single document and/or corpus (if required)
-### Keyword Analysis
-1. Perform cleaning steps from before (tokenize on words)
-1. Calculate character count and word count for every document
-1. Plot scatterplot of charcount vs wordcount (Classification: color by target)
-1. Create a corpus of all cleaned documents
-1. (Classification) Also split docs by class and create a corpus for each subset
-1. Get word counts per corpus (index is each word, cols are counts per corpus)
-1. (Classification) Add cols for class-wise, word-wise proportions
-1. (Classification) Sort data by proportion, plot stacked barchart (ex: best 25)
-1. Plot a wordcloud with an optional black-white picture mask
-### Sentiment Analysis
-1. Perform cleaning steps from before (tokenize on sentences)
-1. Instantiate a pre-trained sentiment analyzer
-1. Calculate sentiment score per sentence, calc average sentiment across scores
-1. (Classification) Group sentiment score averages by target class
-
---------------------------------------------------------------------------------
-<!-- Polished -->
-## Probability
+## Probabilities and Distributions
 - Probability of outcome: P(outcome) = (count_get_outcome) / (count_get_any)
     * P(heads flip) = (1) / (2) -> (1) / (2) -> ... (independent events)
     * P(name drawn) = (1) / (4) -> (1) / (3) -> ... (dependent events)
@@ -1119,6 +2564,32 @@ def resampler(X_train, y_train):
 - Proportions of outcomes: `vc = df[["A","B"]].value_counts(normalize=True)`
     * `vc.loc[("lived","gun")]` (previous step orders multi-index as "A","B")
 
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
+#     #                                                         
+#     # #   # #####   ####  ##### #    # ######  ####  #  ####  
+#     #  # #  #    # #    #   #   #    # #      #      # #      
+#######   #   #    # #    #   #   ###### #####   ####  #  ####  
+#     #   #   #####  #    #   #   #    # #           # #      # 
+#     #   #   #      #    #   #   #    # #      #    # # #    # 
+#     #   #   #       ####    #   #    # ######  ####  #  ####  
+                                                                
+#######                                     
+   #    ######  ####  ##### # #    #  ####  
+   #    #      #        #   # ##   # #    # 
+   #    #####   ####    #   # # #  # #      
+   #    #           #   #   # #  # # #  ### 
+   #    #      #    #   #   # #   ## #    # 
+   #    ######  ####    #   # #    #  ####  
+-->
+
 --------------------------------------------------------------------------------
 <!-- Polished -->
 ## Hypothesis Testing
@@ -1167,60 +2638,610 @@ def resampler(X_train, y_train):
     * Always plot correlations to check for linearity
     * Can transform one or both: logarithmic, square root, inverse (1/col), more
 
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
+ #####                                                           
+#     # ######  ####   ####  #####    ##   ##### #   ##   #      
+#       #      #    # #      #    #  #  #    #   #  #  #  #      
+#  #### #####  #    #  ####  #    # #    #   #   # #    # #      
+#     # #      #    #      # #####  ######   #   # ###### #      
+#     # #      #    # #    # #      #    #   #   # #    # #      
+ #####  ######  ####   ####  #      #    #   #   # #    # ###### 
+                                                                 
+   #                                               
+  # #   #    #   ##   #      #   #  ####  #  ####  
+ #   #  ##   #  #  #  #       # #  #      # #      
+#     # # #  # #    # #        #    ####  #  ####  
+####### #  # # ###### #        #        # #      # 
+#     # #   ## #    # #        #   #    # # #    # 
+#     # #    # #    # ######   #    ####  #  ####  
+-->
+
+--------------------------------------------------------------------------------
+<!-- Needs Work -->
+## Geospatial Analysis
+### Geospatial Data
+- Coord Reference System (CRS) baselines the coordinates for plotting
+    * EPSG:4326 in decimal degrees; used by Google Earth
+    * EPSG:3857 in meters; used by Google Maps, Bing Maps, Open Street Maps
+- RASTER file: grid; great at doing semi-3D plotting like topographical map
+- VECTOR file: points, lines, polygons; great for drawing
+- Shapefiles contain geospatial geometry that we can plot
+    * SHP contains geometry, DBF holds attrs, SHX links attrs and geometry
+- GeoJSON is a modern version that combines SHP, DBF, SHX into one file
+- Fiona: API between Python and OpenGIS Simple Features Reference, is VECTORs
+- GDAL: Geospatial Data Abstraction Library, is RASTERs
+- Chloropleth: Thematic map with color variation to differentiate regions
+### Geospatials in Geopandas
+- `geopandas` is an excellent library for geospatial work
+- A cell in a row can contain a point, line, or polygon; `geo_df.loc[0, 'poly']`
+    * Printing the cell will result in object with coord array for ex: line
+```python
+import folium
+district1_map = folium.Map(location=[48.858373,2.292292], zoom_start=12)
+folium.GeoJson(district_one.geometry).add_to(district1_map)
+for row in df.iterrows():
+    location, popup = [row["lat"], vals["lng"]], row["popup"]
+    marker = folium.Marker(location=location, popup=popup)
+    marker.add_to(district1_map)
+display(district1_map)
+import geopandas as gpd
+from shapely.geometry import Point
+geo_df1 = gpd.read_file('my_map.shp')
+geo_df2 = gpd.read_file('geo.geojson')
+schools["geoms"] = schools.apply(lambda x: Point((x.lng, x.lat)), axis=1)
+schools_crs = {"init": "epsg:4326"}
+geo_df3 = gpd.GeoDataFrame(schools, src=schools_crs, geometry=schools.geoms)
+geo_df3.changed_crs = geo_df3.geoms.to_crs(epsg="3857")
+leg_kwds = {"title":"District Number", "loc":"upper left", 
+            "bbox_to_anchor":(1,1.03), "n_col":3}
+geo_df1.plot(column="district", cmap="Set3", legend=True, legend_kws=leg_kwds)
+plt.title("Council Districts")
+plt.show()
+schools["polygon_area"] = schools.geometry.area            # calc on each row
+schools["polygon_center"] = schools.geometry.centroid      # calc on each row
+schools["distance_from_other"] = schools.geometry.distance(other)  # each row
+```
+```python
+import geopandas as gpd
+# initialize two geodataframes and join the plots
+d1 = gpd.sjoin(gdf1, gdf2, op="contains")  # gdf2 entirely inside gdf1 boundary
+d2 = gpd.sjoin(gdf1, gdf2, op="intersect") # gdf2 is inside or on gdf1 boundary
+d3 = gpd.sjoin(gdf2, gdf1, op="within")    # backwards "contains"
+print(len(d1))                             # number of gdf2 things inside gdf1
+```
+```python
+import folium
+nashville = [36.1636, -86.7823]
+m = folium.Map(location=nashville, zoom_start=10)
+folium.Cloropleth(
+    geo_data=districts_with_counts,
+    name="geometry",
+    data=districts_with_counts,
+    columns=["district","school_density"],
+    key_on="feature_properties.district",
+    fill_color="YlGn",
+    fill_opacity=0.75,
+    line_opacity=0.5,
+    legend_name="Schools per km squared by School District"
+).add_to(m)
+```
+### Shapely
+- Set correct coord reference system for Geopandas for max accuracy
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
+ #####                                                           
+#     # #      #    #  ####  ##### ###### #####  # #    #  ####  
+#       #      #    # #        #   #      #    # # ##   # #    # 
+#       #      #    #  ####    #   #####  #    # # # #  # #      
+#       #      #    #      #   #   #      #####  # #  # # #  ### 
+#     # #      #    # #    #   #   #      #   #  # #   ## #    # 
+ #####  ######  ####   ####    #   ###### #    # # #    #  ####  
+-->
+
 --------------------------------------------------------------------------------
 <!-- Polished -->
-## Jupyter Notebooks
-### Notebook Niceties
-- Command mode: dd for cell deletion, y for code cell, m for markdown cell
-- TAB for autocomplete, Shift TAB for full context at cursor location
-- Option Shift - to split cell into two cells at cursor
-- Option Dragclick to drag multi-line cursor
-- Run shell commands with `!` like this: `!echo "hi"`
-    * I think the commands depend on what terminal program is running Jupyter
-- Run ipython commands with `%` like this: `%ls`
-- MD LaTeX: `$H_0$`, see: https://www.caam.rice.edu/~heinken/latex/symbols.pdf
-- PLT LaTeX: https://matplotlib.org/stable/tutorials/text/mathtext.html
-### iPyWidgets
+## Clustering
+- Cluster for Exploration: discover groupings in data in multi-dimensional space
+- Cluster for Feature engineering: combine features into a brand new feature
+- Cluster for Classification: predict if an observation belongs to a grouping
+- Cluster for Anomaly detection: find datapoints outside of main clusters
+- Cluster for Sub-modeling: subset data by cluster, train model on each subset
+### Considerations
+- Should only involve continuous features (don't include categorical features)
+    * There's no such thing as numerical distance between "red" and "blue"
+    * There's no such thing as numerical distance between "cold", "warm", "hot"
+    * We should use category features to subset data then cluster inside subsets
+- Requires careful decisions on how to handle outliers
+    * Clustering with data that contains unaddressed outliers lowers performance
+    * If goal is anomaly detection, keep outliers in the validation/test split
+    * If goal is classification/regression, create pipeline to remove outliers
+- Requires careful decisions on how to scale data
+    * Scaling is practically required for distance-based clustering approaches
+    * Some scaling approaches may be rendered ineffective if outliers are kept
+    * Other scaling approaches account for outliers but may weaken prediction
+        * Example: using RobustScaler when MinMaxScaler would've marked outliers
+    * Scaling with RobustScaler is usually a safe option to scale with outliers
+### Real-World Examples of Clustering
+- Text: Document classification, summarization, topic modeling, recommendations
+    * Hierarchical using Cosine Similarity
+- Geographic: Distance from store, crime zones, housing prices
+- Marketing: Customer segmentation, market research
+- Anomaly Detection: Account takeover, security risk, fraud
+- Image Processing: Radiology, security
+### t-SNE
+- **Purely for visualization use (not modeling)**, helps show potential clusters
+- Transforms multi-dimensional data into a 2D representation (easily plotted)
+- Stochastically modifies the dataset to spread tight data, condense sparse data
+    * Set hyperparameters for learning-rate, number of iterations, metric, etc
+- Stochastic nature means unseen data will be changed differently than training
+    * This is why t-SNE should not be used as a preprocessing step for modeling
+- Python: `from sklearn.manifold import TSNE`
+### KMeans
+- Using euclidean distances (straight lines) to group points into n clusters
+- ML plots centroids randomly, assigns nearest points, calcs inertia, moves plot
+    * Inertia (one cluster): `sum([distance(xy,centroid)**2 for xy in cluster])`
+    * Sum all cluster inertia values to get the total inertia metric for a model
+- Cluster into target classes: choose cluster count matching target class count
+    * Typical classification metrics apply to the result of this assignment
+- Cluster into feature: try multiple cluster-count numbers, select the best one
+    * Choose a range of cluster counts using domain knowledge, visualizations
+    * Loop: Pick a cluster count, fit KMeans for it, calculate resulting inertia
+    * After loop: Plot cluster-count selection (x-axis) versus inertia (y-axis)
+    * Use elbow method to choose a balance of low-cluster-count and low-inertia
+    * ANOVA test can check if clusters are statistically distinguishable
+- Python: `from sklearn.cluster import KMeans`
+### Hierarchical (Agglomerative)
+- Group datapoints into clusters by plotting a dendrogram and choosing a cutoff
+    * Dendrogram: represents distances between datapoints as vertical lines
+    * Typical cutoff: draw horizontal line at base of longest-unmerged line
+    * Intersections of cutoff line and vertical lines are the cluster result
+- https://stackabuse.com/hierarchical-clustering-with-python-and-scikit-learn
+    * Each record is a cluster; group clusters until only one cluster remains
+    * Agglomerative moves closest two clusters into one cluster, repeatedly
+    * This operation walks vertically; long-unmerged clusters become candidates
+    * Draw horizontal line at base of longest-unmerged line, count intersections
+    * Count of horizontal line's vertical intersections is the cluster count.
+- Python: `from scipy.cluster.hierarchy import linkage, dendrogram, fcluster`
+    * Linkage performs clustering, dendrogram visualizes it, fcluster is cutoff
+    * For pipelining, use: `from sklearn.cluster import AgglomerativeClustering`
+### DBSCAN
+- Set a proximity on all datapoints, cluster the chain of overlapping proximity
+- Excellent at mapping shapes in data; search "DBSCAN visualization" online
+- Excellent at finding anomalies because non-overlapping points get reported
+- Computationally-expensive compared to other clustering methods, but effective
+- Python: `from sklearn.cluster import DBSCAN`
+    * For anomalies, look for values assigned to cluster `-1`
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
+   #                                             
+  # #   #    #  ####  #    #   ##   #      #   # 
+ #   #  ##   # #    # ##  ##  #  #  #       # #  
+#     # # #  # #    # # ## # #    # #        #   
+####### #  # # #    # #    # ###### #        #   
+#     # #   ## #    # #    # #    # #        #   
+#     # #    #  ####  #    # #    # ######   #   
+                                                 
+######                                                   
+#     # ###### ##### ######  ####  ##### #  ####  #    # 
+#     # #        #   #      #    #   #   # #    # ##   # 
+#     # #####    #   #####  #        #   # #    # # #  # 
+#     # #        #   #      #        #   # #    # #  # # 
+#     # #        #   #      #    #   #   # #    # #   ## 
+######  ######   #   ######  ####    #   #  ####  #    # 
+-->
+
+--------------------------------------------------------------------------------
+<!-- Polished -->
+## Anomaly Detection
+- Detect a bad action
+- Detect a normal action at a bad time
+- Detect a normal action which is too big or too small
+- Detect normal actions that are overlapping when they should be separate
+- Detect normal actions that combine into a bad chain
+- Detect normal actions that happen too quickly or too slowly
+- Detect normal actions that deviate from a baseline of actions
+## Baselines and Deviation
+- A user accessed/read/changed/copied files outside their normal routine
+    * Categorize all files (encode)
+    * Get each user's by-category access probabilities
+    * Set threshold for alerting, apply threshold
+- A user tried to access a system in a different access category
+    * Categorize all systems (encode)
+    * Get each user's access rights
+    * Mask for access attempts not matching access rights
+- A user copied files out of a specialized system
+    * Set alerting on specific actions
+- One user logged in from multiple endpoints at the same time
+    * Check duplicate active states in system processes for a user (easiest)
+    * Combine logs, set session start/end, check user duplication
+- Two or more users logged in from a single endpoint
+    * Depends entirely on the endpoint and how it captures/separates logins
+- Too many manipulations of sensitive data in a given time span
+    * Categorize sensitive/other actions in binary
+    * Perform interval-count aggregation
+    * Set limits on action manually or through Bollinger band outlier detection
+- Old/unused accounts became active
+    * Decide what makes an account old manually or through probabilities
+    * Get last-login information for all accounts
+    * Check login information against reporting criteria
+### Actions: Overlapping Sessions
 ```python
-from IPython.display import display
-import ipywidgets
-from datetime import date
-mydate = date(2023,1,1)
-dateobject = ipywidgets.widgets.DatePicker(value=mydate)
-display(dateobject)
-# RUNNING NEXT CODE UPDATES ALL DISPLAYED OBJECTS IN REAL TIME
-dateobject.value = date(2023,5,20)
+# Example:
+# [start,   end, start,   end, start, start,   end,   end]  # Series
+# [    1,    -1,     1,    -1,     1,     1,    -1,    -1]  # Map to 1 and -1
+# [    1,     0,     1,     0,     1,     2,     1,     0]  # Cumulative Sum
+# [ True, False,  True, False,  True,  True,  True, False]  # x > 0
+# [ True, False,  True, False,  True,  True,  True,  True]  # Fix last overlap
+# [False, False, False, False,  True,  True,  True,  True]  # Determinations
+# ["Nrm", "Nrm", "Nrm", "Nrm", "Ovr", "Ovr", "Ovr", "Ovr"]  # Map to category
+# use cumsum, mask, shift-comparison, and .loc to determine overlaps
+s = pd.Series(start_end_series)               # Series
+s = s.map({starter:1, ender:-1})              # Map to 1 and -1
+s = s.cumsum()                                # Cumulative Sum
+if s[len(s) - 2] == 0 and s[len(s) - 1] == 1: # Handle edge case
+    flip_last = True
+s = s > 0                                     # x > 0
+s = s | s.shift(2)                            # Fix last overlap
+s.loc[s[~s].index - 1] = False                # Determinations
+if flip_last:                                 # Handle edge case
+    s.loc[len(s) - 1] = False
+s = s.map({True:"Overlap", False:"Normal"})   # Map to category
+s = s.rename("overlap_status")
+pd.concat([s, pd.Series(start_end_series)], axis=1)
 ```
-### Python Chart Choices
-- Inspiration: https://www.python-graph-gallery.com/all-charts
-- Custom: https://matplotlib.org/stable/tutorials/introductory/customizing.html
-    * Check out lines_bars_and_markers/bar_label_demo.html (one chart guide)
-    * Check out lines_bars_and_markers/categorical_variables.html (multi-chart)
-- Cheatsheet: "Python Seaborn Cheat Sheet PDF" on Google
-- Use colorblind palettes as often as possible
-- `import matplotlib.pyplot as plt, seaborn as sns, plotly.express as px`
-- Figure-level plots for multiple sub-charts; axis-level plot for a single chart
-- Continuous x-axis: `displot` (hist, kde, ecdf) or `relplot` (line, scatter)
-    * ECDF is awesome! Plot it overlapping a histogram for very cool plots
-- Categorical x-axis: `catplot` w/ `kind`: count,bar,box,violin,swarm,strip,more
-- `pairplot`, `heatmap`, `regplot`(scatter+reg), `jointplot`(scatter+edge hists)
-    * `pairplot` charts can be accessed/modified with `.axes`
-    * `regplot` uses `line_kws={'color':'red'}`
-- Normality: `statsmodels.api.qqplot`; x: theoretical quants, y: observed quants
-### Python Dataframe Styling
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
+#     #                                          
+##    #   ##   ##### #    # #####    ##   #      
+# #   #  #  #    #   #    # #    #  #  #  #      
+#  #  # #    #   #   #    # #    # #    # #      
+#   # # ######   #   #    # #####  ###### #      
+#    ## #    #   #   #    # #   #  #    # #      
+#     # #    #   #    ####  #    # #    # ###### 
+                                                 
+#                                                        
+#         ##   #    #  ####  #    #   ##    ####  ###### 
+#        #  #  ##   # #    # #    #  #  #  #    # #      
+#       #    # # #  # #      #    # #    # #      #####  
+#       ###### #  # # #  ### #    # ###### #  ### #      
+#       #    # #   ## #    # #    # #    # #    # #      
+####### #    # #    #  ####   ####  #    #  ####  ###### 
+                                                         
+######                                                            
+#     # #####   ####   ####  ######  ####   ####  # #    #  ####  
+#     # #    # #    # #    # #      #      #      # ##   # #    # 
+######  #    # #    # #      #####   ####   ####  # # #  # #      
+#       #####  #    # #      #           #      # # #  # # #  ### 
+#       #   #  #    # #    # #      #    # #    # # #   ## #    # 
+#       #    #  ####   ####  ######  ####   ####  # #    #  ####  
+-->
+
+--------------------------------------------------------------------------------
+<!-- Polished -->
+## Natural Language Processing
+- Designed for normalizing, analyzing, and modeling bodies of text
+- Useful for keyword and sentiment analysis, classification, anomaly detection
+- Often involves factorization of sparse matrices (decompose then approximate)
+- Natural Language Toolkit (NLTK): https://www.nltk.org/index.html
+### Bag of Words (BoW)
+- NLP preprocessing; turn words into numerical values for model training
+- Sparse matrix for each document (index) and a vector of each word (column)
+- Count Vectorization (CV); Term Frequency * Inverse Document Frequency (TFIDF)
+    * CV: fast/explainable; word counts; doesn't consider word importance
+    * TFIDF: slow/complex; word weights; keeps importance and filters stopwords
+### Cosine Similarity
+- Compare one document's similarity to another using a mathematical measure
+    * `dot_product(doc1, doc2) / (sqrt(sum(doc1 ** 2)) * sqrt(sum(doc2 ** 2)))`
+- Result is between -1 and 1; 1 means identical, -1 means entirely opposite
+### Normalizing String Features
+1. Perform Unicode normalization with one of the following: NFD, NFC, NFKD, NFKC
+1. Encode from normalized text into ASCII
+1. Decode from ASCII into UTF-8
+1. Remove special characters using REGEX: replace /[^a-z0-9'\s]/ with ""
+1. Replace newline characters with single space to flatten text
+1. Perform tokenization using a tokenizer
+1. Delete stopwords (words that need to be deleted or that aren't useful)
+1. Perform stemming or lemmatization to reduce word variations to their root
+1. Rejoin the resulting roots into a single document and/or corpus (if required)
+### Keyword Analysis
+1. Perform cleaning steps from before (tokenize on words)
+1. Calculate character count and word count for every document
+1. Plot scatterplot of charcount vs wordcount (Classification: color by target)
+1. Create a corpus of all cleaned documents
+1. (Classification) Also split docs by class and create a corpus for each subset
+1. Get word counts per corpus (index is each word, cols are counts per corpus)
+1. Perform N-Gram value counts on each corpus and concat to the above dataframe
+1. (Classification) Add cols for class-wise, word-wise proportions
+1. (Classification) Sort data by proportion, plot stacked barchart (ex: best 25)
+1. Plot a wordcloud with an optional black-white picture mask
+### Sentiment Analysis
+1. Perform cleaning steps from before (tokenize on sentences)
+1. Instantiate a pre-trained sentiment analyzer
+1. Calculate sentiment score per sentence, calc average sentiment across scores
+1. (Classification) Group sentiment score averages by target class
+## Python NLP Libraries
+- Python Unicode normalization: `doc = UNICODE.normalize().encode().decode()`
+- Python NLTK: `from nltk import tokenize, porter, stem, corpus.stopwords`
+    * Choose a specific method under each of these, ex: TweetTokenizer
+    * Use `sent_tokenize` instead of `tokenize` for sentence tokenization
+- N-Grams: `bigrams = nltk.ngrams(corpus_listlike, 2)`
+- Python text sentiment: `from nltk.sentiment import SentimentIntensityAnalyzer`
+    * Score: `SentimentIntensityAnalyzer().polarity_scores(sentence_token)`
+- Python Wordclouds: `import wordcloud.WordCloud, PIL.Image, matplotlib.pyplot`
+    * Plotfreq: `img = WordCloud().generate_from_frequencies({"hi":29,"yo":8"})`
+    * See: https://github.com/amueller/word_cloud/blob/master/examples/parrot.py
+- Fuzzy matching: `thefuzz.process.extract("matchme", listlikehere, limit=None)`
+    * Return list of match score tuples like: [(string1, score, rank), ...]
+- Python bag of words: `import sklearn.feature_extraction.text`
+    * Count Vectorization and TF-IDF Vectorization
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
+ #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #  
+  # #     # #     # #     # #     # #     # #     # #     # #     # #     # #   
+####### ####### ####### ####### ####### ####### ####### ####### ####### ####### 
+  # #     # #     # #     # #     # #     # #     # #     # #     # #     # #   
+ #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #  
+                                                                                
+                                                                                
+                    #     # ####### ######  ####### #       
+                    ##   ## #     # #     # #       #       
+                    # # # # #     # #     # #       #       
+                    #  #  # #     # #     # #####   #       
+                    #     # #     # #     # #       #       
+                    #     # #     # #     # #       #       
+                    #     # ####### ######  ####### ####### 
+                                        
+                                                                                
+ #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #  
+  # #     # #     # #     # #     # #     # #     # #     # #     # #     # #   
+####### ####### ####### ####### ####### ####### ####### ####### ####### ####### 
+  # #     # #     # #     # #     # #     # #     # #     # #     # #     # #   
+ #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #  
+-->
+
+
+# MODEL
+
+
+<!--
+#######                                          
+#       ######   ##   ##### #    # #####  ###### 
+#       #       #  #    #   #    # #    # #      
+#####   #####  #    #   #   #    # #    # #####  
+#       #      ######   #   #    # #####  #      
+#       #      #    #   #   #    # #   #  #      
+#       ###### #    #   #    ####  #    # ###### 
+                                                 
+######                                                    
+#     # ###### #####  #    #  ####  ##### #  ####  #    # 
+#     # #      #    # #    # #    #   #   # #    # ##   # 
+######  #####  #    # #    # #        #   # #    # # #  # 
+#   #   #      #    # #    # #        #   # #    # #  # # 
+#    #  #      #    # #    # #    #   #   # #    # #   ## 
+#     # ###### #####   ####   ####    #   #  ####  #    # 
+-->
+
+--------------------------------------------------------------------------------
+<!-- Polished -->
+## Feature Reduction
+- Get rid of features that contain only one unique value
+- Get rid of features that are duplicates or otherwise match other features
+- Get rid of features that have nulls not worth handling (or drop rows)
+    * Python: `df.dropna(axis=1, thresh=(len(df.columns)*0.9))`
+- Get rid of features that strongly correlate with others (multicollinearity)
+    * Variance Inflation Factor (VIF); features with >10 VIF should be dropped
+- Select features using linear regression coefficients (furthest vals from zero)
+- Select features using SelectKBest, Recursive Feature Engineering (RFE), RFECV
+    * SelectKBest: evaluate estimator once with n features
+    * RFE: evaluate estimator, drop worst feature, repeat until n features left
+    * RFECV: same as RFE but also with crossvalidation (best across row subsets)
+- Can do feature reduction with LassoCV regularization (increases bias/underfit)
+    * Pass `sum(lcv.coef_ != 0)` as n_features parameter for SelectKBest or RFE
+- Get rid of features that have no analytic value (ex: observation identifiers)
+- Apply matrix factorization like PCA, TruncatedSVD, or NMF
+    * Matrix factorization: decompose a matrix, use results for approximation
+    * Matrix decomposition: express one matrix as multiple smaller matrices
+    * Matrix approximation: use small imprecise matrices to predict large matrix
+### Linear Algebra for Feature Reduction
+- Vector: one-dimensional array describing an observation in multiple dimensions
+- Vector Space: a collection of vectors that can be added/multiplied, with rules
+- Rank: dimensions of the vectors in a vector space (describes rows and columns)
+- Matrix: two-dimensional array that maps actions on vectors or vector spaces
+- Inverse Matrix: multiplying this and a matrix results in the identity matrix
+    * Not all matrices are "invertible" like this
+- System of Linear Equations: grouping of equations like `2x + y = 5; x - y = 3`
+    * Explicitly not polynomial, should only have one solution for variable vals
+- Linear Transformations: a function that linearly maps one matrix to another
+- Eigenvalues/Eigenvectors: scaling one matrix to another using scalar/vector
+    * Explained variance ratio: `eigenvalue / total_variance` (between 0 and 1)
+- Determinant: getting the area of a 2D matrix, the volume of a 3D matrix, etc
+- Inner Product Space: describing shape (length, angles, etc) of a vector matrix
+- Orthogonality: where two vectors have an inner product of zero
+- Diagonalization: convert original matrix to a diagonal matrix: `[[5,0],[0,3]]`
+    * Diagonal matrix is eigenvalues; apply to eigenvector matrix
+- Singular Value Decomposition (SVD): decompose matrix into eigen vectors/values
+    * This reveals the "intrinsic dimension" / "information" of a matrix
+- Covariance: how two vectors change together (checking linear correlation)
+- Covariance Matrix: how every vector changes with every vector in a matrix
+    * 3D version: [[COVxx,COVxy,COVxz],[COVyx,COVyy,COVyz],[COVzx,COVzy,COVzz]]
+### Principal Component Analysis (PCA)
+- Feature reduction strategy, designed for wide non-sparse datasets
+    * Also useful for de-correlating features due to non-linear transformation
+- Involves eigenvectors/eigenvalues of a dataset's covariance matrix
+    * Principal Component (PCs) are eigenvectors; original data becomes this
+    * Eigenvalues describe how valuable a PC is (larger eigenvalue is better)
+- Select some of the eigenvectors based on eigenvalue (how much they contribute)
+    * Descending-sort eigenvectors by their eigenvalue, scree plot, elbow method
+    * Calc each's explained variance ratio, cumsum, plot, choose using threshold
+### Truncated Singular Value Decomposition (TruncatedSVD)
+- Feature reduction strategy, especially designed for sparse matrices
+    * PCA starts with calculating a covariance matrix, destroying "sparsity"
+    * SVD multiplies the original data, preserving "sparsity" and zeroing data
+- SVD itself is not a data reduction strategy; TruncatedSVD uses SVD for that
+    * SVD exactly-decomposes the original matrix into three smaller matrices
+    * Original Matrix = Column Eigenvectors * Eigenvalues * Row Eigenvectors
+- TruncatedSVD follows the same eigenvalue/eigenvector selection process as PCA
+    * Cumulative explained variance threshold or elbow method to reduce features
+    * You can also use the count of nonzero eigenvalues for component count
+### Non-Negative Matrix Factorization (NMF)
+- Feature reduction strategy, meant for **non-negative** sparse matrices
+    * Like TruncatedSVD, also better than PCA due to PCA's flaws with "sparsity"
+    * Outperforms TruncatedSVD on non-negative data (explicit non-negative rule)
+    * Slower than TruncatedSVD due to use of loss function and training steps
+- Decomposes to parts-based "metafeatures" matrix and an activation-mask matrix
+    * Imagery: *parts* of a face, *activated* for smile, *deactivated* for frown
+    * Text: *parts* of sentences, *activated* for happy, *deactivated* for angry
+- NMF approximates a V matrix by two smaller matrices, W and H; V ~= W * H
+    * V matrix: original data; each column is observation, each row is feature
+    * W matrix: key parts of original data; each column is "basis vector"
+    * H matrix: activation mask for W matrix; each column is "weights"/"gains"
+    * All three matrices must have non-negative values
+- NMF follows the same eigenvalue/eigenvector selection process as PCA
+    * Cumulative explained variance threshold or elbow method to reduce features
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
+#     #                            #####                                        
+##   ##  ####  #####  ##### #        #    #####    ##   # #    # # #    #  ####  
+# # # # #    # #    # #     #        #    #    #  #  #  # ##   # # ##   # #    # 
+#  #  # #    # #    # ####  #        #    #    # #    # # # #  # # # #  # #      
+#     # #    # #    # #     #        #    #####  ###### # #  # # # #  # # #  ### 
+#     # #    # #    # #     #        #    #   #  #    # # #   ## # #   ## #    # 
+#     #  ####  #####  ##### #####    #    #    # #    # # #    # # #    #  ####  
+-->
+
+--------------------------------------------------------------------------------
+<!-- Polished -->
+## Model Training
+### Encoding
+- Change string values to one-hot representation, ex: `x="cat"` -> `is_cat=True`
+    * Python: `pd.get_dummies(df[["col1","col2]], drop_first=True)`
+- Change string values to ordinal values, ex: `cold, warm, hot` -> `0, 1, 2`
+    * Python: `df["col3"].replace({"cold":0, "warm":1, "hot": 2})`
+### Scaling
+- Making 1-10 mean the same to a machine learning model as 1-1000
+    * "Equalizes density of continuous features for machine learning"
+    * Normalizes Euclidian Distance calcs: `d = sqrt((x1 - x2)^2 + (y1 - y2)^2)`
+    * Always use for KNN and K-Means (distance-based); no need for tree-based
+    * Split data before scaling; fit on train; transform all splits
+- **MinMaxScaler**
+    * General use, compresses all values between 0 and 1, sensitive to outliers
+- **StandardScaler**
+    * Used when data distribution is normal, centers on 0 and limits range
+- **RobustScaler**
+    * Same as StandardScaler but de-weighs outliers using IQR
+- **QuantileTransformer**
+    * Transform features into uniform or normal dist; de-weighs outliers
+    * Get ECDF line -> discretize to uniform dist -> plot on dist
+    * Complex; if you really want your data to be normal, then use this
+- Not shown (yet): MaxAbsScaler, Normalizer
+- Python: `from sklearn.preprocessing import RobustScaler`
+### Cross-Validation (CV)
+- Remove bias from selection of train split's records for model generalization
+- The training split itself is split into K folds; K=3 and K=5 are common
+    * Leave-One-Out: `K=len(df)`, useful for small datasets
+- With K=5, a model is trained using 4 folds for "train" and 1 fold for "test"
+- With K=5, five models are trained, each with a different fold as "test"
+- We select an evaluation metric, evaluate all 5 models, and calculate the mean
+    * Options: https://scikit-learn.org/stable/modules/model_evaluation.html
+- The mean value across models is what we'd expect on out-of-sample data!
+- If more errors on CV than on full training split: high variance / overfit
+    * Decrease model complexity (ex: less max_depth, more min samples)
+    * Gather more data so CV performs better
+- If error on CV is similar to train, but still too high: high bias / underfit
+    * Increase model complexity (ex: more max_depth, more min_samples)
+    * Gather more features
+### Grid Search CV
+- Grid Search mixes cross validation with your hyperparameter tuning
+- We pass the hyperparameter grid and K folds, and it trains/evals each model
+- Set `n_jobs = -1` to use multi-core processing! Speed gains!
+- For even more speed gains: try `RandomizedSearchCV`
+    * Doesn't try out the entire grid; "hones in" on the best, faster
+### Resampling Classes for Model Training
+- Classifiers have trouble modeling imbalanced-class datasets; so, resample!!
+- Can oversample the minority class and undersample the majority class
+    * AKA: Add artificial rows to smaller class, remove rows from larger class
+    * This is only performed on the training split for model training
+- Add rows with SMOTE (Synthetic Minority Oversampling TEchnique)
+- Remove rows with Tomek Links
+    * Delete from majority class the records that majority/minority overlap on
+- Result is balanced classes in the training split, model may perform better
+- Can do this in Python with SMOTETomek from imbalanced-learn library
 ```python
-# STYLE DF: FORMAT/BAR NUMBERS, COLOR LEVELS, FORMAT STRINGS; PRINT TO HTML FILE
-styler = df.head(10).style\
-    .format({"money":"${:,.0f}", "category":str.upper})\
-    .hide(axis="index")\
-    .background_gradient(cmap="Oranges")\
-    .highlight_max(subset="money", color="green")\
-    .highlight_min(subset="money", color="red")\
-    .bar(subset="money", color="#1f77b4")\
-    .export()
-html = df.head(10).style.use(styler).to_html()
-display(HTML(html))
+from imblearn.combine import SMOTETomek
+def resampler(X_train, y_train):
+    """ Use SMOTE+Tomek to eliminate class imbalances for train split """
+    smtom = SMOTETomek(random_state=42)
+    X_train_res, y_train_res = smtom.fit_resample(X_train, y_train)
+    print("Before SMOTE+Tomek applied:", X_train.shape, y_train.shape)
+    print("After SMOTE+Tomek applied:", X_train_res.shape, y_train_res.shape)
+    return X_train_res, y_train_res    # return resampled train data
 ```
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
+ ####
+#    # #       ##    ####   ####  # ###### #  ####    ##   ##### #  ####  #    #
+#      #      #  #  #      #      # #      # #    #  #  #    #   # #    # ##   #
+#      #     #    #  ####   ####  # #####  # #      #    #   #   # #    # # #  #
+#      #     ######      #      # # #      # #      ######   #   # #    # #  # #
+#    # #     #    # #    # #    # # #      # #    # #    #   #   # #    # #   ##
+ ####  ##### #    #  ####   ####  # #      #  ####  #    #   #   #  ####  #    #
+-->
 
 --------------------------------------------------------------------------------
 <!-- Polished -->
@@ -1301,6 +3322,29 @@ display(HTML(html))
 - **Receiver Operating Characteristic:** False Positive Rate, True Positive Rate
     * Model performance at different decision thresholds
     * The model with best ROC AUC is best across decision thresholds
+- **Cumulative Gains:** How many samples required to get certain amount of class
+    * `scikitplot.metrics.plot_cumulative_gain(actuals, preds)`
+- **Lift Curve:** How many samples required for model to beat random guessing
+    * Good model has steep rise on left of lift curve (with fewer samples)
+    * `scikitplot.metrics.plot_lift_curve(actuals, preds)`
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
+######                                                            
+#     # ######  ####  #####  ######  ####   ####  #  ####  #    # 
+#     # #      #    # #    # #      #      #      # #    # ##   # 
+######  #####  #      #    # #####   ####   ####  # #    # # #  # 
+#   #   #      #  ### #####  #           #      # # #    # #  # # 
+#    #  #      #    # #   #  #      #    # #    # # #    # #   ## 
+#     # ######  ####  #    # ######  ####   ####  #  ####  #    # 
+-->
 
 --------------------------------------------------------------------------------
 <!-- Polished -->
@@ -1380,6 +3424,24 @@ display(HTML(html))
     * Trend in residual plot, unaccounted-for drivers remain
     * Fix heteroscedasticity by removing outliers or log/expon/etc transform
 
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
+#######                     #####                                
+   #    # #    # ######    #     # ###### #####  # ######  ####  
+   #    # ##  ## #         #       #      #    # # #      #      
+   #    # # ## # #####      #####  #####  #    # # #####   ####  
+   #    # #    # #               # #      #####  # #           # 
+   #    # #    # #         #     # #      #   #  # #      #    # 
+   #    # #    # ######     #####  ###### #    # # ######  ####  
+-->
+
 --------------------------------------------------------------------------------
 <!-- Needs work -->
 ## Time Series
@@ -1430,65 +3492,31 @@ display(HTML(html))
 1. Evaluate each model's RMSE, best model has lowest RMSE
 1. Use best model for future forecasting
 
---------------------------------------------------------------------------------
-<!-- Polished -->
-## Anomaly Detection
-- Detect a bad action
-- Detect a normal action at a bad time
-- Detect a normal action which is too big or too small
-- Detect normal actions that are overlapping when they should be separate
-- Detect normal actions that combine into a bad chain
-- Detect normal actions that happen too quickly or too slowly
-- Detect normal actions that deviate from a baseline of actions
-## Baselines and Deviation
-- A user accessed/read/changed/copied files outside their normal routine
-    * Categorize all files (encode)
-    * Get each user's by-category access probabilities
-    * Set threshold for alerting, apply threshold
-- A user tried to access a system in a different access category
-    * Categorize all systems (encode)
-    * Get each user's access rights
-    * Mask for access attempts not matching access rights
-- A user copied files out of a specialized system
-    * Set alerting on specific actions
-- One user logged in from multiple endpoints at the same time
-    * Check duplicate active states in system processes for a user (easiest)
-    * Combine logs, set session start/end, check user duplication
-- Two or more users logged in from a single endpoint
-    * Depends entirely on the endpoint and how it captures/separates logins
-- Too many manipulations of sensitive data in a given time span
-    * Categorize sensitive/other actions in binary
-    * Perform interval-count aggregation
-    * Set limits on action manually or through Bollinger band outlier detection
-- Old/unused accounts became active
-    * Decide what makes an account old manually or through probabilities
-    * Get last-login information for all accounts
-    * Check login information against reporting criteria
-### Actions: Overlapping Sessions
-```python
-# Example:
-# [start,   end, start,   end, start, start,   end,   end]  # Series
-# [    1,    -1,     1,    -1,     1,     1,    -1,    -1]  # Map to 1 and -1
-# [    1,     0,     1,     0,     1,     2,     1,     0]  # Cumulative Sum
-# [ True, False,  True, False,  True,  True,  True, False]  # x > 0
-# [ True, False,  True, False,  True,  True,  True,  True]  # Fix last overlap
-# [False, False, False, False,  True,  True,  True,  True]  # Determinations
-# ["Nrm", "Nrm", "Nrm", "Nrm", "Ovr", "Ovr", "Ovr", "Ovr"]  # Map to category
-# use cumsum, mask, shift-comparison, and .loc to determine overlaps
-s = pd.Series(start_end_series)               # Series
-s = s.map({starter:1, ender:-1})              # Map to 1 and -1
-s = s.cumsum()                                # Cumulative Sum
-if s[len(s) - 2] == 0 and s[len(s) - 1] == 1: # Handle edge case
-    flip_last = True
-s = s > 0                                     # x > 0
-s = s | s.shift(2)                            # Fix last overlap
-s.loc[s[~s].index - 1] = False                # Determinations
-if flip_last:                                 # Handle edge case
-    s.loc[len(s) - 1] = False
-s = s.map({True:"Overlap", False:"Normal"})   # Map to category
-s = s.rename("overlap_status")
-pd.concat([s, pd.Series(start_end_series)], axis=1)
-```
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
+#     #                                    
+##    # ###### #    # #####    ##   #      
+# #   # #      #    # #    #  #  #  #      
+#  #  # #####  #    # #    # #    # #      
+#   # # #      #    # #####  ###### #      
+#    ## #      #    # #   #  #    # #      
+#     # ######  ####  #    # #    # ###### 
+                                           
+#     #                                                 
+##    # ###### ##### #    #  ####  #####  #    #  ####  
+# #   # #        #   #    # #    # #    # #   #  #      
+#  #  # #####    #   #    # #    # #    # ####    ####  
+#   # # #        #   # ## # #    # #####  #  #        # 
+#    ## #        #   ##  ## #    # #   #  #   #  #    # 
+#     # ######   #   #    #  ####  #    # #    #  ####  
+-->
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
@@ -1530,29 +3558,87 @@ pd.concat([s, pd.Series(start_end_series)], axis=1)
 - Similar methodology to NNs, but the network structure for learning is flexible
 - Computer Vision
 
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
+ #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #  
+  # #     # #     # #     # #     # #     # #     # #     # #     # #     # #   
+####### ####### ####### ####### ####### ####### ####### ####### ####### ####### 
+  # #     # #     # #     # #     # #     # #     # #     # #     # #     # #   
+ #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #  
+                                                                                
+                                                                                
+                ######  ####### ######  #       ####### #     # 
+                #     # #       #     # #       #     #  #   #  
+                #     # #       #     # #       #     #   # #   
+                #     # #####   ######  #       #     #    #    
+                #     # #       #       #       #     #    #    
+                #     # #       #       #       #     #    #    
+                ######  ####### #       ####### #######    #    
+                                                
+                                                                                
+ #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #  
+  # #     # #     # #     # #     # #     # #     # #     # #     # #     # #   
+####### ####### ####### ####### ####### ####### ####### ####### ####### ####### 
+  # #     # #     # #     # #     # #     # #     # #     # #     # #     # #   
+ #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #  
+-->
+
+
+# DEPLOY
+
+
+<!--
+#######                                               ##    
+#       #    # #####   ####  #####  #####  ####      #  #   
+#        #  #  #    # #    # #    #   #   #           ##    
+#####     ##   #    # #    # #    #   #    ####      ###    
+#         ##   #####  #    # #####    #        #    #   # # 
+#        #  #  #      #    # #   #    #   #    #    #    #  
+####### #    # #       ####  #    #   #    ####      ###  # 
+                                                            
+######                                                
+#     # # #####  ###### #      # #    # ######  ####  
+#     # # #    # #      #      # ##   # #      #      
+######  # #    # #####  #      # # #  # #####   ####  
+#       # #####  #      #      # #  # # #           # 
+#       # #      #      #      # #   ## #      #    # 
+#       # #      ###### ###### # #    # ######  ####  
+-->
+
 --------------------------------------------------------------------------------
 <!-- Needs work -->
-## Model Deployment
+## Exports and Pipelines
 - Use `from skelarn.pipeline import Pipeline` and save trained pipe to PKL file
     * Access parts using layer names, ex: `("scaler", StandardScaler())`
-### Python Flask
-- Web interfacing framework that uses Python; pretty neato stuff
-- Tutorial: search "Flask mega tutorial miguen grinberg"
-- Links for all things Flask: https://www.fullstackpython.com/flask.html
-- Typically uses views.py or app.py; this allows page nav from Python framework
-    * Set param `methods=['GET','POST','PUT']` to choose what you can do
-    * Use `if request.method == 'POST':` for maximum effect
-    * Set route as `'/<int:year>/<int:month>/<title>'` to capture args from URL
-        * Capture args: `def func(x,y,z):`
-- `@app.before_request()` Run function on *every* page nav action 
-- `@app.route('/cool_page')` Run function for specific page navigation
-- `@app.errorhandler(404)` Run function for HTTP error codes
-- Overall: Generate page template, Provide response, or Redirect the user
-### Python Django
-- 
-### Python Svelte
-- 
-### Deploying the Model
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
+ #####                                                           
+#     #  ####  #    # #####   ##   # #    # ###### #####   ####  
+#       #    # ##   #   #    #  #  # ##   # #      #    # #      
+#       #    # # #  #   #   #    # # # #  # #####  #    #  ####  
+#       #    # #  # #   #   ###### # #  # # #      #####       # 
+#     # #    # #   ##   #   #    # # #   ## #      #   #  #    # 
+ #####   ####  #    #   #   #    # # #    # ###### #    #  ####  
+-->
+
+--------------------------------------------------------------------------------
+<!-- Needs work -->
+## Containers
 - Containers: Easy replication and distribution of software solutions
 - Sandboxing: Each container in a Docker daemon is **isolated** from one another
     * A container can replicate a computer in a safe state for testing
@@ -1604,6 +3690,87 @@ CMD ["app.py"]
     * Run named image: `docker run author/purpose`
         * This assumes the latest image version if version isn't specified
     * Alias an image during the run command: `--name alias_name`
+### Docker Compose
+- 
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
+#                                   
+#        ####   ####    ##   #      
+#       #    # #    #  #  #  #      
+#       #    # #      #    # #      
+#       #    # #      ###### #      
+#       #    # #    # #    # #      
+#######  ####   ####  #    # ###### 
+                                    
+######                                                               
+#     # ###### #####  #       ####  #   # #    # ###### #    # ##### 
+#     # #      #    # #      #    #  # #  ##  ## #      ##   #   #   
+#     # #####  #    # #      #    #   #   # ## # #####  # #  #   #   
+#     # #      #####  #      #    #   #   #    # #      #  # #   #   
+#     # #      #      #      #    #   #   #    # #      #   ##   #   
+######  ###### #      ######  ####    #   #    # ###### #    #   #   
+-->
+
+--------------------------------------------------------------------------------
+<!-- Needs work -->
+## Local Deployment
+### Python Flask
+- Web interfacing framework that uses Python; pretty neato stuff
+- Tutorial: search "Flask mega tutorial miguen grinberg"
+- Links for all things Flask: https://www.fullstackpython.com/flask.html
+- Typically uses views.py or app.py; this allows page nav from Python framework
+    * Set param `methods=['GET','POST','PUT']` to choose what you can do
+    * Use `if request.method == 'POST':` for maximum effect
+    * Set route as `'/<int:year>/<int:month>/<title>'` to capture args from URL
+        * Capture args: `def func(x,y,z):`
+- `@app.before_request()` Run function on *every* page nav action 
+- `@app.route('/cool_page')` Run function for specific page navigation
+- `@app.errorhandler(404)` Run function for HTTP error codes
+- Overall: Generate page template, Provide response, or Redirect the user
+### Python Django
+- 
+### Python Svelte
+- 
+### Deploying the Model
+- 
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
+ #####                                                   
+#     #  ####    ##   #        ##   #####  #      ###### 
+#       #    #  #  #  #       #  #  #    # #      #      
+ #####  #      #    # #      #    # #####  #      #####  
+      # #      ###### #      ###### #    # #      #      
+#     # #    # #    # #      #    # #    # #      #      
+ #####   ####  #    # ###### #    # #####  ###### ###### 
+                                                         
+######                                                               
+#     # ###### #####  #       ####  #   # #    # ###### #    # ##### 
+#     # #      #    # #      #    #  # #  ##  ## #      ##   #   #   
+#     # #####  #    # #      #    #   #   # ## # #####  # #  #   #   
+#     # #      #####  #      #    #   #   #    # #      #  # #   #   
+#     # #      #      #      #    #   #   #    # #      #   ##   #   
+######  ###### #      ######  ####    #   #    # ###### #    #   #   
+-->
+
+--------------------------------------------------------------------------------
+<!-- Needs work -->
+## Scalable Deployment
 ### Kubernetes
 - Scalable container architecture
 ### Apache Kafka
@@ -1622,180 +3789,243 @@ CMD ["app.py"]
     * Consume: Consumer groups send topic partitions evenly between consumers
     * The max number of consumers in a group == number of partitions in a topic
 
---------------------------------------------------------------------------------
-<!-- Polished -->
-## Spark
-- Computational clustering for big data processing
-    * Velocity (fast gathering, lots of data, streaming)
-    * Volume (large data, bigger than memory or bigger than storage)
-    * Veracity (reliability of data, esp. missing data)
-    * Variety (different sources, unstructured data, data isn't uniform)
-- Java Virtual Machine (JVM) coordinates clusters using Scala
-- The 'pyspark' library translates Python to Scala and operates the JVM
-- Can run 100% locally; it will coordinates computer cores
-    * This is often overkill for one-computer tasks
-- Is 'lazy'- adds to / optimizes queries until the execution order is given
-- Alternatives: Hadoop, Dask
-### PySpark Commands
-- Check Spark's intentions before query: `df.explain()`
-    * Used for diagnosing performance issues; operation order from bottom-upward
-- Switch to SQL: `df.createOrReplaceTempView('df')`
-    * Run SQL statements: `spark.sql(''' SELECT * FROM df ''')`
-- Build schema: `schema = StructType([(StructField(...), StructField(...)),])`
-    * StructField syntax: `Structfield("col1", StringType())`
-### PySpark Wrangling Example
-```python
-# SETUP
-import pyspark
-from pyspark.sql.functions import *
-spark = pyspark.sql.SparkSession.builder.getOrCreate()
-# INGEST
-df = spark.read.csv('filepath', header=True, schema=schema_struct)
-# JOIN DF
-df = df.join(df2, "joiner_col", "left").drop(df.joiner_col).drop(df2.joiner_col)
-# PRINT NULL COUNTS
-df.select(
-    [count(when(isnan(c) | col(c).isNull(), c)).alias(c) for c in df.columns]
-).show(vertical=True)
-# FILL, DROP NULLS
-df = df.na.fill(0, subset=['x', 'y']).na.drop()
-# CHECK DTYPES
-df.printSchema()
-# DTYPE, NAME CHANGES
-df = df.withColumn('ordinals', df.x.cast('string'))\
-.withColumnRenamed("colname_before", "colname_after")
-# TO DATETIME, TO MONTH
-df = df.withColumn("col1", month(to_timestamp("col1", "M/d/yy H:mm")))
-# DATEDIFF
-df = df.withColumn("date_calc_col", datediff(current_timestamp(), "datecol"))
-# REGEX
-df = df.withColumn('repl', regexp_replace(df.x, re, repl)\
-.withColumn('substr', regexp_extract(df.col, re, g)))
-# STRING WHITESPACE, FORMATTING
-df = df.withColumn("c1", trim(lower(df.c1)))\
-.withColumn("c1", format_string("%03d", col("c1").cast("int")),)
-# STRING CONCAT
-df = df.withColumn('c2', concat(lit('x:', df.x)))
-# ADD X + Y AS COLUMN 'Z' TWO DIFFERENT WAYS
-df = df.select(*, expr(df.x + df.y).alias('z')).selectExpr('*', 'x + y as z') 
-# WHEN
-df = df.withColumn('ten', when(df.x > 10, 'over 10').otherwise('not over 10'))
-# WHERE, OR + AND
-df = df.where((df.x > 5) | (df.y < 5)).where(df.z ==7)
-# SMALL SAMPLE
-df = df.sample(fraction=0.01, seed=42)
-# SPLIT
-trn, val, test = df.randomSplit([0.6, 0.2, 0.2], seed=42)
-# RUN ALL, SAVE LOCALLY
-df.write.json("df_json", mode="overwrite")
-trn.write.format("csv").mode("overwrite").option("header", "true").save("train")
-val.write.format("csv").mode("overwrite").option("header", "true").save("val")
-test.write.format("csv").mode("overwrite").option("header", "true").save("test")
-```
-### PySpark Aggregation Example
-```python
-# COLUMN CALCULATION
-x_y = df.select(sum(df.x)), df.select(mean(df.x))
-# VALUE COUNT TWO COLUMNS, WITH PROPORTIONS COLUMN
-value_counts = df.groupBy('col','target').count().sort('count',ascending=False)\
-.withColumn('proportion', round(col('count') / df.count(), 2))
-# AGG GROUPBY
-mean_min = df.groupBy('gb').agg(mean(df.x), min(df.y))
-# CROSSTAB
-crosstab = df.crosstab('g1', 'g2')
-# PIVOT TABLE
-mean_x_given_g1_g2 = df.groupBy('g1').pivot('g2').agg(mean('x'))
-```
-### PySpark Machine Learning
-```python
-from pyspark.ml.stat import ...    # chi square / correlation testing
-from pyspark.ml.feature import ... # imputation, encoding, scaling, vectorize...
-from pyspark.ml.classification import ... # modeling
-from pyspark.ml.regression import ...     # modeling
-from pyspark.ml.clustering import ...     # modeling
-from pyspark.ml.tuning import ...         # model cross-validation
-from pyspark.ml.evaluation import ...     # model evaluation
-```
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
+ #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #  
+  # #     # #     # #     # #     # #     # #     # #     # #     # #     # #   
+####### ####### ####### ####### ####### ####### ####### ####### ####### ####### 
+  # #     # #     # #     # #     # #     # #     # #     # #     # #     # #   
+ #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #  
+                                                                                
+                                                                                
+         #####  ####### #     # ####### ######     #    ####### ####### 
+        #     # #       ##    # #       #     #   # #      #    #       
+        #       #       # #   # #       #     #  #   #     #    #       
+        #  #### #####   #  #  # #####   ######  #     #    #    #####   
+        #     # #       #   # # #       #   #   #######    #    #       
+        #     # #       #    ## #       #    #  #     #    #    #       
+         #####  ####### #     # ####### #     # #     #    #    ####### 
+                                                                
+                                                                                
+ #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #  
+  # #     # #     # #     # #     # #     # #     # #     # #     # #     # #   
+####### ####### ####### ####### ####### ####### ####### ####### ####### ####### 
+  # #     # #     # #     # #     # #     # #     # #     # #     # #     # #   
+ #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #  
+-->
+
+
+# GENERATE
+
+
+<!--
+ #####                                                                 #    ### 
+#     # ###### #    # ###### #####    ##   ##### # #    # ######      # #    #  
+#       #      ##   # #      #    #  #  #    #   # #    # #          #   #   #  
+#  #### #####  # #  # #####  #    # #    #   #   # #    # #####     #     #  #  
+#     # #      #  # # #      #####  ######   #   # #    # #         #######  #  
+#     # #      #   ## #      #   #  #    #   #   #  #  #  #         #     #  #  
+ #####  ###### #    # ###### #    # #    #   #   #   ##   ######    #     # ### 
+                                                                                
+######                                                          
+#     # ######  ####   ####  #    # #####   ####  ######  ####  
+#     # #      #      #    # #    # #    # #    # #      #      
+######  #####   ####  #    # #    # #    # #      #####   ####  
+#   #   #           # #    # #    # #####  #      #           # 
+#    #  #      #    # #    # #    # #   #  #    # #      #    # 
+#     # ######  ####   ####   ####  #    #  ####  ######  ####  
+-->
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
-## Planning a Project
-- Requirements Stage: Talk with stakeholders about their requirements/timeline
-- Decision Stage: Decide which requirements you will be able to complete
-    * Goal is to complete *all* user requirements for this "sprint" (a timeline)
-    * You choose how in-depth to go for each requirement
-### Selecting the Framework
-- Waterfall: takes it one step at a time, fully-complete each step then move on
-    * All requirements defined ahead of time
-    * Inflexible for new requirements/issues, must start over; finish is clear
-- AGILE: deliver minimums, expand minimums with features iteratively
-    * An iterations is a "spiral"; spiraling with new features
-    * Flexible for new requirements/issues, but may be hard to say it's finished
-### Systems Development Lifecycle (SDLC)
-- Framework for delivering software
-- Waterfall and AGILE both still in use; each follows same steps; AGILE repeats
-- Step 1: Analysis - Selecting requirements to fulfill (final ones are in SRS)
-    * UML: Use case diagram; user choices, choice result
-- Step 2: Design - choosing the solutions to solve those requirements
-    * UML: Class diagram; classes with vars, inheritance; "unfilled diamond"
-- Step 3: Implementation - building the chosen solutions
-    * UML: Activity diagram; typically a program's flowchart with actual code
-- Step 4: Testing - ensuring the solutions are functional + satisfy requirements
-    * UML: Sequence diagram; example is client-server communication sequence
+## Generative AI Resources
+- Open source models and tutorials: Hugging Face
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
+#                                   
+#         ##   #####   ####  ###### 
+#        #  #  #    # #    # #      
+#       #    # #    # #      #####  
+#       ###### #####  #  ### #      
+#       #    # #   #  #    # #      
+####### #    # #    #  ####  ###### 
+                                    
+#                                                        
+#         ##   #    #  ####  #    #   ##    ####  ###### 
+#        #  #  ##   # #    # #    #  #  #  #    # #      
+#       #    # # #  # #      #    # #    # #      #####  
+#       ###### #  # # #  ### #    # ###### #  ### #      
+#       #    # #   ## #    # #    # #    # #    # #      
+####### #    # #    #  ####   ####  #    #  ####  ###### 
+                                                         
+#     #                                    
+##   ##  ####  #####  ###### #       ####  
+# # # # #    # #    # #      #      #      
+#  #  # #    # #    # #####  #       ####  
+#     # #    # #    # #      #           # 
+#     # #    # #    # #      #      #    # 
+#     #  ####  #####  ###### ######  ####  
+-->
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
-## Business Tools
-- Excel and Google Sheets: fast initial exploration
-- PowerBI: if your company uses it already, use Jupyter with `powerbiclient`
-- Tableau: if your company uses it already, or, if you have license/experience
-### Excel
-- Absolute reference using hold_clickdrag + fn + F4
-- Doubleclick bottomright of function cell to affect all rows in selected col(s)
-```excel
-# count
-=COUNT(cells)
-# conditions
-=IF(AND(cond1, OR(cond2, cond3)), truth_value, false_value)
-=COUNTIF(cells, cellwise_condition) | =SUMIF(cells, cellwise_condition)
-=INDEX(range, MATCH(string_to_match, range)) | =IFERROR(value, truth_value)
-# numbers
-=B2-B3 | =B9+B12
-=MOD(cells, 3) | =POWER(cells, 2) | =SUM(cells, cells) | =AVERAGE(cells, cells)
-# strings
-=CEILING(cells) | =FLOOR(cells)
-=CONCATENATE(cells, cells, " ", cells, " ") | =SPLIT(cells, ",") | =LEN(cells)
-=REPLACE(cells, index, length, new_text) | =SUBSTITUTE(cells, match, sub, times)
-=LEFT(cells, numchars) | =MID(cells, start, steps) | =RIGHT(cells, numchars)
-=UPPER(cells) | =LOWER(cells) | =PROPER(cells)
-# times
-=NOW() | =TODAY() | =TIME(HHcells, MMcells, SScells) | =DATEDIF(s1, s2, step)
-# VLOOKUP: read columns vertically to discover match then return the column
-=VLOOKUP(key, range_to_search(use fn+f4 to 'lock' it), col_to_return, FALSE)
-# advanced features
-=SPARKLINE(range, {'charttype','bar';'color','red';'max',max(range); etc})
-```
-### Tableau
-- Excellent software for interactive visualizations and dashboards
-- Regular Tableau requires a license, can save locally, autosaves enabled
-- Tableau Public is free, but all work gets posted to https://public.tableau.com
-    * Faith Kane: https://public.tableau.com/app/profile/faith.kane
-    * Sean Oslin: https://public.tableau.com/app/profile/sean.oslin
-    * The Superstore CSV is popular to learn and demo Tableau
-- Explore your data w/ Excel pivot tables first; exploration in Tableau is slow
-    * Tableau Prep can assist with this
-- Data Source: Used for changing files across the project
-    * Adjust field types; Tableau relies on correct typing for simplifying work
-    * Hide unnecessary columns from project using drop-downs in each column
-    * Filter results at top-right (intuitive)
-- Sheets: Used for building individual charts
-    * Plot by rows and columns, use Marks for conditional formatting / tooltips
-    * Set chart type in top right, change chart dimensions via top-mid dropdown
-    * Adjust display options for numbers, add trend lines, annotations, and more
-        * Everything-formatting: Context Menu > Format
-    * Create: calculated fields for agg, level of detail (LOD) calculations, etc
-    * Can build new file using Python/Pandas and add the new file to new sheet
-- Dashboard: Show multiple sheets in one place
-    * Add non-sheet elements from bottom left
-    * Create multi-sheet filters
-- Story: Used for presentation of sheets and dashboards
+## Large Language Models (LLMs)
+- Open source models and tutorials: Hugging Face
+### Methodology
+- 
+### Training
+- 
+### Scaling Down
+- Transformers
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
+######                                                    
+#     # ###### ##### #####  # ###### #    #   ##   #      
+#     # #        #   #    # # #      #    #  #  #  #      
+######  #####    #   #    # # #####  #    # #    # #      
+#   #   #        #   #####  # #      #    # ###### #      
+#    #  #        #   #   #  # #       #  #  #    # #      
+#     # ######   #   #    # # ######   ##   #    # ###### 
+                                                          
+   #                                                           
+  # #   #    #  ####  #    # ###### #    # ##### ###### #####  
+ #   #  #    # #    # ##  ## #      ##   #   #   #      #    # 
+#     # #    # #      # ## # #####  # #  #   #   #####  #    # 
+####### #    # #  ### #    # #      #  # #   #   #      #    # 
+#     # #    # #    # #    # #      #   ##   #   #      #    # 
+#     #  ####   ####  #    # ###### #    #   #   ###### #####  
+                                                               
+ #####                                                           
+#     # ###### #    # ###### #####    ##   ##### #  ####  #    # 
+#       #      ##   # #      #    #  #  #    #   # #    # ##   # 
+#  #### #####  # #  # #####  #    # #    #   #   # #    # # #  # 
+#     # #      #  # # #      #####  ######   #   # #    # #  # # 
+#     # #      #   ## #      #   #  #    #   #   # #    # #   ## 
+ #####  ###### #    # ###### #    # #    #   #   #  ####  #    # 
+-->
+
+--------------------------------------------------------------------------------
+<!-- Needs work -->
+## Retrieval Augmented Generation (RAG)
+- Adding context to existing model
+### Design
+- 
+### Implementation
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
+###                             
+ #  #    #   ##    ####  ###### 
+ #  ##  ##  #  #  #    # #      
+ #  # ## # #    # #      #####  
+ #  #    # ###### #  ### #      
+ #  #    # #    # #    # #      
+### #    # #    #  ####  ###### 
+                                
+ #####                                                           
+#     # ###### #    # ###### #####    ##   ##### #  ####  #    # 
+#       #      ##   # #      #    #  #  #    #   # #    # ##   # 
+#  #### #####  # #  # #####  #    # #    #   #   # #    # # #  # 
+#     # #      #  # # #      #####  ######   #   # #    # #  # # 
+#     # #      #   ## #      #   #  #    #   #   # #    # #   ## 
+ #####  ###### #    # ###### #    # #    #   #   #  ####  #    # 
+-->
+
+--------------------------------------------------------------------------------
+<!-- Needs work -->
+## Image Generation
+- 
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
+   #                           
+  # #   #    # #####  #  ####  
+ #   #  #    # #    # # #    # 
+#     # #    # #    # # #    # 
+####### #    # #    # # #    # 
+#     # #    # #    # # #    # 
+#     #  ####  #####  #  ####  
+                               
+ #####                                                           
+#     # ###### #    # ###### #####    ##   ##### #  ####  #    # 
+#       #      ##   # #      #    #  #  #    #   # #    # ##   # 
+#  #### #####  # #  # #####  #    # #    #   #   # #    # # #  # 
+#     # #      #  # # #      #####  ######   #   # #    # #  # # 
+#     # #      #   ## #      #   #  #    #   #   # #    # #   ## 
+ #####  ###### #    # ###### #    # #    #   #   #  ####  #    # 
+-->
+
+--------------------------------------------------------------------------------
+<!-- Needs work -->
+## Audio Generation
+- 
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
+#     #                        
+#     # # #####  ######  ####  
+#     # # #    # #      #    # 
+#     # # #    # #####  #    # 
+ #   #  # #    # #      #    # 
+  # #   # #    # #      #    # 
+   #    # #####  ######  ####  
+                               
+ #####                                                           
+#     # ###### #    # ###### #####    ##   ##### #  ####  #    # 
+#       #      ##   # #      #    #  #  #    #   # #    # ##   # 
+#  #### #####  # #  # #####  #    # #    #   #   # #    # # #  # 
+#     # #      #  # # #      #####  ######   #   # #    # #  # # 
+#     # #      #   ## #      #   #  #    #   #   # #    # #   ## 
+ #####  ###### #    # ###### #    # #    #   #   #  ####  #    # 
+-->
+
+--------------------------------------------------------------------------------
+<!-- Needs work -->
+## Video Generation
+- 
+
+[[Return to Top]](#table-of-contents)
