@@ -2500,6 +2500,14 @@ for p in sorted(regulars):
     * Probability that you had a gun if you survived: P(gun|lived)
     * Observed numbers: P(lived) = 6/10, P(gun) = 3/10, P(gun|lived) = 2/6
     * Bayes: P(lived|gun) = ((2/6) * (6/10)) / (3/10) -> (2/10) / (3/10) -> 2/3
+- A/B Testing: Given a customer has seen/done/bought B, will they do/buy A
+    * Decide experiment duration, date, and the change (keep change small)
+        * Design the change before proceeding; if not possible, can't continue
+    * Decide the number of users for Control group and Treatment group
+    * Decide the key performance indicators (KPIs) that will provide the answer
+    * Perform the split randomly and control for various bias (ex: time of day)
+    * Do not change the experiment mid-way or else you'll contaminate/bias it
+    * At experiment conclusion, draw up findings report and recommendations
 - Get P(A|B) of dataset: `(df["A"] & df["B"]).sum() / (df["B"].sum() / len(df))`
     * Get P(A) given 2+ cols: `(df["A"] & mask).sum() / (mask.sum() / len(df))`
     * Low probability here indicates "A" outcomes are anomalous!
