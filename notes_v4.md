@@ -67,7 +67,7 @@ VIII. [Model                           ](#model)
 1.    [Classification                  ](#classification)
 1.    [Regression                      ](#regression)
 1.    [Time Series                     ](#time-series)
-1.    [Neural Networks                 ](#neural-networks)
+1.    [Neural Networks                 ](#neural-networks-nn)
 1.    [Reinforcement Learning          ](#reinforcement-learning-rl)
 
 IX.   [Deploy                          ](#deploy)
