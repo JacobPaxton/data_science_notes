@@ -68,6 +68,7 @@ VIII. [Model                           ](#model)
 1.    [Regression                      ](#regression)
 1.    [Time Series                     ](#time-series)
 1.    [Neural Networks                 ](#neural-networks)
+1.    [Reinforcement Learning          ](#reinforcement-learning-rl)
 
 IX.   [Deploy                          ](#deploy)
 1.    [Exports & Pipelines             ](#exports-and-pipelines)
@@ -3000,20 +3001,23 @@ pd.concat([s, pd.Series(start_end_series)], axis=1)
 1. Calculate sentiment score per sentence, calc average sentiment across scores
 1. (Classification) Group sentiment score averages by target class
 ## Python NLP Libraries
-- Python Unicode normalization: `doc = UNICODE.normalize().encode().decode()`
-- Python NLTK: `from nltk import tokenize, porter, stem, corpus.stopwords`
+- NLTK: `from nltk import tokenize, porter, stem, corpus.stopwords`
     * Choose a specific method under each of these, ex: TweetTokenizer
     * Use `sent_tokenize` instead of `tokenize` for sentence tokenization
+- NLP at speed (faster than NLTK): spaCy, `import spacy`
+- Unicode normalization: `doc = UNICODE.normalize().encode().decode()`
 - N-Grams: `bigrams = nltk.ngrams(corpus_listlike, 2)`
-- Python text sentiment: `from nltk.sentiment import SentimentIntensityAnalyzer`
+- Text sentiment: `from nltk.sentiment import SentimentIntensityAnalyzer`
     * Score: `SentimentIntensityAnalyzer().polarity_scores(sentence_token)`
-- Python Wordclouds: `import wordcloud.WordCloud, PIL.Image, matplotlib.pyplot`
+- Wordclouds: `import wordcloud.WordCloud, PIL.Image, matplotlib.pyplot`
     * Plotfreq: `img = WordCloud().generate_from_frequencies({"hi":29,"yo":8"})`
     * See: https://github.com/amueller/word_cloud/blob/master/examples/parrot.py
+- Topic modeling: `from gensim import corpora, models, similarities, downloader`
 - Fuzzy matching: `thefuzz.process.extract("matchme", listlikehere, limit=None)`
     * Return list of match score tuples like: [(string1, score, rank), ...]
-- Python bag of words: `import sklearn.feature_extraction.text`
+- Bag of words: `import sklearn.feature_extraction.text`
     * Count Vectorization and TF-IDF Vectorization
+- Read text from PDFs: `from pdfminer.high_level import extract_text`
 
 [[Return to Top]](#table-of-contents)
 
@@ -3091,6 +3095,7 @@ pd.concat([s, pd.Series(start_end_series)], axis=1)
     * Matrix decomposition: express one matrix as multiple smaller matrices
     * Matrix approximation: use small imprecise matrices to predict large matrix
 ### Linear Algebra for Feature Reduction
+- Tensor: any-dimensional mathematical object, ex: 1D tensor is a vector
 - Vector: one-dimensional array describing an observation in multiple dimensions
 - Vector Space: a collection of vectors that can be added/multiplied, with rules
 - Rank: dimensions of the vectors in a vector space (describes rows and columns)
@@ -3168,6 +3173,17 @@ pd.concat([s, pd.Series(start_end_series)], axis=1)
 --------------------------------------------------------------------------------
 <!-- Polished -->
 ## Model Training
+- Epoch: a round of data shuffle/split, model fit, evaluation, parameter update
+    * Use epochs to control training time, prevent overfit, "reach" convergence
+- Convergence: error improvement between epochs slows down, or error is accepted
+    * Early stopping: when error improvement between epochs slows, halt training
+    * Some models reach hyperparameter limits and stop (ex: tree max depth)
+    * Other models like KNN and Naive Bayes have no iterative training process
+- Adaptive learning rate: improve model past plateau even if it may not converge
+    * Upon reaching plateau before convergence/epochs, throw a wrench in random
+- Stochastic Gradient Descent (SGD): optimization for iterative model fitting
+    * Tweaks model parameters in opposite direction of loss gradient
+    * Uses small random subset/batch of the training data (stochastic)
 ### Encoding
 - Change string values to one-hot representation, ex: `x="cat"` -> `is_cat=True`
     * Python: `pd.get_dummies(df[["col1","col2]], drop_first=True)`
@@ -3527,27 +3543,115 @@ def resampler(X_train, y_train):
 -->
 
 --------------------------------------------------------------------------------
-<!-- Needs work -->
-## Neural Networks
-- Good at nontabular/large data
-    * It's not great for tabular/small data; slower, black-box
-- Good cases for NNs: images, video, sound, NLP
-- Can do "reinforcement learning" (evaluating itself)
+<!-- Polished -->
+## Neural Networks (NN)
+- Allowing models to perform their own feature engineering in hidden layers
+- Good cases for NNs: images, video, sound, NLP (large non-tabular data)
+- Stick with traditional modeling where possible for interpretability
 ### Neural Network Design
-- Uses neural nodes for weighing patterns
-- Neural nodes combine into a perceptron
-    * Input is however many features you're feeding in (A0, A1, A2)
-    * Output is the number of classification outcomes
-    * One layer of perception is an in-parallel layer
-        * Input weights
-    * Single-layer perceptron: one step of perception between input and output
-    * Multi-layer perceptron: multiple steps of perception between input/output
-        * This is a "series of perception"
-- A tensor is higher-dimensionality data than scalar, vector, or matrix
-    * Scalar: 1D, vector: 2D, matrix: 3D
-- Gradient Descent: seeking the minimum loss
-    * Distance-based, optimizing connections to reach an answer
-    * Backpropogation against feedforward
+- Neural node: basic building block of neural networks
+    * A node receives a value and performs a weighted mathematical operation
+    * Weights are auto-adjusted during NN training and can be exported/imported
+- Layer: a processing step in a neural network, can be dense or sparse
+    * Dense layer: every neuron in layer connects to every neuron in other layer
+    * Sparse layer: when a layer is not dense, ex: CNN convolutional layers
+- Input layer: simply receive individual, multiple, or entirety of observations
+- Output layer: simply output for task, ex: classification, regression, etc
+- Hidden layer(s): contains weighted neural nodes to model complex patterns
+    * Activation: non-linear modification of hidden layer to assist in modeling
+    * Weighted neural node: essentially an engineered feature
+- Compilation: set loss function, optimizer, eval metric, and model update plan
+    * Evaluation metrics are largely the same between NN and non-NN modeling
+- When training, NNs use backpropagation to calc gradients, optimizer to update
+    * Backpropagation works backward to calculate loss gradient between layers
+    * Optimizers use these gradients to update weights to try to decrease error
+### Layer Activations
+- Activations put non-linearity into NN to enable learning complex patterns
+- Sigmoid (Logistic): Map to between 0 to 1; binary-class; vanish; unoptimal
+- TanH (Hyperbolic Tangent): Map to between -1 to 1; vanish; more optimal
+- Rectified Linear Unit (ReLU): prevents reducing gradients to small values
+    * Fixes vanishing gradients, but might cause exploding gradients
+    * Use He weight intialization to also help prevent exploding gradients
+    * Use LeCun weight initialization to manage activation/gradient variance
+- Leaky ReLU: prevents dead neurons by force-applying activation to `x <= 0`
+- Parametric ReLU (PReLU): Leaky ReLU but learn activation during training
+- Softmax: all values between 0 to 1 and their outputs sum to 1; multi-class
+- Swish: Sigmoid multiplied by input value; similar to ReLU but smoother
+- Exponential Linear Unit (ELU): similar to ReLU but smoother
+- Hard Sigmoid: simple version of sigmoid due to being "piecewise linear"
+- Mish: mix TanH and Softplus; similar to ReLU but smoother
+### Neural Network Loss Functions
+- Cross-Entropy: binary-class
+- Categorical Cross-Entropy: multi-class
+- Sparse Categorical Cross-Entropy: multi-class but memory efficient
+- Weighted Cross-Entropy Loss: imbalanced multi-class
+- Mean Squared Error (MSE): regression using MSE
+- Mean Absolute Error (MAE): regression using MAE
+- Huber: regression with condition for outliers and for non-outliers
+- Triplet: metric learning
+- Contrastive: verifying match
+- Custom loss is also possible, ex: using MSE with L1 or L2 regularization
+### Training Optimizers
+- Stochastic Gradient Descent (SGD): uses loss gradient between small batches
+    * Simple, fast, common; great where simple optimizer is fine
+    * Tune learning rate carefully (or else slow convergence/oscillations)
+- SGD with Momentum: use moving average of previous gradients
+    * All the benefits of SGD with accelerated convergence
+- Adaptive Gradient (AdaGrad): use historical gradient, lessen large gradients
+    * Good for sparse data or when parameters have varying importance
+    * Learning rate may become too small over time
+- Root Mean Square Propogation (RMSprop): AdaGrad plus prevent small learn rate
+    * Good for sequential datasets
+- Adadelta: RMSprop but remove the learning rate hyperparameter (auto-adjust it)
+- Adaptive Moment Estimation (Adam): Combine SGD+Momentum and RMSprop
+    * Good for pretty much everything and is typically the default option to use
+    * Can be somewhat expensive and may lead to overfitting
+- Nesterov-Accelerated Adaptive Moment Estimation (Nadam): add Adam and Nesterov
+    * Improves convergence rate compared to Adam with few additional downsides
+- Limited-Memory Broyden–Fletcher–Goldfarb–Shanno (L-BFGS): if need then read!
+- Vanishing gradient problem: gradients shrink to zero in long backpropogation
+    * Opposite is exploding gradient problem, too-large gradients; same issues
+    * Slows down model learning because earlier layers receive smaller/no update
+    * Destroys/forgets long-term dependencies in sequential and deep FNN models
+    * Fix: certain activation functions, weight initializations, gates, batches
+### Available Neural Networks
+- **Feedforward (FNN)**
+    * Most basic NN; pass each input independently into hidden layers to output
+    * Mainly used for classification or regression tasks on tabular data
+    * Processes each input independent of other inputs
+    * Typically uses backpropagation to minimize the loss function
+    * Single-Layer Perceptron (SLP) is an FNN with no hidden layers
+    * Multi-Layer Perceptron (MLP) is an FNN with at least one hidden layer
+- **Radial Basis Function Network (RBFN)**
+    * Uses one hidden layer containing "radial basis neurons"
+- **Recurrent Neural Network (RNN)**
+    * Take previous output as part of a new input
+    * Mainly used when data has a logical sequence, ex: video, sound, language
+    * Processes inputs sequentially (order of inputs matters, ex: time series)
+- **Long Short Term Memory (LSTM)**
+    * Uses memory cells to keep info, uses input gate, forget gate, output gate
+    * Sequential model like RNN/GRU, gates address vanishing gradient problem
+    * Employs attention mechanisms to focus on most relevant parts of input
+- **Gated Recurrent Unit (GRU)**
+    * Uses update gate and reset gate to control how info flows through network
+    * Sequential model like RNN/LSTM, gates address vanishing gradient problem
+    * Similar to LSTM but simpler (fewer gates) and therefore more efficient
+- **Convolutional (CNN)**
+    * Apply filters or kernels to detect patterns (edges, textures, shapes, etc)
+    * Specialized for grid-like data like images/videos (ex: object detection)
+    * Processes each input independent of other inputs
+- **Capsule Networks (CapsNets)**
+    * Use capsules to assist generalizing to new viewpoints
+    * Improves on CNN for image recognition with important spatial relationships
+- **Autoencoder (AE)**
+    * Uses an encoder to compress input and decoder to reconstruct from compress
+    * Great for dimensionality reduction, denoising, and anomaly detection
+- **Self-Organizing Map (SOM)**
+    * Unsupervised dimensionality reduction into typically 2-D grid
+    * Used for visualizations, clustering, and feature extraction
+- **Siamese Networks**
+    * Uses two or more identical sub-networks to compare one thing to another
+    * Used for verification of faces and signatures
 ### Image Classification
 1. Split the dataset into train, validate, test as usual
 1. Reshape image pixels to be a one-dimensional vector
@@ -3562,9 +3666,40 @@ def resampler(X_train, y_train):
 1. Evaluate the model on the validation images set
 1. Tune model as necessary (repeat above layer choice steps)
 1. When satisfied, run on test images set to see if you've overfitted or not
-### Deep Learning
-- Similar methodology to NNs, but the network structure for learning is flexible
-- Computer Vision
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
+######                                                                                
+#     # ##### # #    # #####  ####  ####   ####  ##### #    # ##### #    # ##### 
+#     # #     # ##   # #     #    # #   # #    # #     ##  ## #     ##   #   #   
+######  ####  # # #  # ####  #    # #   # #      ####  # ## # ####  # #  #   #   
+#   #   #     # #  # # #     #    # ####  #      #     #    # #     #  # #   #   
+#    #  #     # #   ## #     #    # #  #  #    # #     #    # #     #   ##   #   
+#     # ##### # #    # #      ####  #   #  ####  ##### #    # ##### #    #   #   
+                                                                                      
+#                                                   
+#       #####   ##   ####  #    # # #    #  ####  
+#       #      #  #  #   # ##   # # ##   # #    # 
+#       ####  #    # #   # # #  # # # #  # #      
+#       #     ###### ####  #  # # # #  # # #  ### 
+#       #     #    # #  #  #   ## # #   ## #    # 
+####### ##### #    # #   # #    # # #    #  ####   
+-->
+
+--------------------------------------------------------------------------------
+<!-- Needs work -->
+## Reinforcement Learning (RL)
+- A combination of modeling with actions and specific rewards and penalties
+- Combined system self-trains using rewards and penalties to hone actions
+- Often involves neural network modeling with key differences
+    * May swap backpropagation with temporal difference learning or Q-learning
 
 [[Return to Top]](#table-of-contents)
 
@@ -3855,6 +3990,20 @@ CMD ["app.py"]
 <!-- Needs work -->
 ## Generative AI Resources
 - Open source models and tutorials: Hugging Face
+### Available Generative Models
+- **Boltzmann Machine (BM)**
+    * Uses probability to learn a distribution over a set of inputs
+    * Good at dimensionality reduction, feature learning
+    * Restrictive version only connects visible layers to hidden layers (faster)
+- **Generative Adversarial Network (GAN)**
+    * Uses Adversarial loss with discriminator, generator, and latent variable
+- **Variational Autoencoder (VAE)**
+    * Uses Kullback-Leibler Divergence loss, measure diff in prob distributions
+- **Transformer Networks**
+    * Uses self-attention mechanisms to capture relationships
+    * Foundation of BERT and GPT, good at NLP and language translation
+    * Employs attention mechanisms to focus on most relevant parts of input
+    * All data is processed simultaneously
 
 [[Return to Top]](#table-of-contents)
 
