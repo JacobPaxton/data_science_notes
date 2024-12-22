@@ -27,9 +27,8 @@ I.    [Tools                           ](#tools)
 
 II.   [Projects                        ](#projects)
 1.    [Project Frameworks              ](#project-frameworks)
+1.    [Project Management              ](#project-management)
 1.    [Stakeholders                    ](#stakeholders)
-1.    [Project Planning                ](#project-planning)
-1.    [Project Delivery                ](#project-delivery)
 
 III.  [Computer Science                ](#computer-science)
 1.    [Data Structures                 ](#data-structures)
@@ -540,22 +539,67 @@ display(HTML(html))
 -->
 
 --------------------------------------------------------------------------------
-<!-- Needs work -->
+<!-- Polished -->
 ## Project Frameworks
-- Requirements Stage: Talk with stakeholders about their requirements/timeline
-- Decision Stage: Decide which requirements you will be able to complete
-    * Goal is to complete *all* user requirements for this "sprint" (a timeline)
-    * You choose how in-depth to go for each requirement
-### Selecting the Framework
-- Waterfall: takes it one step at a time, fully-complete each step then move on
-    * All requirements defined ahead of time
-    * Inflexible for new requirements/issues, must start over; finish is clear
-- AGILE: deliver minimums, expand minimums with features iteratively
-    * An iterations is a "spiral"; spiraling with new features
-    * Flexible for new requirements/issues, but may be hard to say it's finished
-### Selecting the Tools
-- JIRA
-- Trello
+- Many frameworks with differing popularity
+- Typically an organization will prefer one and its employees are made to use it
+- Rarely, the opportunity to pick a framework will arise; choose carefully!
+### Agile
+- A template usually flavored into specific frameworks
+    * Scrum, Kanban, and Extreme Programming are common Agile flavors
+- Focused on development "sprints" lasting a few weeks where you iterate quickly
+- Each sprint builds on the previous sprint with more features and development
+- Flexible for new requirements/issues, but may be hard to say it's finished
+### Scrum
+- Good for fast-paced unpredictable environments with high amounts of feedback
+- Has very specific roles
+    * Product Owner: manage the Product Backlog, coordinate with stakeholders
+    * Scrum Master: make sure team follows Scrum, remove blockers/distractions
+    * Development Team: actually does the work
+    * Stakeholders: customers, users, and other relevant parties
+- Has very specific events
+    * Sprint Planning: plan the next sprint, set the Sprint Goal, Sprint Backlog
+    * Daily Scrum: quickly explain what work was completed and is up next
+    * Sprint Review: demonstrate the sprint's completed work to stakeholders
+    * Sprint Retrospective: analyze how the sprint went, improve processes
+- Development Team self-organizes to take on items from Sprint Backlog
+- Sprints last a set amount of time, typically two weeks, sometimes four or one
+### Kanban
+- Good for evolving-requirements projects and operations teams (visual tickets)
+- Visualize the workflow; limit WIP; focus continuous delivery/improvement
+- Uses a Kanban board with swim lanes marking tasks into phases of progress
+- Can be merged with Scrum ("Scrumban") to help manage the flow of work (visual)
+### Extreme Programming (XP)
+- Good where developers are directly interacting/sitting with customers
+- Pair programming; continuous integration; test-driven development; refactoring
+- Follows Agile principles
+### Lean
+- Good for money/time efficiency, useful in manufacturing, customer relations
+- Focused on minimizing waste, being efficient, streamlining processes
+### Six Sigma
+- Good for quality improvement projects (processes, products, etc)
+- Define, Measure, Analyze, Improve, Control (or Design, Verify)
+- Sometimes combined with Lean ("Lean Six Sigma") to control money/time/quality
+### Scaled Agile Framework (SAFe)
+- Good for large organizations that want to manage complex projects across teams
+- Agile Release Trains (ARTs); Program Increments (PIs); coord across teams
+- Complex/difficult and should only be used in orgs experienced with Agile
+### PMBOK (Project Management Body of Knowledge)
+- Good for large scale projects requiring detailed planning and documentation
+- Uses the Project Charter, Project Management Plan, etc- all the best practices
+### Waterfall
+- Good for physical projects like construction of buildings/infrastructure
+- Has specific phases that don't overlap and can't be reversed
+    * Requirements Gathering
+    * System Design
+    * Implementation
+    * Testing
+    * Deployment
+    * Maintenance
+- Sometimes used in software development where delivery has complex dependencies
+### PRINCE2 (Projects IN Controlled Environments)
+- Good for large complex projects requiring a structured approach
+- Has clear process and roles but is very bureaucratic/rigid (not dynamic)
 ### Systems Development Lifecycle (SDLC)
 - Framework for delivering software
 - Waterfall and AGILE both still in use; each follows same steps; AGILE repeats
@@ -567,6 +611,81 @@ display(HTML(html))
     * UML: Activity diagram; typically a program's flowchart with actual code
 - Step 4: Testing - ensuring the solutions are functional + satisfy requirements
     * UML: Sequence diagram; example is client-server communication sequence
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
+######                                           
+#     # #####   ####       # ######  ####  ##### 
+#     # #    # #    #      # #      #    #   #   
+######  #    # #    #      # #####  #        #   
+#       #####  #    #      # #      #        #   
+#       #   #  #    # #    # #      #    #   #   
+#       #    #  ####   ####  ######  ####    #   
+                                                 
+#     #                                                               
+##   ##   ##   #    #   ##    ####  ###### #    # ###### #    # ##### 
+# # # #  #  #  ##   #  #  #  #    # #      ##  ## #      ##   #   #   
+#  #  # #    # # #  # #    # #      #####  # ## # #####  # #  #   #   
+#     # ###### #  # # ###### #  ### #      #    # #      #  # #   #   
+#     # #    # #   ## #    # #    # #      #    # #      #   ##   #   
+#     # #    # #    # #    #  ####  ###### #    # ###### #    #   #   
+-->
+
+--------------------------------------------------------------------------------
+<!-- Polished -->
+## Project Management
+- Project Sponsor: executive or senior that authorizes and champions the project
+- Project Manager (PM): executes the project, reports to all stakeholders
+### Project Initiation
+- Projects are initiated and authorized with approval of the Project Charter
+- Project Sponsor writes (and signs) charter in order to start business project
+- Charter defines project objectives, high-level requirements, risk, assumptions
+    * Also specifies stakeholders, timeline, budget, milestones, deliverables
+- Signing the charter authorizes the project and use of organization resources
+### Project Planning
+- After project is authorized, next step is building the Project Management Plan
+    * Contains all project planning documents (subsidiary plans)
+- Scope/Schedule/Cost Management Plans: baselines, monitoring, change control
+    * Work Breakdown Structure (WBS) decomposes work into hierarchy of tasks
+    * Critical Path Method (CPM) sets core and optional components for timelines
+    * Gantt charts visualize timeline (tasks/milestones vs time with progress)
+    * Burn-down charts track progress and remaining tasks, helps control scope
+    * Change management plan to define how to make changes to baselines
+- Quality Management Plan: objectives, standards, control, assurance
+- Communications Management Plan: who/how/what/frequency to inform stakeholders
+- Risk Management Plan: identification, assessment, strategies, monitor/control
+    * Avoidance: eliminate (bad/likely) risk or protect project from impacts
+    * Mitigation: reduce (bad/likely) risk to acceptable level
+    * Transfer: use insurance/outsourcing/contracts to pass (bad/likely) risk
+    * Acceptance: don't do anything to proactively avoid/mitigate/transfer risk
+    * Exploit: realize opportunity to its fullest potential (ex: discounts)
+    * Enhance: increase probability/impact of opportunity
+    * Share: give well-positioned third party the opportunity to max-capitalize
+    * Contingency Planning: make plan for if risk occurs
+- Procurement Management Plan: process, timelines, contracts, vendors, strategy
+- Stakeholder Engagement Plan: who, how to engage, how to manage expectations
+- Human Resource Management Plan: select members, define roles/responsibilities
+    * Includes training/development strategies and team performance management
+- Integration Management Plan: make sure all project components work together
+### Project Execution
+- Once the Project Management Plan is complete, kick off project, execute plan
+- Assigned roles perform assigned tasks and deliver expected deliverables
+- Performance, quality, scope, time, cost, and risk is monitored/reported out
+- Issues that come up are resolved using planned mechanisms and/or reported
+- Changes are coordinated/made as necessary in order to handle encountered risks
+### Project Completion
+- In some projects, the delivery may be completed and entirely handed off
+    * Release project resources back to the organization and celebrate!
+- In some projects, the delivery meets objectives and enters a support phase
+- In some projects, the delivery is followed by another round of the project
+- In each case, capture lessons learned and other valuable insights
 
 [[Return to Top]](#table-of-contents)
 
@@ -629,77 +748,6 @@ display(HTML(html))
 - Start with overview in presentation, dissect the focus later
     * Start with churn v not churned, then dive into churn data
 - Relate the problem to the audience's interests and focus for maximum effect
-
-[[Return to Top]](#table-of-contents)
-
-
-
-
-
-
-
-<!-- 
-######                                           
-#     # #####   ####       # ######  ####  ##### 
-#     # #    # #    #      # #      #    #   #   
-######  #    # #    #      # #####  #        #   
-#       #####  #    #      # #      #        #   
-#       #   #  #    # #    # #      #    #   #   
-#       #    #  ####   ####  ######  ####    #   
-                                                 
-######                                              
-#     # #        ##   #    # #    # # #    #  ####  
-#     # #       #  #  ##   # ##   # # ##   # #    # 
-######  #      #    # # #  # # #  # # # #  # #      
-#       #      ###### #  # # #  # # # #  # # #  ### 
-#       #      #    # #   ## #   ## # #   ## #    # 
-#       ###### #    # #    # #    # # #    #  ####  
--->
-
---------------------------------------------------------------------------------
-<!-- Needs work -->
-## Project Planning
-### Planning Documents
-- 
-### Risk Management
-- Critical path
-
-[[Return to Top]](#table-of-contents)
-
-
-
-
-
-
-
-<!-- 
-######                                           
-#     # #####   ####       # ######  ####  ##### 
-#     # #    # #    #      # #      #    #   #   
-######  #    # #    #      # #####  #        #   
-#       #####  #    #      # #      #        #   
-#       #   #  #    # #    # #      #    #   #   
-#       #    #  ####   ####  ######  ####    #   
-                                                 
-######                                             
-#     # ###### #      # #    # ###### #####  #   # 
-#     # #      #      # #    # #      #    #  # #  
-#     # #####  #      # #    # #####  #    #   #   
-#     # #      #      # #    # #      #####    #   
-#     # #      #      #  #  #  #      #   #    #   
-######  ###### ###### #   ##   ###### #    #   #   
--->
-
---------------------------------------------------------------------------------
-<!-- Needs work -->
-## Project Delivery
-### Kickoff
-- 
-### Tracking Project Milestones
-- Burn-down charts
-### Delivery
-- 
-### Long Term Agreements
 
 [[Return to Top]](#table-of-contents)
 
