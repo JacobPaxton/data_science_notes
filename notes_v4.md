@@ -65,7 +65,7 @@ VIII. [Model                           ](#model)
 1.    [Model Training                  ](#model-training)
 1.    [Classification                  ](#classification)
 1.    [Regression                      ](#regression)
-1.    [Time Series                     ](#time-series)
+1.    [Time Series                     ](#time-series-ts)
 1.    [Neural Networks                 ](#neural-networks-nn)
 1.    [Reinforcement Learning          ](#reinforcement-learning-rl)
 
@@ -2970,6 +2970,15 @@ s = s.map({True:"Overlap", False:"Normal"})   # Map to category
 s = s.rename("overlap_status")
 pd.concat([s, pd.Series(start_end_series)], axis=1)
 ```
+### Unsupervised Techniques
+- Isolated Forest: score observations for how anomalous they are from neighbors
+    * Good when anomalies expected in train, good at high-dimensionality data
+    * Specify assumed amount of contamination (ex: 20% anomalous)
+- One-Class Support Vector Machine (SVM): train on normal, classify normal/not
+    * Good when train is entirely normal (don't contaminate train with anomaly)
+    * Regularization (C), anomaly boundary (Nu), choose kernel function
+- Autoencoders: train neural network on normal, anomaly: high reconstruct error
+    * Good when data is images/etc and when train is entirely normal
 
 [[Return to Top]](#table-of-contents)
 
@@ -3318,7 +3327,7 @@ def resampler(X_train, y_train):
 --------------------------------------------------------------------------------
 <!-- Polished -->
 ## Classification
-- Ultimately, classifiers always take an input and map it to a discrete output
+- Ultimately classifiers always take an input and map it to a discrete output
 - Different classification algorithms use different mapping methodologies
 ### Features for Classification
 - Convert continuous/ordinal columns to categorical ones, ex: binning
@@ -3421,8 +3430,8 @@ def resampler(X_train, y_train):
 --------------------------------------------------------------------------------
 <!-- Polished -->
 ## Regression
-- TODO: snippet about polynomial transformation of features to make more linear
-- TODO: snippet about other transforms (log, exponent, etc) to better correlate
+- Ultimately regressors always take an input and plot it on a line to get output
+- Different regression algorithms plot different lines and use different loss
 ### Features for Regression
 - Keep features that highly-correlate with the target: `df.corr()`
 - Interactions are awesome! They can have better correlations; `s1 * s2`
@@ -3430,6 +3439,7 @@ def resampler(X_train, y_train):
 - Features that correlate with other features contribute to multicollinearity
     * Multicollinearity reduces model performance
     * Reduce multicollinearity by thresholding variance inflation factor (VIF)
+    * Can transform features by taking log, exponent, PCA, etc of the values
 - Scatterplots can show outliers; consider removing outlier datapoints
     * Removing outliers can improve model performance
 - You can always train a model first and evaluate which features were best!
@@ -3515,18 +3525,38 @@ def resampler(X_train, y_train):
 -->
 
 --------------------------------------------------------------------------------
-<!-- Needs work -->
-## Time Series
-- TODO: Resampling into consistent intervals, reducing precision, etc
-- TODO: Filling forward/backwards by averaging, etc
-- TODO: Creating tons of numerical features
-### Timestamp Engineering
-- VERY POWERFUL: `df.set_index("interval_ts").reindex([t1,t2,t3,t4]).fillna(0)`
-- ALSO POWERFUL: `quadr_interp = ts_index_df.interpolate(method="quadratic")`
-    * Options: "linear","quadratic","nearest"
-    * `df["col1"].plot(title="figtitle",marker="o",figsize=(30,5))`
-    * `quadr_interp["col1"].plot(color="red",marker="o",linestyle="dotted")`
-- Consider timestamp amplification (col for hour, day, minute, etc)
+<!-- Polished -->
+## Time Series (TS)
+### Interpolation and Resampling
+- Fixing or adjusting TS data in order to meet various objectives
+- Interpolation: filling gaps in TS data, like sensor downtime in hourly temps
+    * Forward-propagate previous value, backward-propagate next value across gap
+    * Take the value of the nearest non-null value into the null values in gap
+    * Draw line across gaps and plot values along the line (linear or quadratic)
+- Upsampling: up the precision/observations of TS data, ex: from daily to hourly
+    * Involves creating synthetic data; synthetic values require interpolation
+- Downsampling: decrease the precision of TS data, ex: from hourly to daily
+    * Involves aggregating values using mean, sum, etc depending on situation
+### Stationarity
+- Important concept for TS modeling which commonly requires addressing
+- TS data is typically not stationary (has trends over time) which is not ideal
+    * Non-stationary TS data: predictability issues, violates model assumptions
+    * Stationary TS data: focuses on measurable drivers for better modeling
+- Stationary definition: TS data has constant mean, variance, and autocovariance
+    * Constant mean: average value shouldn't have a systematic (up/down) trend
+    * Constant variance: spread of values shouldn't grow/shrink systematically
+    * Constant autocovariance: pattern of inter-value correlations is consistent
+- Establish stationarity with differencing, transformation, seasonal adjustment
+    * Differencing: every value has its previous value subtracted
+    * Transformation: take square root, logarithm, Box-Cox, etc of values
+    * Seasonal differencing: a season of values has previous season subtracted
+    * Overdifferencing: when you remove valuable trends and relationships
+- Test for stationarity using Augmented Dickey-Fuller (ADF) test or KPSS test
+    * Also check visually, or use (Partial) Autocorrelation Function (ACF/PACF)
+### Features for Time Series
+- Timestamp decomposition to create observation's day, hour, minute, etc fields
+- Seasonal decomposition to create month-in-year, day-of-week, etc features
+- One-hot encoding for opening-hour, closing-hour, lunch-hours, etc
 ### Bollinger Bands
 - Outliers from a rolling average (mid band) using upper/lower band cutoffs
     * Outliers shown by tuning k value (usually 2 or 20 standard deviations)
@@ -3542,11 +3572,26 @@ def resampler(X_train, y_train):
     * Average of a given period as the prediction; usually last 3 or last 7 days
 - **Previous Cycle** 
     * Slice the last cycle and use it as the prediction; usually last year
+- **Autoregressive Integrated Moving Average (ARIMA)**
+    * Forecast using an adjusted moving average
+    * Use ACF/PACF to get lag values for AR (p) and MA (q), get differencing (d)
+    * Seasonal ARIMA also includes valuable seasonal decomposition
 - **Holt's Linear Trend**
-    * Calculate regression line of previous cycles, snap-on as prediction
+    * Calculate linear regression line of previous cycles, snap-on as prediction
     * Use smoothing level and smoothing slope
+    * Holt-Winters Seasonal Method also includes valuable seasonal decomposition
+- **Autoregressive Conditional Heteroskedasticity (ARCH)**
+    * Focuses on modeling non-constant variance (heteroskedasticity)
+    * Generalized ARCH addresses complex dependencies causing heteroskedasticity
+- **Vector Autoregression (VAR)**
+    * Draw regression line onto two different TS valuesets (regress scatterplot)
+    * Goal is to draw new conclusions with multiple TS integrated
+    * Use Granger Causality Test to check if one TS can predict another TS
+    * Cointegration: 2+ TS produce stationary TS when combined (Engle-Granger)
+    * Error correction model (ECM) corrects for short deviations in cointegrated
 - **Facebook Prophet's Model**
     * Next cycle based on previous cycles; good, but hard to install/get working
+    * See also RNNs like LSTM or even random forests / gradient boosting
 ### Strategy
 1. Understand the nature of your data
     * Is it years of information? months? weeks? days? hours?
@@ -3556,7 +3601,7 @@ def resampler(X_train, y_train):
     * EX: Downsample from minute-by-minute transactions to daily totals
     * EX: Upsample **patchy** minute-by-minute transaction data to fill gaps
 1. Use rolling averages for seasonal data and autocorrelation (shifts and diffs)
-    * For all time-series options
+    * Differencing to try to get stationarity
 1. Visualize various metrics for insights
 1. Split into train and test using seasonality (if possible), or by percentage
 1. Train models using training split then predict the future
