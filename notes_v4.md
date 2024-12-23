@@ -22,12 +22,13 @@
 I.    [Tools                           ](#tools)
 1.    [Environment Setup               ](#environment-setup)
 1.    [Jupyter Notebooks               ](#jupyter-notebooks)
-1.    [Enterprise Tools                ](#enterprise-tools)
+1.    [Analyst Tools                   ](#analyst-tools)
 1.    [Git Workflow                    ](#git-workflow)
 
 II.   [Projects                        ](#projects)
-1.    [Project Frameworks              ](#project-frameworks)
 1.    [Project Management              ](#project-management)
+1.    [Project Frameworks              ](#project-frameworks)
+1.    [Project Tools                   ](#project-tools)
 1.    [Stakeholders                    ](#stakeholders)
 
 III.  [Computer Science                ](#computer-science)
@@ -254,6 +255,11 @@ jupyter notebook
 [[Return to Top]](#table-of-contents)
 
 
+
+
+
+
+
 <!--
       #                                         
       # #    # #####  #   # ##### ###### #####  
@@ -336,29 +342,22 @@ display(HTML(html))
 
 
 <!--
-#######                                                          
-#       #    # ##### ###### #####  #####  #####  #  ####  ###### 
-#       ##   #   #   #      #    # #    # #    # # #      #      
-#####   # #  #   #   #####  #    # #    # #    # #  ####  #####  
-#       #  # #   #   #      #####  #####  #####  #      # #      
-#       #   ##   #   #      #   #  #      #   #  # #    # #      
-####### #    #   #   ###### #    # #      #    # #  ####  ###### 
-                                                                 
-#######                             
-   #     ####   ####  #       ####  
-   #    #    # #    # #      #      
-   #    #    # #    # #       ####  
-   #    #    # #    # #           # 
-   #    #    # #    # #      #    # 
-   #     ####   ####  ######  ####  
+   #                                             #######                            
+  # #   #    #   ##   #    #   #  ####  #####       #     ###   ###  #     #### 
+ #   #  ##   #  #  #  #     # #  #        #         #    #   # #   # #    #     
+#     # # #  # #    # #      #    ####    #         #    #   # #   # #     #### 
+####### #  # # ###### #      #        #   #         #    #   # #   # #         #
+#     # #   ## #    # #      #   #    #   #         #    #   # #   # #    #    #
+#     # #    # #    # ####   #    ####    #         #     ###   ###  ####  #### 
 -->
 
 --------------------------------------------------------------------------------
 <!-- Needs work -->
-## Enterprise Tools
+## Analyst Tools
 - Excel and Google Sheets: fast initial exploration
 - PowerBI: if your company uses it already, use Jupyter with `powerbiclient`
 - Tableau: if your company uses it already, or, if you have license/experience
+- ArcGIS: geospatial analysis and third-party data enrichment
 ### Excel
 - Absolute reference using hold_clickdrag + fn + F4
 - Doubleclick bottomright of function cell to affect all rows in selected col(s)
@@ -520,7 +519,82 @@ display(HTML(html))
 # PROJECTS
 
 
-<!--
+<!-- 
+######                                           
+#     # #####   ####       # ######  ####  ##### 
+#     # #    # #    #      # #      #    #   #   
+######  #    # #    #      # #####  #        #   
+#       #####  #    #      # #      #        #   
+#       #   #  #    # #    # #      #    #   #   
+#       #    #  ####   ####  ######  ####    #   
+                                                 
+#     #                                                               
+##   ##   ##   #    #   ##    ####  ###### #    # ###### #    # ##### 
+# # # #  #  #  ##   #  #  #  #    # #      ##  ## #      ##   #   #   
+#  #  # #    # # #  # #    # #      #####  # ## # #####  # #  #   #   
+#     # ###### #  # # ###### #  ### #      #    # #      #  # #   #   
+#     # #    # #   ## #    # #    # #      #    # #      #   ##   #   
+#     # #    # #    # #    #  ####  ###### #    # ###### #    #   #   
+-->
+
+--------------------------------------------------------------------------------
+<!-- Polished -->
+## Project Management
+- Project Sponsor: executive or senior that authorizes and champions the project
+- Project Manager (PM): executes the project, reports to all stakeholders
+### Project Initiation
+- Projects are initiated and authorized with approval of the Project Charter
+- Project Sponsor writes (and signs) charter in order to start business project
+- Charter defines project objectives, high-level requirements, risk, assumptions
+    * Also specifies stakeholders, timeline, budget, milestones, deliverables
+- Signing the charter authorizes the project and use of organization resources
+### Project Planning
+- After project is authorized, next step is building the Project Management Plan
+    * Contains all project planning documents (subsidiary plans)
+- Scope/Schedule/Cost Management Plans: baselines, monitoring, change control
+    * Work Breakdown Structure (WBS) decomposes work into hierarchy of tasks
+    * Critical Path Method (CPM) sets core and optional components for timelines
+    * Gantt charts visualize timeline (tasks/milestones vs time with progress)
+    * Burn-down charts track progress and remaining tasks, helps control scope
+    * Change management plan to define how to make changes to baselines
+- Quality Management Plan: objectives, standards, control, assurance
+- Communications Management Plan: who/how/what/frequency to inform stakeholders
+- Risk Management Plan: identification, assessment, strategies, monitor/control
+    * Avoidance: eliminate (bad/likely) risk or protect project from impacts
+    * Mitigation: reduce (bad/likely) risk to acceptable level
+    * Transfer: use insurance/outsourcing/contracts to pass (bad/likely) risk
+    * Acceptance: don't do anything to proactively avoid/mitigate/transfer risk
+    * Exploit: realize opportunity to its fullest potential (ex: discounts)
+    * Enhance: increase probability/impact of opportunity
+    * Share: give well-positioned third party the opportunity to max-capitalize
+    * Contingency Planning: make plan for if risk occurs
+- Procurement Management Plan: process, timelines, contracts, vendors, strategy
+- Stakeholder Engagement Plan: who, how to engage, how to manage expectations
+- Human Resource Management Plan: select members, define roles/responsibilities
+    * Includes training/development strategies and team performance management
+- Integration Management Plan: make sure all project components work together
+### Project Execution
+- Once the Project Management Plan is complete, kick off project, execute plan
+- Assigned roles perform assigned tasks and deliver expected deliverables
+- Performance, quality, scope, time, cost, and risk is monitored/reported out
+- Issues that come up are resolved using planned mechanisms and/or reported
+- Changes are coordinated/made as necessary in order to handle encountered risks
+### Project Completion
+- In some projects, the delivery may be completed and entirely handed off
+    * Release project resources back to the organization and celebrate!
+- In some projects, the delivery meets objectives and enters a support phase
+- In some projects, the delivery is followed by another round of the project
+- In each case, capture lessons learned and other valuable insights
+
+[[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+<!-- 
 ######                                           
 #     # #####   ####       # ######  ####  ##### 
 #     # #    # #    #      # #      #    #   #   
@@ -621,71 +695,40 @@ display(HTML(html))
 
 
 <!-- 
-######                                           
-#     # #####   ####       # ######  ####  ##### 
-#     # #    # #    #      # #      #    #   #   
-######  #    # #    #      # #####  #        #   
-#       #####  #    #      # #      #        #   
-#       #   #  #    # #    # #      #    #   #   
-#       #    #  ####   ####  ######  ####    #   
-                                                 
-#     #                                                               
-##   ##   ##   #    #   ##    ####  ###### #    # ###### #    # ##### 
-# # # #  #  #  ##   #  #  #  #    # #      ##  ## #      ##   #   #   
-#  #  # #    # # #  # #    # #      #####  # ## # #####  # #  #   #   
-#     # ###### #  # # ###### #  ### #      #    # #      #  # #   #   
-#     # #    # #   ## #    # #    # #      #    # #      #   ##   #   
-#     # #    # #    # #    #  ####  ###### #    # ###### #    #   #   
+######                                           #######                             
+#     # #####   ###       # #####  ####  #####      #     ###   ###  #     ####  
+#     # #    # #   #      # #     #    #   #        #    #   # #   # #    #      
+######  #    # #   #      # ####  #        #        #    #   # #   # #     ####  
+#       #####  #   #      # #     #        #        #    #   # #   # #         # 
+#       #   #  #   # #    # #     #    #   #        #    #   # #   # #    #    # 
+#       #    #  ###   ####  #####  ####    #        #     ###   ###  ####  ####  
 -->
 
 --------------------------------------------------------------------------------
 <!-- Polished -->
-## Project Management
-- Project Sponsor: executive or senior that authorizes and champions the project
-- Project Manager (PM): executes the project, reports to all stakeholders
-### Project Initiation
-- Projects are initiated and authorized with approval of the Project Charter
-- Project Sponsor writes (and signs) charter in order to start business project
-- Charter defines project objectives, high-level requirements, risk, assumptions
-    * Also specifies stakeholders, timeline, budget, milestones, deliverables
-- Signing the charter authorizes the project and use of organization resources
-### Project Planning
-- After project is authorized, next step is building the Project Management Plan
-    * Contains all project planning documents (subsidiary plans)
-- Scope/Schedule/Cost Management Plans: baselines, monitoring, change control
-    * Work Breakdown Structure (WBS) decomposes work into hierarchy of tasks
-    * Critical Path Method (CPM) sets core and optional components for timelines
-    * Gantt charts visualize timeline (tasks/milestones vs time with progress)
-    * Burn-down charts track progress and remaining tasks, helps control scope
-    * Change management plan to define how to make changes to baselines
-- Quality Management Plan: objectives, standards, control, assurance
-- Communications Management Plan: who/how/what/frequency to inform stakeholders
-- Risk Management Plan: identification, assessment, strategies, monitor/control
-    * Avoidance: eliminate (bad/likely) risk or protect project from impacts
-    * Mitigation: reduce (bad/likely) risk to acceptable level
-    * Transfer: use insurance/outsourcing/contracts to pass (bad/likely) risk
-    * Acceptance: don't do anything to proactively avoid/mitigate/transfer risk
-    * Exploit: realize opportunity to its fullest potential (ex: discounts)
-    * Enhance: increase probability/impact of opportunity
-    * Share: give well-positioned third party the opportunity to max-capitalize
-    * Contingency Planning: make plan for if risk occurs
-- Procurement Management Plan: process, timelines, contracts, vendors, strategy
-- Stakeholder Engagement Plan: who, how to engage, how to manage expectations
-- Human Resource Management Plan: select members, define roles/responsibilities
-    * Includes training/development strategies and team performance management
-- Integration Management Plan: make sure all project components work together
-### Project Execution
-- Once the Project Management Plan is complete, kick off project, execute plan
-- Assigned roles perform assigned tasks and deliver expected deliverables
-- Performance, quality, scope, time, cost, and risk is monitored/reported out
-- Issues that come up are resolved using planned mechanisms and/or reported
-- Changes are coordinated/made as necessary in order to handle encountered risks
-### Project Completion
-- In some projects, the delivery may be completed and entirely handed off
-    * Release project resources back to the organization and celebrate!
-- In some projects, the delivery meets objectives and enters a support phase
-- In some projects, the delivery is followed by another round of the project
-- In each case, capture lessons learned and other valuable insights
+## Project Tools
+### Tool Selection
+- Speed and flexibility: lightweight cloud-based tools like Trello, Asana
+- Enterprise support: big tech tools like MS Projects or Oracle Primavera
+- User experience: consider doing user testing/piloting before going full scale
+    * Users might hate a tool, this gives them a chance to choose a good tool
+- Integrate with existing tech stack: reduce friction/silos/sprawl
+- Cost-Benefit: hurt once by purchasing the right tool at the get-go
+    * Scaling, automation, other integrations, communication/coordination, etc
+- Scale/flex with org growth: avoid downroad refactor by good upfront buy
+- Security and Compliance: handling sensitive data, prevent leaks, GDPR, HIPAA
+### Tool Integration
+- Central data/docs hub that integrates with other project management platforms
+- Task/project management that integrates with comm platforms, dev repos, etc
+- Comm/collab platforms that integrates with project management, can notify
+- Reports/dashboarding to aggregate insights from project management platform
+- Automation and workflow orchestration to propagate actions through everything
+- Risk/issue tracking that can alert out into other platforms, perform actions
+### Best Practices for Integration
+- Use APIs/automation where possible to automatically sync/trigger across tools
+- Represent information consistently across platforms (ex: name of task status)
+- Review tools every once in awhile to see if they've become outdated/broken
+- Train people to use the tools effectively and maximize their featureset
 
 [[Return to Top]](#table-of-contents)
 
@@ -706,48 +749,40 @@ display(HTML(html))
 -->
 
 --------------------------------------------------------------------------------
-<!-- Needs work -->
+<!-- Polished -->
 ## Stakeholders
-### Storytelling
-- Data requires velocity to be useful
-- Finding relationships and stories in data, documenting is and isn'ts
-- Goal is to remove redundant/unimportant variables for the story
-- Hypothesize/visualize loop, and if that isn't enough, run statistical tests
-- Understand the overall environment
-    * Available data sources
-    * Customer behaviors
-    * Current outreach efforts/approaches
-- "What is our observation???"
-    * titanic_db observations are... people on the titanic.
-### Stakeholders Considerations
-- Move functions and analysis to separate .ipynb as required for stakeholders
-    * Stakeholders want just the end product: give them it
-    * Stakeholders want the models and end product: give them it
+- The people involved in or impacted by projects
+- Various levels of technical expertise, domain knowledge, interest
+    * Stakeholders want just a report or dashboard: give them it
+    * Stakeholders want the end product and a demo: give them it
+    * Stakeholders want the models and technical details: give them it
     * Stakeholders want everything: give them everything
-### Visualization Considerations
-- Expert-level visualizations != presentation-level visualization
-    * The pivot tables are more appropriate for Appendix
-    * If the audience has to read it, don't include it
-- Serve the "why" first, then follow with the specifics
-    * Leading with specifics will lose your audience
-- Give the "why" some amplifying/relative information to help seat your audience
-    * Avoid cluttering the "why" with too much amplification
-- Design the velocity with your audience in mind
+- A one-page writeup/summary is *always* welcome for any project or initiative
+- Consider moving code/technicals out of a report and printing result to PDF
+### Story Design
 - Prepare to Create; Talk and Listen; Sketch; Prototype
     * Clear physical/mental room; Know your data; Understand audience, Big Idea
-    * Determine which framework to use (persuasive, man-in-hole, story)
-    * Determine context, challenge, and solution
-    * Understand your audience and use an appropriate approach
-    * A topic isn't a big idea... use your chances to express the big idea
-    * Explain out loud what your project is
-    * Take notes of feedback, make corrections
-        * I'm working on... I'm trying to show... Why...
     * Use everything so far to sketch out your ideas (brainstorm)
     * Refine the sketches into presentation material
-- A non-correlation can be more important than a correlation
-- Start with overview in presentation, dissect the focus later
-    * Start with churn v not churned, then dive into churn data
-- Relate the problem to the audience's interests and focus for maximum effect
+- Use a narrative approach that follows your goal and respects your audience
+    * Determine which framework to use (persuasive, man-in-hole, story)
+    * Determine context, challenge, and solution
+- Put valuable work into visualizations, tables, etc as much as possible
+    * A non-correlation can be more important than a correlation
+- Tuck supporting information into appendices to reduce presentation complexity
+    * This includes expert-level visualizations, and, statistical tests!
+- Remove redundant/unimportant information to reduce story complexity
+### Storytelling
+- The story should be clear from the beginning, throughout, and at the end
+- Start with answering the "why" directly and up front and keep answer simple
+- Keep visualizations simple in the main presentation and avoid text walls
+    * Use highlighting, arrows, etc to point out the key aspects of vizs
+- Speak to understoods like business goals, responsible stakeholders, etc
+    * Give credit to people and teams and technologies and data sources
+- Present to yourself/team in a prebrief to make sure gaps get covered
+- Use "we'll talk about that" as a way to hook people with questions
+- Take down questions, regardless if they were answered, for postmortem
+    * Correct/clarify presentation to address the question up front
 
 [[Return to Top]](#table-of-contents)
 
@@ -4279,3 +4314,41 @@ CMD ["app.py"]
 - 
 
 [[Return to Top]](#table-of-contents)
+
+
+
+
+
+
+
+
+
+
+
+
+# TO-DO
+1. Sveltekit app on a local deployment just to render this notes file in webapp
+1. Github Pages hosting the Sveltekit app with CI/CD pipeline
+    * https://www.okupter.com/blog/deploy-sveltekit-website-to-github-pages
+1. Geospatial project with OpenStreetMap and geo modeling in Jupyter
+1. Add Jupyter project to the Github Pages and relevant CI/CD
+1. Reinforcement learning project in pipeline, containerized scaled deployment
+1. Add RL project to Sveltekit and to the Github Pages and relevant CI/CD
+1. LLM with RAG in pipeline, containerized scaled deployment
+1. Add the LLM with RAG to Sveltekit and to the Github Pages and relevant CI/CD
+1. Add StableDiffusion following same containerized scaled deployment
+1. Add audio/video generations as well
+### Sections to Polish (mark what is planned in above steps)
+- [x] Tools > Enterprise Tools > ArcGIS
+- [x] Explore > Geospatial Analysis
+- [x] Model > Reinforcement Learning
+- [x] Deploy > Exports and Pipelines
+- [x] Deploy > Containers
+- [x] Deploy > Local Deployment
+- [x] Deploy > Scalable Deployment
+- [x] Generate > Generative AI Resources
+- [x] Generate > Large Language Models
+- [x] Generate > Retrieval Augmented Generation
+- [x] Generate > Image Generation
+- [x] Generate > Audio Generation
+- [x] Generate > Video Generation
