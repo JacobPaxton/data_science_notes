@@ -1,5 +1,8 @@
 # <center><strong>Data Science Notes, v4</strong></center>
 
+<!-- The common man keeps the world turning. -->
+<!-- Use your skills to help these people!!! -->
+
 <!-- 
 #######                                              
    #      ##   #####  #      ######     ####  ###### 
@@ -342,7 +345,7 @@ display(HTML(html))
 
 
 <!--
-   #                                             #######                            
+   #                                             #######                        
   # #   #    #   ##   #    #   #  ####  #####       #     ###   ###  #     #### 
  #   #  ##   #  #  #  #     # #  #        #         #    #   # #   # #    #     
 #     # # #  # #    # #      #    ####    #         #    #   # #   # #     #### 
@@ -482,6 +485,11 @@ display(HTML(html))
 - Look at list of commit tags: `git tag -l`, `git tag -l "v1.*"`
 - Stash: `git stash save "stash1"`, `git stash list`, `git stash pop stash@{1}`
     * `git stash apply stash@{3}`, `git stash drop stash@{3}`, `git stash clear`
+### Gitlab Setup
+- Milestones: phases of project
+- Labels: components of project
+- Issues: work breakdown of components, can be tied to Milestones/Labels
+    * Build in CSV; "Title"/"Description" cols, use 2 Alt+Enters to do a newline
 
 [[Return to Top]](#table-of-contents)
 
@@ -695,13 +703,13 @@ display(HTML(html))
 
 
 <!-- 
-######                                           #######                             
-#     # #####   ###       # #####  ####  #####      #     ###   ###  #     ####  
-#     # #    # #   #      # #     #    #   #        #    #   # #   # #    #      
-######  #    # #   #      # ####  #        #        #    #   # #   # #     ####  
-#       #####  #   #      # #     #        #        #    #   # #   # #         # 
-#       #   #  #   # #    # #     #    #   #        #    #   # #   # #    #    # 
-#       #    #  ###   ####  #####  ####    #        #     ###   ###  ####  ####  
+######                                           #######                        
+#     # #####   ###       # #####  ####  #####      #     ###   ###  #     #### 
+#     # #    # #   #      # #     #    #   #        #    #   # #   # #    #     
+######  #    # #   #      # ####  #        #        #    #   # #   # #     #### 
+#       #####  #   #      # #     #        #        #    #   # #   # #         #
+#       #   #  #   # #    # #     #    #   #        #    #   # #   # #    #    #
+#       #    #  ###   ####  #####  ####    #        #     ###   ###  ####  #### 
 -->
 
 --------------------------------------------------------------------------------
@@ -1778,18 +1786,32 @@ CREATE TEMPORARY TABLE germain_1457.employees_with_departments AS
 --------------------------------------------------------------------------------
 <!-- Polished -->
 ## Spark
-- Computational clustering for big data processing
-    * Velocity (fast gathering, lots of data, streaming)
-    * Volume (large data, bigger than memory or bigger than storage)
-    * Veracity (reliability of data, esp. missing data)
-    * Variety (different sources, unstructured data, data isn't uniform)
-- Java Virtual Machine (JVM) coordinates clusters using Scala
-- The 'pyspark' library translates Python to Scala and operates the JVM
-- Can run 100% locally; it will coordinates computer cores
-    * This is often overkill for one-computer tasks
-- Is 'lazy'- adds to / optimizes queries until the execution order is given
+- Computational clustering solution for big data processing
+- Non-clustered compute fails in four specific "big data" scenarios, w/ extreme:
+    * Velocity (throughput); gather or stream data quickly to/from many sources
+    * Volume (static size); handle data that exceeds memory or storage
+    * Veracity (data quality); prevent normal corruption of storage/transmission
+    * Variety (formats); handle data edge cases and unstructured data
+- Spark clusters are designed to solve these "big data" scenarios
+    * Java Virtual Machine (JVM) coordinates computational clusters using Scala
+    * Singular actions propagate efficiently across clusters to perform tasks
+    * Uses "lazy execution" which optimizes a given task before execution begins
+    * Can iteratively build and preview a task before running the full task
+- Can initialize a Spark cluster on a single computer; this is sometimes useful!
+    * The default behavior here parallelizes (clusters) every core of the CPU
+    * Multi-core tasks leverage more processing power than single-core tasks
+    * Proper use of multi-core tasking can yield significant performance boosts
+- Spark has overhead that makes it less competitive on small data, flexibility
+    * There's latency with initializing the Spark cluster, booting the JVM, etc
+    * Any non-Spark processing (pandas) requires dumping data out of the cluster
+- Rule of thumb: use Spark when data is at least 1GB and processing is defined
+    * Skip use of Spark when dataset is smaller or when you need flexibility
+    * Explore large data w/ comfort tools, then move work to multi-core pipeline
+    * Use Spark to crunch numbers, then export the result numbers into insights
 - Alternatives: Hadoop, Dask
 ### PySpark
+- Official Python library for working with Spark computational clusters
+- Translates Python actions into Scala actions and operates the JVM as normal
 - Check Spark's intentions before query: `df.explain()`
     * Used for diagnosing performance issues; operation order from bottom-upward
 - Switch to SQL: `df.createOrReplaceTempView('df')`
@@ -1798,10 +1820,10 @@ CREATE TEMPORARY TABLE germain_1457.employees_with_departments AS
     * StructField syntax: `Structfield("col1", StringType())`
 ```python
 import pyspark
-from pyspark.sql.functions import *
-spark = pyspark.sql.SparkSession.builder.getOrCreate()  # CONNECT TOY INSTANCE
-df = spark.read.csv('filepath', header=True, schema=schema_struct) # INGEST CSV
-# WRANGLING
+from pyspark.sql.functions import *  # overwrites py funcs; fine when Spark-only
+spark = pyspark.sql.SparkSession.builder.getOrCreate()  # CREATE A LOCAL CLUSTER
+df = spark.read.csv('data.csv', header=True, schema=schema_struct)  # INGEST CSV
+# WRANGLING (LAZY EXECUTION)
 df = df.join(df2, "joincol", "left").drop(df.joincol).drop(df2.joincol)  # JOIN
 df.select(
     [count(when(isnan(c) | col(c).isNull(), c)).alias(c) for c in df.columns]
@@ -1822,12 +1844,12 @@ df = df.withColumn('ten', when(df.x > 10, '>10').otherwise('<=10'))  # IF/ELSE
 df = df.where((df.x > 5) | (df.y < 5)).where(df.z ==7)  # WHERE, OR + AND
 df = df.sample(fraction=0.01, seed=42)  # SMALL SAMPLE
 trn, val, test = df.randomSplit([0.6, 0.2, 0.2], seed=42) # SPLIT FOR MODELING
-# RUN ALL, SAVE LOCALLY
+# EXECUTE ALL ABOVE WRANGLING STEPS, SAVE RESULTS TO FILE
 df.write.json("df_json", mode="overwrite")
-trn.write.format("csv").mode("overwrite").option("header", "true").save("train")
-val.write.format("csv").mode("overwrite").option("header", "true").save("val")
-test.write.format("csv").mode("overwrite").option("header", "true").save("test")
-# EXPLORATION
+trn.write.format("csv").mode("overwrite").option("header", "true").save("t.csv")
+val.write.format("csv").mode("overwrite").option("header", "true").save("v.csv")
+tst.write.format("csv").mode("overwrite").option("header", "true").save("h.csv")
+# EXPLORATION (LAZY EXECUTION)
 x_y = df.select(sum(df.x)), df.select(mean(df.x))  # COLUMN MATH
 mean_min = df.groupBy('gb').agg(mean(df.x), min(df.y))  # AGG GROUPBY
 crosstab = df.crosstab('g1', 'g2')  # CROSSTAB
@@ -2008,10 +2030,10 @@ def copy_existing_index_config(client, alias="winlogbeat-*"):
     put_body = mappings[ind_name]               # SAVE NEWEST INDEX'S MAPPINGS
     ind_sets = client.indices.get_settings(index=ind_name) # GRAB INDEX SETTINGS
     settings = ind_sets[ind_name]["settings"]   # ISOLATE NEWEST INDEX SETTINGS
-    del settings["index"]["uuid"]               # DELETE TO PREVENT CONFLICT
-    del settings["index"]["creation_date"]      # DELETE TO PREVENT CONFLICT
-    del settings["index"]["provided_name"]      # DELETE TO PREVENT CONFLICT
-    del settings["index"]["version"]["created"] # DELETE TO PREVENT CONFLICT
+    del settings["index"]["uuid"]               # THIS DEL TO PREVENT CONFLICT
+    del settings["index"]["creation_date"]      # THIS DEL TO PREVENT CONFLICT
+    del settings["index"]["provided_name"]      # THIS DEL TO PREVENT CONFLICT
+    del settings["index"]["version"]["created"] # THIS DEL TO PREVENT CONFLICT
     put_body["settings"] = settings             # SAVE NEWEST INDEX'S SETTINGS
     return put_body                             # CUSTOM INDEX'S FULL 'PUT' BODY
 elastic_backend = "https://localhost:9200"
@@ -2186,6 +2208,7 @@ print(f"INDEX CREATION:\n{response}\n------------")
 - `^yo[a-z]*$`: entire line must match; matches "yo" and "yodawg", but NOT "yo!"
 - `(?:ho)+`: match a repeating sequence of "ho", "hoho", "hohoho", "hohohoho"...
 ### REGEX Capture Group Examples
+- Note these examples are Python REGEX using `re.findall(regexp, string)`
 - `Hello,\s(.+)!` -- *Everything between "Hello, " and final-found "!" (greedy)*
     * "Hello,Sam!" --------------> []
     * "Hello, Sam!" -------------> ["Sam"]
@@ -2204,21 +2227,28 @@ print(f"INDEX CREATION:\n{response}\n------------")
 - `Hello,\s([a-zA-Z]+)!` *Alphabet characters between "Hello, " and "!"*
     * "Hello, Sam!" -------------> ["Sam"]
     * "Hello, Sam Witwicky!!!" --> []
-- `^.+(\S+)!$` *Line ends with non-whitespace and "!" in sequence (greedy)*
+- `^.+(\S+)!$` *Only last non-whitespace before "!"; leftmost greedy runs first*
     * "Hello, Sam!" -------------> ["m"]
     * "Hello, Sam Witwicky!" ----> ["y"]
-- `^.+?(\S+)!$` *Line ends with earliest non-whitespace -> "!" in sequence*
+- `^.+?(\S+)!$` *Non-greedy leftmost means greedy rightmost takes precedence*
     * "Hello, Sam!" -------------> ["Sam"]
     * "Hello, Sam Witwicky!!!" --> ["Witwicky"]
     * "f7g?3.rb3%79h&2398dh!" ---> ["f7g?3.rb3%79h&2398dh"]
-- `([a-zA-Z]+)(?:\s([a-zA-Z]+))*!` *Two capture groups, second is optional*
+- `([a-zA-Z]+)\s*?([a-zA-Z]+){,1}!` *Two capture groups, second is optional*
     * "Hello, Sam!" -------------> [("Sam", "")] (two capture groups -> tuple)
     * "Hello, Sam Witwicky!" ----> [("Sam", "Witwicky")]
     * "Hello!" ------------------> [("Hello", "")]
-- `Hello,\s([a-zA-Z]+)(?:\s([a-zA-Z]+))*!` *Best solution of above*
+- `Hello,\s([a-zA-Z]+)\s*?([a-zA-Z]+){,1}!` *Best solution of above*
     * Same as above example but with "Hello,\s" at the beginning
     * "Hello, Sam!" -------------> [("Sam", "")]
     * "Hello, Sam Witwicky!" ----> [("Sam", "Witwicky")]
+    * "Hello, Sam    Witwicky!" -> [{"Sam", "Witwicky"}]
+    * "Hello!" ------------------> []
+- `Hello,\s([a-zA-Z]+)(?:\s([a-zA-Z]+)){,1}!` *Use match group w/ capture in it*
+    * Optional match group w/ capture in it is proper design for optional parts
+    * "Hello, Sam!" -------------> [("Sam", "")]
+    * "Hello, Sam Witwicky!" ----> [("Sam", "Witwicky")]
+    * "Hello, Sam    Witwicky!" -> []
     * "Hello!" ------------------> []
 
 [[Return to Top]](#table-of-contents)
@@ -2260,9 +2290,9 @@ print(f"INDEX CREATION:\n{response}\n------------")
 ```python
 import pandas as pd
 url = "https://www.w3schools.com/html/tryit.asp?filename=tryhtml_table_headings"
-df1 = pd.read_html(url)[0] # read HTML tables from URL, set first table as df1
+df1 = pd.read_html(url)[0]   # read HTML tables from URL, set first table as df1
 myhtml = "<table><tr><th>hi</th></tr><tr><td>12</td></tr></table>"
-df2 = pd.read_html(myhtml)[0] # read HTML tables from string, set first as df2
+df2 = pd.read_html(myhtml)[0]   # read HTML tables from string, set first as df2
 ```
 ### Python Requests
 - Use this method if you need to scrape the contents of *static* HTML tags
@@ -2307,11 +2337,17 @@ else:
     d1 = [ele.text for ele in soup.find_all("span")]
 ```
 ### Python Selenium
-- Use this method if you need to scrape the contents of a *dynamic* page
-- Selenium drives a browser that executes Javascript which affects page content
-    * Running GET commands gets content before Javascript is run (before loaded)
-    * Need to download the relevant webdriver like chromedriver.exe
-- Selenium stores all loaded page elements, BeautifulSoup does the tag scraping
+- Use this method to handle pages w/ Javascript (JS) or do advanced nav actions
+- Selenium drives a browser; browser runs JS like normal and we can task browser
+    * Requests (raw HTTP GET) only pull pre-JS-loaded content (not all content)
+    * Selenium runs JS, making it possible to pull all page content
+    * Selenium-driven browsers can click/hover/etc to execute more JS for pull
+- We can use BeautifulSoup to store page content at various stages of JS
+    * Selenium can wait until certain page elements have loaded
+    * On detection of loaded elements, we can punch page content into a Soup
+    * Then we can analyze that Soup like normal
+- Setting up Selenium requires downloading a relevant browser webdriver
+    * Firefox, Chrome, and more are supported
 ```python
 from selenium import webdriver
 from selenium.webdriver.common.by import By               # allow By.ID, etc
@@ -2414,13 +2450,34 @@ for gallery_url in gallery_urls:
 ### Database Normal Forms
 - Goal is to represent data in a non-redundant, clear, and simple architecture
 - Zero Normal Form (0NF): Data has not been normalized
-- First Normal Form (1NF): No duplicate rows/columns, one value per row
+    * Getting to 0NF means structuring data where it can be retrieved from DB
+    * DB is stuck in 0NF if has duplicate rows/columns, or cell vals have arrays
+- First Normal Form (1NF): No duplicate rows/columns, one value per cell
+    * Going 0NF -> 1NF means de-duplicating rows/columns and splitting arrays
+    * DB is stuck in 1NF if it has composite key *and* partial-key dependencies
+        * Partial-key dependency: part of composite key alone drives non-key col
 - Second Normal Form (2NF): No partial dependencies on any composite keys
-- Third Normal Form (3NF): No multi-table (transitive) dependencies
-- Boyce-Codd Normal Form (BCNF): User/State/City -> User/State, City/State
-    * Typical stopping point in normalization for most database admins
-- Fourth Normal Form (4NF): No list-like values (split to individual rows)
-- Fifth Normal Form (5NF): Nothing useful can be gained from joining tables
+    * Going 1NF -> 2NF means splitting composite key, put key:non-keys in tables
+    * DB is stuck in 2NF if non-key col is driven by other non-key (transitive)
+- Third Normal Form (3NF): All cols are not dependent on other non-key cols
+    * Going 2NF -> 3NF means keeping subkeys, but put subkey:non-keys in tables
+    * DB is stuck in 3NF if any non-keys can't be the table's key
+- Boyce-Codd Normal Form (BCNF): All cols in all tables can be their table's key
+    * Going 3NF -> BCNF means moving can't-key cols to can-key:can't-key table
+    * ***Typical stopping point in normalization for most database admins***
+    * DB is stuck in BCNF if a key's dependent cols are unrelated to each other
+- Fourth Normal Form (4NF): One key drives one set of all-related values
+    * Going BCNF -> 4NF means splitting a key's independent non-keys to tables
+    * DB is stuck in 4NF if joining tables can produce more information
+- Fifth Normal Form (5NF): All many:many relationships are in their own tables
+    * Going 4NF -> 5NF means putting all many:many relations in their own tables
+    * DB is stuck in 5NF if a time-based row addition includes unchanged info
+- Sixth Normal Form (6NF): All time-based changes only add a row of changed info
+    * Going 5NF -> 6NF means putting each possible change in its own table
+    * Nothing really higher than this point in traditional DB normalization
+* Some database normalization decisions are specific to the data itself
+    * Domain-Key Normal Form (DKNF) means all keys/values in DB have constraints
+    * Object-Relational, NoSQL, and Denormalization intentionally violate NFs
 ### Data Content Normalization
 - Goal is to express values in the correct format and drive analytic value
 - Split a string field into multiple key-value pairs of various types
@@ -2994,7 +3051,8 @@ folium.Cloropleth(
 s = pd.Series(start_end_series)               # Series
 s = s.map({starter:1, ender:-1})              # Map to 1 and -1
 s = s.cumsum()                                # Cumulative Sum
-if s[len(s) - 2] == 0 and s[len(s) - 1] == 1: # Handle edge case
+flip_last = False                             # Handle edge case
+if s[len(s) - 2] == 0 and s[len(s) - 1] == 1:
     flip_last = True
 s = s > 0                                     # x > 0
 s = s | s.shift(2)                            # Fix last overlap
@@ -3277,16 +3335,29 @@ pd.concat([s, pd.Series(start_end_series)], axis=1)
     * Tweaks model parameters in opposite direction of loss gradient
     * Uses small random subset/batch of the training data (stochastic)
 ### Encoding
+- Models require numerical values; we can convert text to numbers with encoding
 - Change string values to one-hot representation, ex: `x="cat"` -> `is_cat=True`
     * Python: `pd.get_dummies(df[["col1","col2]], drop_first=True)`
 - Change string values to ordinal values, ex: `cold, warm, hot` -> `0, 1, 2`
     * Python: `df["col3"].replace({"cold":0, "warm":1, "hot": 2})`
 ### Scaling
-- Making 1-10 mean the same to a machine learning model as 1-1000
-    * "Equalizes density of continuous features for machine learning"
+- Some models rely on raw distances; scaling numerical values is very important
+    * Always scale for KNN and K-Means (distance-based); no need for tree-based
+- This is quietly very important in certain machine learning models
+    * Without scaling, expressing height in inches vs feet will affect model
+    * With scaling, different units are equalized; improves model performance
+    * Scaling "equalizes density of continuous features for machine learning"
     * Normalizes Euclidian Distance calcs: `d = sqrt((x1 - x2)^2 + (y1 - y2)^2)`
-    * Always use for KNN and K-Means (distance-based); no need for tree-based
     * Split data before scaling; fit on train; transform all splits
+- Example: make 1-10 mean the same to a machine learning model as 1-1000
+    * A model simply sees a value shift of 1->400 as more significant than 1->4
+    * But, going from 1->4 in 1 (minimum) to 10 (maximum) is 40% shift in range
+    * Going from 1->400 in 1 (minimum) to 1000 (maximum) is also 40% shift
+    * So, shifting 1->400 and 1->4 should be considered equally; hence, scaling!
+    * Scaling converts both 1-1000 and 1-10 to a consistent expression like 0-1
+    * In 0-1 scale (MinMaxScaler), 4 and 400 are now both 0.4; no numerical diff
+    * This is practically required in distance-based models
+    * There are other scaling methods, each with their own considerations!
 - **MinMaxScaler**
     * General use, compresses all values between 0 and 1, sensitive to outliers
 - **StandardScaler**
@@ -3362,6 +3433,7 @@ def resampler(X_train, y_train):
 --------------------------------------------------------------------------------
 <!-- Polished -->
 ## Classification
+- Supervised machine learning, predict which category something belongs to
 - Ultimately classifiers always take an input and map it to a discrete output
 - Different classification algorithms use different mapping methodologies
 ### Features for Classification
@@ -3465,6 +3537,7 @@ def resampler(X_train, y_train):
 --------------------------------------------------------------------------------
 <!-- Polished -->
 ## Regression
+- Supervised machine learning, predict the numerical value of something
 - Ultimately regressors always take an input and plot it on a line to get output
 - Different regression algorithms plot different lines and use different loss
 ### Features for Regression
@@ -3562,6 +3635,11 @@ def resampler(X_train, y_train):
 --------------------------------------------------------------------------------
 <!-- Polished -->
 ## Time Series (TS)
+- Time-focused exploration and modeling, sometimes involving machine learning
+- Leverage TS if your analytic goal involves the time component of your data
+    * Forecast what a numerical value will be after a certain amount of time
+    * Identify anomalies in how a numerical value changed over a given period
+    * Put certain behaviors of a moving numerical value into specific categories
 ### Interpolation and Resampling
 - Fixing or adjusting TS data in order to meet various objectives
 - Interpolation: filling gaps in TS data, like sensor downtime in hourly temps
@@ -3673,7 +3751,12 @@ def resampler(X_train, y_train):
 --------------------------------------------------------------------------------
 <!-- Polished -->
 ## Neural Networks (NN)
-- Allowing models to perform their own feature engineering in hidden layers
+- Design neuron lattice and set randomization/evaluation; result is "black box"
+- NN is different from traditional ML approaches
+    * Traditional supervised ML training results in feature weights (readable)
+    * Traditional unsupervised ML models shapes using set algorithms (readable)
+    * NN model training involves auto-creating features in epochs (unreadable)
+    * Both traditional ML and NN still use normal metrics like accuracy, r2
 - Good cases for NNs: images, video, sound, NLP (large non-tabular data)
 - Stick with traditional modeling where possible for interpretability
 ### Neural Network Design
@@ -3804,14 +3887,14 @@ def resampler(X_train, y_train):
 
 
 <!-- 
-######                                                                                
-#     # ##### # #    # #####  ####  ####   ####  ##### #    # ##### #    # ##### 
-#     # #     # ##   # #     #    # #   # #    # #     ##  ## #     ##   #   #   
-######  ####  # # #  # ####  #    # #   # #      ####  # ## # ####  # #  #   #   
-#   #   #     # #  # # #     #    # ####  #      #     #    # #     #  # #   #   
-#    #  #     # #   ## #     #    # #  #  #    # #     #    # #     #   ##   #   
-#     # ##### # #    # #      ####  #   #  ####  ##### #    # ##### #    #   #   
-                                                                                      
+######                                                                          
+#     # ##### # #    # #####  ####  ####   ####  ##### #    # ##### #    # #####
+#     # #     # ##   # #     #    # #   # #    # #     ##  ## #     ##   #   #  
+######  ####  # # #  # ####  #    # #   # #      ####  # ## # ####  # #  #   #  
+#   #   #     # #  # # #     #    # ####  #      #     #    # #     #  # #   #  
+#    #  #     # #   ## #     #    # #  #  #    # #     #    # #     #   ##   #  
+#     # ##### # #    # #      ####  #   #  ####  ##### #    # ##### #    #   #  
+                                                                                
 #                                                   
 #       #####   ##   ####  #    # # #    #  ####  
 #       #      #  #  #   # ##   # # ##   # #    # 
